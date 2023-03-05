@@ -7,12 +7,12 @@
         </h2>
       </v-card-title>
       <v-card-text>
-        <v-form @sumbit.prevent="updateProfile">
+        <v-form @submit.prevent="updateProfile">
           <div class="d-flex">
             <InputsUsername v-model="username" :disabled="!change" variant="outlined" />
             <v-btn class="ml-2" icon="mdi-pencil" variant="text" @click="isChange()" />
           </div>
-          <v-btn v-if="change" block type="submit" color="buttonBack">
+          <v-btn v-if="change" block type="submit" color="buttonBack" :loadind="loading">
             Modifier
           </v-btn>
         </v-form>
@@ -56,9 +56,10 @@ onMounted(() => {
 })
 
 async function getProfile() {
+  if (!user.value) {return}
   try {
 			loading.value = true;
-			const { data, error, status } = await supabase.from('profiles').select(`username`).single();
+			const { data, error, status } = await supabase.from('profiles').select(`username`).eq('id', user.value.id).single();
 			if (data) {
 				username.value = data.username;
 			}
@@ -76,12 +77,12 @@ async function updateProfile() {
   if (!user.value) {return}
   try {
     loading.value = true
-    const updates = {
+    const { error } = await supabase.from('profiles').upsert({
       id: user.value.id,
       username: username.value,
       updated_at: new Date(),
-    }
-    const { error } = await supabase.from('profiles').upsert(updates, {
+    }, 
+    {
       returning: 'minimal', // Don't return the value after inserting
     })
     $notifier({
