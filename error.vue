@@ -2,13 +2,19 @@
   <v-app id="inspire">
     <v-main>
       <v-container fill-height fluid>
-        <div class="text-center text-button">
+        <div class="text-center text-buttonBack">
           <h1 v-if="props.error.statusCode === 404">
             Erreur {{ props.error.statusCode }}
           </h1>
           <h2>Une erreur est survenue lors du chargement de la page</h2>
-          <v-btn :variant="btnOutlined ? 'outlined' : undefined" color="button" to="/" class="mt-5"
-            @mouseover="btnOutlined = false" @mouseleave="btnOutlined = true">
+          <v-btn
+            :variant="btnOutlined ? 'outlined' : undefined"
+            color="buttonBack"
+            to="/"
+            class="mt-5"
+            @mouseover="btnOutlined = false"
+            @mouseleave="btnOutlined = true"
+          >
             Retour à l'accueil
           </v-btn>
         </div>

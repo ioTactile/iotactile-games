@@ -18,7 +18,7 @@ const myTheme: ThemeDefinition = {
     background: '#eff0f3', // light grey
     headline: '#0d0d0d', // black
     paragraph: '2a2a2a', // dark grey
-    button: '#ff8e3c', // orange
+    buttonBack: '#ff8e3c', // orange
     buttonText: '#0d0d0d', // black
   },
 }
