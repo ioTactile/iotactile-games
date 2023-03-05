@@ -3,16 +3,17 @@
     <v-footer color="secondary" class="py-4">
       <v-row justify="center" no-gutters>
         <v-btn
-          v-for="link in links"
-          :key="link"
+          v-for="(link, i) in links"
+          :key="i"
+          :to="link.link"
           color="buttonBack"
           variant="outlined"
           class="mx-2"
+          :size="xs ? 'small' : 'default'"
           rounded="xl"
         >
-          {{ link }}
+          {{ link.title }}
         </v-btn>
-    
         <v-col cols="12" class="text-center mt-4">
           © {{ new Date().getFullYear() }} - Réalisé par
           <a href="https://github.com/ioTactile" class="text-decoration-none text-headline">
@@ -25,9 +26,22 @@
 </template>
 
 <script lang="ts" setup>
+import { useDisplay } from 'vuetify'
+
+const { xs } = useDisplay()
+
 const links = [
-    'Page d\'accueil',
-    'À propos',
-    'Me contacter'
+    {
+      title: 'Page d\'accueil',
+      link: '/'
+    },
+    {
+      title: 'À propos',
+      link: '/a-propos'
+    },
+    {
+      title: 'Me contacter',
+      link: '/me-contacter'
+    }
 ]
 </script>
