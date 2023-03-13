@@ -35,22 +35,17 @@ const drawer = ref(false)
 const group = ref(null)
 const username = ref(null)
 
-onMounted(async () => {
-  if(!user.value) {return}
-  const {data} = await supabase
-    .from('profiles')
-    .select(`username`)
-    .eq('id', user.value.id)
-    .single()
-
-    if(data) {
-      username.value = data.username
-    }
+onMounted(() => {
+  getUsername()
 })
 
 watch(group, () => {
   drawer.value = false
 })
+
+watch(user, () => {
+  getUsername()
+})  
 
 const items = [
   {
@@ -62,6 +57,19 @@ const items = [
     link: '/dice',
   }
 ]
+
+const getUsername = async () => {
+  if(!user.value) {return}
+  const {data} = await supabase
+    .from('profiles')
+    .select(`username`)
+    .eq('id', user.value.id)
+    .single()
+
+    if(data) {
+      username.value = data.username
+    }
+}
 
 const isLogin = (path: string) => {
   if (!user.value) {

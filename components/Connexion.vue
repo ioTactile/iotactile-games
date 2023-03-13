@@ -70,7 +70,7 @@
           </h2>
         </v-card-title>
         <v-card-text class="text-center">
-          <span>N'attends plus est rejoint le club</span>
+          <span>N'attends plus et rejoint le club</span>
           <v-btn
             class="mt-2"
             color="buttonBack"
