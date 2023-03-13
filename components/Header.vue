@@ -9,12 +9,20 @@
         </v-app-bar-title>
       </NuxtLink>
       <v-spacer />
-      <span v-if="user" class="d-none d-sm-block">Bonjour, {{ username }}</span>
+      <span v-if="auth.currentUser" class="d-none d-sm-block"
+        >Bonjour, {{ username }}</span
+      >
       <v-btn icon="mdi-account" size="large" @click="isLogin('/profil')" />
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" width="200"> 
+    <v-navigation-drawer v-model="drawer" width="200">
       <v-list nav class="pa-0">
-        <v-list-item v-for="(item, i) in items" :key="i" :value="item" :to="item.link" active-color="highlight">
+        <v-list-item
+          v-for="(item, i) in items"
+          :key="i"
+          :value="item"
+          :to="item.link"
+          active-color="highlight"
+        >
           {{ item.title }}
         </v-list-item>
       </v-list>
@@ -27,8 +35,12 @@
 </template>
 
 <script lang="ts" setup>
-const supabase = useSupabaseClient()
-const user = useSupabaseUser()
+import { getAuth, onAuthStateChanged } from '@firebase/auth'
+import { doc, getDoc } from '@firebase/firestore'
+import { userConverter } from '~/stores'
+
+const { $firebaseApp, $firestore } = useNuxtApp()
+const auth = getAuth($firebaseApp)
 
 const login = ref(false)
 const drawer = ref(false)
@@ -36,16 +48,23 @@ const group = ref(null)
 const username = ref(null)
 
 onMounted(() => {
-  getUsername()
+  const auth = getAuth($firebaseApp)
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      return
+    }
+    const userRef = doc($firestore, 'users', user.uid).withConverter(
+      userConverter
+    )
+    const userDoc = await getDoc(userRef)
+    const username = userDoc.data().username
+    username.value = username
+  })
 })
 
 watch(group, () => {
   drawer.value = false
 })
-
-watch(user, () => {
-  getUsername()
-})  
 
 const items = [
   {
@@ -55,24 +74,11 @@ const items = [
   {
     title: 'Dice',
     link: '/dice',
-  }
+  },
 ]
 
-const getUsername = async () => {
-  if(!user.value) {return}
-  const {data} = await supabase
-    .from('profiles')
-    .select(`username`)
-    .eq('id', user.value.id)
-    .single()
-
-    if(data) {
-      username.value = data.username
-    }
-}
-
 const isLogin = (path: string) => {
-  if (!user.value) {
+  if (!auth.currentUser) {
     login.value = true
   } else {
     navigateTo(path)

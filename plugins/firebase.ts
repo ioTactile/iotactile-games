@@ -26,7 +26,7 @@ export default defineNuxtPlugin(() => {
   const firestore = initializeFirestore(firebaseApp, {
     ignoreUndefinedProperties: true,
   })
-  const functions = getFunctions(firebaseApp, 'europe-west1')
+  const functions = getFunctions(firebaseApp, 'europe-west2')
 
   return {
     provide: { firestore, functions, firebaseApp },

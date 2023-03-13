@@ -114,7 +114,7 @@ import {
   AuthErrorCodes,
 } from 'firebase/auth'
 import { FirebaseError } from '@firebase/util'
-import { doc, setDoc } from 'firebase/firestore'
+import { Timestamp, doc, setDoc } from 'firebase/firestore'
 import { userConverter } from '~/stores'
 
 const { $notifier, $firebaseApp, $firestore } = useNuxtApp()
@@ -128,6 +128,7 @@ const emits = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
 const email = ref('')
 const username = ref('')
 const password = ref('')
+const date = ref(new Date(Date.now()))
 const createAccount = ref(false)
 const forgotPassword = ref(false)
 const loading = ref<'email' | null>(null)
