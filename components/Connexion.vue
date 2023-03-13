@@ -8,13 +8,11 @@
   >
     <v-card>
       <v-card-title class="d-flex align-center">
-        <h2 class="text-h5 mr-auto">
-          Mon compte
-        </h2>
+        <h2 class="text-h5 mr-auto">Mon compte</h2>
         <v-btn
           icon="mdi-close"
           variant="text"
-          :disabled="loading !== null" 
+          :disabled="loading !== null"
           @click="emits('update:modelValue', false)"
         />
       </v-card-title>
@@ -22,7 +20,12 @@
         <v-form ref="form" @submit.prevent="login">
           <InputsEmail v-model="email" variant="outlined" icon />
           <template v-if="!forgotPassword">
-            <InputsUsername v-if="createAccount" v-model="username" variant="outlined" icon />
+            <InputsUsername
+              v-if="createAccount"
+              v-model="username"
+              variant="outlined"
+              icon
+            />
             <InputsPassword
               v-if="!createAccount"
               v-model="password"
@@ -54,20 +57,18 @@
           >
             {{
               createAccount
-                ? 'M\'inscire'
+                ? "M'inscire"
                 : forgotPassword
-                  ? 'Réinitialiser mon mot de passe'
-                  : 'Connexion'
+                ? 'Réinitialiser mon mot de passe'
+                : 'Connexion'
             }}
           </v-btn>
         </v-form>
       </v-card-text>
       <v-divider />
-      <template v-if="!createAccount"> 
+      <template v-if="!createAccount">
         <v-card-title>
-          <h2 class="text-h5">
-            Nouvel arrivant
-          </h2>
+          <h2 class="text-h5">Nouvel arrivant</h2>
         </v-card-title>
         <v-card-text class="text-center">
           <span>N'attends plus et rejoint le club</span>
@@ -84,9 +85,7 @@
       </template>
       <template v-else>
         <v-card-title>
-          <h2 class="text-h5">
-            Déjà membre
-          </h2>
+          <h2 class="text-h5">Déjà membre</h2>
         </v-card-title>
         <v-card-text class="text-center">
           <span>Connectes toi pour rentrer dans le club</span>
@@ -107,15 +106,24 @@
 
 <script lang="ts" setup>
 import { VForm } from 'vuetify/components'
-const supabase = useSupabaseClient()
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  AuthErrorCodes,
+} from 'firebase/auth'
+import { FirebaseError } from '@firebase/util'
+import { doc, setDoc } from 'firebase/firestore'
+import { userConverter } from '~/stores'
 
-const {$notifier} = useNuxtApp()
+const { $notifier, $firebaseApp, $firestore } = useNuxtApp()
 
 defineProps<{
-    modelValue: boolean
+  modelValue: boolean
 }>()
 
-const emits = defineEmits<{(e: 'update:modelValue', value: boolean): void}>()
+const emits = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
 
 const email = ref('')
 const username = ref('')
@@ -126,38 +134,69 @@ const loading = ref<'email' | null>(null)
 const form = ref<VForm>()
 
 async function login() {
-    if(!(await form.value?.validate())?.valid) {return}
-    loading.value = 'email'
-    try {
-        if(createAccount.value) {
-            const { error } = await supabase.auth.signUp({
-            email: email.value,
-            password: password.value,
-            options: {
-                data: {
-                    username: username.value
-                }
-            }
-            })
-            if (error) throw error
-        } else if(forgotPassword.value) {
-            await supabase.auth.resetPasswordForEmail(email.value)
-        } else {
-            const {error} = await supabase.auth.signInWithPassword({
-                email: email.value,
-                password: password.value
-            })
-            if(error) throw error
+  if (!(await form.value?.validate())?.valid) {
+    return
+  }
+  loading.value = 'email'
+  const auth = getAuth($firebaseApp)
+  try {
+    if (createAccount.value) {
+      createUserWithEmailAndPassword(auth, email.value, password.value).then(
+        (credentials) => {
+          const userRef = doc(
+            $firestore,
+            'users',
+            credentials.user.uid
+          ).withConverter(userConverter)
+          setDoc(
+            userRef,
+            {
+              id: credentials.user.uid,
+              email: email.value,
+              username: username.value,
+              creationDate: Timestamp.fromDate(date.value),
+              updatedDate: Timestamp.now(),
+            },
+            { merge: true }
+          )
         }
-    } catch (error) {
-        $notifier({
-            content: 'Une erreur est survenue',
-            color: 'main',
-            error
-        })
-    } finally {
-        loading.value = null 
-        emits('update:modelValue', false) 
+      )
+      $notifier({ content: 'Inscription réussie', color: 'success' })
+    } else if (forgotPassword.value) {
+      await sendPasswordResetEmail(auth, email.value)
+      $notifier({
+        content: 'Un email de réinitialisation a été envoyé',
+        color: 'success',
+      })
+      forgotPassword.value = false
+    } else {
+      await signInWithEmailAndPassword(auth, email.value, password.value)
+      $notifier({ content: 'Connexion réussie', color: 'success' })
     }
+  } catch (error: unknown) {
+    if (!(error instanceof FirebaseError)) {
+      throw error
+    }
+
+    let errMessage
+    switch (error.code) {
+      case AuthErrorCodes.EMAIL_EXISTS:
+        errMessage = 'Adresse mail déjà utilisée'
+        break
+      case AuthErrorCodes.USER_DELETED:
+        errMessage = 'Utilisateur supprimé'
+        break
+      case AuthErrorCodes.INVALID_PASSWORD:
+        errMessage = 'Mot de passe incorrect'
+        break
+      default:
+        errMessage = 'une erreur est survenue'
+        break
+    }
+    $notifier({ content: errMessage, color: 'error', error })
+  } finally {
+    loading.value = null
+    emits('update:modelValue', false)
+  }
 }
 </script>

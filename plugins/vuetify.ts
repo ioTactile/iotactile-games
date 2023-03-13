@@ -20,6 +20,9 @@ const myTheme: ThemeDefinition = {
     paragraph: '2a2a2a', // dark grey
     buttonBack: '#ff8e3c', // orange
     buttonText: '#0d0d0d', // black
+    // Events
+    error: '#ed4337', // red
+    success: '#4caf50', // green
   },
 }
 
