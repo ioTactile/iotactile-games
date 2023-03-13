@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  // schemas   = ["auth", "public"]
+}
+
+model Profile {
+  id               String    @id @default(uuid())
+  username         String    @unique @db.VarChar(20)
+  updatedAt        DateTime? @updatedAt
+  playerOneSession Session?  @relation("playerOne")
+  playerTwoSession Session?  @relation("playerTwo")
+
+  @@map("profiles")
+}
+
+model Session {
+  id          String   @id @default(uuid())
+  playerOneId String?  @unique
+  playerOne   Profile? @relation("playerOne", fields: [playerOneId], references: [id])
+  playerTwoId String?  @unique
+  playerTwo   Profile? @relation("playerTwo", fields: [playerTwoId], references: [id])
+  isFull      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@map("sessions")
+}
+
+model Word {
+  id   String @id @default(uuid())
+  name String @unique
+
+  @@map("words")
+}
