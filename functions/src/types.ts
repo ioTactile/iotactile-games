@@ -42,11 +42,11 @@ export type Word = {
 
 export type Session = {
   id: string
-  word: string
-  playerOne: string
-  playerTwo: string
-  playerOneScore: number
-  playerTwoScore: number
+  word?: string
+  playerOne?: string
+  playerTwo?: string
+  playerOneScore?: number
+  playerTwoScore?: number
   isFull: boolean
   isStarted: boolean
   isFinished: boolean

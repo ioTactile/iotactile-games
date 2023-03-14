@@ -13,7 +13,6 @@ const firebaseConfig = {
 }
 
 export default defineNuxtPlugin(() => {
-  // const config = useRuntimeConfig()
   const apps = getApps()
 
   let firebaseApp

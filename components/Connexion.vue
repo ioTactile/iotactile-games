@@ -20,31 +20,12 @@
         <v-form ref="form" @submit.prevent="login">
           <InputsEmail v-model="email" variant="outlined" icon />
           <template v-if="!forgotPassword">
-            <InputsUsername
-              v-if="createAccount"
-              v-model="username"
-              variant="outlined"
-              icon
-            />
-            <InputsPassword
-              v-if="!createAccount"
-              v-model="password"
-              variant="outlined"
-            />
-            <InputsPasswordFirst
-              v-else
-              v-model="password"
-              variant="outlined"
-              not-in-line
-            />
+            <InputsUsername v-if="createAccount" v-model="username" variant="outlined" icon />
+            <InputsPassword v-if="!createAccount" v-model="password" variant="outlined" />
+            <InputsPasswordFirst v-else v-model="password" variant="outlined" not-in-line />
           </template>
 
-          <v-btn
-            v-if="!createAccount"
-            class="mb-2"
-            variant="text"
-            @click="forgotPassword = !forgotPassword"
-          >
+          <v-btn v-if="!createAccount" class="mb-2" variant="text" @click="forgotPassword = !forgotPassword">
             {{ forgotPassword ? 'Connexion' : 'Mot de passe oublié' }}
           </v-btn>
 
@@ -55,13 +36,7 @@
             :disabled="loading !== null && loading !== 'email'"
             :loading="loading === 'email'"
           >
-            {{
-              createAccount
-                ? "M'inscire"
-                : forgotPassword
-                ? 'Réinitialiser mon mot de passe'
-                : 'Connexion'
-            }}
+            {{ createAccount ? "M'inscire" : forgotPassword ? 'Réinitialiser mon mot de passe' : 'Connexion' }}
           </v-btn>
         </v-form>
       </v-card-text>
@@ -72,13 +47,7 @@
         </v-card-title>
         <v-card-text class="text-center">
           <span>N'attends plus et rejoint le club</span>
-          <v-btn
-            class="mt-2"
-            color="buttonBack"
-            block
-            :disabled="loading !== null"
-            @click="createAccount = true"
-          >
+          <v-btn class="mt-2" color="buttonBack" block :disabled="loading !== null" @click="createAccount = true">
             Créer un compte
           </v-btn>
         </v-card-text>
@@ -89,13 +58,7 @@
         </v-card-title>
         <v-card-text class="text-center">
           <span>Connectes toi pour rentrer dans le club</span>
-          <v-btn
-            class="mt-2"
-            color="buttonBack"
-            block
-            :disabled="loading !== null"
-            @click="createAccount = false"
-          >
+          <v-btn class="mt-2" color="buttonBack" block :disabled="loading !== null" @click="createAccount = false">
             Connexion
           </v-btn>
         </v-card-text>
@@ -142,26 +105,20 @@ async function login() {
   const auth = getAuth($firebaseApp)
   try {
     if (createAccount.value) {
-      createUserWithEmailAndPassword(auth, email.value, password.value).then(
-        (credentials) => {
-          const userRef = doc(
-            $firestore,
-            'users',
-            credentials.user.uid
-          ).withConverter(userConverter)
-          setDoc(
-            userRef,
-            {
-              id: credentials.user.uid,
-              email: email.value,
-              username: username.value,
-              creationDate: Timestamp.fromDate(date.value),
-              updatedDate: Timestamp.now(),
-            },
-            { merge: true }
-          )
-        }
-      )
+      createUserWithEmailAndPassword(auth, email.value, password.value).then((credentials) => {
+        const userRef = doc($firestore, 'users', credentials.user.uid).withConverter(userConverter)
+        setDoc(
+          userRef,
+          {
+            id: credentials.user.uid,
+            email: email.value,
+            username: username.value,
+            creationDate: Timestamp.fromDate(date.value),
+            updateDate: Timestamp.now(),
+          },
+          { merge: true }
+        )
+      })
       $notifier({ content: 'Inscription réussie', color: 'success' })
     } else if (forgotPassword.value) {
       await sendPasswordResetEmail(auth, email.value)
@@ -174,6 +131,7 @@ async function login() {
       await signInWithEmailAndPassword(auth, email.value, password.value)
       $notifier({ content: 'Connexion réussie', color: 'success' })
     }
+    emits('update:modelValue', false)
   } catch (error: unknown) {
     if (!(error instanceof FirebaseError)) {
       throw error
@@ -197,7 +155,6 @@ async function login() {
     $notifier({ content: errMessage, color: 'error', error })
   } finally {
     loading.value = null
-    emits('update:modelValue', false)
   }
 }
 </script>

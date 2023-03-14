@@ -41,7 +41,7 @@
           block
           color="buttonBack"
           :disabled="loading"
-          @click="signOut"
+          @click="logout"
         >
           Se déconnecter
         </v-btn>
@@ -51,13 +51,11 @@
 </template>
 
 <script lang="ts" setup>
-import { getAuth } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { userConverter } from '~/stores'
 
-const { $firebaseApp, $firestore } = useNuxtApp()
-const { $notifier } = useNuxtApp()
-const auth = getAuth($firebaseApp)
+const { $notifier, $firebaseApp, $firestore } = useNuxtApp()
 
 const loading = ref(false)
 const change = ref(false)
@@ -72,28 +70,38 @@ function isChange() {
 }
 
 onMounted(() => {
-  getProfile()
+  const auth = getAuth($firebaseApp)
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      return
+    }
+    const userId = user.uid
+    const userRef = doc($firestore, 'users', userId).withConverter(
+      userConverter
+    )
+    const userDoc = await getDoc(userRef)
+    const userFetched = userDoc.data()
+    if (userFetched) {
+      username.value = userFetched.username
+    }
+  })
 })
 
-async function getProfile() {
-  const userRef = doc($firestore, 'users', auth.currentUser.uid).withConverter(
-    userConverter
-  )
-  const userDoc = await getDoc(userRef)
-  username.value = userDoc.data().username
-}
-
 async function updateProfile() {
-  if (!user.value) {
-    return
-  }
+  loading.value = true
+  const auth = getAuth($firebaseApp)
   try {
-    loading.value = true
-    await setDoc(userRef, { username: username.value }, { merge: true })
-    await $notifier({
-      content: 'Profil mis à jour',
-      color: 'main',
-    })
+    if (auth.currentUser) {
+      const userId = auth.currentUser.uid
+      const userRef = doc($firestore, 'users', userId).withConverter(
+        userConverter
+      )
+      await setDoc(userRef, { username: username.value }, { merge: true })
+      $notifier({
+        content: 'Profil mis à jour',
+        color: 'main',
+      })
+    }
   } catch (error) {
     $notifier({
       content: 'Une erreur est survenue lors de la mise à jour de ton profil',
@@ -106,10 +114,12 @@ async function updateProfile() {
   }
 }
 
-async function signOut() {
+async function logout() {
+  loading.value = true
+  const auth = getAuth($firebaseApp)
   try {
-    loading.value = true
     await signOut(auth)
+    await navigateTo('/')
   } catch (error) {
     $notifier({
       content: 'Une erreur est survenue lors de la déconnexion',
@@ -118,7 +128,6 @@ async function signOut() {
     })
   } finally {
     loading.value = false
-    navigateTo('/')
   }
 }
 </script>
