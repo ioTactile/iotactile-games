@@ -1,5 +1,5 @@
 <template>
   <div>
-    <linguavault-game />
+    <div>Resultats</div>
   </div>
 </template>

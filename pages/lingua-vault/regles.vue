@@ -1,5 +1,5 @@
 <template>
-  <v-container class="container">
+  <v-container class="container text-h6">
     <section class="my-4">
       <h2 class="pb-2">
         Le jeu

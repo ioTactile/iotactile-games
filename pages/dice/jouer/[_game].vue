@@ -1,5 +1,5 @@
 <template>
   <div>
-    <linguavault-game />
+    <dice-game />
   </div>
 </template>
