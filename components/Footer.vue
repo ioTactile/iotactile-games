@@ -31,17 +31,17 @@ import { useDisplay } from 'vuetify'
 const { xs } = useDisplay()
 
 const links = [
-    {
-      title: 'Page d\'accueil',
-      link: '/'
-    },
-    {
-      title: 'À propos',
-      link: '/a-propos'
-    },
-    {
-      title: 'Me contacter',
-      link: '/me-contacter'
-    }
+  {
+    title: 'Page d\'accueil',
+    link: '/'
+  },
+  {
+    title: 'À propos',
+    link: '/a-propos'
+  },
+  {
+    title: 'Me contacter',
+    link: '/me-contacter'
+  }
 ]
 </script>

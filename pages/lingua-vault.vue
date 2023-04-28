@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <div class="d-flex flex-wrap justify-center">
+    <div class="d-flex flex-wrap justify-center mb-4">
       <v-btn
         v-for="(item, i) in items"
         :key="i"
@@ -26,25 +26,25 @@ import { useDisplay } from 'vuetify'
 const { xs, sm } = useDisplay()
 
 const items = [
-    {
-        title: 'Jouer',
-        link: '/jouer',
-        icon: 'mdi-account-multiple'
-    },
-    {
-        title: 'Classement',
-        link: '/classement',
-        icon: 'mdi-text-box'
-    },
-    {
-        title: 'Résultats',
-        link: '/resultats',
-        icon: 'mdi-account-details'
-    },
-    {
-        title: 'Règles',
-        link: '/regles',
-        icon: 'mdi-note-text'
-    },
+  {
+    title: 'Jouer',
+    link: '/jouer',
+    icon: 'mdi-account-multiple'
+  },
+  {
+    title: 'Classement',
+    link: '/classement',
+    icon: 'mdi-text-box'
+  },
+  {
+    title: 'Résultats',
+    link: '/resultats',
+    icon: 'mdi-account-details'
+  },
+  {
+    title: 'Règles',
+    link: '/regles',
+    icon: 'mdi-note-text'
+  }
 ]
 </script>

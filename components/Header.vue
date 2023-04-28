@@ -4,7 +4,9 @@
       <v-app-bar-nav-icon class="mr-4" @click.stop="drawer = !drawer" />
       <v-spacer class="d-block d-sm-none" />
       <NuxtLink to="/">
-        <v-app-bar-title class="font-weight-bold text-buttonBack text-h4"> iotactile Games </v-app-bar-title>
+        <v-app-bar-title class="font-weight-bold text-buttonBack text-h4">
+          iotactile Games
+        </v-app-bar-title>
       </NuxtLink>
       <v-spacer />
       <span v-if="username" class="d-none d-sm-block">Bonjour, {{ username }}</span>
@@ -25,31 +27,28 @@
 </template>
 
 <script lang="ts" setup>
-import { getAuth, onAuthStateChanged } from '@firebase/auth'
+import { useCurrentUser, useFirestore } from 'vuefire'
 import { doc, getDoc } from '@firebase/firestore'
 import { userConverter } from '~/stores'
 
-const { $firebaseApp, $firestore } = useNuxtApp()
+const user = useCurrentUser()
+const db = useFirestore()
 
 const login = ref(false)
 const drawer = ref(false)
 const group = ref(null)
 const username = ref('')
 
-onMounted(() => {
-  const auth = getAuth($firebaseApp)
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      return
-    }
-    const userId = user.uid
-    const userRef = doc($firestore, 'users', userId).withConverter(userConverter)
-    const userDoc = await getDoc(userRef)
-    const userFetched = userDoc.data()
-    if (userFetched) {
-      username.value = userFetched.username
-    }
-  })
+onMounted(async () => {
+  if (!user.value) {
+    return
+  }
+  const userRef = doc(db, 'users', user.value.uid).withConverter(userConverter)
+  const userDoc = await getDoc(userRef)
+  const userFetched = userDoc.data()
+  if (userFetched) {
+    username.value = userFetched.username
+  }
 })
 
 watch(group, () => {
@@ -59,17 +58,16 @@ watch(group, () => {
 const items = [
   {
     title: 'Lingua Vault',
-    link: '/lingua-vault',
+    link: '/lingua-vault'
   },
   {
     title: 'Dice',
-    link: '/dice',
-  },
+    link: '/dice'
+  }
 ]
 
 const isLogin = (path: string) => {
-  const auth = getAuth($firebaseApp)
-  if (!auth.currentUser) {
+  if (!user.value) {
     login.value = true
   } else {
     navigateTo(path)

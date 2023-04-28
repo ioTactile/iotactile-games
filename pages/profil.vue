@@ -1,8 +1,15 @@
 <template>
   <v-container align="center">
     <v-card max-width="500">
-      <v-card-title class="text-left">
-        <h2 class="text-h5">Mon profil</h2>
+      <v-card-title class="d-flex justify-space-between align-center">
+        <h2 class="text-h5">
+          Mon profil
+        </h2>
+        <v-btn
+          icon="mdi-dots-vertical"
+          variant="text"
+          @click="openDeleteUser = !openDeleteUser"
+        />
       </v-card-title>
       <v-card-text>
         <v-form @submit.prevent="updateProfile">
@@ -32,7 +39,9 @@
       </v-card-text>
       <v-divider />
       <v-card-title class="text-left">
-        <h2 class="text-h5">Sortir du club</h2>
+        <h2 class="text-h5">
+          Sortir du club
+        </h2>
       </v-card-title>
       <v-card-text>
         <span>Tu vas nous manquer, reviens vite!</span>
@@ -45,23 +54,39 @@
         >
           Se déconnecter
         </v-btn>
+        <v-btn
+          v-if="openDeleteUser"
+          class="mt-4"
+          block
+          color="buttonBack"
+          variant="outlined"
+          :disabled="loading"
+          @click="deleteProfile"
+        >
+          Supprimer votre compte
+        </v-btn>
       </v-card-text>
     </v-card>
   </v-container>
 </template>
 
 <script lang="ts" setup>
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { deleteUser, signOut } from '@firebase/auth'
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore'
+import { useFirestore, useFirebaseAuth, useCurrentUser } from 'vuefire'
 import { userConverter } from '~/stores'
 
-const { $notifier, $firebaseApp, $firestore } = useNuxtApp()
+const { notifier } = useNotifier()
+const auth = useFirebaseAuth()
+const user = useCurrentUser()
+const db = useFirestore()
 
 const loading = ref(false)
 const change = ref(false)
+const openDeleteUser = ref(false)
 const username = ref('')
 
-function isChange() {
+const isChange = () => {
   if (!change.value) {
     change.value = true
   } else {
@@ -69,44 +94,40 @@ function isChange() {
   }
 }
 
-onMounted(() => {
-  const auth = getAuth($firebaseApp)
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      return
-    }
-    const userId = user.uid
-    const userRef = doc($firestore, 'users', userId).withConverter(
-      userConverter
-    )
-    const userDoc = await getDoc(userRef)
-    const userFetched = userDoc.data()
-    if (userFetched) {
-      username.value = userFetched.username
-    }
-  })
+onMounted(async () => {
+  if (!user.value) {
+    return
+  }
+  const userRef = doc(db, 'users', user.value.uid).withConverter(userConverter)
+  const userDoc = await getDoc(userRef)
+  const userFetched = userDoc.data()
+  if (userFetched) {
+    username.value = userFetched.username
+  }
 })
 
-async function updateProfile() {
+const updateProfile = async () => {
   loading.value = true
-  const auth = getAuth($firebaseApp)
   try {
-    if (auth.currentUser) {
-      const userId = auth.currentUser.uid
-      const userRef = doc($firestore, 'users', userId).withConverter(
-        userConverter
+    if (user.value) {
+      const userId = user.value.uid
+      const userRef = doc(db, 'users', userId).withConverter(userConverter)
+      await setDoc(
+        userRef,
+        { username: username.value },
+        { merge: true }
       )
-      await setDoc(userRef, { username: username.value }, { merge: true })
-      $notifier({
+      notifier({
         content: 'Profil mis à jour',
-        color: 'main',
+        color: 'main'
       })
     }
   } catch (error) {
-    $notifier({
-      content: 'Une erreur est survenue lors de la mise à jour de ton profil',
+    notifier({
+      content:
+        'Une erreur est survenue lors de la mise à jour de vos informations',
       color: 'error',
-      error,
+      error
     })
   } finally {
     change.value = false
@@ -114,17 +135,40 @@ async function updateProfile() {
   }
 }
 
-async function logout() {
+const deleteProfile = async () => {
+  if (!user.value) {
+    return
+  }
   loading.value = true
-  const auth = getAuth($firebaseApp)
+  try {
+    const userRef = doc(db, 'users', user.value.uid)
+    await deleteDoc(userRef)
+    await deleteUser(user.value)
+  } catch (error) {
+    notifier({
+      content: 'Une erreur est survenue lors de la suppression de votre compte',
+      color: 'error',
+      error
+    })
+  } finally {
+    loading.value = false
+    openDeleteUser.value = false
+  }
+}
+
+const logout = async () => {
+  if (!auth) {
+    return
+  }
+  loading.value = true
   try {
     await signOut(auth)
     await navigateTo('/')
   } catch (error) {
-    $notifier({
+    notifier({
       content: 'Une erreur est survenue lors de la déconnexion',
       color: 'error',
-      error,
+      error
     })
   } finally {
     loading.value = false

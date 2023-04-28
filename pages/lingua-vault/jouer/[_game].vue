@@ -1,5 +1,5 @@
 <template>
   <div>
-    À propos
+    <LinguavaultGame />
   </div>
 </template>

@@ -4,25 +4,29 @@
     "browser": true,
     "node": true
   },
+  "extends": [
+    "plugin:prettier/recommended",
+    "plugin:vue/vue3-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "@nuxtjs/eslint-config-typescript"
+  ],
   "ignorePatterns": ["functions"],
-  "parser": "vue-eslint-parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "parser": "@typescript-eslint/parser",
     "sourceType": "module"
   },
-  "extends": [
-    "@nuxtjs/eslint-config-typescript",
-    "plugin:prettier/recommended",
-    "plugin:vue/vue3-recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
   "plugins": ["vue", "@typescript-eslint"],
   "rules": {
     "prettier/prettier": "off",
+    "vue/no-multiple-objects-in-class": "error",
+    "vue/no-potential-component-option-typo": ["error", {"presets": ["nuxt"]}],
+    "vue/no-static-inline-styles": ["error", {"allowBinding": true}],
+    "vue/no-useless-mustaches": ["error"],
     "vue/multi-word-component-names": "off",
-    "vue/singleline-html-element-content-newline": "off",
-    "vue/multiline-html-element-content-newline": "off",
-    "vue/valid-v-slot": "off"
+    "vue/valid-v-slot": "off",
+    "vue/block-lang": ["error", {"script": {"lang": "ts"}}],
+    "vue/component-api-style": ["error", ["script-setup"]],
+    "vue/no-v-for-template-key": "off"
   }
 }

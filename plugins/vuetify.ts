@@ -1,4 +1,3 @@
-// plugins/vuetify.js
 import '@mdi/font/css/materialdesignicons.css'
 import { createVuetify, ThemeDefinition } from 'vuetify'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
@@ -22,8 +21,8 @@ const myTheme: ThemeDefinition = {
     buttonText: '#0d0d0d', // black
     // Events
     error: '#ed4337', // red
-    success: '#4caf50', // green
-  },
+    success: '#4caf50' // green
+  }
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -32,14 +31,14 @@ export default defineNuxtPlugin((nuxtApp) => {
     icons: {
       defaultSet: 'mdi',
       aliases,
-      sets: { mdi },
+      sets: { mdi }
     },
     theme: {
       defaultTheme: 'myTheme',
-      themes: { myTheme },
+      themes: { myTheme }
     },
     components,
-    directives,
+    directives
   })
 
   nuxtApp.vueApp.use(vuetify)
