@@ -3,7 +3,7 @@
     <v-row>
       <v-divider class="mb-4" />
       <v-col cols="6" class="text-end">
-        <v-btn variant="flat" color="tertiary" @click="joinRandomSession">
+        <v-btn variant="flat" color="tertiary" @click="quickJoin">
           Partie rapide
         </v-btn>
       </v-col>
@@ -65,7 +65,7 @@
 
 <script lang="ts" setup>
 import { Timestamp, collection, doc, setDoc, getDoc, getDocs, deleteDoc, query, where } from 'firebase/firestore'
-import { useFirestore } from 'vuefire'
+import { useFirestore, useCollection } from 'vuefire'
 import { diceSessionConverter, LocalDiceSessionType } from '~/stores'
 
 const { notifier } = useNotifier()
@@ -123,7 +123,7 @@ const create = async () => {
   }
 }
 
-const joinRandomSession = async () => {
+const quickJoin = async () => {
   if (!user.value) { return }
   loading.value = true
 
@@ -149,6 +149,10 @@ const joinRandomSession = async () => {
     })
     if (sessionToJoin.players.length >= 4) {
       sessionToJoin.isFull = true
+    }
+    if (sessionToJoin.isStarted) {
+      notifier({ content: 'La partie a déjà commencé', color: 'error' })
+      return
     }
     await setDoc(doc(sessionsRef, sessionToJoin.id), sessionToJoin)
   } finally {
@@ -179,6 +183,10 @@ const join = async (sessionId: string) => {
     })
     if (session.players.length >= 4) {
       session.isFull = true
+    }
+    if (session.isStarted) {
+      notifier({ content: 'La partie a déjà commencé', color: 'error' })
+      return
     }
     await setDoc(sessionRef, session)
   } finally {
