@@ -9,6 +9,7 @@ export {Timestamp};
 export type CardUser = {
   id: string
   username: string
+  isReady: boolean
 }
 
 export const userConverter = {

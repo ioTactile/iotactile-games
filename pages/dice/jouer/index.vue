@@ -42,19 +42,19 @@
               Quitter
             </v-btn>
             <v-btn
-              v-if="!session.isFull"
+              v-if="!session.isFull && session.players[0].id !== user?.uid"
               color="tertiary"
               @click="join(session.id)"
             >
               {{ session.isFull ? 'Session pleine' : 'Rejoindre' }}
             </v-btn>
             <v-btn
-              v-if="session.players[0].uid === user.value?.uid && session.player.length > 1"
+              v-if="session.players.length > 1 && session.players[0].id === user?.uid"
               color="tertiary"
               variant="outlined"
-              @click="start(session.id)"
+              @click="goTo(session.id)"
             >
-              Lancer la partie
+              Rejoindre
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -86,29 +86,8 @@ const getUsername = async () => {
   return userDoc.data()?.username
 }
 
-// create a function where player 1 can start the game if there are at least 2 players
-const start = async (sessionId: string) => {
-  if (!user.value) { return }
-  loading.value = true
-
-  try {
-    const sessionRef = doc(sessionsRef, sessionId)
-    const sessionDoc = await getDoc(sessionRef)
-    const session = sessionDoc.data() as LocalDiceSessionType
-    if (!session) { return }
-    if (session.players[0].id !== user.value.uid) {
-      notifier({ content: 'Vous n\'êtes pas le créateur de cette session', color: 'error' })
-      return
-    }
-    if (session.players.length < 2) {
-      notifier({ content: 'Il faut au moins 2 joueurs pour commencer', color: 'error' })
-      return
-    }
-    session.isStarted = true
-    await setDoc(sessionRef, session)
-  } finally {
-    loading.value = false
-  }
+const goTo = (sessionId: string) => {
+  navigateTo(`/dice/jouer/${sessionId}`)
 }
 
 const create = async () => {
@@ -121,7 +100,7 @@ const create = async () => {
     const sessionsQuery = query(sessionsRef, where('isFull', '==', false))
     const sessionsSnapshot = await getDocs(sessionsQuery)
     const sessions = sessionsSnapshot.docs.map(doc => doc.data() as LocalDiceSessionType)
-    const session = sessions.find(session => session.players.find(player => player.id === user.value.uid))
+    const session = sessions.find(session => session.players.find(player => player.id === user.value?.uid))
     if (session) {
       notifier({ content: 'Vous êtes déjà dans une session', color: 'error' })
       return
@@ -131,7 +110,8 @@ const create = async () => {
       id: id.value,
       players: [{
         id: user.value.uid,
-        username
+        username,
+        isReady: false
       }],
       isFull: false,
       isStarted: false,
@@ -152,7 +132,7 @@ const joinRandomSession = async () => {
     const sessionsQuery = query(sessionsRef, where('isFull', '==', false))
     const sessionsSnapshot = await getDocs(sessionsQuery)
     const sessions = sessionsSnapshot.docs.map(doc => doc.data() as LocalDiceSessionType)
-    const session = sessions.find(session => session.players.find(player => player.id === user.value.uid))
+    const session = sessions.find(session => session.players.find(player => player.id === user.value?.uid))
     if (session) {
       notifier({ content: 'Vous êtes déjà dans une session', color: 'error' })
       return
@@ -164,7 +144,8 @@ const joinRandomSession = async () => {
     const sessionToJoin = sessions[Math.floor(Math.random() * sessions.length)]
     sessionToJoin.players.push({
       id: user.value.uid,
-      username
+      username,
+      isReady: false
     })
     if (sessionToJoin.players.length >= 4) {
       sessionToJoin.isFull = true
@@ -172,6 +153,7 @@ const joinRandomSession = async () => {
     await setDoc(doc(sessionsRef, sessionToJoin.id), sessionToJoin)
   } finally {
     loading.value = false
+    navigateTo(`/dice/jouer/${sessionToJoin.id}`)
   }
 }
 
@@ -185,14 +167,15 @@ const join = async (sessionId: string) => {
     const session = sessionDoc.data() as LocalDiceSessionType
     const username = await getUsername()
     if (!session) { return }
-    if (session.players.find(player => player.id === user.value.uid)) {
+    if (session.players.find(player => player.id === user.value?.uid)) {
       notifier({ content: 'Vous êtes déjà dans cette session', color: 'error' })
       return
     }
     if (session.players.length >= 4) { return }
     session.players.push({
       id: user.value.uid,
-      username
+      username,
+      isReady: false
     })
     if (session.players.length >= 4) {
       session.isFull = true
@@ -200,6 +183,7 @@ const join = async (sessionId: string) => {
     await setDoc(sessionRef, session)
   } finally {
     loading.value = false
+    navigateTo(`/dice/jouer/${sessionId}`)
   }
 }
 
@@ -212,7 +196,7 @@ const leave = async (sessionId: string) => {
     const sessionDoc = await getDoc(sessionRef)
     const session = sessionDoc.data() as LocalDiceSessionType
     if (!session) { return }
-    session.players = session.players.filter(player => player.id !== user.value.uid)
+    session.players = session.players.filter(player => player.id !== user.value?.uid)
     if (session.players.length === 0) {
       await deleteDoc(sessionRef)
       return
