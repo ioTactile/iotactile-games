@@ -110,12 +110,13 @@ const create = async () => {
       id: id.value,
       players: [{
         id: user.value.uid,
-        username,
-        isReady: false
+        username
       }],
       isFull: false,
       isStarted: false,
       isFinished: false,
+      timer: 90,
+      counter: 13,
       creationDate: Timestamp.fromDate(date.value)
     })
   } finally {
@@ -126,6 +127,7 @@ const create = async () => {
 const quickJoin = async () => {
   if (!user.value) { return }
   loading.value = true
+  let sessionToJoin: LocalDiceSessionType | undefined
 
   try {
     const username = await getUsername()
@@ -141,12 +143,12 @@ const quickJoin = async () => {
       await create()
       return
     }
-    const sessionToJoin = sessions[Math.floor(Math.random() * sessions.length)]
+    sessionToJoin = sessions[Math.floor(Math.random() * sessions.length)]
     sessionToJoin.players.push({
       id: user.value.uid,
-      username,
-      isReady: false
+      username
     })
+    sessionToJoin.counter = sessionToJoin.counter + 13
     if (sessionToJoin.players.length >= 4) {
       sessionToJoin.isFull = true
     }
@@ -157,7 +159,7 @@ const quickJoin = async () => {
     await setDoc(doc(sessionsRef, sessionToJoin.id), sessionToJoin)
   } finally {
     loading.value = false
-    navigateTo(`/dice/jouer/${sessionToJoin.id}`)
+    if (sessionToJoin) { navigateTo(`/dice/jouer/${sessionToJoin.id}`) }
   }
 }
 
@@ -178,9 +180,9 @@ const join = async (sessionId: string) => {
     if (session.players.length >= 4) { return }
     session.players.push({
       id: user.value.uid,
-      username,
-      isReady: false
+      username
     })
+    session.counter = session.counter + 13
     if (session.players.length >= 4) {
       session.isFull = true
     }
@@ -205,6 +207,7 @@ const leave = async (sessionId: string) => {
     const session = sessionDoc.data() as LocalDiceSessionType
     if (!session) { return }
     session.players = session.players.filter(player => player.id !== user.value?.uid)
+    session.counter = session.counter - 13
     if (session.players.length === 0) {
       await deleteDoc(sessionRef)
       return

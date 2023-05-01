@@ -9,7 +9,6 @@ export {Timestamp};
 export type CardUser = {
   id: string
   username: string
-  isReady: boolean
 }
 
 export const userConverter = {
@@ -69,8 +68,43 @@ export type LvSession = {
 export type DiceSession = {
   id: string
   players: CardUser[]
+  messages?: {
+    username: string
+    message: string
+  }[]
+  scores?: DiceSessionScore
   isFull: boolean
   isStarted: boolean
   isFinished: boolean
+  timer: number
+  counter: number
   creationDate: Timestamp
+}
+
+export type DiceSessionScore = {
+  playerOne?: Scores
+  playerTwo?: Scores
+  playerThree?: Scores
+  playerFour?: Scores
+}
+
+export type Scores = {
+  aces?: number
+  two?: number
+  three?: number
+  four?: number
+  five?: number
+  six?: number
+  subtotal?: number
+  bonus?: number
+  upperTotal?: number
+  threeOfAKind?: number
+  fourOfAKind?: number
+  fullHouse?: number
+  smallStraight?: number
+  largeStraight?: number
+  chance?: number
+  dice?: number
+  lowerTotal?: number
+  total?: number
 }

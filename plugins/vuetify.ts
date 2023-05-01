@@ -21,7 +21,9 @@ const myTheme: ThemeDefinition = {
     buttonText: '#0d0d0d', // black
     // Events
     error: '#ed4337', // red
-    success: '#4caf50' // green
+    success: '#4caf50', // green
+    // Dice
+    dicePrimary: '#fffcb9' // yellow
   }
 }
 
