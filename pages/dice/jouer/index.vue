@@ -77,6 +77,7 @@ const date = ref(new Date(Date.now()))
 const loading = ref(false)
 const sessionsRef = collection(db, 'diceSessions').withConverter(diceSessionConverter)
 const sessions = useCollection(collection(db, 'diceSessions'))
+const playerTurnRef = collection(db, 'diceSessionPlayerTurn')
 
 const getUsername = async () => {
   if (!user.value) { return }
@@ -116,8 +117,15 @@ const create = async () => {
       isStarted: false,
       isFinished: false,
       timer: 90,
-      counter: 13,
+      remainingTurns: 13,
+      playerTries: 3,
+      diceOnBoard: [],
+      diceOnHand: [],
       creationDate: Timestamp.fromDate(date.value)
+    })
+    await setDoc(doc(playerTurnRef, id.value), {
+      id: id.value,
+      playerId: user.value.uid
     })
   } finally {
     reset()
@@ -148,7 +156,7 @@ const quickJoin = async () => {
       id: user.value.uid,
       username
     })
-    sessionToJoin.counter = sessionToJoin.counter + 13
+    sessionToJoin.remainingTurns = sessionToJoin.remainingTurns + 13
     if (sessionToJoin.players.length >= 4) {
       sessionToJoin.isFull = true
     }
@@ -182,7 +190,7 @@ const join = async (sessionId: string) => {
       id: user.value.uid,
       username
     })
-    session.counter = session.counter + 13
+    session.remainingTurns = session.remainingTurns + 13
     if (session.players.length >= 4) {
       session.isFull = true
     }
@@ -207,7 +215,7 @@ const leave = async (sessionId: string) => {
     const session = sessionDoc.data() as LocalDiceSessionType
     if (!session) { return }
     session.players = session.players.filter(player => player.id !== user.value?.uid)
-    session.counter = session.counter - 13
+    session.remainingTurns = session.remainingTurns - 13
     if (session.players.length === 0) {
       await deleteDoc(sessionRef)
       return

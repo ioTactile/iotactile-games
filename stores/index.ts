@@ -3,7 +3,13 @@ import {
   QueryDocumentSnapshot,
   Timestamp as FirestoreTimestamp
 } from '@firebase/firestore'
-import { Timestamp, User, Word, LvSession, DiceSession } from '~/functions/src/types'
+import {
+  Timestamp,
+  User, Word,
+  LvSession,
+  DiceSession,
+  DiceSessionPlayerTurn
+} from '~/functions/src/types'
 
 type NestedTypeMapper<T, I, O> = T extends I
   ? O
@@ -90,6 +96,26 @@ export const diceSessionConverter: FirestoreDataConverter<LocalDiceSessionType> 
       ...data,
       id: snapshot.id,
       creationDate: data.creationDate.toDate()
+    }
+  }
+}
+
+type DatabaseDiceSessionPlayerTurnType = NestedTypeMapper<
+  DiceSessionPlayerTurn,
+  Timestamp,
+  FirestoreTimestamp
+>
+export type LocalDiceSessionPlayerTurnType = NestedTypeMapper<DiceSessionPlayerTurn, Timestamp, Date>
+export const diceSessionPlayerTurnConverter: FirestoreDataConverter<LocalDiceSessionPlayerTurnType> = {
+  toFirestore: item => item,
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot<DatabaseDiceSessionPlayerTurnType>,
+    options
+  ) => {
+    const data = snapshot.data(options)
+    return {
+      ...data,
+      id: snapshot.id
     }
   }
 }

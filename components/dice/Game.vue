@@ -11,13 +11,17 @@
           </v-col>
           <v-col cols="6" class="right-side-container pb-0">
             <v-row class="h-100">
-              <v-col cols="10" />
+              <v-col cols="10">
+                <v-btn v-for="(dice, i) in session.diceOnBoard" :key="i" class="dice-container" @click="addDice(i)">
+                  {{ dice }}
+                </v-btn>
+              </v-col>
               <v-col cols="2">
                 <div class="timer-container">
-                  <span class="timer-content bg-dicePrimary text-h5 px-2">{{ timer(session.timer) }}</span>
+                  <span class="timer-content bg-dicePrimary text-h5 px-2">{{ timeLeft }}</span>
                 </div>
                 <div class="cup-one-container">
-                  <v-btn :disabled="cupOne" @click="rollOne">
+                  <v-btn :disabled="!isPlayerTurn" :style="isPlayerTurn ? '': 'opacity: 30%'" @click="roll('one')">
                     <v-img
                       src="/cup-no-bg.png"
                       height="80"
@@ -26,19 +30,19 @@
                   </v-btn>
                 </div>
                 <div class="cup-two-container">
-                  <v-btn :disabled="cupTwo" @click="rollTwo">
+                  <v-btn :disabled="!isPlayerTurn" :style="isPlayerTurn ? '': 'opacity: 30%'" @click="roll('two')">
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-three-container">
-                  <v-btn :disabled="cupThree" @click="rollThree">
+                  <v-btn :disabled="!isPlayerTurn" :style="isPlayerTurn ? '': 'opacity: 30%'" @click="roll('three')">
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
               </v-col>
               <v-col cols="12" align-self="end" class="pl-0 pb-0">
                 <div class="d-flex align-center bg-dicePrimary dice-plate-container">
-                  <v-btn v-for="(dice, i) in dices" :key="i" class="dice-container" @click="removeDice(i)">
+                  <v-btn v-for="(dice, i) in session.diceOnHand" :key="i" class="dice-container" @click="removeDice(i)">
                     {{ dice }}
                   </v-btn>
                 </div>
@@ -96,76 +100,102 @@
 </template>
 
 <script lang="ts" setup async>
-import { storeToRefs } from 'pinia'
-import { collection, doc, setDoc, arrayUnion } from 'firebase/firestore'
+import { collection, doc, setDoc, arrayUnion, onSnapshot } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
-import { diceSessionConverter } from '~/stores'
-import { useDicesStore } from '~/stores/dices'
+import { diceSessionConverter, diceSessionPlayerTurnConverter } from '~/stores'
 
 const db = useFirestore()
 const user = useCurrentUser()
 const route = useRoute()
 
-const sessionId = route.params.id
-const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(diceSessionConverter)
-
-const session = useDocument(doc(collection(db, 'diceSessions'), sessionId))
+const sessionRef = doc(db, 'diceSessions', route.params.id as string).withConverter(diceSessionConverter)
+const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
+const playerTurnRef = doc(db, 'diceSessionPlayerTurn', route.params.id as string).withConverter(diceSessionPlayerTurnConverter)
+const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id))
 
 const message = ref<string>('')
-const tries = ref<number>(3)
-console.log(tries.value)
-const cupOne = ref(true)
-const cupTwo = ref(true)
-const cupThree = ref(true)
-const dicesStoreRef = useDicesStore()
-const { dices, selectedDices } = storeToRefs(dicesStoreRef)
-const { addDice, removeDice, resetDices, getDices } = dicesStoreRef
-
-// how to construct a dice game ?
-// a player can roll 3 times max per round and can store dices between each roll
-
-// how to construct dice object structure ?
+const timeLeft = ref<string>('1:30')
+const remainingTime = ref<number>()
+const diceOnBoard = ref<number[]>([])
+const diceOnHand = ref<number[]>([])
 
 const startGame = async () => {
   if (!session.value) { return }
-  await setDoc(sessionRef, { isStarted: true }, { merge: true })
-
-  while (session.value.counter > 0) {
-    await setDoc(sessionRef, { counter: session.value.counter - 1 }, { merge: true })
-  }
+  await setDoc(sessionRef, {
+    isStarted: true
+  }, { merge: true })
+  startTimer()
 }
 
-const rollOne = () => {
+const startTimer = () => {
+  remainingTime.value = 90
+  setTimeout(() => {
+    setInterval(() => {
+      if (remainingTime.value === 0) {
+        clearInterval()
+        return
+      }
+      remainingTime.value--
+      const minutes = Math.floor(remainingTime.value / 60)
+      const seconds = remainingTime.value % 60
+      timeLeft.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+    }, 1000)
+  }, 1000)
+}
+
+onSnapshot(playerTurnRef, () => {
+  startTimer()
+})
+
+const isPlayerTurn = computed(() => {
+  if (!playerTurn.value) { return }
+  if (playerTurn.value.playerId !== user.value.uid) { return false }
+  return true
+})
+
+const roll = (turn: string) => {
+  if (!session.value) { return }
+
+  diceOnBoard.value = []
+
+  const dices = [1, 2, 3, 4, 5, 6]
+  // throw dices 5 times
   for (let i = 0; i < 5; i++) {
-    addDice(Math.floor(Math.random() * 6) + 1)
+    const dice = dices[Math.floor(Math.random() * dices.length)]
+    diceOnBoard.value.push(dice)
   }
-  cupOne.value = false
-  tries.value--
-  return dices
+  const diceSession = session.value
+
+  if (turn === 'one') {
+    diceSession.diceOnBoard = diceOnBoard.value
+  } else if (turn === 'two') {
+    diceSession.diceOnBoard = diceOnBoard.value
+  } else if (turn === 'three') {
+    diceSession.diceOnBoard = diceOnBoard.value
+  }
+  setDoc(sessionRef, diceSession)
 }
 
-const rollTwo = () => {
-  for (let i = 0; i < 5; i++) {
-    addDice(Math.floor(Math.random() * 6) + 1)
-  }
-  cupOne.value = false
-  tries.value--
-  return dices
+const removeDice = (index: number) => {
+  if (!session.value) { return }
+  const diceSession = session.value
+  diceOnBoard.value.splice(index, 1)
+  diceSession.diceOnHand.splice(index, 1)
+  setDoc(sessionRef, diceSession, { merge: true })
+  diceOnHand.value.push(diceSession.diceOnBoard[index])
+  diceSession.diceOnBoard = diceOnBoard.value
+  setDoc(sessionRef, diceSession, { merge: true })
 }
 
-const rollThree = () => {
-  for (let i = 0; i < 5; i++) {
-    addDice(Math.floor(Math.random() * 6) + 1)
-  }
-  cupOne.value = false
-  tries.value--
-  return dices
-}
-
-const timer = (time: number) => {
-  const minutes = Math.floor(time / 60)
-  const seconds = time % 60
-  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+const addDice = (index: number) => {
+  if (!session.value) { return }
+  const diceSession = session.value
+  diceOnHand.value.push(diceSession.diceOnBoard[index])
+  diceSession.diceOnHand.push(diceOnBoard.value[index])
+  setDoc(sessionRef, diceSession, { merge: true })
+  diceOnBoard.value.splice(index, 1)
+  diceSession.diceOnBoard = diceOnBoard.value
+  setDoc(sessionRef, diceSession, { merge: true })
 }
 
 const sendMessage = async () => {
