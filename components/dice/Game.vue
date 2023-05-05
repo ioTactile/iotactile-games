@@ -21,21 +21,17 @@
                   <span class="timer-content bg-dicePrimary text-h5 px-2">{{ timeLeft }}</span>
                 </div>
                 <div class="cup-one-container">
-                  <v-btn :disabled="!isPlayerTurn" :style="isPlayerTurn ? '': 'opacity: 30%'" @click="roll('one')">
-                    <v-img
-                      src="/cup-no-bg.png"
-                      height="80"
-                      width="50"
-                    />
+                  <v-btn :disabled="!isPlayerTurn && session.playerTries === 2" :style="(!isPlayerTurn && session.playerTries === 2) ? 'opacity: 30%': ''" @click="rollOne">
+                    <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-two-container">
-                  <v-btn :disabled="!isPlayerTurn" :style="isPlayerTurn ? '': 'opacity: 30%'" @click="roll('two')">
+                  <v-btn :disabled="!isPlayerTurn && session.playerTries === 1" :style="(!isPlayerTurn && session.playerTries === 1) ? 'opacity: 30%': ''" @click="rollTwo">
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-three-container">
-                  <v-btn :disabled="!isPlayerTurn" :style="isPlayerTurn ? '': 'opacity: 30%'" @click="roll('three')">
+                  <v-btn :disabled="!isPlayerTurn && session.playerTries === 0" :style="(!isPlayerTurn && session.playerTries === 0) ? 'opacity: 30%': ''" @click="rollThree">
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
@@ -131,10 +127,7 @@ const startTimer = () => {
   remainingTime.value = 90
   setTimeout(() => {
     setInterval(() => {
-      if (remainingTime.value === 0) {
-        clearInterval()
-        return
-      }
+      if (remainingTime.value === 0 || !remainingTime.value) { return }
       remainingTime.value--
       const minutes = Math.floor(remainingTime.value / 60)
       const seconds = remainingTime.value % 60
@@ -149,41 +142,74 @@ onSnapshot(playerTurnRef, () => {
 
 const isPlayerTurn = computed(() => {
   if (!playerTurn.value) { return }
-  if (playerTurn.value.playerId !== user.value.uid) { return false }
+  if (playerTurn.value.playerId !== user.value?.uid) { return false }
   return true
 })
 
-const roll = (turn: string) => {
-  if (!session.value) { return }
+const trueRandom = () => {
+  return Math.floor(Math.random() * 6) + 1
+}
 
+const rollOne = () => {
+  if (!session.value) { return }
   diceOnBoard.value = []
 
-  const dices = [1, 2, 3, 4, 5, 6]
-  // throw dices 5 times
   for (let i = 0; i < 5; i++) {
-    const dice = dices[Math.floor(Math.random() * dices.length)]
+    const dice = trueRandom()
     diceOnBoard.value.push(dice)
   }
-  const diceSession = session.value
 
-  if (turn === 'one') {
-    diceSession.diceOnBoard = diceOnBoard.value
-  } else if (turn === 'two') {
-    diceSession.diceOnBoard = diceOnBoard.value
-  } else if (turn === 'three') {
-    diceSession.diceOnBoard = diceOnBoard.value
+  const diceSession = session.value
+  diceSession.playerTries = 2
+  setDoc(sessionRef, diceSession, { merge: true })
+}
+
+const rollTwo = () => {
+  if (!diceOnBoard.value.length) { return }
+  if (!session.value) { return }
+  let diceSession = session.value
+  const diceOnBoardLength = diceOnBoard.value.length
+  diceOnBoard.value = []
+  diceSession.diceOnBoard = []
+  setDoc(sessionRef, diceSession, { merge: true })
+
+  for (let i = 0; i < diceOnBoardLength; i++) {
+    const dice = trueRandom()
+    diceOnBoard.value.push(dice)
   }
-  setDoc(sessionRef, diceSession)
+
+  diceSession = session.value
+  diceSession.playerTries = 1
+  setDoc(sessionRef, diceSession, { merge: true })
+}
+
+const rollThree = () => {
+  if (!diceOnBoard.value.length) { return }
+  if (!session.value) { return }
+  let diceSession = session.value
+  const diceOnBoardLength = diceOnBoard.value.length
+  diceOnBoard.value = []
+  diceSession.diceOnBoard = []
+  setDoc(sessionRef, diceSession, { merge: true })
+
+  for (let i = 0; i < diceOnBoardLength; i++) {
+    const dice = trueRandom()
+    diceOnBoard.value.push(dice)
+  }
+
+  diceSession = session.value
+  diceSession.playerTries = 0
+  setDoc(sessionRef, diceSession, { merge: true })
 }
 
 const removeDice = (index: number) => {
   if (!session.value) { return }
   const diceSession = session.value
-  diceOnBoard.value.splice(index, 1)
-  diceSession.diceOnHand.splice(index, 1)
+  diceOnBoard.value.push(diceSession.diceOnHand[index])
+  diceSession.diceOnBoard.push(diceOnHand.value[index])
   setDoc(sessionRef, diceSession, { merge: true })
-  diceOnHand.value.push(diceSession.diceOnBoard[index])
-  diceSession.diceOnBoard = diceOnBoard.value
+  diceOnHand.value.splice(index, 1)
+  diceSession.diceOnHand.splice(index, 1)
   setDoc(sessionRef, diceSession, { merge: true })
 }
 
@@ -194,7 +220,7 @@ const addDice = (index: number) => {
   diceSession.diceOnHand.push(diceOnBoard.value[index])
   setDoc(sessionRef, diceSession, { merge: true })
   diceOnBoard.value.splice(index, 1)
-  diceSession.diceOnBoard = diceOnBoard.value
+  diceSession.diceOnBoard.splice(index, 1)
   setDoc(sessionRef, diceSession, { merge: true })
 }
 
