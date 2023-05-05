@@ -151,6 +151,8 @@ import { useFirestore, useDocument } from 'vuefire'
 const db = useFirestore()
 const route = useRoute()
 
+// i want to check all the combinations of the diceOnBoard and diceOnHand and return all possible scores for each combination
+
 const scoresRef = doc(db, 'diceSessionScores', route.params.id as string)
 const scores = useDocument(doc(collection(db, 'diceSessionScores'), scoresRef.id))
 

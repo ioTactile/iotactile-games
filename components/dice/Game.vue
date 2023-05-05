@@ -7,7 +7,7 @@
             <dice-players :players="session.players" />
           </v-col>
           <v-col cols="6">
-            <dice-board />
+            <dice-board :dice-on-hand="session.diceOnHand" :dice-on-board="session.diceOnBoard" />
           </v-col>
           <v-col cols="6" class="right-side-container pb-0">
             <v-row class="h-100">
@@ -154,8 +154,6 @@ const rollOne = () => {
   if (!session.value) { return }
   if (session.value.playerTries < 3) { return }
 
-  console.log('rollOne')
-
   diceOnBoard.value = []
 
   for (let i = 0; i < 5; i++) {
@@ -173,8 +171,6 @@ const rollTwo = () => {
   if (!session.value) { return }
   if (session.value.playerTries < 2) { return }
   if (!diceOnBoard.value.length) { return }
-
-  console.log('rollTwo')
 
   let diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
