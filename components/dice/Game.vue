@@ -21,17 +21,17 @@
                   <span class="timer-content bg-dicePrimary text-h5 px-2">{{ timeLeft }}</span>
                 </div>
                 <div class="cup-one-container">
-                  <v-btn :disabled="!isPlayerTurn && session.playerTries === 2" :style="(!isPlayerTurn && session.playerTries === 2) ? 'opacity: 30%': ''" @click="rollOne">
+                  <v-btn :disabled="!isPlayerTurn && session.playerTries < 3" :style="session.playerTries < 3 ? 'opacity: 30%' : ''" @click="rollOne">
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-two-container">
-                  <v-btn :disabled="!isPlayerTurn && session.playerTries === 1" :style="(!isPlayerTurn && session.playerTries === 1) ? 'opacity: 30%': ''" @click="rollTwo">
+                  <v-btn :disabled="!isPlayerTurn && session.playerTries < 2" :style="session.playerTries < 2 ? 'opacity: 30%' : ''" @click="rollTwo">
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-three-container">
-                  <v-btn :disabled="!isPlayerTurn && session.playerTries === 0" :style="(!isPlayerTurn && session.playerTries === 0) ? 'opacity: 30%': ''" @click="rollThree">
+                  <v-btn :disabled="!isPlayerTurn && session.playerTries < 1" :style="session.playerTries < 1 ? 'opacity: 30%' : ''" @click="rollThree">
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
@@ -152,6 +152,10 @@ const trueRandom = () => {
 
 const rollOne = () => {
   if (!session.value) { return }
+  if (session.value.playerTries < 3) { return }
+
+  console.log('rollOne')
+
   diceOnBoard.value = []
 
   for (let i = 0; i < 5; i++) {
@@ -160,13 +164,18 @@ const rollOne = () => {
   }
 
   const diceSession = session.value
+  diceSession.diceOnBoard = diceOnBoard.value
   diceSession.playerTries = 2
   setDoc(sessionRef, diceSession, { merge: true })
 }
 
 const rollTwo = () => {
-  if (!diceOnBoard.value.length) { return }
   if (!session.value) { return }
+  if (session.value.playerTries < 2) { return }
+  if (!diceOnBoard.value.length) { return }
+
+  console.log('rollTwo')
+
   let diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
@@ -179,13 +188,16 @@ const rollTwo = () => {
   }
 
   diceSession = session.value
+  diceSession.diceOnBoard = diceOnBoard.value
   diceSession.playerTries = 1
   setDoc(sessionRef, diceSession, { merge: true })
 }
 
 const rollThree = () => {
-  if (!diceOnBoard.value.length) { return }
   if (!session.value) { return }
+  if (session.value.playerTries < 1) { return }
+  if (!diceOnBoard.value.length) { return }
+
   let diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
@@ -198,6 +210,7 @@ const rollThree = () => {
   }
 
   diceSession = session.value
+  diceSession.diceOnBoard = diceOnBoard.value
   diceSession.playerTries = 0
   setDoc(sessionRef, diceSession, { merge: true })
 }
