@@ -7,7 +7,7 @@
             <dice-players :players="session.players" />
           </v-col>
           <v-col cols="6">
-            <dice-board :scores="session.players.scores" />
+            <dice-board />
           </v-col>
           <v-col cols="6" class="right-side-container pb-0">
             <v-row class="h-100">

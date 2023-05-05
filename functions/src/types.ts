@@ -72,10 +72,10 @@ export type DiceSession = {
     username: string
     message: string
   }[]
-  scores?: DiceSessionScore
   isFull: boolean
   isStarted: boolean
   isFinished: boolean
+  timer: number
   remainingTurns: number
   diceOnBoard: number[]
   diceOnHand: number[]
@@ -89,29 +89,41 @@ export type DiceSessionPlayerTurn = {
 }
 
 export type DiceSessionScore = {
-  playerOne: Scores
-  playerTwo: Scores
-  playerThree?: Scores
-  playerFour?: Scores
+  sessionId: string
+  playerOne: {
+    id: string
+    scores: Scores
+  }
+  playerTwo: {
+    id: string
+    scores: Scores
+  }
+  playerThree?: {
+    id: string
+    scores: Scores
+  }
+  playerFour?: {
+    id: string
+    scores: Scores
+  }
 }
 
 export type Scores = {
-  aces: number|null
-  two: number|null
-  three: number|null
-  four: number|null
-  five: number|null
-  six: number|null
-  subtotal: number|null
-  bonus: number|null
-  upperTotal: number|null
-  threeOfAKind: number|null
-  fourOfAKind: number|null
-  fullHouse: number|null
-  smallStraight: number|null
-  largeStraight: number|null
-  chance: number|null
-  dice: number|null
-  lowerTotal: number|null
-  total: number|null
+  one: number
+  two: number
+  three: number
+  four: number
+  five: number
+  six: number
+  subtotal: number
+  upperTotal: number
+  threeOfAKind: number
+  fourOfAKind: number
+  fullHouse: number
+  smallStraight: number
+  largeStraight: number
+  chance: number
+  dice: number
+  lowerTotal: number
+  total: number
 }

@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Timestamp, collection, doc, setDoc, getDoc, getDocs, deleteDoc, query, where } from 'firebase/firestore'
+import { Timestamp, collection, doc, setDoc, getDoc, getDocs, deleteDoc, deleteField, updateDoc, query, where } from 'firebase/firestore'
 import { useFirestore, useCollection } from 'vuefire'
 import { diceSessionConverter, LocalDiceSessionType } from '~/stores'
 
@@ -78,6 +78,7 @@ const loading = ref(false)
 const sessionsRef = collection(db, 'diceSessions').withConverter(diceSessionConverter)
 const sessions = useCollection(collection(db, 'diceSessions'))
 const playerTurnRef = collection(db, 'diceSessionPlayerTurn')
+const scoresRef = collection(db, 'diceSessionScores')
 
 const getUsername = async () => {
   if (!user.value) { return }
@@ -85,6 +86,32 @@ const getUsername = async () => {
   const userDoc = await getDoc(userRef)
   if (!userDoc.exists()) { return }
   return userDoc.data()?.username
+}
+
+const initScores = () => {
+  if (!user.value) { return }
+  const scores = {
+    id: user.value.uid,
+    one: 0,
+    two: 0,
+    three: 0,
+    four: 0,
+    five: 0,
+    six: 0,
+    subtotal: 0,
+    upperTotal: 0,
+    threeOfAKind: 0,
+    fourOfAKind: 0,
+    fullHouse: 0,
+    smallStraight: 0,
+    largeStraight: 0,
+    chance: 0,
+    dice: 0,
+    lowerTotal: 0,
+    total: 0
+  }
+
+  return scores
 }
 
 const goTo = (sessionId: string) => {
@@ -127,6 +154,10 @@ const create = async () => {
       id: id.value,
       playerId: user.value.uid
     })
+    await setDoc(doc(scoresRef, id.value), {
+      id: id.value,
+      playerOne: initScores()
+    })
   } finally {
     reset()
   }
@@ -165,6 +196,13 @@ const quickJoin = async () => {
       return
     }
     await setDoc(doc(sessionsRef, sessionToJoin.id), sessionToJoin)
+    if (sessionToJoin.players.length === 1) {
+      await setDoc(doc(scoresRef, sessionToJoin.id), { playerTwo: initScores() }, { merge: true })
+    } else if (sessionToJoin.players.length === 2) {
+      await setDoc(doc(scoresRef, sessionToJoin.id), { playerThree: initScores() }, { merge: true })
+    } else if (sessionToJoin.players.length === 3) {
+      await setDoc(doc(scoresRef, sessionToJoin.id), { playerFour: initScores() }, { merge: true })
+    }
   } finally {
     loading.value = false
     if (sessionToJoin) { navigateTo(`/dice/jouer/${sessionToJoin.id}`) }
@@ -199,6 +237,13 @@ const join = async (sessionId: string) => {
       return
     }
     await setDoc(sessionRef, session)
+    if (session.players.length === 1) {
+      await setDoc(doc(scoresRef, session.id), { playerTwo: initScores() }, { merge: true })
+    } else if (session.players.length === 2) {
+      await setDoc(doc(scoresRef, session.id), { playerThree: initScores() }, { merge: true })
+    } else if (session.players.length === 3) {
+      await setDoc(doc(scoresRef, session.id), { playerFour: initScores() }, { merge: true })
+    }
   } finally {
     loading.value = false
     navigateTo(`/dice/jouer/${sessionId}`)
@@ -213,11 +258,35 @@ const leave = async (sessionId: string) => {
     const sessionRef = doc(sessionsRef, sessionId)
     const sessionDoc = await getDoc(sessionRef)
     const session = sessionDoc.data() as LocalDiceSessionType
+    const playerTurnRef = doc(collection(db, 'diceSessionPlayerTurn'), sessionId)
+    const scoresRef = doc(collection(db, 'diceSessionScores'), sessionId)
+    const scoresDoc = await getDoc(scoresRef)
+    const scores = scoresDoc.data()
     if (!session) { return }
+    if (scores.playerOne.id === user.value.uid) {
+      await updateDoc(scoresRef, {
+        playerOne: deleteField()
+      })
+    } else if (scores.playerTwo.id === user.value.uid) {
+      await updateDoc(scoresRef, {
+        playerTwo: deleteField()
+      })
+    } else if (scores.playerThree.id === user.value.uid) {
+      await updateDoc(scoresRef, {
+        playerThree: deleteField()
+      })
+    } else if (scores.playerFour.id === user.value.uid) {
+      await updateDoc(scoresRef, {
+        playerFour: deleteField()
+      })
+    }
     session.players = session.players.filter(player => player.id !== user.value?.uid)
     session.remainingTurns = session.remainingTurns - 13
+
     if (session.players.length === 0) {
       await deleteDoc(sessionRef)
+      await deleteDoc(playerTurnRef)
+      await deleteDoc(scoresRef)
       return
     }
     if (session.players.length < 4) {
