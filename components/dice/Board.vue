@@ -674,37 +674,30 @@ const isDices = computed(() => {
 // Inputs value
 
 const oneInput = computed(() => {
-  if (!session.value) { return 0 }
-  const ones = dices.value.filter(dice => dice.value === 1)
-  return ones.reduce((acc, dice) => acc + dice.value, 0)
+  const ones = dices.value.filter(dice => dice === 1)
+  return ones.reduce((acc, dice) => acc + dice, 0)
 })
 const twoInput = computed(() => {
-  if (!session.value) { return 0 }
-  const twos = dices.value.filter(dice => dice.value === 2)
-  return twos.reduce((acc, dice) => acc + dice.value, 0)
+  const twos = dices.value.filter(dice => dice === 2)
+  return twos.reduce((acc, dice) => acc + dice, 0)
 })
 const threeInput = computed(() => {
-  if (!session.value) { return 0 }
-  const threes = dices.value.filter(dice => dice.value === 3)
-  return threes.reduce((acc, dice) => acc + dice.value, 0)
+  const threes = dices.value.filter(dice => dice === 3)
+  return threes.reduce((acc, dice) => acc + dice, 0)
 })
 const fourInput = computed(() => {
-  if (!session.value) { return 0 }
-  const fours = dices.value.filter(dice => dice.value === 4)
-  return fours.reduce((acc, dice) => acc + dice.value, 0)
+  const fours = dices.value.filter(dice => dice === 4)
+  return fours.reduce((acc, dice) => acc + dice, 0)
 })
 const fiveInput = computed(() => {
-  if (!session.value) { return 0 }
-  const fives = dices.value.filter(dice => dice.value === 5)
-  return fives.reduce((acc, dice) => acc + dice.value, 0)
+  const fives = dices.value.filter(dice => dice === 5)
+  return fives.reduce((acc, dice) => acc + dice, 0)
 })
 const sixInput = computed(() => {
-  if (!session.value) { return 0 }
-  const sixes = dices.value.filter(dice => dice.value === 6)
-  return sixes.reduce((acc, dice) => acc + dice.value, 0)
+  const sixes = dices.value.filter(dice => dice === 6)
+  return sixes.reduce((acc, dice) => acc + dice, 0)
 })
 const threeOfAKindInput = computed(() => {
-  if (!session.value) { return 0 }
   let ThreeOfAKind = false
   const newDices = dices.value
   for (let i = 0; newDices.length; i++) {
@@ -714,13 +707,12 @@ const threeOfAKindInput = computed(() => {
     }
   }
   if (ThreeOfAKind) {
-    return dices.value.reduce((acc, dice) => acc + dice.value, 0)
+    return dices.value.reduce((acc, dice) => acc + dice, 0)
   } else {
     return 0
   }
 })
 const fourOfAKindInput = computed(() => {
-  if (!session.value) { return 0 }
   let FourOfAKind = false
   const newDices = dices.value
   for (let i = 0; newDices.length; i++) {
@@ -730,13 +722,12 @@ const fourOfAKindInput = computed(() => {
     }
   }
   if (FourOfAKind) {
-    return dices.value.reduce((acc, dice) => acc + dice.value, 0)
+    return dices.value.reduce((acc, dice) => acc + dice, 0)
   } else {
     return 0
   }
 })
 const fullHouseInput = computed(() => {
-  if (!session.value) { return 0 }
   const newDices = dices.value.sort()
   if ((newDices[0] === newDices[1] && newDices[0] === newDices[2] && newDices[1] === newDices[2] && newDices[3] === newDices[4]) ||
     (newDices[0] === newDices[1] && newDices[2] === newDices[3] && newDices[2] === newDices[4] && newDices[3] === newDices[4])) {
@@ -746,7 +737,6 @@ const fullHouseInput = computed(() => {
   }
 })
 const smallStraightInput = computed(() => {
-  if (!session.value) { return 0 }
   dices.value.sort()
   if (dices.value.includes(1) && dices.value.includes(2) && dices.value.includes(3) && dices.value.includes(4)) {
     return 30
@@ -759,7 +749,6 @@ const smallStraightInput = computed(() => {
   }
 })
 const largeStraightInput = computed(() => {
-  if (!session.value) { return 0 }
   dices.value.sort()
   if (dices.value.includes(1) && dices.value.includes(2) && dices.value.includes(3) && dices.value.includes(4) && dices.value.includes(5)) {
     return 40
@@ -770,9 +759,8 @@ const largeStraightInput = computed(() => {
   }
 })
 const diceInput = computed(() => {
-  if (!session.value) { return 0 }
   const newDices = dices.value.filter((dice) => {
-    const newDices = dices.value.filter(d => d.value === dice.value)
+    const newDices = dices.value.filter(d => d === dice)
     return newDices.length === 5
   })
   if (newDices.length === 5) {
@@ -782,8 +770,7 @@ const diceInput = computed(() => {
   }
 })
 const chanceInput = computed(() => {
-  if (!session.value) { return 0 }
-  return dices.value.reduce((acc, dice) => acc + dice.value, 0)
+  return dices.value.reduce((acc, dice) => acc + dice, 0)
 })
 
 // Save Inputs value
