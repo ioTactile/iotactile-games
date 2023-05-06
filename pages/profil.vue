@@ -38,13 +38,7 @@
         </v-form>
       </v-card-text>
       <v-divider />
-      <v-card-title class="text-left">
-        <h2 class="text-h5">
-          Sortir du club
-        </h2>
-      </v-card-title>
       <v-card-text>
-        <span>Tu vas nous manquer, reviens vite!</span>
         <v-btn
           class="mt-2"
           block
@@ -63,7 +57,7 @@
           :disabled="loading"
           @click="deleteProfile"
         >
-          Supprimer votre compte
+          Supprimer ton compte
         </v-btn>
       </v-card-text>
     </v-card>
@@ -121,7 +115,7 @@ const updateProfile = async () => {
   } catch (error) {
     notifier({
       content:
-        'Une erreur est survenue lors de la mise à jour de vos informations',
+        'Une erreur est survenue lors de la mise à jour de tes informations',
       color: 'error',
       error
     })
@@ -142,7 +136,7 @@ const deleteProfile = async () => {
     await deleteUser(user.value)
   } catch (error) {
     notifier({
-      content: 'Une erreur est survenue lors de la suppression de votre compte',
+      content: 'Une erreur est survenue lors de la suppression de ton compte',
       color: 'error',
       error
     })

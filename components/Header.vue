@@ -36,29 +36,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useCurrentUser, useFirestore } from 'vuefire'
-import { doc, getDoc } from '@firebase/firestore'
-import { userConverter } from '~/stores'
+import { useFirestore, useCurrentUser } from 'vuefire'
 
 const user = useCurrentUser()
-const db = useFirestore()
-
 const login = ref(false)
 const drawer = ref(false)
 const group = ref(null)
-const username = ref('')
-
-onMounted(async () => {
-  if (!user.value) {
-    return
-  }
-  const userRef = doc(db, 'users', user.value.uid).withConverter(userConverter)
-  const userDoc = await getDoc(userRef)
-  const userFetched = userDoc.data()
-  if (userFetched) {
-    username.value = userFetched.username
-  }
-})
 
 watch(group, () => {
   drawer.value = false
