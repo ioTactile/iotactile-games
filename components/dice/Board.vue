@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="scores && user" rounded="0" class="card-container">
+  <v-card v-if="scores && user && session" rounded="0" class="card-container">
     <v-row>
       <v-col cols="6" class="pr-0">
         <div class="d-flex flex-column justify-center text-subtitle-2">
@@ -33,6 +33,7 @@
           <span class="bg-dicePrimary big-divider border-bottom text-center">A</span>
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.one"
+            :disabled="playerOne()"
             variant="plain"
             height="23"
             class="border-bottom"
@@ -44,6 +45,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.two"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -54,6 +56,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.three"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -64,6 +67,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.four"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -74,6 +78,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.five"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -84,6 +89,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.six"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -99,6 +105,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.threeOfAKind"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -109,6 +116,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.fourOfAKind"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -119,6 +127,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.fullHouse"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -129,6 +138,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.smallStraight"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -139,6 +149,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.largeStraight"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -149,6 +160,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.dice"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -159,6 +171,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnOne && !scores.playerOne.chance"
             variant="plain"
+            :disabled="playerOne()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -179,6 +192,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.one"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -189,6 +203,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.two"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -199,6 +214,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.three"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -209,6 +225,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.four"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -219,6 +236,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.five"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -229,6 +247,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.six"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -244,6 +263,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.threeOfAKindInput"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -254,6 +274,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.fourOfAKindInput"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -264,6 +285,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.fullHouseInput"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -274,6 +296,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.smallStraightInput"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -284,6 +307,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.largeStraightInput"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -294,6 +318,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.diceInput"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -304,6 +329,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.chanceInput"
             variant="plain"
+            :disabled="playerTwo()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -324,6 +350,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -334,6 +361,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.two"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -344,6 +372,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.three"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -354,6 +383,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.four"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -364,6 +394,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.five"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -374,6 +405,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.six"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -389,6 +421,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -399,6 +432,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -409,6 +443,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -419,6 +454,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -429,6 +465,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -439,6 +476,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -449,6 +487,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
             variant="plain"
+            :disabled="playerThree()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -469,6 +508,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.one"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -479,6 +519,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.two"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -489,6 +530,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.three"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -499,6 +541,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.four"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -509,6 +552,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.five"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -519,6 +563,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.six"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -534,6 +579,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.threeOfAKind"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -544,6 +590,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.fourOfAKind"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -554,6 +601,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.fullHouse"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -564,6 +612,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.smallStraight"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -574,6 +623,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.largeStraight"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -584,6 +634,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.dice"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -594,6 +645,7 @@
           <v-btn
             v-if="isDices && isPlayerTurnFour && !scores.playerFour.chance"
             variant="plain"
+            :disabled="playerFour()"
             height="23"
             class="border-bottom"
             rounded="0"
@@ -612,8 +664,8 @@
   </v-card>
 </template>
 
-<script lang="ts" setup>
-import { doc, collection, setDoc } from 'firebase/firestore'
+<script lang="ts" setup async>
+import { doc, collection, setDoc, getDoc } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { diceSessionConverter, diceSessionPlayerTurnConverter } from '~/stores'
 
@@ -630,32 +682,55 @@ const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), play
 const scoresRef = doc(db, 'diceSessionScores', route.params.id as string)
 const scores = useDocument(doc(collection(db, 'diceSessionScores'), scoresRef.id))
 
+const sessionDoc = await getDoc(sessionRef)
+const sessionDataPlayers = sessionDoc.data()?.players
+
 // Computed values
 
 const dices = computed(() => {
-  const dicesOnHand = session.value.diceOnHand
-  const dicesOnBoard = session.value.diceOnBoard
+  const dicesOnHand = session.value?.diceOnHand
+  const dicesOnBoard = session.value?.diceOnBoard
   const dicesItems = [...dicesOnHand, ...dicesOnBoard]
-  console.log(dicesItems)
   return dicesItems
 })
 
 const isPlayerTurnOne = computed(() => {
-  if (playerTurn.value?.playerId !== session.value?.players[0].id) { return false }
-  return true
+  if (playerTurn.value?.playerId === session.value?.players[0].id) { return true }
+  return false
 })
 const isPlayerTurnTwo = computed(() => {
-  if (playerTurn.value?.playerId !== session.value?.players[1].id) { return false }
-  return true
+  if (playerTurn.value?.playerId === session.value?.players[1].id) { return true }
+  return false
 })
 const isPlayerTurnThree = computed(() => {
-  if (playerTurn.value?.playerId !== session.value?.players[2].id) { return false }
-  return true
+  if (playerTurn.value?.playerId === session.value?.players[2].id) { return true }
+  return false
 })
 const isPlayerTurnFour = computed(() => {
-  if (playerTurn.value?.playerId !== session.value?.players[3].id) { return false }
-  return true
+  if (playerTurn.value?.playerId === session.value?.players[3].id) { return true }
+  return false
 })
+
+const playerOne = () => {
+  if ((sessionDataPlayers && user.value) && user.value?.uid === sessionDataPlayers[0].id) {
+    return false
+  }
+  return true
+}
+const playerTwo = () => {
+  if ((sessionDataPlayers && user.value) && user.value?.uid === sessionDataPlayers[1].id) {
+    return false
+  }
+  return true
+}
+const playerThree = () => {
+  if ((sessionDataPlayers && user.value) && user.value?.uid === sessionDataPlayers[2].id) { return false }
+  return true
+}
+const playerFour = () => {
+  if ((sessionDataPlayers && user.value) && user.value?.uid === sessionDataPlayers[3].id) { return false }
+  return true
+}
 
 const switchPlayerTurn = async () => {
   if (!session.value) { return }
@@ -699,13 +774,13 @@ const sixInput = computed(() => {
 })
 const threeOfAKindInput = computed(() => {
   let ThreeOfAKind = false
-  const newDices = dices.value
-  for (let i = 0; newDices.length; i++) {
-    if (newDices[i] === newDices[i + 1] && newDices[i] === newDices[i + 2]) {
-      ThreeOfAKind = true
-      break
-    }
+  const newDices = dices.value.sort()
+  if ((newDices[0] === newDices[1] && newDices[0] === newDices[2]) ||
+    (newDices[1] === newDices[2] && newDices[1] === newDices[3]) ||
+    (newDices[2] === newDices[3] && newDices[2] === newDices[4])) {
+    ThreeOfAKind = true
   }
+
   if (ThreeOfAKind) {
     return dices.value.reduce((acc, dice) => acc + dice, 0)
   } else {
@@ -714,12 +789,10 @@ const threeOfAKindInput = computed(() => {
 })
 const fourOfAKindInput = computed(() => {
   let FourOfAKind = false
-  const newDices = dices.value
-  for (let i = 0; newDices.length; i++) {
-    if (newDices[i] === newDices[i + 1] && newDices[i] === newDices[i + 2] && newDices[i] === newDices[i + 3]) {
-      FourOfAKind = true
-      break
-    }
+  const newDices = dices.value.sort()
+  if ((newDices[0] === newDices[1] && newDices[0] === newDices[2] && newDices[0] === newDices[3]) ||
+    (newDices[1] === newDices[2] && newDices[1] === newDices[3] && newDices[1] === newDices[4])) {
+    FourOfAKind = true
   }
   if (FourOfAKind) {
     return dices.value.reduce((acc, dice) => acc + dice, 0)
@@ -778,13 +851,13 @@ const chanceInput = computed(() => {
 const saveOneInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.one = oneInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.one = oneInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.one = oneInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.one = oneInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -794,13 +867,13 @@ const saveOneInput = async () => {
 const saveTwoInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.two = twoInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.two = twoInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.two = twoInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.two = twoInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -810,13 +883,13 @@ const saveTwoInput = async () => {
 const saveThreeInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.three = threeInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.three = threeInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.three = threeInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.three = threeInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -826,13 +899,13 @@ const saveThreeInput = async () => {
 const saveFourInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.four = fourInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.four = fourInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.four = fourInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.four = fourInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -842,13 +915,13 @@ const saveFourInput = async () => {
 const saveFiveInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.five = fiveInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.five = fiveInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.five = fiveInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.five = fiveInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -858,13 +931,13 @@ const saveFiveInput = async () => {
 const saveSixInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.six = sixInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.six = sixInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.six = sixInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.six = sixInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -874,13 +947,13 @@ const saveSixInput = async () => {
 const saveThreeOfAKindInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.threeOfAKind = threeOfAKindInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.threeOfAKind = threeOfAKindInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.threeOfAKind = threeOfAKindInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.threeOfAKind = threeOfAKindInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -890,13 +963,13 @@ const saveThreeOfAKindInput = async () => {
 const saveFourOfAKindInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.fourOfAKind = fourOfAKindInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.fourOfAKind = fourOfAKindInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.fourOfAKind = fourOfAKindInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.fourOfAKind = fourOfAKindInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -906,13 +979,13 @@ const saveFourOfAKindInput = async () => {
 const saveFullHouseInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.fullHouse = fullHouseInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.fullHouse = fullHouseInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.fullHouse = fullHouseInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.fullHouse = fullHouseInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -922,13 +995,13 @@ const saveFullHouseInput = async () => {
 const saveSmallStraightInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.smallStraight = smallStraightInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.smallStraight = smallStraightInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.smallStraight = smallStraightInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.smallStraight = smallStraightInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -938,13 +1011,13 @@ const saveSmallStraightInput = async () => {
 const saveLargeStraightInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.largeStraight = largeStraightInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.largeStraight = largeStraightInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.largeStraight = largeStraightInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.largeStraight = largeStraightInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -954,13 +1027,13 @@ const saveLargeStraightInput = async () => {
 const saveDiceInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.dice = diceInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.dice = diceInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.dice = diceInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.dice = diceInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
@@ -970,13 +1043,13 @@ const saveDiceInput = async () => {
 const saveChanceInput = async () => {
   if (!session.value) { return }
   if (!scores.value) { return }
-  if (user.value.uid === session.value.players[0].id) {
+  if (isPlayerTurnOne.value) {
     scores.value.playerOne.chance = chanceInput.value
-  } else if (user.value.uid === session.value.players[1].id) {
+  } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.chance = chanceInput.value
-  } else if (user.value.uid === session.value.players[2].id) {
+  } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.chance = chanceInput.value
-  } else if (user.value.uid === session.value.players[3].id) {
+  } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.chance = chanceInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })

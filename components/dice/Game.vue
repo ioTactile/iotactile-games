@@ -12,7 +12,7 @@
           <v-col cols="6" class="right-side-container pb-0">
             <v-row class="h-100">
               <v-col cols="10">
-                <v-btn v-for="(dice, i) in session.diceOnBoard" :key="i" class="dice-container" @click="addDice(i)">
+                <v-btn v-for="(dice, i) in session.diceOnBoard" :key="i" :disabled="isPlayerTurn" class="dice-container" @click="addDice(i)">
                   {{ dice }}
                 </v-btn>
               </v-col>
@@ -21,24 +21,24 @@
                   <span class="timer-content bg-dicePrimary text-h5 px-2">{{ timeLeft }}</span>
                 </div>
                 <div class="cup-one-container">
-                  <v-btn :disabled="!isPlayerTurn && session.playerTries < 3" :style="session.playerTries < 3 ? 'opacity: 30%' : ''" @click="rollOne">
+                  <v-btn :disabled="isPlayerTurnRollOne" :style="session.playerTries < 3 ? 'opacity: 30%' : ''" @click="rollOne">
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-two-container">
-                  <v-btn :disabled="!isPlayerTurn && session.playerTries < 2" :style="session.playerTries < 2 ? 'opacity: 30%' : ''" @click="rollTwo">
+                  <v-btn :disabled="isPlayerTurnRollTwo" :style="session.playerTries < 2 ? 'opacity: 30%' : ''" @click="rollTwo">
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-three-container">
-                  <v-btn :disabled="!isPlayerTurn && session.playerTries < 1" :style="session.playerTries < 1 ? 'opacity: 30%' : ''" @click="rollThree">
+                  <v-btn :disabled="isPlayerTurnRollThree" :style="session.playerTries < 1 ? 'opacity: 30%' : ''" @click="rollThree">
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
               </v-col>
               <v-col cols="12" align-self="end" class="pl-0 pb-0">
                 <div class="d-flex align-center bg-dicePrimary dice-plate-container">
-                  <v-btn v-for="(dice, i) in session.diceOnHand" :key="i" class="dice-container" @click="removeDice(i)">
+                  <v-btn v-for="(dice, i) in session.diceOnHand" :key="i" :disabled="isPlayerTurn" class="dice-container" @click="removeDice(i)">
                     {{ dice }}
                   </v-btn>
                 </div>
@@ -90,13 +90,16 @@
             </v-btn>
           </v-card>
         </div>
+        {{ isPlayerTurnRollOne ? 'true' : 'false' }}
+        {{ isPlayerTurnRollTwo ? 'true' : 'false' }}
+        {{ isPlayerTurnRollThree ? 'true' : 'false' }}
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script lang="ts" setup async>
-import { collection, doc, setDoc, arrayUnion, onSnapshot } from 'firebase/firestore'
+import { collection, doc, setDoc, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { diceSessionConverter, diceSessionPlayerTurnConverter } from '~/stores'
 
@@ -117,9 +120,7 @@ const diceOnHand = ref<number[]>([])
 
 const startGame = async () => {
   if (!session.value) { return }
-  await setDoc(sessionRef, {
-    isStarted: true
-  }, { merge: true })
+  await setDoc(sessionRef, { isStarted: true }, { merge: true })
   startTimer()
 }
 
@@ -134,13 +135,33 @@ const startTimer = () => {
   }, 1000)
 }
 
-onSnapshot(playerTurnRef, () => {
-  startTimer()
-})
+// onSnapshot(playerTurnRef, () => {
+//   startTimer()
+// })
 
+// const isGameStarted = computed(() => {
+//   if (session.value && session.value.isStarted) { return true }
+//   return false
+// })
 const isPlayerTurn = computed(() => {
-  if (playerTurn.value?.playerId !== user.value?.uid) { return false }
-  return true
+  if ((playerTurn.value && user.value) &&
+  playerTurn.value.playerId !== user.value.uid) { return true }
+  return false
+})
+const isPlayerTurnRollOne = computed(() => {
+  if (!playerTurn.value || !user.value || !session.value) { return }
+  if (playerTurn.value.playerId !== user.value.uid || session.value.playerTries < 3) { return true }
+  return false
+})
+const isPlayerTurnRollTwo = computed(() => {
+  if (!playerTurn.value || !user.value || !session.value) { return }
+  if (playerTurn.value.playerId !== user.value.uid || session.value.playerTries < 2) { return true }
+  return false
+})
+const isPlayerTurnRollThree = computed(() => {
+  if (!playerTurn.value || !user.value || !session.value) { return }
+  if (playerTurn.value.playerId !== user.value.uid || session.value.playerTries < 1) { return true }
+  return false
 })
 
 const trueRandom = () => {
@@ -304,7 +325,7 @@ const sendMessage = async () => {
   height: 60px;
   border: 2px solid rgba(0, 0, 0, .8);
   border-radius: 5px;
-  margin: 0 5px;
+  margin: 5px;
   background-color: rgba(255, 255, 255, .8);
   display: inline-block;
 }
