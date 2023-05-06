@@ -33,8 +33,11 @@
                 </div> -->
                 <div class="cup-one-container">
                   <v-btn
+                    class="d-flex justify-center align-center"
                     variant="text"
                     :disabled="isPlayerTurnRollOne"
+                    heigth="80px"
+                    width="50px"
                     @click="rollOne"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet un" height="80" width="50" />
@@ -42,8 +45,11 @@
                 </div>
                 <div class="cup-two-container">
                   <v-btn
+                    class="d-flex justify-center align-center"
                     variant="text"
                     :disabled="isPlayerTurnRollTwo"
+                    heigth="80px"
+                    width="50px"
                     @click="rollTwo"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet deux" height="80" width="50" />
@@ -51,8 +57,11 @@
                 </div>
                 <div class="cup-three-container">
                   <v-btn
+                    class="d-flex justify-center align-center"
                     variant="text"
                     :disabled="isPlayerTurnRollThree"
+                    heigth="80px"
+                    width="50px"
                     @click="rollThree"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet trois" height="80" width="50" />
@@ -404,7 +413,7 @@ const sendMessage = async () => {
   cursor: pointer;
   position: absolute;
   top: 120px;
-  right: 20px;
+  right: 30px;
   transform: rotate(15deg);
 }
 
@@ -412,7 +421,7 @@ const sendMessage = async () => {
   cursor: pointer;
   position: absolute;
   top: 200px;
-  right: 20px;
+  right: 30px;
   transform: rotate(15deg);
 }
 
@@ -420,7 +429,7 @@ const sendMessage = async () => {
   cursor: pointer;
   position: absolute;
   top: 280px;
-  right: 20px;
+  right: 30px;
   transform: rotate(15deg);
 }
 

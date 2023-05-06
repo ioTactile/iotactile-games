@@ -46,11 +46,11 @@ watch(group, () => {
 const items = [
   {
     title: 'Lingua Vault',
-    link: '/lingua-vault'
+    link: '/lingua-vault/jouer'
   },
   {
     title: 'Dice',
-    link: '/dice'
+    link: '/dice/jouer'
   }
 ]
 

@@ -24,7 +24,7 @@
         md="4"
         lg="3"
       >
-        <v-card>
+        <v-card v-if="!session.isStarted">
           <v-card-title class="text-h5 text-center">
             <span>Session {{ i + 1 }}</span>
           </v-card-title>
