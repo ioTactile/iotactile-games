@@ -284,14 +284,14 @@ const isPlayerTurnTwo = computed(() => {
   if (playerTurn.value?.playerId !== session.value?.players[1].id) { return false }
   return true
 })
-// const isPlayerTurnThree = computed(() => {
-//   if (playerTurn.value?.playerId !== session.value?.players[2].id) { return false }
-//   return true
-// })
-// const isPlayerTurnFour = computed(() => {
-//   if (playerTurn.value?.playerId !== session.value?.players[3].id) { return false }
-//   return true
-// })
+const isPlayerTurnThree = computed(() => {
+  if (playerTurn.value?.playerId !== session.value?.players[2].id) { return false }
+  return true
+})
+const isPlayerTurnFour = computed(() => {
+  if (playerTurn.value?.playerId !== session.value?.players[3].id) { return false }
+  return true
+})
 
 const switchPlayerTurn = async () => {
   if (!session.value) { return }
