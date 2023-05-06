@@ -111,7 +111,7 @@ const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), play
 
 const message = ref<string>('')
 const timeLeft = ref<string>('1:30')
-const remainingTime = ref<number>()
+const remainingTime = ref<number>(90)
 const diceOnBoard = ref<number[]>([])
 const diceOnHand = ref<number[]>([])
 
@@ -125,14 +125,12 @@ const startGame = async () => {
 
 const startTimer = () => {
   remainingTime.value = 90
-  setTimeout(() => {
-    setInterval(() => {
-      if (remainingTime.value === 0 || !remainingTime.value) { return }
-      remainingTime.value--
-      const minutes = Math.floor(remainingTime.value / 60)
-      const seconds = remainingTime.value % 60
-      timeLeft.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
-    }, 1000)
+  setInterval(() => {
+    if (remainingTime.value === 0 || !remainingTime.value) { return }
+    remainingTime.value--
+    const minutes = Math.floor(remainingTime.value / 60)
+    const seconds = remainingTime.value % 60
+    timeLeft.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
   }, 1000)
 }
 
@@ -141,8 +139,7 @@ onSnapshot(playerTurnRef, () => {
 })
 
 const isPlayerTurn = computed(() => {
-  if (!playerTurn.value) { return }
-  if (playerTurn.value.playerId !== user.value?.uid) { return false }
+  if (playerTurn.value?.playerId !== user.value?.uid) { return false }
   return true
 })
 
