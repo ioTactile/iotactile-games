@@ -135,14 +135,6 @@ const startTimer = () => {
   }, 1000)
 }
 
-// onSnapshot(playerTurnRef, () => {
-//   startTimer()
-// })
-
-// const isGameStarted = computed(() => {
-//   if (session.value && session.value.isStarted) { return true }
-//   return false
-// })
 const isPlayerTurn = computed(() => {
   if ((playerTurn.value && user.value) &&
   playerTurn.value.playerId !== user.value.uid) { return true }
@@ -229,26 +221,26 @@ const rollThree = async () => {
   await setDoc(sessionRef, diceSession, { merge: true })
 }
 
-const removeDice = (index: number) => {
+const removeDice = async (index: number) => {
   if (!session.value) { return }
   const diceSession = session.value
   diceOnBoard.value.push(diceSession.diceOnHand[index])
   diceSession.diceOnBoard.push(diceOnHand.value[index])
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
   diceOnHand.value.splice(index, 1)
   diceSession.diceOnHand.splice(index, 1)
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
 }
 
-const addDice = (index: number) => {
+const addDice = async (index: number) => {
   if (!session.value) { return }
   const diceSession = session.value
   diceOnHand.value.push(diceSession.diceOnBoard[index])
   diceSession.diceOnHand.push(diceOnBoard.value[index])
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
   diceOnBoard.value.splice(index, 1)
   diceSession.diceOnBoard.splice(index, 1)
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
 }
 
 const sendMessage = async () => {
