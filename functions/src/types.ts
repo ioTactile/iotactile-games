@@ -75,7 +75,6 @@ export type DiceSession = {
   isFull: boolean
   isStarted: boolean
   isFinished: boolean
-  timer: number
   remainingTurns: number
   diceOnBoard: number[]
   diceOnHand: number[]

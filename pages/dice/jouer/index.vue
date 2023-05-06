@@ -143,7 +143,6 @@ const create = async () => {
       isFull: false,
       isStarted: false,
       isFinished: false,
-      timer: 90,
       remainingTurns: 13,
       playerTries: 3,
       diceOnBoard: [],
@@ -224,6 +223,7 @@ const join = async (sessionId: string) => {
       return
     }
     if (session.players.length >= 4) { return }
+    console.log(session.players.length)
     session.players.push({
       id: user.value.uid,
       username
@@ -237,11 +237,12 @@ const join = async (sessionId: string) => {
       return
     }
     await setDoc(sessionRef, session)
-    if (session.players.length === 1) {
+    console.log(session.players.length)
+    if (session.players.length === 2) {
       await setDoc(doc(scoresRef, session.id), { playerTwo: initScores() }, { merge: true })
-    } else if (session.players.length === 2) {
-      await setDoc(doc(scoresRef, session.id), { playerThree: initScores() }, { merge: true })
     } else if (session.players.length === 3) {
+      await setDoc(doc(scoresRef, session.id), { playerThree: initScores() }, { merge: true })
+    } else if (session.players.length === 4) {
       await setDoc(doc(scoresRef, session.id), { playerFour: initScores() }, { merge: true })
     }
   } finally {
@@ -263,19 +264,19 @@ const leave = async (sessionId: string) => {
     const scoresDoc = await getDoc(scoresRef)
     const scores = scoresDoc.data()
     if (!session) { return }
-    if (scores.playerOne.id === user.value.uid) {
+    if (scores?.playerOne.id === user.value.uid) {
       await updateDoc(scoresRef, {
         playerOne: deleteField()
       })
-    } else if (scores.playerTwo.id === user.value.uid) {
+    } else if (scores?.playerTwo.id === user.value.uid) {
       await updateDoc(scoresRef, {
         playerTwo: deleteField()
       })
-    } else if (scores.playerThree.id === user.value.uid) {
+    } else if (scores?.playerThree.id === user.value.uid) {
       await updateDoc(scoresRef, {
         playerThree: deleteField()
       })
-    } else if (scores.playerFour.id === user.value.uid) {
+    } else if (scores?.playerFour.id === user.value.uid) {
       await updateDoc(scoresRef, {
         playerFour: deleteField()
       })
