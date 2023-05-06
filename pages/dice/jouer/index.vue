@@ -223,7 +223,6 @@ const join = async (sessionId: string) => {
       return
     }
     if (session.players.length >= 4) { return }
-    console.log(session.players.length)
     session.players.push({
       id: user.value.uid,
       username
@@ -237,7 +236,6 @@ const join = async (sessionId: string) => {
       return
     }
     await setDoc(sessionRef, session)
-    console.log(session.players.length)
     if (session.players.length === 2) {
       await setDoc(doc(scoresRef, session.id), { playerTwo: initScores() }, { merge: true })
     } else if (session.players.length === 3) {

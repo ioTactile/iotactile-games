@@ -150,7 +150,7 @@ const trueRandom = () => {
   return Math.floor(Math.random() * 6) + 1
 }
 
-const rollOne = () => {
+const rollOne = async () => {
   if (!session.value) { return }
   if (session.value.playerTries < 3) { return }
 
@@ -164,10 +164,10 @@ const rollOne = () => {
   const diceSession = session.value
   diceSession.diceOnBoard = diceOnBoard.value
   diceSession.playerTries = 2
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
 }
 
-const rollTwo = () => {
+const rollTwo = async () => {
   if (!session.value) { return }
   if (session.value.playerTries < 2) { return }
   if (!diceOnBoard.value.length) { return }
@@ -176,7 +176,7 @@ const rollTwo = () => {
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
   diceSession.diceOnBoard = []
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
 
   for (let i = 0; i < diceOnBoardLength; i++) {
     const dice = trueRandom()
@@ -186,10 +186,10 @@ const rollTwo = () => {
   diceSession = session.value
   diceSession.diceOnBoard = diceOnBoard.value
   diceSession.playerTries = 1
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
 }
 
-const rollThree = () => {
+const rollThree = async () => {
   if (!session.value) { return }
   if (session.value.playerTries < 1) { return }
   if (!diceOnBoard.value.length) { return }
@@ -198,7 +198,7 @@ const rollThree = () => {
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
   diceSession.diceOnBoard = []
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
 
   for (let i = 0; i < diceOnBoardLength; i++) {
     const dice = trueRandom()
@@ -208,29 +208,29 @@ const rollThree = () => {
   diceSession = session.value
   diceSession.diceOnBoard = diceOnBoard.value
   diceSession.playerTries = 0
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
 }
 
-const removeDice = (index: number) => {
+const removeDice = async (index: number) => {
   if (!session.value) { return }
   const diceSession = session.value
   diceOnBoard.value.push(diceSession.diceOnHand[index])
   diceSession.diceOnBoard.push(diceOnHand.value[index])
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
   diceOnHand.value.splice(index, 1)
   diceSession.diceOnHand.splice(index, 1)
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
 }
 
-const addDice = (index: number) => {
+const addDice = async (index: number) => {
   if (!session.value) { return }
   const diceSession = session.value
   diceOnHand.value.push(diceSession.diceOnBoard[index])
   diceSession.diceOnHand.push(diceOnBoard.value[index])
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
   diceOnBoard.value.splice(index, 1)
   diceSession.diceOnBoard.splice(index, 1)
-  setDoc(sessionRef, diceSession, { merge: true })
+  await setDoc(sessionRef, diceSession, { merge: true })
 }
 
 const sendMessage = async () => {
