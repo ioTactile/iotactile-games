@@ -57,7 +57,7 @@
         inversement. <br>
         <br>
         La partie se termine lorsque tous les joueurs ont saisi un résultat dans
-        toutes les cases de la fiche de scores. <br>
+        toutes les cases du tableau des scores. <br>
         <br>
       </p>
     </section>

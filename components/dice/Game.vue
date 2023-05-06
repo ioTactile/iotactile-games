@@ -26,18 +26,18 @@
                 </v-btn>
               </v-col>
               <v-col cols="2">
-                <div class="timer-container">
+                <!-- <div class="timer-container">
                   <span class="timer-content bg-dicePrimary text-h5 px-2">{{
                     timeLeft
                   }}</span>
-                </div>
+                </div> -->
                 <div class="cup-one-container">
                   <v-btn
                     variant="text"
                     :disabled="isPlayerTurnRollOne"
                     @click="rollOne"
                   >
-                    <v-img src="/cup-no-bg.png" height="80" width="50" />
+                    <v-img src="/cup-no-bg.png" alt="gobelet un" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-two-container">
@@ -46,7 +46,7 @@
                     :disabled="isPlayerTurnRollTwo"
                     @click="rollTwo"
                   >
-                    <v-img src="/cup-no-bg.png" height="80" width="50" />
+                    <v-img src="/cup-no-bg.png" alt="gobelet deux" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-three-container">
@@ -55,7 +55,7 @@
                     :disabled="isPlayerTurnRollThree"
                     @click="rollThree"
                   >
-                    <v-img src="/cup-no-bg.png" height="80" width="50" />
+                    <v-img src="/cup-no-bg.png" alt="gobelet trois" height="80" width="50" />
                   </v-btn>
                 </div>
               </v-col>
@@ -91,6 +91,8 @@
         <div class="text-center">
           <v-btn
             v-if="session.players[0].id === user?.uid && !session.isStarted"
+            height="50px"
+            block
             color="tertiary"
             @click="startGame"
           >
@@ -171,8 +173,8 @@ const playerTurn = useDocument(
 )
 
 const message = ref<string>('')
-const timeLeft = ref<string>('1:30')
-const remainingTime = ref<number>(90)
+// const timeLeft = ref<string>('1:30')
+// const remainingTime = ref<number>(90)
 const diceOnBoard = ref<number[]>([])
 const diceOnHand = ref<number[]>([])
 
@@ -181,21 +183,21 @@ const startGame = async () => {
     return
   }
   await setDoc(sessionRef, { isStarted: true }, { merge: true })
-  startTimer()
+  // startTimer()
 }
 
-const startTimer = () => {
-  remainingTime.value = 90
-  setInterval(() => {
-    if (remainingTime.value === 0 || !remainingTime.value) {
-      return
-    }
-    remainingTime.value--
-    const minutes = Math.floor(remainingTime.value / 60)
-    const seconds = remainingTime.value % 60
-    timeLeft.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
-  }, 1000)
-}
+// const startTimer = () => {
+//   remainingTime.value = 90
+//   setInterval(() => {
+//     if (remainingTime.value === 0 || !remainingTime.value) {
+//       return
+//     }
+//     remainingTime.value--
+//     const minutes = Math.floor(remainingTime.value / 60)
+//     const seconds = remainingTime.value % 60
+//     timeLeft.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+//   }, 1000)
+// }
 
 const isPlayerTurn = computed(() => {
   if (
@@ -387,7 +389,7 @@ const sendMessage = async () => {
   position: relative;
 }
 
-.timer-container {
+/* .timer-container {
   position: absolute;
   top: 50px;
   right: 30px;
@@ -396,7 +398,7 @@ const sendMessage = async () => {
 .timer-content {
   border: 2px solid rgba(0, 0, 0, 0.8);
   border-radius: 5px;
-}
+} */
 
 .cup-one-container {
   cursor: pointer;

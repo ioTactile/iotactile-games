@@ -4,7 +4,7 @@
       <v-col cols="6" class="pr-0">
         <div class="d-flex flex-column justify-center text-subtitle-2">
           <span class="bg-dicePrimary big-divider border-bottom" />
-          <span class="border-bottom px-2">As</span>
+          <span class="border-bottom px-2">Un</span>
           <span class="border-bottom px-2">Deux</span>
           <span class="border-bottom px-2">Trois</span>
           <span class="border-bottom px-2">Quatre</span>
@@ -1116,11 +1116,13 @@ const fullHouseInput = computed(() => {
     (newDices[0] === newDices[1] &&
       newDices[0] === newDices[2] &&
       newDices[1] === newDices[2] &&
-      newDices[3] === newDices[4]) ||
+      newDices[3] === newDices[4] &&
+      newDices[0] !== newDices[4]) ||
     (newDices[0] === newDices[1] &&
       newDices[2] === newDices[3] &&
       newDices[2] === newDices[4] &&
-      newDices[3] === newDices[4])
+      newDices[3] === newDices[4] &&
+      newDices[0] !== newDices[4])
   ) {
     return 25
   } else {
