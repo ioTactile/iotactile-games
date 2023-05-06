@@ -211,26 +211,26 @@ const rollThree = async () => {
   await setDoc(sessionRef, diceSession, { merge: true })
 }
 
-const removeDice = async (index: number) => {
+const removeDice = (index: number) => {
   if (!session.value) { return }
   const diceSession = session.value
   diceOnBoard.value.push(diceSession.diceOnHand[index])
   diceSession.diceOnBoard.push(diceOnHand.value[index])
-  await setDoc(sessionRef, diceSession, { merge: true })
+  setDoc(sessionRef, diceSession, { merge: true })
   diceOnHand.value.splice(index, 1)
   diceSession.diceOnHand.splice(index, 1)
-  await setDoc(sessionRef, diceSession, { merge: true })
+  setDoc(sessionRef, diceSession, { merge: true })
 }
 
-const addDice = async (index: number) => {
+const addDice = (index: number) => {
   if (!session.value) { return }
   const diceSession = session.value
   diceOnHand.value.push(diceSession.diceOnBoard[index])
   diceSession.diceOnHand.push(diceOnBoard.value[index])
-  await setDoc(sessionRef, diceSession, { merge: true })
+  setDoc(sessionRef, diceSession, { merge: true })
   diceOnBoard.value.splice(index, 1)
   diceSession.diceOnBoard.splice(index, 1)
-  await setDoc(sessionRef, diceSession, { merge: true })
+  setDoc(sessionRef, diceSession, { merge: true })
 }
 
 const sendMessage = async () => {
