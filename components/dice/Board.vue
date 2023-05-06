@@ -87,22 +87,22 @@
           <span class="bg-dicePrimary big-divider border-bottom text-center">B</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.one" @click="saveOneInput()">
             {{ oneInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.one !== 0 ? scores.playerTwo.one : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.one !== 0 ? scores.playerTwo.one : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.two" @click="saveTwoInput()">
             {{ twoInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.two !== 0 ? scores.playerTwo.two : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.two !== 0 ? scores.playerTwo.two : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.three" @click="saveThreeInput()">
             {{ threeInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.three !== 0 ? scores.playerTwo.three : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.three !== 0 ? scores.playerTwo.three : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.four" @click="saveFourInput()">
             {{ fourInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.four !== 0 ? scores.playerTwo.four : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.four !== 0 ? scores.playerTwo.four : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.five" @click="saveFiveInput()">
             {{ fiveInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.five !== 0 ? scores.playerTwo.five : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.five !== 0 ? scores.playerTwo.five : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.six" @click="saveSixInput()">
             {{ sixInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.six !== 0 ? scores.playerTwo.six : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.six !== 0 ? scores.playerTwo.six : '_' }}</span>
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkUpperSubtotalPlayerTwo ? checkUpperSubtotalPlayerTwo : '_' }}</span>
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkBonusPlayerTwo ? checkBonusPlayerTwo : '_' }}</span>
           <span class="bg-dicePrimary divider border-bottom text-center" />
@@ -110,25 +110,25 @@
           <span class="bg-dicePrimary divider border-bottom text-center" />
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.threeOfAKindInput" @click="saveThreeOfAKindInput()">
             {{ threeOfAKindInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.threeOfAKind !== 0 ? scores.playerTwo.threeOfAKind : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.threeOfAKind !== 0 ? scores.playerTwo.threeOfAKind : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.fourOfAKindInput" @click="saveFourOfAKindInput()">
             {{ fourOfAKindInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.fourOfAKind !== 0 ? scores.playerTwo.fourOfAKind : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.fourOfAKind !== 0 ? scores.playerTwo.fourOfAKind : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.fullHouseInput" @click="saveFullHouseInput()">
             {{ fullHouseInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.fullHouse !== 0 ? scores.playerTwo.fullHouse : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.fullHouse !== 0 ? scores.playerTwo.fullHouse : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.smallStraightInput" @click="saveSmallStraightInput()">
             {{ smallStraightInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.smallStraight !== 0 ? scores.playerTwo.smallStraight : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.smallStraight !== 0 ? scores.playerTwo.smallStraight : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.largeStraightInput" @click="saveLargeStraightInput()">
             {{ largeStraightInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.largeStraight !== 0 ? scores.playerTwo.largeStraight : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.largeStraight !== 0 ? scores.playerTwo.largeStraight : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.diceInput" @click="saveDiceInput()">
             {{ diceInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.dice !== 0 ? scores.playerTwo.dice : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.dice !== 0 ? scores.playerTwo.dice : '_' }}</span>
           <v-btn v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.chanceInput" @click="saveChanceInput()">
             {{ chanceInput }}
-          </v-btn><span class="border-bottom text-center">{{ scores.playerTwo.chance !== 0 ? scores.playerTwo.chance : '_' }}</span>
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerTwo.chance !== 0 ? scores.playerTwo.chance : '_' }}</span>
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkLowerTotalPlayerTwo ? checkLowerTotalPlayerTwo : '_' }}</span>
           <span class="bg-dicePrimary divider border-bottom text-center" />
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkTotalPlayerTwo ? checkTotalPlayerTwo : '_' }}</span>
@@ -139,24 +139,50 @@
       <v-col v-if="scores.playerThree" class="px-0">
         <div class="d-flex flex-column justify-center text-subtitle-2">
           <span class="bg-dicePrimary big-divider border-bottom text-center">C</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.one !== 0 ? scores.playerThree.one : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.two !== 0 ? scores.playerThree.two : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.three !== 0 ? scores.playerThree.three : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.four !== 0 ? scores.playerThree.four : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.five !== 0 ? scores.playerThree.five : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.six !== 0 ? scores.playerThree.six : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.one" @click="saveOneInput()">
+            {{ oneInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.one !== 0 ? scores.playerThree.one : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.two" @click="saveTwoInput()">
+            {{ twoInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.two !== 0 ? scores.playerThree.two : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.three" @click="saveThreeInput()">
+            {{ threeInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.three !== 0 ? scores.playerThree.three : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.four" @click="saveFourInput()">
+            {{ fourInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.four !== 0 ? scores.playerThree.four : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.five" @click="saveFiveInput()">
+            {{ fiveInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.five !== 0 ? scores.playerThree.five : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.six" @click="saveSixInput()">
+            {{ sixInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.six !== 0 ? scores.playerThree.six : '_' }}</span>
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkUpperSubtotalPlayerThree ? checkUpperSubtotalPlayerThree : '_' }}</span>
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkBonusPlayerThree ? checkBonusPlayerThree : '_' }}</span>
           <span class="bg-dicePrimary divider border-bottom text-center" />
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkUpperTotalPlayerThree ? checkUpperTotalPlayerThree : '_' }}</span>
           <span class="bg-dicePrimary divider border-bottom text-center" />
-          <span class="border-bottom text-center">{{ scores.playerThree.threeOfAKind !== 0 ? scores.playerThree.threeOfAKind : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.fourOfAKind !== 0 ? scores.playerThree.fourOfAKind : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.fullHouse !== 0 ? scores.playerThree.fullHouse : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.smallStraight !== 0 ? scores.playerThree.smallStraight : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.largeStraight !== 0 ? scores.playerThree.largeStraight : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.dice !== 0 ? scores.playerThree.dice : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerThree.chance !== 0 ? scores.playerThree.chance : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.one" @click="saveThreeOfAKindInput()">
+            {{ threeOfAKindInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.threeOfAKind !== 0 ? scores.playerThree.threeOfAKind : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.one" @click="saveFourOfAKindInput()">
+            {{ fourOfAKindInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.fourOfAKind !== 0 ? scores.playerThree.fourOfAKind : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.one" @click="saveFullHouseInput()">
+            {{ fullHouseInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.fullHouse !== 0 ? scores.playerThree.fullHouse : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.one" @click="saveSmallStraightInput()">
+            {{ smallStraightInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.smallStraight !== 0 ? scores.playerThree.smallStraight : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.one" @click="saveLargeStraightInput()">
+            {{ largeStraightInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.largeStraight !== 0 ? scores.playerThree.largeStraight : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.one" @click="saveDiceInput()">
+            {{ diceInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.dice !== 0 ? scores.playerThree.dice : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnThree && !scores.playerThree.one" @click="saveChanceInput()">
+            {{ chanceInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.chance !== 0 ? scores.playerThree.chance : '_' }}</span>
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkLowerTotalPlayerThree ? checkLowerTotalPlayerThree : '_' }}</span>
           <span class="bg-dicePrimary divider border-bottom text-center" />
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkTotalPlayerThree ? checkTotalPlayerThree : '_' }}</span>
@@ -167,24 +193,50 @@
       <v-col v-if="scores.playerFour" class="px-0">
         <div class="d-flex flex-column justify-center text-subtitle-2">
           <span class="bg-dicePrimary big-divider border-bottom text-center">D</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.one !== 0 ? scores.playerFour.one : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.two !== 0 ? scores.playerFour.two : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.three !== 0 ? scores.playerFour.three : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.four !== 0 ? scores.playerFour.four : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.five !== 0 ? scores.playerFour.five : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.six !== 0 ? scores.playerFour.six : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.one" @click="saveOneInput()">
+            {{ oneInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.one !== 0 ? scores.playerFour.one : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.two" @click="saveTwoInput()">
+            {{ twoInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.two !== 0 ? scores.playerFour.two : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.three" @click="saveThreeInput()">
+            {{ threeInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.three !== 0 ? scores.playerFour.three : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.four" @click="saveFourInput()">
+            {{ fourInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.four !== 0 ? scores.playerFour.four : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.five" @click="saveFiveInput()">
+            {{ fiveInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.five !== 0 ? scores.playerFour.five : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.six" @click="saveSixInput()">
+            {{ sixInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.six !== 0 ? scores.playerFour.six : '_' }}</span>
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkUpperSubtotalPlayerFour ? checkUpperSubtotalPlayerFour : '_' }}</span>
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkBonusPlayerFour ? checkBonusPlayerFour : '_' }}</span>
           <span class="bg-dicePrimary divider border-bottom text-center" />
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkUpperTotalPlayerFour ? checkUpperTotalPlayerFour : '_' }}</span>
           <span class="bg-dicePrimary divider border-bottom text-center" />
-          <span class="border-bottom text-center">{{ scores.playerFour.threeOfAKind !== 0 ? scores.playerFour.threeOfAKind : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.fourOfAKind !== 0 ? scores.playerFour.fourOfAKind : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.fullHouse !== 0 ? scores.playerFour.fullHouse : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.smallStraight !== 0 ? scores.playerFour.smallStraight : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.largeStraight !== 0 ? scores.playerFour.largeStraight : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.dice !== 0 ? scores.playerFour.dice : '_' }}</span>
-          <span class="border-bottom text-center">{{ scores.playerFour.chance !== 0 ? scores.playerFour.chance : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.threeOfAKind" @click="saveThreeOfAKindInput()">
+            {{ threeOfAKindInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.threeOfAKind !== 0 ? scores.playerFour.threeOfAKind : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.fourOfAKind" @click="saveFourOfAKindInput()">
+            {{ fourOfAKindInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.fourOfAKind !== 0 ? scores.playerFour.fourOfAKind : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.fullHouse" @click="saveFullHouseInput()">
+            {{ fullHouseInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.fullHouse !== 0 ? scores.playerFour.fullHouse : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.smallStraight" @click="saveSmallStraightInput()">
+            {{ smallStraightInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.smallStraight !== 0 ? scores.playerFour.smallStraight : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.largeStraight" @click="saveLargeStraightInput()">
+            {{ largeStraightInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.largeStraight !== 0 ? scores.playerFour.largeStraight : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.dice" @click="saveDiceInput()">
+            {{ diceInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.dice !== 0 ? scores.playerFour.dice : '_' }}</span>
+          <v-btn v-if="isDices && isPlayerTurnFour && !scores.playerFour.chance" @click="saveChanceInput()">
+            {{ chanceInput }}
+          </v-btn><span v-else class="border-bottom text-center">{{ scores.playerFour.chance !== 0 ? scores.playerFour.chance : '_' }}</span>
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkLowerTotalPlayerFour ? checkLowerTotalPlayerFour : '_' }}</span>
           <span class="bg-dicePrimary divider border-bottom text-center" />
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkTotalPlayerFour ? checkTotalPlayerFour : '_' }}</span>
