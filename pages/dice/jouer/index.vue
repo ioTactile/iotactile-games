@@ -29,16 +29,17 @@
             <span>Session {{ i + 1 }}</span>
           </v-card-title>
           <v-card-text>
-            <div v-for="(player, j) in session.players" :key="j" class="d-flex justify-space-between text-h6">
+            <div
+              v-for="(player, j) in session.players"
+              :key="j"
+              class="d-flex justify-space-between text-h6"
+            >
               <span>Joueur {{ j + 1 }}:</span>
               <span>{{ player.username }}</span>
             </div>
           </v-card-text>
           <v-card-actions class="d-flex justify-space-between">
-            <v-btn
-              color="error"
-              @click="leave(session.id)"
-            >
+            <v-btn color="error" @click="leave(session.id)">
               Quitter
             </v-btn>
             <v-btn
@@ -49,7 +50,10 @@
               {{ session.isFull ? 'Session pleine' : 'Rejoindre' }}
             </v-btn>
             <v-btn
-              v-if="session.players.length > 1 && session.players[0].id === user?.uid"
+              v-if="
+                session.players.length > 1 &&
+                  session.players[0].id === user?.uid
+              "
               color="tertiary"
               variant="outlined"
               @click="goTo(session.id)"
@@ -64,7 +68,19 @@
 </template>
 
 <script lang="ts" setup>
-import { Timestamp, collection, doc, setDoc, getDoc, getDocs, deleteDoc, deleteField, updateDoc, query, where } from 'firebase/firestore'
+import {
+  Timestamp,
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  deleteDoc,
+  deleteField,
+  updateDoc,
+  query,
+  where
+} from 'firebase/firestore'
 import { useFirestore, useCollection } from 'vuefire'
 import { diceSessionConverter, LocalDiceSessionType } from '~/stores'
 
@@ -75,21 +91,29 @@ const id = ref<string | null>(null)
 const date = ref(new Date(Date.now()))
 
 const loading = ref(false)
-const sessionsRef = collection(db, 'diceSessions').withConverter(diceSessionConverter)
+const sessionsRef = collection(db, 'diceSessions').withConverter(
+  diceSessionConverter
+)
 const sessions = useCollection(collection(db, 'diceSessions'))
 const playerTurnRef = collection(db, 'diceSessionPlayerTurn')
 const scoresRef = collection(db, 'diceSessionScores')
 
 const getUsername = async () => {
-  if (!user.value) { return }
+  if (!user.value) {
+    return
+  }
   const userRef = doc(db, 'users', user.value.uid)
   const userDoc = await getDoc(userRef)
-  if (!userDoc.exists()) { return }
+  if (!userDoc.exists()) {
+    return
+  }
   return userDoc.data()?.username
 }
 
 const initScores = () => {
-  if (!user.value) { return }
+  if (!user.value) {
+    return
+  }
   const scores = {
     id: user.value.uid,
     one: 0,
@@ -119,7 +143,9 @@ const goTo = (sessionId: string) => {
 }
 
 const create = async () => {
-  if (!user.value) { return }
+  if (!user.value) {
+    return
+  }
   loading.value = true
   id.value = doc(sessionsRef).id
   const username = await getUsername()
@@ -127,8 +153,12 @@ const create = async () => {
   try {
     const sessionsQuery = query(sessionsRef, where('isFull', '==', false))
     const sessionsSnapshot = await getDocs(sessionsQuery)
-    const sessions = sessionsSnapshot.docs.map(doc => doc.data() as LocalDiceSessionType)
-    const session = sessions.find(session => session.players.find(player => player.id === user.value?.uid))
+    const sessions = sessionsSnapshot.docs.map(
+      doc => doc.data() as LocalDiceSessionType
+    )
+    const session = sessions.find(session =>
+      session.players.find(player => player.id === user.value?.uid)
+    )
     if (session) {
       notifier({ content: 'Vous êtes déjà dans une session', color: 'error' })
       return
@@ -136,10 +166,12 @@ const create = async () => {
     const sessionRef = doc(sessionsRef, id.value)
     await setDoc(sessionRef, {
       id: id.value,
-      players: [{
-        id: user.value.uid,
-        username
-      }],
+      players: [
+        {
+          id: user.value.uid,
+          username
+        }
+      ],
       isFull: false,
       isStarted: false,
       isFinished: false,
@@ -163,7 +195,9 @@ const create = async () => {
 }
 
 const quickJoin = async () => {
-  if (!user.value) { return }
+  if (!user.value) {
+    return
+  }
   loading.value = true
   let sessionToJoin: LocalDiceSessionType | undefined
 
@@ -171,8 +205,12 @@ const quickJoin = async () => {
     const username = await getUsername()
     const sessionsQuery = query(sessionsRef, where('isFull', '==', false))
     const sessionsSnapshot = await getDocs(sessionsQuery)
-    const sessions = sessionsSnapshot.docs.map(doc => doc.data() as LocalDiceSessionType)
-    const session = sessions.find(session => session.players.find(player => player.id === user.value?.uid))
+    const sessions = sessionsSnapshot.docs.map(
+      doc => doc.data() as LocalDiceSessionType
+    )
+    const session = sessions.find(session =>
+      session.players.find(player => player.id === user.value?.uid)
+    )
     if (session) {
       notifier({ content: 'Vous êtes déjà dans une session', color: 'error' })
       return
@@ -196,20 +234,36 @@ const quickJoin = async () => {
     }
     await setDoc(doc(sessionsRef, sessionToJoin.id), sessionToJoin)
     if (sessionToJoin.players.length === 1) {
-      await setDoc(doc(scoresRef, sessionToJoin.id), { playerTwo: initScores() }, { merge: true })
+      await setDoc(
+        doc(scoresRef, sessionToJoin.id),
+        { playerTwo: initScores() },
+        { merge: true }
+      )
     } else if (sessionToJoin.players.length === 2) {
-      await setDoc(doc(scoresRef, sessionToJoin.id), { playerThree: initScores() }, { merge: true })
+      await setDoc(
+        doc(scoresRef, sessionToJoin.id),
+        { playerThree: initScores() },
+        { merge: true }
+      )
     } else if (sessionToJoin.players.length === 3) {
-      await setDoc(doc(scoresRef, sessionToJoin.id), { playerFour: initScores() }, { merge: true })
+      await setDoc(
+        doc(scoresRef, sessionToJoin.id),
+        { playerFour: initScores() },
+        { merge: true }
+      )
     }
   } finally {
     loading.value = false
-    if (sessionToJoin) { navigateTo(`/dice/jouer/${sessionToJoin.id}`) }
+    if (sessionToJoin) {
+      navigateTo(`/dice/jouer/${sessionToJoin.id}`)
+    }
   }
 }
 
 const join = async (sessionId: string) => {
-  if (!user.value) { return }
+  if (!user.value) {
+    return
+  }
   loading.value = true
 
   try {
@@ -217,12 +271,16 @@ const join = async (sessionId: string) => {
     const sessionDoc = await getDoc(sessionRef)
     const session = sessionDoc.data() as LocalDiceSessionType
     const username = await getUsername()
-    if (!session) { return }
+    if (!session) {
+      return
+    }
     if (session.players.find(player => player.id === user.value?.uid)) {
       notifier({ content: 'Vous êtes déjà dans cette session', color: 'error' })
       return
     }
-    if (session.players.length >= 4) { return }
+    if (session.players.length >= 4) {
+      return
+    }
     session.players.push({
       id: user.value.uid,
       username
@@ -237,11 +295,23 @@ const join = async (sessionId: string) => {
     }
     await setDoc(sessionRef, session)
     if (session.players.length === 2) {
-      await setDoc(doc(scoresRef, session.id), { playerTwo: initScores() }, { merge: true })
+      await setDoc(
+        doc(scoresRef, session.id),
+        { playerTwo: initScores() },
+        { merge: true }
+      )
     } else if (session.players.length === 3) {
-      await setDoc(doc(scoresRef, session.id), { playerThree: initScores() }, { merge: true })
+      await setDoc(
+        doc(scoresRef, session.id),
+        { playerThree: initScores() },
+        { merge: true }
+      )
     } else if (session.players.length === 4) {
-      await setDoc(doc(scoresRef, session.id), { playerFour: initScores() }, { merge: true })
+      await setDoc(
+        doc(scoresRef, session.id),
+        { playerFour: initScores() },
+        { merge: true }
+      )
     }
   } finally {
     loading.value = false
@@ -250,18 +320,25 @@ const join = async (sessionId: string) => {
 }
 
 const leave = async (sessionId: string) => {
-  if (!user.value) { return }
+  if (!user.value) {
+    return
+  }
   loading.value = true
 
   try {
     const sessionRef = doc(sessionsRef, sessionId)
     const sessionDoc = await getDoc(sessionRef)
     const session = sessionDoc.data() as LocalDiceSessionType
-    const playerTurnRef = doc(collection(db, 'diceSessionPlayerTurn'), sessionId)
+    const playerTurnRef = doc(
+      collection(db, 'diceSessionPlayerTurn'),
+      sessionId
+    )
     const scoresRef = doc(collection(db, 'diceSessionScores'), sessionId)
     const scoresDoc = await getDoc(scoresRef)
     const scores = scoresDoc.data()
-    if (!session) { return }
+    if (!session) {
+      return
+    }
     if (scores?.playerOne.id === user.value.uid) {
       await updateDoc(scoresRef, {
         playerOne: deleteField()
@@ -279,7 +356,9 @@ const leave = async (sessionId: string) => {
         playerFour: deleteField()
       })
     }
-    session.players = session.players.filter(player => player.id !== user.value?.uid)
+    session.players = session.players.filter(
+      player => player.id !== user.value?.uid
+    )
     session.remainingTurns = session.remainingTurns - 13
 
     if (session.players.length === 0) {

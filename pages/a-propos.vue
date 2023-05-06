@@ -1,5 +1,5 @@
 <template>
-  <div>
-    À propos
-  </div>
+  <v-container>
+    <div>À propos</div>
+  </v-container>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div>
-    Me contacter
-  </div>
+  <v-container>
+    <div>Me contacter</div>
+  </v-container>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <div>Classement</div>
-  </div>
+  </v-container>
 </template>

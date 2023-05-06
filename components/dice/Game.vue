@@ -1,44 +1,75 @@
 <template>
   <v-container v-if="session" fluid class="container">
     <v-row>
-      <v-col cols="9" class="background-image">
+      <v-col cols="12" md="9" class="background-image">
         <v-row>
           <v-col class="d-flex" cols="12">
             <dice-players :players="session.players" />
           </v-col>
           <v-col cols="6">
-            <dice-board :dice-on-hand="session.diceOnHand" :dice-on-board="session.diceOnBoard" />
+            <dice-board
+              :dice-on-hand="session.diceOnHand"
+              :dice-on-board="session.diceOnBoard"
+            />
           </v-col>
           <v-col cols="6" class="right-side-container pb-0">
             <v-row class="h-100">
               <v-col cols="10">
-                <v-btn v-for="(dice, i) in session.diceOnBoard" :key="i" :disabled="isPlayerTurn" class="dice-container" @click="addDice(i)">
+                <v-btn
+                  v-for="(dice, i) in session.diceOnBoard"
+                  :key="i"
+                  :disabled="isPlayerTurn"
+                  class="dice-container"
+                  @click="addDice(i)"
+                >
                   {{ dice }}
                 </v-btn>
               </v-col>
               <v-col cols="2">
                 <div class="timer-container">
-                  <span class="timer-content bg-dicePrimary text-h5 px-2">{{ timeLeft }}</span>
+                  <span class="timer-content bg-dicePrimary text-h5 px-2">{{
+                    timeLeft
+                  }}</span>
                 </div>
                 <div class="cup-one-container">
-                  <v-btn :disabled="isPlayerTurnRollOne" :style="session.playerTries < 3 ? 'opacity: 30%' : ''" @click="rollOne">
+                  <v-btn
+                    variant="text"
+                    :disabled="isPlayerTurnRollOne"
+                    @click="rollOne"
+                  >
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-two-container">
-                  <v-btn :disabled="isPlayerTurnRollTwo" :style="session.playerTries < 2 ? 'opacity: 30%' : ''" @click="rollTwo">
+                  <v-btn
+                    variant="text"
+                    :disabled="isPlayerTurnRollTwo"
+                    @click="rollTwo"
+                  >
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
                 <div class="cup-three-container">
-                  <v-btn :disabled="isPlayerTurnRollThree" :style="session.playerTries < 1 ? 'opacity: 30%' : ''" @click="rollThree">
+                  <v-btn
+                    variant="text"
+                    :disabled="isPlayerTurnRollThree"
+                    @click="rollThree"
+                  >
                     <v-img src="/cup-no-bg.png" height="80" width="50" />
                   </v-btn>
                 </div>
               </v-col>
               <v-col cols="12" align-self="end" class="pl-0 pb-0">
-                <div class="d-flex align-center bg-dicePrimary dice-plate-container">
-                  <v-btn v-for="(dice, i) in session.diceOnHand" :key="i" :disabled="isPlayerTurn" class="dice-container" @click="removeDice(i)">
+                <div
+                  class="d-flex align-center bg-dicePrimary dice-plate-container"
+                >
+                  <v-btn
+                    v-for="(dice, i) in session.diceOnHand"
+                    :key="i"
+                    :disabled="isPlayerTurn"
+                    class="dice-container"
+                    @click="removeDice(i)"
+                  >
                     {{ dice }}
                   </v-btn>
                 </div>
@@ -47,8 +78,12 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="3">
-        <div v-for="(player, i) in session.players" :key="i" class="d-flex justify-space-between text-h6">
+      <v-col cols="12" md="3">
+        <div
+          v-for="(player, i) in session.players"
+          :key="i"
+          class="d-flex justify-space-between text-h6"
+        >
           <span>Joueur {{ i + 1 }}:</span>
           <span>{{ player.username }}</span>
         </div>
@@ -68,31 +103,43 @@
               <span>Chat</span>
             </v-card-title>
             <v-card-text>
-              <div v-for="(messageItem, i) in session.messages" :key="i" class="d-flex">
+              <div
+                v-for="(messageItem, i) in session.messages"
+                :key="i"
+                class="d-flex"
+              >
                 <span>{{ messageItem.username }}:</span>
                 <span>{{ messageItem.content }}</span>
               </div>
             </v-card-text>
           </v-card>
           <v-card class="d-flex align-center pa-2" rounded="0">
-            <v-textarea
-              v-model="message"
-              placeholder="Votre message"
-              variant="outlined"
-              rows="1"
-              auto-grow
-              hide-details
-              clearable
-              @keyup.enter="sendMessage"
-            />
-            <v-btn color="tertiary" class="ml-2" height="56px" @click="sendMessage">
-              Envoyer
-            </v-btn>
+            <v-row class="pa-0">
+              <v-col cols="12" lg="6">
+                <v-textarea
+                  v-model="message"
+                  placeholder="Votre message"
+                  variant="outlined"
+                  rows="1"
+                  auto-grow
+                  hide-details
+                  clearable
+                  @keyup.enter="sendMessage"
+                />
+              </v-col>
+              <v-col cols="12" lg="6" class="pt-0 pt-lg-3">
+                <v-btn
+                  block
+                  color="tertiary"
+                  height="56px"
+                  @click="sendMessage"
+                >
+                  Envoyer
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-card>
         </div>
-        {{ isPlayerTurnRollOne ? 'true' : 'false' }}
-        {{ isPlayerTurnRollTwo ? 'true' : 'false' }}
-        {{ isPlayerTurnRollThree ? 'true' : 'false' }}
       </v-col>
     </v-row>
   </v-container>
@@ -103,14 +150,25 @@ import { collection, doc, setDoc, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { diceSessionConverter, diceSessionPlayerTurnConverter } from '~/stores'
 
+// const { notifier } = useNotifier()
 const db = useFirestore()
 const user = useCurrentUser()
 const route = useRoute()
 
-const sessionRef = doc(db, 'diceSessions', route.params.id as string).withConverter(diceSessionConverter)
+const sessionRef = doc(
+  db,
+  'diceSessions',
+  route.params.id as string
+).withConverter(diceSessionConverter)
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
-const playerTurnRef = doc(db, 'diceSessionPlayerTurn', route.params.id as string).withConverter(diceSessionPlayerTurnConverter)
-const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id))
+const playerTurnRef = doc(
+  db,
+  'diceSessionPlayerTurn',
+  route.params.id as string
+).withConverter(diceSessionPlayerTurnConverter)
+const playerTurn = useDocument(
+  doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id)
+)
 
 const message = ref<string>('')
 const timeLeft = ref<string>('1:30')
@@ -119,7 +177,9 @@ const diceOnBoard = ref<number[]>([])
 const diceOnHand = ref<number[]>([])
 
 const startGame = async () => {
-  if (!session.value) { return }
+  if (!session.value) {
+    return
+  }
   await setDoc(sessionRef, { isStarted: true }, { merge: true })
   startTimer()
 }
@@ -127,7 +187,9 @@ const startGame = async () => {
 const startTimer = () => {
   remainingTime.value = 90
   setInterval(() => {
-    if (remainingTime.value === 0 || !remainingTime.value) { return }
+    if (remainingTime.value === 0 || !remainingTime.value) {
+      return
+    }
     remainingTime.value--
     const minutes = Math.floor(remainingTime.value / 60)
     const seconds = remainingTime.value % 60
@@ -136,23 +198,49 @@ const startTimer = () => {
 }
 
 const isPlayerTurn = computed(() => {
-  if ((playerTurn.value && user.value) &&
-  playerTurn.value.playerId !== user.value.uid) { return true }
+  if (
+    playerTurn.value &&
+    user.value &&
+    playerTurn.value.playerId !== user.value.uid
+  ) {
+    return true
+  }
   return false
 })
 const isPlayerTurnRollOne = computed(() => {
-  if (!playerTurn.value || !user.value || !session.value) { return }
-  if (playerTurn.value.playerId !== user.value.uid || session.value.playerTries < 3) { return true }
+  if (!playerTurn.value || !user.value || !session.value) {
+    return
+  }
+  if (
+    playerTurn.value.playerId !== user.value.uid ||
+    session.value.playerTries < 3
+  ) {
+    return true
+  }
   return false
 })
 const isPlayerTurnRollTwo = computed(() => {
-  if (!playerTurn.value || !user.value || !session.value) { return }
-  if (playerTurn.value.playerId !== user.value.uid || session.value.playerTries < 2) { return true }
+  if (!playerTurn.value || !user.value || !session.value) {
+    return
+  }
+  if (
+    playerTurn.value.playerId !== user.value.uid ||
+    session.value.playerTries < 2
+  ) {
+    return true
+  }
   return false
 })
 const isPlayerTurnRollThree = computed(() => {
-  if (!playerTurn.value || !user.value || !session.value) { return }
-  if (playerTurn.value.playerId !== user.value.uid || session.value.playerTries < 1) { return true }
+  if (!playerTurn.value || !user.value || !session.value) {
+    return
+  }
+  if (
+    playerTurn.value.playerId !== user.value.uid ||
+    session.value.playerTries < 1
+  ) {
+    return true
+  }
   return false
 })
 
@@ -161,8 +249,12 @@ const trueRandom = () => {
 }
 
 const rollOne = async () => {
-  if (!session.value) { return }
-  if (session.value.playerTries < 3) { return }
+  if (!session.value) {
+    return
+  }
+  if (session.value.playerTries < 3) {
+    return
+  }
 
   diceOnBoard.value = []
 
@@ -178,9 +270,15 @@ const rollOne = async () => {
 }
 
 const rollTwo = async () => {
-  if (!session.value) { return }
-  if (session.value.playerTries < 2) { return }
-  if (!diceOnBoard.value.length) { return }
+  if (!session.value) {
+    return
+  }
+  if (session.value.playerTries < 2) {
+    return
+  }
+  if (!diceOnBoard.value.length) {
+    return
+  }
 
   let diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
@@ -200,9 +298,15 @@ const rollTwo = async () => {
 }
 
 const rollThree = async () => {
-  if (!session.value) { return }
-  if (session.value.playerTries < 1) { return }
-  if (!diceOnBoard.value.length) { return }
+  if (!session.value) {
+    return
+  }
+  if (session.value.playerTries < 1) {
+    return
+  }
+  if (!diceOnBoard.value.length) {
+    return
+  }
 
   let diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
@@ -222,7 +326,9 @@ const rollThree = async () => {
 }
 
 const removeDice = async (index: number) => {
-  if (!session.value) { return }
+  if (!session.value) {
+    return
+  }
   const diceSession = session.value
   diceOnBoard.value.push(diceSession.diceOnHand[index])
   diceSession.diceOnBoard.push(diceOnHand.value[index])
@@ -233,7 +339,9 @@ const removeDice = async (index: number) => {
 }
 
 const addDice = async (index: number) => {
-  if (!session.value) { return }
+  if (!session.value) {
+    return
+  }
   const diceSession = session.value
   diceOnHand.value.push(diceSession.diceOnBoard[index])
   diceSession.diceOnHand.push(diceOnBoard.value[index])
@@ -244,17 +352,24 @@ const addDice = async (index: number) => {
 }
 
 const sendMessage = async () => {
-  if (!message.value && !user.value && !session.value) { return }
-  const username = session.value?.players.find((player: any) => player.id === user.value?.uid)?.username
-  await setDoc(sessionRef, {
-    messages: arrayUnion({
-      username,
-      content: message.value
-    })
-  }, { merge: true })
+  if (!message.value && !user.value && !session.value) {
+    return
+  }
+  const username = session.value?.players.find(
+    (player: any) => player.id === user.value?.uid
+  )?.username
+  await setDoc(
+    sessionRef,
+    {
+      messages: arrayUnion({
+        username,
+        content: message.value
+      })
+    },
+    { merge: true }
+  )
   message.value = ''
 }
-
 </script>
 
 <style scoped>
@@ -279,7 +394,7 @@ const sendMessage = async () => {
 }
 
 .timer-content {
-  border: 2px solid rgba(0, 0, 0, .8);
+  border: 2px solid rgba(0, 0, 0, 0.8);
   border-radius: 5px;
 }
 
@@ -287,7 +402,7 @@ const sendMessage = async () => {
   cursor: pointer;
   position: absolute;
   top: 120px;
-  right: 40px;
+  right: 20px;
   transform: rotate(15deg);
 }
 
@@ -295,7 +410,7 @@ const sendMessage = async () => {
   cursor: pointer;
   position: absolute;
   top: 200px;
-  right: 40px;
+  right: 20px;
   transform: rotate(15deg);
 }
 
@@ -303,22 +418,22 @@ const sendMessage = async () => {
   cursor: pointer;
   position: absolute;
   top: 280px;
-  right: 40px;
+  right: 20px;
   transform: rotate(15deg);
 }
 
-.dice-plate-container{
+.dice-plate-container {
   height: 70px;
-  border: 2px solid rgba(0, 0, 0, .8);
+  border: 2px solid rgba(0, 0, 0, 0.8);
 }
 
 .dice-container {
   width: 60px;
   height: 60px;
-  border: 2px solid rgba(0, 0, 0, .8);
+  border: 2px solid rgba(0, 0, 0, 0.8);
   border-radius: 5px;
   margin: 5px;
-  background-color: rgba(255, 255, 255, .8);
+  background-color: rgba(255, 255, 255, 0.8);
   display: inline-block;
 }
 </style>

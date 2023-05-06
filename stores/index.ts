@@ -5,7 +5,8 @@ import {
 } from '@firebase/firestore'
 import {
   Timestamp,
-  User, Word,
+  User,
+  Word,
   LvSession,
   DiceSession,
   DiceSessionPlayerTurn
@@ -84,38 +85,48 @@ type DatabaseDiceSessionType = NestedTypeMapper<
   Timestamp,
   FirestoreTimestamp
 >
-export type LocalDiceSessionType = NestedTypeMapper<DiceSession, Timestamp, Date>
-export const diceSessionConverter: FirestoreDataConverter<LocalDiceSessionType> = {
-  toFirestore: item => item,
-  fromFirestore: (
-    snapshot: QueryDocumentSnapshot<DatabaseDiceSessionType>,
-    options
-  ) => {
-    const data = snapshot.data(options)
-    return {
-      ...data,
-      id: snapshot.id,
-      creationDate: data.creationDate.toDate()
+export type LocalDiceSessionType = NestedTypeMapper<
+  DiceSession,
+  Timestamp,
+  Date
+>
+export const diceSessionConverter: FirestoreDataConverter<LocalDiceSessionType> =
+  {
+    toFirestore: item => item,
+    fromFirestore: (
+      snapshot: QueryDocumentSnapshot<DatabaseDiceSessionType>,
+      options
+    ) => {
+      const data = snapshot.data(options)
+      return {
+        ...data,
+        id: snapshot.id,
+        creationDate: data.creationDate.toDate()
+      }
     }
   }
-}
 
 type DatabaseDiceSessionPlayerTurnType = NestedTypeMapper<
   DiceSessionPlayerTurn,
   Timestamp,
   FirestoreTimestamp
 >
-export type LocalDiceSessionPlayerTurnType = NestedTypeMapper<DiceSessionPlayerTurn, Timestamp, Date>
-export const diceSessionPlayerTurnConverter: FirestoreDataConverter<LocalDiceSessionPlayerTurnType> = {
-  toFirestore: item => item,
-  fromFirestore: (
-    snapshot: QueryDocumentSnapshot<DatabaseDiceSessionPlayerTurnType>,
-    options
-  ) => {
-    const data = snapshot.data(options)
-    return {
-      ...data,
-      id: snapshot.id
+export type LocalDiceSessionPlayerTurnType = NestedTypeMapper<
+  DiceSessionPlayerTurn,
+  Timestamp,
+  Date
+>
+export const diceSessionPlayerTurnConverter: FirestoreDataConverter<LocalDiceSessionPlayerTurnType> =
+  {
+    toFirestore: item => item,
+    fromFirestore: (
+      snapshot: QueryDocumentSnapshot<DatabaseDiceSessionPlayerTurnType>,
+      options
+    ) => {
+      const data = snapshot.data(options)
+      return {
+        ...data,
+        id: snapshot.id
+      }
     }
   }
-}

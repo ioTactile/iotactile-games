@@ -17,7 +17,8 @@ export default defineNuxtConfig({
     config: {
       apiKey: 'AIzaSyDROkpZDuHw2KvV3OgPu9P-WJbk4_4-KJc',
       authDomain: 'iotactile-games.firebaseapp.com',
-      databaseURL: 'https://iotactile-games-default-rtdb.europe-west1.firebasedatabase.app',
+      databaseURL:
+        'https://iotactile-games-default-rtdb.europe-west1.firebasedatabase.app',
       projectId: 'iotactile-games',
       storageBucket: 'iotactile-games.appspot.com',
       messagingSenderId: '863733555330',

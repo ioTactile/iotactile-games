@@ -7,9 +7,7 @@
   >
     <v-card color="main">
       <v-card-title class="d-flex align-center">
-        <span class="text-h5 mr-auto">
-          Venez vous amuser !
-        </span>
+        <span class="text-h5 mr-auto"> Venez vous amuser ! </span>
         <v-btn
           icon="mdi-close"
           variant="text"
@@ -18,10 +16,18 @@
         />
       </v-card-title>
       <v-tabs v-model="tab" grow color="buttonBack">
-        <v-tab value="one" class="text-capitalize" @click="createAccount = false">
+        <v-tab
+          value="one"
+          class="text-capitalize"
+          @click="createAccount = false"
+        >
           Connexion
         </v-tab>
-        <v-tab value="two" class="text-capitalize" @click="createAccount = true">
+        <v-tab
+          value="two"
+          class="text-capitalize"
+          @click="createAccount = true"
+        >
           Inscription
         </v-tab>
       </v-tabs>
@@ -30,8 +36,18 @@
           <v-window v-model="tab">
             <v-window-item value="one">
               <template v-if="!createAccount">
-                <InputsEmail v-model="email" variant="outlined" icon class="mt-2" name="email" />
-                <InputsPassword v-if="!forgotPassword" v-model="password" variant="outlined" />
+                <InputsEmail
+                  v-model="email"
+                  variant="outlined"
+                  icon
+                  class="mt-2"
+                  name="email"
+                />
+                <InputsPassword
+                  v-if="!forgotPassword"
+                  v-model="password"
+                  variant="outlined"
+                />
               </template>
               <div class="d-flex justify-center mb-10">
                 <v-btn
@@ -46,7 +62,13 @@
 
             <v-window-item value="two">
               <template v-if="createAccount">
-                <InputsEmail v-model="email" variant="outlined" icon class="mt-2" name="createEmail" />
+                <InputsEmail
+                  v-model="email"
+                  variant="outlined"
+                  icon
+                  class="mt-2"
+                  name="createEmail"
+                />
                 <InputsPasswordFirst v-model="password" variant="outlined" />
               </template>
             </v-window-item>
@@ -86,14 +108,18 @@ import { FirebaseError } from '@firebase/util'
 import { Timestamp, doc, setDoc } from 'firebase/firestore'
 import { useFirestore, useCurrentUser, useFirebaseAuth } from 'vuefire'
 import { userConverter } from '~/stores'
+
 const { notifier } = useNotifier()
 const db = useFirestore()
 const user = useCurrentUser()
 const auth = useFirebaseAuth()
+
 defineProps<{
   modelValue: boolean
 }>()
+
 const emits = defineEmits<{(e: 'update:modelValue', value: boolean): void }>()
+
 const email = ref('')
 const password = ref('')
 const userClaims = ref<null | ParsedToken>(null)
@@ -103,17 +129,20 @@ const forgotPassword = ref(false)
 const loading = ref<'email' | null>(null)
 const form = ref<VForm>()
 const tab = ref(null)
+
 onBeforeMount(async () => {
   if (user.value) {
     const { claims } = await getIdTokenResult(user.value, true)
     userClaims.value = claims
   }
 })
+
 const login = async () => {
   if (!auth || !(await form.value?.validate())?.valid) {
     return
   }
   loading.value = 'email'
+
   try {
     if (createAccount.value) {
       createUserWithEmailAndPassword(auth, email.value, password.value).then(

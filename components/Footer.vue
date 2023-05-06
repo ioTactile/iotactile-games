@@ -16,7 +16,10 @@
         </v-btn>
         <v-col cols="12" class="text-center mt-4">
           © {{ new Date().getFullYear() }} - Réalisé par
-          <a href="https://github.com/ioTactile" class="text-decoration-none text-headline">
+          <a
+            href="https://github.com/ioTactile"
+            class="text-decoration-none text-headline"
+          >
             <strong>iotactile</strong>
           </a>
         </v-col>
@@ -32,7 +35,7 @@ const { xs } = useDisplay()
 
 const links = [
   {
-    title: 'Page d\'accueil',
+    title: "Page d'accueil",
     link: '/'
   },
   {

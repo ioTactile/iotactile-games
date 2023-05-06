@@ -112,11 +112,7 @@ const updateProfile = async () => {
     if (user.value) {
       const userId = user.value.uid
       const userRef = doc(db, 'users', userId).withConverter(userConverter)
-      await setDoc(
-        userRef,
-        { username: username.value },
-        { merge: true }
-      )
+      await setDoc(userRef, { username: username.value }, { merge: true })
       notifier({
         content: 'Profil mis à jour',
         color: 'main'

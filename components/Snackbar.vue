@@ -4,7 +4,11 @@
       {{ notification.content }}
     </div>
     <template #actions>
-      <v-btn color="stroke" icon="mdi-close" @click="notification.show = false" />
+      <v-btn
+        color="stroke"
+        icon="mdi-close"
+        @click="notification.show = false"
+      />
     </template>
   </v-snackbar>
 </template>

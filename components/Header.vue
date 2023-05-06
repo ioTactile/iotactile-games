@@ -9,12 +9,21 @@
         </v-app-bar-title>
       </NuxtLink>
       <v-spacer />
-      <span v-if="username" class="d-none d-sm-block">Bonjour, {{ username }}</span>
+      <span
+        v-if="username"
+        class="d-none d-sm-block"
+      >Bonjour, {{ username }}</span>
       <v-btn icon="mdi-account" size="large" @click="isLogin('/profil')" />
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" width="200">
       <v-list nav class="pa-0">
-        <v-list-item v-for="(item, i) in items" :key="i" :value="item" :to="item.link" active-color="highlight">
+        <v-list-item
+          v-for="(item, i) in items"
+          :key="i"
+          :value="item"
+          :to="item.link"
+          active-color="highlight"
+        >
           {{ item.title }}
         </v-list-item>
       </v-list>

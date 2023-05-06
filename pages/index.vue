@@ -1,9 +1,7 @@
 <template>
   <v-container class="container">
     <!-- Hero -->
-    <v-row
-      class="mx-auto"
-    >
+    <v-row class="mx-auto">
       <!-- Text -->
       <v-col cols="12">
         <h1 class="text-h2 text-md-h1 mb-8">
@@ -13,8 +11,10 @@
           Bienvenue à vous
         </h2>
         <p class="text-h6 text-md-h5">
-          De nombreux jeux vous attendent pour vous amuser en famille ou entre amis.<br>
-          Vous trouverez les jeux dans la barre de navigation à gauche de votre écran.
+          De nombreux jeux vous attendent pour vous amuser en famille ou entre
+          amis.<br>
+          Vous trouverez les jeux dans la barre de navigation à gauche de votre
+          écran.
         </p>
       </v-col>
       <!-- Logo -->
