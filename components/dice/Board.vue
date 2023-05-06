@@ -419,7 +419,7 @@
           <span class="font-weight-bold bg-dicePrimary border-bottom text-center">{{ checkUpperTotalPlayerThree ? checkUpperTotalPlayerThree : 0 }}</span>
           <span class="bg-dicePrimary divider border-bottom text-center" />
           <v-btn
-            v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
+            v-if="isDices && isPlayerTurnThree && !scores.playerThree.threeOfAKind"
             variant="plain"
             :disabled="playerThree()"
             height="23"
@@ -430,7 +430,7 @@
             {{ threeOfAKindInput }}
           </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.threeOfAKind !== 0 ? scores.playerThree.threeOfAKind : 0 }}</span>
           <v-btn
-            v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
+            v-if="isDices && isPlayerTurnThree && !scores.playerThree.fourOfAKind"
             variant="plain"
             :disabled="playerThree()"
             height="23"
@@ -441,7 +441,7 @@
             {{ fourOfAKindInput }}
           </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.fourOfAKind !== 0 ? scores.playerThree.fourOfAKind : 0 }}</span>
           <v-btn
-            v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
+            v-if="isDices && isPlayerTurnThree && !scores.playerThree.fullHouse"
             variant="plain"
             :disabled="playerThree()"
             height="23"
@@ -452,7 +452,7 @@
             {{ fullHouseInput }}
           </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.fullHouse !== 0 ? scores.playerThree.fullHouse : 0 }}</span>
           <v-btn
-            v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
+            v-if="isDices && isPlayerTurnThree && !scores.playerThree.smallStraight"
             variant="plain"
             :disabled="playerThree()"
             height="23"
@@ -463,7 +463,7 @@
             {{ smallStraightInput }}
           </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.smallStraight !== 0 ? scores.playerThree.smallStraight : 0 }}</span>
           <v-btn
-            v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
+            v-if="isDices && isPlayerTurnThree && !scores.playerThree.largeStraight"
             variant="plain"
             :disabled="playerThree()"
             height="23"
@@ -474,7 +474,7 @@
             {{ largeStraightInput }}
           </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.largeStraight !== 0 ? scores.playerThree.largeStraight : 0 }}</span>
           <v-btn
-            v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
+            v-if="isDices && isPlayerTurnThree && !scores.playerThree.dice"
             variant="plain"
             :disabled="playerThree()"
             height="23"
@@ -485,7 +485,7 @@
             {{ diceInput }}
           </v-btn><span v-else class="border-bottom text-center">{{ scores.playerThree.dice !== 0 ? scores.playerThree.dice : 0 }}</span>
           <v-btn
-            v-if="isDices && isPlayerTurnThree && !scores.playerThree.one"
+            v-if="isDices && isPlayerTurnThree && !scores.playerThree.chance"
             variant="plain"
             :disabled="playerThree()"
             height="23"
@@ -695,56 +695,65 @@ const dices = computed(() => {
 })
 
 const isPlayerTurnOne = computed(() => {
-  if (playerTurn.value?.playerId === session.value?.players[0].id) { return true }
+  if (!playerTurn.value || !session.value) { return }
+  if (playerTurn.value.playerId === session.value.players[0].id) { return true }
   return false
 })
 const isPlayerTurnTwo = computed(() => {
-  if (playerTurn.value?.playerId === session.value?.players[1].id) { return true }
+  if (!playerTurn.value || !session.value) { return }
+  if (playerTurn.value.playerId === session.value.players[1].id) { return true }
   return false
 })
 const isPlayerTurnThree = computed(() => {
-  if (playerTurn.value?.playerId === session.value?.players[2].id) { return true }
+  if (!playerTurn.value || !session.value) { return }
+  if (playerTurn.value.playerId === session.value.players[2].id) { return true }
   return false
 })
 const isPlayerTurnFour = computed(() => {
-  if (playerTurn.value?.playerId === session.value?.players[3].id) { return true }
+  if (!playerTurn.value || !session.value) { return }
+  if (playerTurn.value.playerId === session.value.players[3].id) { return true }
   return false
 })
-
-const playerOne = () => {
-  if ((sessionDataPlayers && user.value) && user.value?.uid === sessionDataPlayers[0].id) {
-    return false
-  }
-  return true
-}
-const playerTwo = () => {
-  if ((sessionDataPlayers && user.value) && user.value?.uid === sessionDataPlayers[1].id) {
-    return false
-  }
-  return true
-}
-const playerThree = () => {
-  if ((sessionDataPlayers && user.value) && user.value?.uid === sessionDataPlayers[2].id) { return false }
-  return true
-}
-const playerFour = () => {
-  if ((sessionDataPlayers && user.value) && user.value?.uid === sessionDataPlayers[3].id) { return false }
-  return true
-}
-
-const switchPlayerTurn = async () => {
-  if (!session.value) { return }
-  const playerTurnIndex = session.value.players.findIndex((player: any) => player.id === playerTurn.value?.playerId)
-  const nextPlayerTurnIndex = playerTurnIndex === session.value.players.length - 1 ? 0 : playerTurnIndex + 1
-  await setDoc(playerTurnRef, { playerId: session.value.players[nextPlayerTurnIndex].id }, { merge: true })
-  await setDoc(sessionRef, { diceOnHand: [], diceOnBoard: [], playerTries: 3, remainingTurns: session.value.remainingTurns-- }, { merge: true })
-}
-
 const isDices = computed(() => {
   if (!session.value) { return false }
   if (session.value.diceOnHand.length < 1 && session.value.diceOnBoard.length < 1) { return false }
   return true
 })
+
+// Methods
+
+const playerOne = () => {
+  if (!sessionDataPlayers || !user.value) { return }
+  if (user.value.uid === sessionDataPlayers[0].id) { return false }
+  return true
+}
+const playerTwo = () => {
+  if (!sessionDataPlayers || !user.value) { return }
+  if (user.value.uid === sessionDataPlayers[1].id) { return false }
+  return true
+}
+const playerThree = () => {
+  if (!sessionDataPlayers || !user.value) { return }
+  if (user.value.uid === sessionDataPlayers[2].id) { return false }
+  return true
+}
+const playerFour = () => {
+  if (!sessionDataPlayers || !user.value) { return }
+  if (user.value.uid === sessionDataPlayers[3].id) { return false }
+  return true
+}
+const switchPlayerTurn = async () => {
+  if (!session.value) { return }
+  const playerTurnIndex = session.value.players.findIndex((player: any) => player.id === playerTurn.value?.playerId)
+  const nextPlayerTurnIndex = playerTurnIndex === session.value.players.length - 1 ? 0 : playerTurnIndex + 1
+  await setDoc(playerTurnRef, { playerId: session.value.players[nextPlayerTurnIndex].id }, { merge: true })
+  await setDoc(sessionRef, { diceOnHand: [], diceOnBoard: [], playerTries: 3, remainingTurns: reduceRemainingTurn() }, { merge: true })
+}
+const reduceRemainingTurn = () => {
+  if (!session.value) { return }
+  if (session.value.remainingTurns === 0) { return }
+  return session.value.remainingTurns--
+}
 
 // Inputs value
 
@@ -810,22 +819,22 @@ const fullHouseInput = computed(() => {
   }
 })
 const smallStraightInput = computed(() => {
-  dices.value.sort()
-  if (dices.value.includes(1) && dices.value.includes(2) && dices.value.includes(3) && dices.value.includes(4)) {
+  const newDices = dices.value.sort()
+  if (newDices.includes(1) && newDices.includes(2) && newDices.includes(3) && newDices.includes(4)) {
     return 30
-  } else if (dices.value.includes(2) && dices.value.includes(3) && dices.value.includes(4) && dices.value.includes(5)) {
+  } else if (newDices.includes(2) && newDices.includes(3) && newDices.includes(4) && newDices.includes(5)) {
     return 30
-  } else if (dices.value.includes(3) && dices.value.includes(4) && dices.value.includes(5) && dices.value.includes(6)) {
+  } else if (newDices.includes(3) && newDices.includes(4) && newDices.includes(5) && newDices.includes(6)) {
     return 30
   } else {
     return 0
   }
 })
 const largeStraightInput = computed(() => {
-  dices.value.sort()
-  if (dices.value.includes(1) && dices.value.includes(2) && dices.value.includes(3) && dices.value.includes(4) && dices.value.includes(5)) {
+  const newDices = dices.value.sort()
+  if (newDices.includes(1) && newDices.includes(2) && newDices.includes(3) && newDices.includes(4) && newDices.includes(5)) {
     return 40
-  } else if (dices.value.includes(2) && dices.value.includes(3) && dices.value.includes(4) && dices.value.includes(5) && dices.value.includes(6)) {
+  } else if (newDices.includes(2) && newDices.includes(3) && newDices.includes(4) && newDices.includes(5) && newDices.includes(6)) {
     return 40
   } else {
     return 0
@@ -843,7 +852,8 @@ const diceInput = computed(() => {
   }
 })
 const chanceInput = computed(() => {
-  return dices.value.reduce((acc, dice) => acc + dice, 0)
+  const chance = dices.value
+  return chance.reduce((acc, dice) => acc + dice, 0)
 })
 
 // Save Inputs value
