@@ -9,10 +9,6 @@
         </v-app-bar-title>
       </NuxtLink>
       <v-spacer />
-      <span
-        v-if="username"
-        class="d-none d-sm-block"
-      >Bonjour, {{ username }}</span>
       <v-btn icon="mdi-account" size="large" @click="isLogin('/profil')" />
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" width="200">
