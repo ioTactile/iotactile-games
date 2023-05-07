@@ -368,7 +368,7 @@ const removeDice = async (index: number) => {
     return
   }
   const diceSession = session.value
-  diceOnBoard.value.push(diceSession.diceOnHand[index])
+  diceOnBoard.value.push(diceOnHand.value[index])
   diceSession.diceOnBoard.push(diceOnHand.value[index])
   await setDoc(sessionRef, diceSession, { merge: true })
   diceOnHand.value.splice(index, 1)
@@ -381,7 +381,7 @@ const addDice = async (index: number) => {
     return
   }
   const diceSession = session.value
-  diceOnHand.value.push(diceSession.diceOnBoard[index])
+  diceOnHand.value.push(diceOnBoard.value[index])
   diceSession.diceOnHand.push(diceOnBoard.value[index])
   await setDoc(sessionRef, diceSession, { merge: true })
   diceOnBoard.value.splice(index, 1)
