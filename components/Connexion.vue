@@ -62,11 +62,17 @@
 
             <v-window-item value="two">
               <template v-if="createAccount">
+                <InputsUsername
+                  v-model="username"
+                  variant="outlined"
+                  icon
+                  class="mt-2"
+                  name="username"
+                />
                 <InputsEmail
                   v-model="email"
                   variant="outlined"
                   icon
-                  class="mt-2"
                   name="createEmail"
                 />
                 <InputsPasswordFirst v-model="password" variant="outlined" />
@@ -121,6 +127,7 @@ defineProps<{
 const emits = defineEmits<{(e: 'update:modelValue', value: boolean): void }>()
 
 const email = ref('')
+const username = ref('')
 const password = ref('')
 const userClaims = ref<null | ParsedToken>(null)
 const date = ref(new Date(Date.now()))
@@ -155,6 +162,7 @@ const login = async () => {
             {
               id: credentials.user.uid,
               email: email.value,
+              username: username.value,
               creationDate: Timestamp.fromDate(date.value),
               updateDate: Timestamp.now()
             },

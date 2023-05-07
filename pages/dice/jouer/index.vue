@@ -3,12 +3,12 @@
     <v-row>
       <v-divider class="mb-4" />
       <v-col cols="6" class="text-end">
-        <v-btn variant="flat" color="tertiary" @click="quickJoin">
+        <v-btn variant="flat" color="tertiary" :loading="loading" @click="quickJoin">
           Partie rapide
         </v-btn>
       </v-col>
       <v-col cols="6" class="text-start">
-        <v-btn variant="flat" color="tertiary" @click="create">
+        <v-btn variant="flat" color="tertiary" :loading="loading" @click="create">
           Créer une session
         </v-btn>
       </v-col>
@@ -39,12 +39,13 @@
             </div>
           </v-card-text>
           <v-card-actions class="d-flex justify-space-between">
-            <v-btn color="error" @click="leave(session.id)">
+            <v-btn color="error" :loading="leaving" @click="leave(session.id)">
               Quitter
             </v-btn>
             <v-btn
               v-if="!session.isFull && session.players[0].id !== user?.uid"
               color="tertiary"
+              :loading="loading"
               @click="join(session.id)"
             >
               {{ session.isFull ? 'Session pleine' : 'Rejoindre' }}
@@ -56,6 +57,7 @@
               "
               color="tertiary"
               variant="outlined"
+              :loading="loading"
               @click="goTo(session.id)"
             >
               Rejoindre
@@ -91,6 +93,7 @@ const id = ref<string | null>(null)
 const date = ref(new Date(Date.now()))
 
 const loading = ref(false)
+const leaving = ref(false)
 const sessionsRef = collection(db, 'diceSessions').withConverter(
   diceSessionConverter
 )
@@ -116,21 +119,21 @@ const initScores = () => {
   }
   const scores = {
     id: user.value.uid,
-    one: 0,
-    two: 0,
-    three: 0,
-    four: 0,
-    five: 0,
-    six: 0,
+    // one: 0,
+    // two: 0,
+    // three: 0,
+    // four: 0,
+    // five: 0,
+    // six: 0,
     subtotal: 0,
     upperTotal: 0,
-    threeOfAKind: 0,
-    fourOfAKind: 0,
-    fullHouse: 0,
-    smallStraight: 0,
-    largeStraight: 0,
-    chance: 0,
-    dice: 0,
+    // threeOfAKind: 0,
+    // fourOfAKind: 0,
+    // fullHouse: 0,
+    // smallStraight: 0,
+    // largeStraight: 0,
+    // chance: 0,
+    // dice: 0,
     lowerTotal: 0,
     total: 0
   }
@@ -144,6 +147,7 @@ const goTo = (sessionId: string) => {
 
 const create = async () => {
   if (!user.value) {
+    notifier({ content: 'Tu dois être connecté', color: 'error' })
     return
   }
   loading.value = true
@@ -160,7 +164,7 @@ const create = async () => {
       session.players.find(player => player.id === user.value?.uid)
     )
     if (session) {
-      notifier({ content: 'Vous êtes déjà dans une session', color: 'error' })
+      notifier({ content: 'Tu es déjà dans une session', color: 'error' })
       return
     }
     const sessionRef = doc(sessionsRef, id.value)
@@ -196,6 +200,7 @@ const create = async () => {
 
 const quickJoin = async () => {
   if (!user.value) {
+    notifier({ content: 'Tu dois être connecté', color: 'error' })
     return
   }
   loading.value = true
@@ -212,7 +217,7 @@ const quickJoin = async () => {
       session.players.find(player => player.id === user.value?.uid)
     )
     if (session) {
-      notifier({ content: 'Vous êtes déjà dans une session', color: 'error' })
+      notifier({ content: 'Tu es déjà dans une session', color: 'error' })
       return
     }
     if (sessions.length === 0) {
@@ -275,7 +280,7 @@ const join = async (sessionId: string) => {
       return
     }
     if (session.players.find(player => player.id === user.value?.uid)) {
-      notifier({ content: 'Vous êtes déjà dans cette session', color: 'error' })
+      notifier({ content: 'Tu es déjà dans cette session', color: 'error' })
       return
     }
     if (session.players.length >= 4) {
@@ -321,9 +326,10 @@ const join = async (sessionId: string) => {
 
 const leave = async (sessionId: string) => {
   if (!user.value) {
+    notifier({ content: 'Tu dois être connecté', color: 'error' })
     return
   }
-  loading.value = true
+  leaving.value = true
 
   try {
     const sessionRef = doc(sessionsRef, sessionId)
@@ -372,7 +378,7 @@ const leave = async (sessionId: string) => {
     }
     await setDoc(sessionRef, session)
   } finally {
-    loading.value = false
+    leaving.value = false
   }
 }
 

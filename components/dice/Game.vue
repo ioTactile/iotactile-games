@@ -26,16 +26,16 @@
                 </v-btn>
               </v-col>
               <v-col cols="2">
-                <!-- <div class="timer-container">
+                <div class="timer-container">
                   <span class="timer-content bg-dicePrimary text-h5 px-2">{{
                     timeLeft
                   }}</span>
-                </div> -->
+                </div>
                 <div class="cup-one-container">
                   <v-btn
                     class="d-flex justify-center align-center"
                     variant="text"
-                    :disabled="isPlayerTurnRollOne"
+                    :disabled="isPlayerTurnRollOne || session.isFinished || !session.isStarted"
                     heigth="80px"
                     width="50px"
                     @click="rollOne"
@@ -47,7 +47,7 @@
                   <v-btn
                     class="d-flex justify-center align-center"
                     variant="text"
-                    :disabled="isPlayerTurnRollTwo"
+                    :disabled="isPlayerTurnRollTwo || session.isFinished || !session.isStarted"
                     heigth="80px"
                     width="50px"
                     @click="rollTwo"
@@ -59,7 +59,7 @@
                   <v-btn
                     class="d-flex justify-center align-center"
                     variant="text"
-                    :disabled="isPlayerTurnRollThree"
+                    :disabled="isPlayerTurnRollThree || session.isFinished || !session.isStarted"
                     heigth="80px"
                     width="50px"
                     @click="rollThree"
@@ -157,11 +157,12 @@
 </template>
 
 <script lang="ts" setup async>
-import { collection, doc, setDoc, arrayUnion } from 'firebase/firestore'
+import { collection, doc, setDoc, arrayUnion, onSnapshot } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
 import { diceSessionConverter, diceSessionPlayerTurnConverter } from '~/stores'
 import { useDicesStore } from '~/stores/dices'
+import { useTimerStore } from '~/stores/timer'
 
 // const { notifier } = useNotifier()
 const db = useFirestore()
@@ -169,7 +170,9 @@ const user = useCurrentUser()
 const route = useRoute()
 
 const dicesStore = useDicesStore()
+const timerStore = useTimerStore()
 const { diceOnBoard, diceOnHand } = storeToRefs(dicesStore)
+const { timer } = storeToRefs(timerStore)
 
 const sessionRef = doc(
   db,
@@ -187,29 +190,50 @@ const playerTurn = useDocument(
 )
 
 const message = ref<string>('')
-// const timeLeft = ref<string>('1:30')
-// const remainingTime = ref<number>(90)
+const timeLeft = ref<string>('1:30')
+const isTimerRunning = ref(false)
+let intervalId: NodeJS.Timeout | null = null
 
 const startGame = async () => {
   if (!session.value) {
     return
   }
   await setDoc(sessionRef, { isStarted: true }, { merge: true })
-  // startTimer()
+  startTimer()
 }
 
-// const startTimer = () => {
-//   remainingTime.value = 90
-//   setInterval(() => {
-//     if (remainingTime.value === 0 || !remainingTime.value) {
-//       return
-//     }
-//     remainingTime.value--
-//     const minutes = Math.floor(remainingTime.value / 60)
-//     const seconds = remainingTime.value % 60
-//     timeLeft.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
-//   }, 1000)
-// }
+const startTimer = () => {
+  clearInterval(intervalId!)
+  timer.value = 90
+  timeLeft.value = '1:30'
+  intervalId = setInterval(() => {
+    if (timer.value === 0 || !timer.value) {
+      clearInterval(intervalId!)
+      isTimerRunning.value = false
+      return
+    }
+    timer.value--
+    const minutes = Math.floor(timer.value / 60)
+    const seconds = timer.value % 60
+    timeLeft.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+  }, 1000)
+  isTimerRunning.value = true
+}
+
+onSnapshot(playerTurnRef, () => {
+  if (isTimerRunning.value && !session.value?.isFinished) {
+    startTimer()
+  }
+})
+
+onSnapshot(sessionRef, async (snapshot) => {
+  if (!snapshot.data()) {
+    return
+  }
+  if (snapshot.data().remainingTurns === 0) {
+    await setDoc(sessionRef, { isFinished: true }, { merge: true })
+  }
+})
 
 // const diceSound = () => {
 //   return new Audio('/dice.mp3')
@@ -425,7 +449,7 @@ const sendMessage = async () => {
   position: relative;
 }
 
-/* .timer-container {
+.timer-container {
   position: absolute;
   top: 50px;
   right: 30px;
@@ -434,7 +458,7 @@ const sendMessage = async () => {
 .timer-content {
   border: 2px solid rgba(0, 0, 0, 0.8);
   border-radius: 5px;
-} */
+}
 
 .cup-one-container {
   cursor: pointer;

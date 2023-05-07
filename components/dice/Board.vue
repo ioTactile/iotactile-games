@@ -327,9 +327,7 @@
           >{{ checkUpperTotalPlayerTwo ? checkUpperTotalPlayerTwo : 0 }}</span>
           <span class="bg-dicePrimary divider border-bottom text-center" />
           <v-btn
-            v-if="
-              isDices && isPlayerTurnTwo && !scores.playerTwo.threeOfAKindInput
-            "
+            v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.threeOfAKind"
             variant="plain"
             :disabled="playerTwo()"
             height="23"
@@ -344,9 +342,7 @@
               : 0
           }}</span>
           <v-btn
-            v-if="
-              isDices && isPlayerTurnTwo && !scores.playerTwo.fourOfAKindInput
-            "
+            v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.fourOfAKind"
             variant="plain"
             :disabled="playerTwo()"
             height="23"
@@ -361,9 +357,7 @@
               : 0
           }}</span>
           <v-btn
-            v-if="
-              isDices && isPlayerTurnTwo && !scores.playerTwo.fullHouseInput
-            "
+            v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.fullHouse"
             variant="plain"
             :disabled="playerTwo()"
             height="23"
@@ -376,9 +370,7 @@
             scores.playerTwo.fullHouse !== 0 ? scores.playerTwo.fullHouse : 0
           }}</span>
           <v-btn
-            v-if="
-              isDices && isPlayerTurnTwo && !scores.playerTwo.smallStraightInput
-            "
+            v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.smallStraight"
             variant="plain"
             :disabled="playerTwo()"
             height="23"
@@ -393,9 +385,7 @@
               : 0
           }}</span>
           <v-btn
-            v-if="
-              isDices && isPlayerTurnTwo && !scores.playerTwo.largeStraightInput
-            "
+            v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.largeStraight"
             variant="plain"
             :disabled="playerTwo()"
             height="23"
@@ -410,7 +400,7 @@
               : 0
           }}</span>
           <v-btn
-            v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.diceInput"
+            v-if="isDices && isPlayerTurnTwo && !scores.playerTwo.dice"
             variant="plain"
             :disabled="playerTwo()"
             height="23"
@@ -923,8 +913,11 @@ const sessionDataPlayers = sessionDoc.data()?.players
 // Computed values
 
 const dices = computed(() => {
-  const dicesOnHand = session.value?.diceOnHand
-  const dicesOnBoard = session.value?.diceOnBoard
+  if (!session.value) {
+    return
+  }
+  const dicesOnHand = session.value.diceOnHand
+  const dicesOnBoard = session.value.diceOnBoard
   const dicesItems = [...dicesOnHand, ...dicesOnBoard]
   return dicesItems
 })
@@ -1052,7 +1045,8 @@ const reduceRemainingTurn = () => {
   if (session.value.remainingTurns === 0) {
     return
   }
-  return session.value.remainingTurns--
+  const remainingTurns = session.value.remainingTurns - 1
+  return remainingTurns
 }
 
 // Inputs value
@@ -1486,7 +1480,7 @@ const checkUpperSubtotalPlayerOne = computed(() => {
     subtotal += scores.value.playerOne.five
   }
   if (scores.value.playerOne.six !== 0) {
-    subtotal += scores.value.player.six
+    subtotal += scores.value.playerOne.six
   }
 
   return subtotal
@@ -1538,6 +1532,8 @@ const checkTotalPlayerOne = computed(() => {
   return checkUpperTotalPlayerOne.value + checkLowerTotalPlayerOne.value
 })
 
+// Player Two
+
 const checkUpperSubtotalPlayerTwo = computed(() => {
   if (!scores.value) {
     return 0
@@ -1559,7 +1555,7 @@ const checkUpperSubtotalPlayerTwo = computed(() => {
     subtotal += scores.value.playerTwo.five
   }
   if (scores.value.playerTwo.six !== 0) {
-    subtotal += scores.value.player.six
+    subtotal += scores.value.playerTwo.six
   }
 
   return subtotal
@@ -1611,6 +1607,8 @@ const checkTotalPlayerTwo = computed(() => {
   return checkUpperTotalPlayerTwo.value + checkLowerTotalPlayerTwo.value
 })
 
+// Player Three
+
 const checkUpperSubtotalPlayerThree = computed(() => {
   if (!scores.value) {
     return 0
@@ -1632,7 +1630,7 @@ const checkUpperSubtotalPlayerThree = computed(() => {
     subtotal += scores.value.playerThree.five
   }
   if (scores.value.playerThree.six !== 0) {
-    subtotal += scores.value.player.six
+    subtotal += scores.value.playerThree.six
   }
 
   return subtotal
@@ -1684,6 +1682,8 @@ const checkTotalPlayerThree = computed(() => {
   return checkUpperTotalPlayerThree.value + checkLowerTotalPlayerThree.value
 })
 
+// Player Four
+
 const checkUpperSubtotalPlayerFour = computed(() => {
   if (!scores.value) {
     return 0
@@ -1705,7 +1705,7 @@ const checkUpperSubtotalPlayerFour = computed(() => {
     subtotal += scores.value.playerFour.five
   }
   if (scores.value.playerFour.six !== 0) {
-    subtotal += scores.value.player.six
+    subtotal += scores.value.playerFour.six
   }
 
   return subtotal
