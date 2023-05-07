@@ -119,7 +119,7 @@
                 }}</span>
               </td>
               <td class="text-center">
-                <div v-if="scores.playerTwo">
+                <div v-if="scores.playerThree">
                   <v-btn
                     v-if="isDices && isPlayerTurnThree && scores.playerThree.two === 69"
                     :disabled="playerThree()"
