@@ -1,32 +1,34 @@
-// build a store for dices during a round of a player (not the dices of the game)
+import { defineStore } from 'pinia'
 
-// import { defineStore } from 'pinia'
+export const useDicesStore = defineStore('dices', () => {
+  const diceOnBoard = ref<number[]>([])
+  const diceOnHand = ref<number[]>([])
 
-// export const useDicesStore = defineStore('dices', () => {
-//   const dices = ref<number[]>([])
-//   const selectedDices = ref<number[]>([])
+  // const addDiceOnBoard = (dice: number) => {
+  //   diceOnHand.value.splice(diceOnHand.value.indexOf(dice), 1)
+  //   diceOnBoard.value.push(dice)
+  // }
+  // const removeDiceOnBoard = (dice: number) => {
+  //   diceOnBoard.value.splice(diceOnBoard.value.indexOf(dice), 1)
+  //   diceOnHand.value.push(dice)
+  // }
+  // const addDiceOnHand = (dice: number) => {
+  //   diceOnBoard.value.splice(diceOnBoard.value.indexOf(dice), 1)
+  //   diceOnHand.value.push(dice)
+  // }
+  // const removeDiceOnHand = (dice: number) => {
+  //   diceOnHand.value.splice(diceOnHand.value.indexOf(dice), 1)
+  //   diceOnBoard.value.push(dice)
+  // }
+  // const resetDices = () => {
+  //   diceOnBoard.value = []
+  //   diceOnHand.value = []
+  // }
 
-//   const addDice = (dice: number) => {
-//     selectedDices.value.push(dice)
-//   }
-//   const removeDice = (dice: number) => {
-//     dices.value.splice(dices.value.indexOf(dice), 1)
-//   }
-//   const resetDices = () => {
-//     dices.value = []
-//   }
-//   const getDices = () => {
-//     return dices.value
-//   }
-
-//   return {
-//     dices,
-//     selectedDices,
-//     addDice,
-//     removeDice,
-//     resetDices,
-//     getDices
-//   }
-// }, {
-//   persist: true
-// })
+  return {
+    diceOnBoard,
+    diceOnHand
+  }
+}, {
+  persist: true
+})

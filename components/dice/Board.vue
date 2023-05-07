@@ -885,13 +885,18 @@
 <script lang="ts" setup async>
 import { doc, collection, setDoc, getDoc } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
+import { storeToRefs } from 'pinia'
 import { diceSessionConverter, diceSessionPlayerTurnConverter } from '~/stores'
+import { useDicesStore } from '~/stores/dices'
 
 // Firebase
 
 const db = useFirestore()
 const user = useCurrentUser()
 const route = useRoute()
+
+const dicesStore = useDicesStore()
+const { diceOnBoard, diceOnHand } = storeToRefs(dicesStore)
 
 const sessionRef = doc(
   db,
@@ -1037,6 +1042,8 @@ const switchPlayerTurn = async () => {
     },
     { merge: true }
   )
+  diceOnBoard.value = []
+  diceOnHand.value = []
 }
 const reduceRemainingTurn = () => {
   if (!session.value) {

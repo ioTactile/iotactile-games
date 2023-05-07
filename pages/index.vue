@@ -42,7 +42,6 @@
                     cover
                   />
                 </v-col>
-                
               </v-row>
             </v-col>
             <v-col cols="12" md="4">
@@ -50,6 +49,8 @@
                 color="dicePrimary"
                 to="/dice/jouer"
                 width="200"
+                height="56"
+                class="text-h5 text-md-h4"
               >
                 Jouer
               </v-btn>
@@ -62,6 +63,9 @@
     </v-row>
   </v-container>
 </template>
+
+<script lang="ts" setup>
+</script>
 
 <style scoped>
 .container {

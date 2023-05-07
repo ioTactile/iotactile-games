@@ -159,12 +159,17 @@
 <script lang="ts" setup async>
 import { collection, doc, setDoc, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
+import { storeToRefs } from 'pinia'
 import { diceSessionConverter, diceSessionPlayerTurnConverter } from '~/stores'
+import { useDicesStore } from '~/stores/dices'
 
 // const { notifier } = useNotifier()
 const db = useFirestore()
 const user = useCurrentUser()
 const route = useRoute()
+
+const dicesStore = useDicesStore()
+const { diceOnBoard, diceOnHand } = storeToRefs(dicesStore)
 
 const sessionRef = doc(
   db,
@@ -184,8 +189,6 @@ const playerTurn = useDocument(
 const message = ref<string>('')
 // const timeLeft = ref<string>('1:30')
 // const remainingTime = ref<number>(90)
-const diceOnBoard = ref<number[]>([])
-const diceOnHand = ref<number[]>([])
 
 const startGame = async () => {
   if (!session.value) {
@@ -207,6 +210,30 @@ const startGame = async () => {
 //     timeLeft.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
 //   }, 1000)
 // }
+
+// const diceSound = () => {
+//   return new Audio('/dice.mp3')
+// }
+// const shakeRoll = () => {
+//   return new Audio('/shake-and-roll.mp3')
+// }
+
+// onSnapshot(sessionRef, (snapshot: any) => {
+//   if (!snapshot.data()) { return }
+//   if (snapshot.data().playerTries !== session.value?.playerTries) {
+//     shakeRoll().play()
+//   }
+// })
+
+// onSnapshot(sessionRef, (snapshot: any) => {
+//   if (!snapshot.data()) { return }
+//   if (
+//     snapshot.data().diceOnBoard.length !== diceOnBoard.value.length ||
+//     snapshot.data().diceOnHand.length !== diceOnHand.value.length
+//   ) {
+//     diceSound().play()
+//   }
+// })
 
 const isPlayerTurn = computed(() => {
   if (
