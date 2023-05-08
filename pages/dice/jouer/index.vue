@@ -17,7 +17,7 @@
         <span>Rejoindre une session</span>
       </v-col>
       <v-col
-        v-for="(session, i) in sessions"
+        v-for="(session, i) in sessionsNotStarted"
         :key="i"
         cols="12"
         sm="6"
@@ -94,10 +94,10 @@ const date = ref(new Date(Date.now()))
 
 const loading = ref(false)
 const leaving = ref(false)
-const sessionsRef = collection(db, 'diceSessions').withConverter(
-  diceSessionConverter
-)
-const sessions = useCollection(collection(db, 'diceSessions'))
+const sessionsRef = collection(db, 'diceSessions').withConverter(diceSessionConverter)
+// const sessions = useCollection(collection(db, 'diceSessions'))
+const sessionsStartedQuery = query(sessionsRef, where('isStarted', '==', false))
+const sessionsNotStarted = useCollection(sessionsStartedQuery)
 const playerTurnRef = collection(db, 'diceSessionPlayerTurn')
 const scoresRef = collection(db, 'diceSessionScores')
 
@@ -160,7 +160,7 @@ const create = async () => {
     const sessions = sessionsSnapshot.docs.map(doc => doc.data())
     const session = sessions.find(session => session.players.find(player => player.id === user.value?.uid))
     if (session?.isFinished === false) {
-      notifier({ content: 'Tu es déjà dans une session', color: 'error' })
+      notifier({ content: 'Tu es déjà dans une session non terminée', color: 'error' })
       return
     }
     const sessionRef = doc(sessionsRef, id.value)

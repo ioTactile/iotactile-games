@@ -470,29 +470,29 @@
             </tr>
             <tr>
               <td class="bg-dicePrimary border-yellow-right">
-                Total de la partie inférieur
+                Total de la partie supérieure
               </td>
               <td class="text-center bg-dicePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
-                  checkLowerTotalPlayerOne !== 0 ? checkLowerTotalPlayerOne : ''
+                  checkUpperTotalPlayerOne !== 0 ? checkUpperTotalPlayerOne : ''
                 }}</span>
               </td>
               <td class="text-center bg-dicePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
-                  checkLowerTotalPlayerTwo !== 0 ? checkLowerTotalPlayerTwo : ''
+                  checkUpperTotalPlayerTwo !== 0 ? checkUpperTotalPlayerTwo : ''
                 }}</span>
               </td>
               <td class="text-center bg-dicePrimary border-yellow-right">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
-                    checkLowerTotalPlayerThree !== 0 ? checkLowerTotalPlayerThree : ''
+                    checkUpperTotalPlayerThree !== 0 ? checkUpperTotalPlayerThree : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center bg-dicePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
-                    checkLowerTotalPlayerFour !== 0 ? checkLowerTotalPlayerFour : ''
+                    checkUpperTotalPlayerFour !== 0 ? checkUpperTotalPlayerFour : ''
                   }}</span>
                 </div>
               </td>
@@ -982,26 +982,26 @@
             </tr>
             <tr>
               <td class="bg-dicePrimary border-yellow-right">
-                Total de la partie inférieur
+                Total de la partie inférieure
               </td>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-dicePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkLowerTotalPlayerOne !== 0 ? checkLowerTotalPlayerOne : ''
                 }}</span>
               </td>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-dicePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkLowerTotalPlayerTwo !== 0 ? checkLowerTotalPlayerTwo : ''
                 }}</span>
               </td>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-dicePrimary border-yellow-right">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
                     checkLowerTotalPlayerThree !== 0 ? checkLowerTotalPlayerThree : ''
                   }}</span>
                 </div>
               </td>
-              <td class="bg-dicePrimary">
+              <td class="text-center bg-dicePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
                     checkLowerTotalPlayerFour !== 0 ? checkLowerTotalPlayerFour : ''
@@ -1013,24 +1013,24 @@
               <td class="bg-dicePrimary border-yellow-right">
                 Total de la partie
               </td>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-dicePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkTotalPlayerOne !== 0 ? checkTotalPlayerOne : ''
                 }}</span>
               </td>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-dicePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkTotalPlayerTwo !== 0 ? checkTotalPlayerTwo : ''
                 }}</span>
               </td>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-dicePrimary border-yellow-right">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
                     checkTotalPlayerThree !== 0 ? checkTotalPlayerThree : ''
                   }}</span>
                 </div>
               </td>
-              <td class="bg-dicePrimary">
+              <td class="text-center bg-dicePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
                     checkTotalPlayerFour !== 0 ? checkTotalPlayerFour : ''
@@ -1058,24 +1058,12 @@ const db = useFirestore()
 const user = useCurrentUser()
 const route = useRoute()
 
-const sessionRef = doc(
-  db,
-  'diceSessions',
-  route.params.id as string
-).withConverter(diceSessionConverter)
+const sessionRef = doc(db, 'diceSessions', route.params.id as string).withConverter(diceSessionConverter)
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
-const playerTurnRef = doc(
-  db,
-  'diceSessionPlayerTurn',
-  route.params.id as string
-).withConverter(diceSessionPlayerTurnConverter)
-const playerTurn = useDocument(
-  doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id)
-)
+const playerTurnRef = doc(db, 'diceSessionPlayerTurn', route.params.id as string).withConverter(diceSessionPlayerTurnConverter)
+const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id))
 const scoresRef = doc(db, 'diceSessionScores', route.params.id as string)
-const scores = useDocument(
-  doc(collection(db, 'diceSessionScores'), scoresRef.id)
-)
+const scores = useDocument(doc(collection(db, 'diceSessionScores'), scoresRef.id))
 
 const sessionDoc = await getDoc(sessionRef)
 const sessionDataPlayers = sessionDoc.data()?.players
@@ -1195,20 +1183,16 @@ const switchPlayerTurn = async () => {
     playerTurnIndex === session.value.players.length - 1
       ? 0
       : playerTurnIndex + 1
-  await setDoc(
-    playerTurnRef,
-    { playerId: session.value.players[nextPlayerTurnIndex].id },
+  await setDoc(playerTurnRef, { playerId: session.value.players[nextPlayerTurnIndex].id },
     { merge: true }
   )
-  await setDoc(
-    sessionRef,
-    {
-      diceOnHand: [],
-      diceOnBoard: [],
-      playerTries: 3,
-      remainingTurns: reduceRemainingTurn()
-    },
-    { merge: true }
+  await setDoc(sessionRef, {
+    diceOnHand: [],
+    diceOnBoard: [],
+    playerTries: 3,
+    remainingTurns: reduceRemainingTurn()
+  },
+  { merge: true }
   )
   diceOnBoard.value = []
   diceOnHand.value = []
@@ -1394,12 +1378,16 @@ const saveOneInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.one = oneInput.value
+    scores.value.playerOne.total += oneInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.one = oneInput.value
+    scores.value.playerTwo.total += oneInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.one = oneInput.value
+    scores.value.playerThree.total += oneInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.one = oneInput.value
+    scores.value.playerFour.total += oneInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1414,12 +1402,16 @@ const saveTwoInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.two = twoInput.value
+    scores.value.playerOne.total += twoInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.two = twoInput.value
+    scores.value.playerTwo.total += twoInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.two = twoInput.value
+    scores.value.playerThree.total += twoInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.two = twoInput.value
+    scores.value.playerFour.total += twoInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1434,12 +1426,16 @@ const saveThreeInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.three = threeInput.value
+    scores.value.playerOne.total += threeInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.three = threeInput.value
+    scores.value.playerTwo.total += threeInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.three = threeInput.value
+    scores.value.playerThree.total += threeInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.three = threeInput.value
+    scores.value.playerFour.total += threeInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1454,12 +1450,16 @@ const saveFourInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.four = fourInput.value
+    scores.value.playerOne.total += fourInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.four = fourInput.value
+    scores.value.playerTwo.total += fourInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.four = fourInput.value
+    scores.value.playerThree.total += fourInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.four = fourInput.value
+    scores.value.playerFour.total += fourInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1474,12 +1474,16 @@ const saveFiveInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.five = fiveInput.value
+    scores.value.playerOne.total += fiveInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.five = fiveInput.value
+    scores.value.playerTwo.total += fiveInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.five = fiveInput.value
+    scores.value.playerThree.total += fiveInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.five = fiveInput.value
+    scores.value.playerFour.total += fiveInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1494,12 +1498,16 @@ const saveSixInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.six = sixInput.value
+    scores.value.playerOne.total += sixInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.six = sixInput.value
+    scores.value.playerTwo.total += sixInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.six = sixInput.value
+    scores.value.playerThree.total += sixInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.six = sixInput.value
+    scores.value.playerFour.total += sixInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1514,12 +1522,16 @@ const saveThreeOfAKindInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.threeOfAKind = threeOfAKindInput.value
+    scores.value.playerOne.total += threeOfAKindInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.threeOfAKind = threeOfAKindInput.value
+    scores.value.playerTwo.total += threeOfAKindInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.threeOfAKind = threeOfAKindInput.value
+    scores.value.playerThree.total += threeOfAKindInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.threeOfAKind = threeOfAKindInput.value
+    scores.value.playerFour.total += threeOfAKindInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1534,12 +1546,16 @@ const saveFourOfAKindInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.fourOfAKind = fourOfAKindInput.value
+    scores.value.playerOne.total += fourOfAKindInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.fourOfAKind = fourOfAKindInput.value
+    scores.value.playerTwo.total += fourOfAKindInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.fourOfAKind = fourOfAKindInput.value
+    scores.value.playerThree.total += fourOfAKindInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.fourOfAKind = fourOfAKindInput.value
+    scores.value.playerFour.total += fourOfAKindInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1554,12 +1570,16 @@ const saveFullHouseInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.fullHouse = fullHouseInput.value
+    scores.value.playerOne.total += fullHouseInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.fullHouse = fullHouseInput.value
+    scores.value.playerTwo.total += fullHouseInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.fullHouse = fullHouseInput.value
+    scores.value.playerThree.total += fullHouseInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.fullHouse = fullHouseInput.value
+    scores.value.playerFour.total += fullHouseInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1574,12 +1594,16 @@ const saveSmallStraightInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.smallStraight = smallStraightInput.value
+    scores.value.playerOne.total += smallStraightInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.smallStraight = smallStraightInput.value
+    scores.value.playerTwo.total += smallStraightInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.smallStraight = smallStraightInput.value
+    scores.value.playerThree.total += smallStraightInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.smallStraight = smallStraightInput.value
+    scores.value.playerFour.total += smallStraightInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1594,12 +1618,16 @@ const saveLargeStraightInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.largeStraight = largeStraightInput.value
+    scores.value.playerOne.total += largeStraightInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.largeStraight = largeStraightInput.value
+    scores.value.playerTwo.total += largeStraightInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.largeStraight = largeStraightInput.value
+    scores.value.playerThree.total += largeStraightInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.largeStraight = largeStraightInput.value
+    scores.value.playerFour.total += largeStraightInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1614,12 +1642,16 @@ const saveDiceInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.dice = diceInput.value
+    scores.value.playerOne.total += diceInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.dice = diceInput.value
+    scores.value.playerTwo.total += diceInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.dice = diceInput.value
+    scores.value.playerThree.total += diceInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.dice = diceInput.value
+    scores.value.playerFour.total += diceInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()
@@ -1634,12 +1666,16 @@ const saveChanceInput = async () => {
   }
   if (isPlayerTurnOne.value) {
     scores.value.playerOne.chance = chanceInput.value
+    scores.value.playerOne.total += chanceInput.value
   } else if (isPlayerTurnTwo.value) {
     scores.value.playerTwo.chance = chanceInput.value
+    scores.value.playerTwo.total += chanceInput.value
   } else if (isPlayerTurnThree.value) {
     scores.value.playerThree.chance = chanceInput.value
+    scores.value.playerThree.total += chanceInput.value
   } else if (isPlayerTurnFour.value) {
     scores.value.playerFour.chance = chanceInput.value
+    scores.value.playerFour.total += chanceInput.value
   }
   await setDoc(scoresRef, scores.value, { merge: true })
   switchPlayerTurn()

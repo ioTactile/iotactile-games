@@ -18,7 +18,6 @@
                 <v-btn
                   v-for="(dice, i) in session.diceOnBoard"
                   :key="i"
-                  :disabled="isPlayerTurn"
                   class="dice-container"
                   @click="addDice(i)"
                 >
@@ -35,9 +34,9 @@
                   <v-btn
                     class="d-flex justify-center align-center"
                     variant="text"
-                    :disabled="isPlayerTurnRollOne || session.isFinished || !session.isStarted"
                     heigth="80px"
                     width="50px"
+                    :style="session.playerTries < 3 ? 'opacity: 0.5' : ''"
                     @click="rollOne"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet un" height="80" width="50" />
@@ -47,9 +46,9 @@
                   <v-btn
                     class="d-flex justify-center align-center"
                     variant="text"
-                    :disabled="isPlayerTurnRollTwo || session.isFinished || !session.isStarted"
                     heigth="80px"
                     width="50px"
+                    :style="session.playerTries < 2 ? 'opacity: 0.5' : ''"
                     @click="rollTwo"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet deux" height="80" width="50" />
@@ -59,9 +58,9 @@
                   <v-btn
                     class="d-flex justify-center align-center"
                     variant="text"
-                    :disabled="isPlayerTurnRollThree || session.isFinished || !session.isStarted"
                     heigth="80px"
                     width="50px"
+                    :style="session.playerTries < 1 ? 'opacity: 0.5' : ''"
                     @click="rollThree"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet trois" height="80" width="50" />
@@ -75,7 +74,6 @@
                   <v-btn
                     v-for="(dice, i) in session.diceOnHand"
                     :key="i"
-                    :disabled="isPlayerTurn"
                     class="dice-container"
                     @click="removeDice(i)"
                   >
@@ -160,21 +158,21 @@
             </v-row>
           </v-card>
         </div>
-        <div class="d-flex justify-end mt-4 mr-2">
-          <v-btn variant="icon" :icon="isMuted === true ? 'mdi-volume-off' : 'mdi-volume-high'" @click="mutedEvent()" />
-        </div>
+        <!-- <div class="d-flex justify-end mt-4 mr-2">
+          <v-btn variant="text" :icon="isMuted === true ? 'mdi-volume-off' : 'mdi-volume-high'" @click="mutedEvent()" />
+        </div> -->
       </v-col>
     </v-row>
     <client-only>
       <v-dialog v-model="isFinishedLocal" width="600">
         <v-card color="dicePrimary card-container" rounded="lg">
-          <v-card-title class="text-h5 text-center">
+          <v-card-title class="text-h5 text-center font-weight-bold">
             <span>Partie terminée</span>
           </v-card-title>
           <v-card-text class="mt-12">
             <v-row class="podium">
               <v-col :cols="fourthPlayer ? 3 : 4" class="text-center">
-                <span class="text-h6">{{ secondPlayer ? secondPlayer : 'Deuxième' }}</span>
+                <span class="text-h6">{{ secondPlayer ? secondPlayer : '' }}</span>
                 <div class="second-place">
                   <span class="place">2</span>
                 </div>
@@ -183,13 +181,13 @@
                 <div class="d-flex justify-center align-center mb-2">
                   <v-img src="https://media.tenor.com/Luo9IUzhQt0AAAAi/crown.gif" alt="couronne" height="80" width="50" />
                 </div>
-                <span class="text-h6">{{ firstPlayer ? firstPlayer : 'Premier' }}</span>
+                <span class="text-h6">{{ firstPlayer ? firstPlayer : '' }}</span>
                 <div class="first-place">
                   <span class="place">1</span>
                 </div>
               </v-col>
               <v-col :cols="fourthPlayer ? 3 : 4" class="text-center">
-                <span class="text-h6">{{ thirdPlayer ? thirdPlayer : 'Troisième' }}</span>
+                <span class="text-h6">{{ thirdPlayer ? thirdPlayer : '' }}</span>
                 <div class="third-place">
                   <span class="place">3</span>
                 </div>
@@ -203,7 +201,12 @@
             </v-row>
           </v-card-text>
           <v-card-actions>
-            <v-btn block color="highlight" to="/dice/jouer">
+            <v-btn
+              block
+              variant="flat"
+              color="highlight"
+              to="/dice/jouer"
+            >
               Retourner au menu principal
             </v-btn>
           </v-card-actions>
@@ -223,7 +226,7 @@ import { useTimerStore } from '~/stores/timer'
 
 // Firebase
 
-// const { notifier } = useNotifier()
+const { notifier } = useNotifier()
 const db = useFirestore()
 const user = useCurrentUser()
 const route = useRoute()
@@ -258,18 +261,18 @@ const message = ref<string>('')
 const timeLeft = ref<string>('1:30')
 const isTimerRunning = ref(false)
 const isFinishedLocal = ref(false)
-const isMuted = ref(false)
+// const isMuted = ref(false)
 let intervalId: NodeJS.Timeout | null = null
-let sound: HTMLAudioElement | null = null
+// let sound: HTMLAudioElement | null = null
 
 // New Sound Effects
 
-// const diceSound = () => {
-//   return new Audio('/dice.mp3')
-// }
-// const shakeRoll = () => {
-//   return new Audio('/shake-and-roll.mp3')
-// }
+const diceSound = () => {
+  return new Audio('/dice.mp3')
+}
+const shakeRoll = () => {
+  return new Audio('/shake-and-roll.mp3')
+}
 const spongeBobDisappointed = () => {
   return new Audio('/sponge-bob-disappointed.mp3')
 }
@@ -284,17 +287,14 @@ const spongeBobRemix = () => {
 
 watch(isFinishedLocal, async (value) => {
   if (value) {
-    const userRef = doc(db, 'users', user.value?.uid)
+    const userRef = doc(db, 'users', user.value?.uid as string)
     const userDoc = await getDoc(userRef)
     const username = userDoc.data()?.username
     if (thirdPlayer.value === false) {
       if (firstPlayer.value === username) {
         spongeBobVictory().play()
         setTimeout(() => {
-          sound = spongeBobRemix()
-          sound.loop = true
-          sound.play()
-          isMuted.value = false
+          spongeBobRemix().play()
         }, 7000)
       } else if (secondPlayer.value === username) {
         spongeBobDisappointed().play()
@@ -303,10 +303,7 @@ watch(isFinishedLocal, async (value) => {
       if (firstPlayer.value === username || secondPlayer.value === username) {
         spongeBobVictory().play()
         setTimeout(() => {
-          sound = spongeBobRemix()
-          sound.loop = true
-          sound.play()
-          isMuted.value = false
+          spongeBobRemix().play()
         }, 7000)
       } else if (thirdPlayer.value === username) {
         spongeBobDisappointed().play()
@@ -315,10 +312,7 @@ watch(isFinishedLocal, async (value) => {
       if (firstPlayer.value === username || secondPlayer.value === username || thirdPlayer.value === username) {
         spongeBobVictory().play()
         setTimeout(() => {
-          sound = spongeBobRemix()
-          sound.loop = true
-          sound.play()
-          isMuted.value = false
+          spongeBobRemix().play()
         }, 7000)
       } else if (fourthPlayer.value === username) {
         spongeBobDisappointed().play()
@@ -332,75 +326,14 @@ onSnapshot(playerTurnRef, () => {
   }
 })
 onSnapshot(sessionRef, async (snapshot) => {
-  if (snapshot.data()?.remainingTurns !== session.value.remainingTurns && snapshot.data()?.remainingTurns === 0) {
+  if (snapshot.data()?.remainingTurns === 0) {
     await setDoc(sessionRef, { isFinished: true }, { merge: true })
     isFinishedLocal.value = true
   }
 })
-// onSnapshot(sessionRef, (snapshot) => {
-//   if (snapshot.data()?.playerTries === 0) { return }
-//   if (snapshot.data()?.playerTries !== session.value?.playerTries) {
-//     shakeRoll().play()
-//   }
-// })
-// onSnapshot(sessionRef, (snapshot) => {
-//   if (!snapshot.data()) { return }
-//   if (
-//     snapshot.data()?.diceOnBoard.length !== diceOnBoard.value.length ||
-//     snapshot.data()?.diceOnHand.length !== diceOnHand.value.length
-//   ) {
-//     diceSound().play()
-//   }
-// })
 
 // Computed values
 
-const isPlayerTurn = computed(() => {
-  if (
-    playerTurn.value &&
-    user.value &&
-    playerTurn.value.playerId !== user.value.uid
-  ) {
-    return true
-  }
-  return false
-})
-const isPlayerTurnRollOne = computed(() => {
-  if (!playerTurn.value || !user.value || !session.value) {
-    return
-  }
-  if (
-    playerTurn.value.playerId !== user.value.uid ||
-    session.value.playerTries < 3
-  ) {
-    return true
-  }
-  return false
-})
-const isPlayerTurnRollTwo = computed(() => {
-  if (!playerTurn.value || !user.value || !session.value) {
-    return
-  }
-  if (
-    playerTurn.value.playerId !== user.value.uid ||
-    session.value.playerTries < 2
-  ) {
-    return true
-  }
-  return false
-})
-const isPlayerTurnRollThree = computed(() => {
-  if (!playerTurn.value || !user.value || !session.value) {
-    return
-  }
-  if (
-    playerTurn.value.playerId !== user.value.uid ||
-    session.value.playerTries < 1
-  ) {
-    return true
-  }
-  return false
-})
 const firstPlayer = computed(() => {
   if (!scores.value || !session.value) { return }
   if (scores.value.playerOne.total === 0 || scores.value.playerTwo.total === 0) { return }
@@ -544,9 +477,16 @@ const rollOne = async () => {
   if (!session.value) {
     return
   }
-  if (session.value.playerTries < 3) {
+  if (playerTurn.value?.playerId !== user.value?.uid) {
+    notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
     return
   }
+  if (session.value.playerTries < 3) {
+    notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'dicePrimary' })
+    return
+  }
+  shakeRoll().play()
+  await sleep(3000)
 
   diceOnBoard.value = []
   diceOnHand.value = []
@@ -567,12 +507,20 @@ const rollTwo = async () => {
   if (!session.value) {
     return
   }
+  if (playerTurn.value?.playerId !== user.value?.uid) {
+    notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
+    return
+  }
   if (session.value.playerTries < 2) {
+    notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'dicePrimary' })
     return
   }
   if (!diceOnBoard.value.length) {
+    notifier({ content: 'Ta main est complète', color: 'dicePrimary' })
     return
   }
+  shakeRoll().play()
+  await sleep(3000)
 
   let diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
@@ -595,12 +543,20 @@ const rollThree = async () => {
   if (!session.value) {
     return
   }
+  if (playerTurn.value?.playerId !== user.value?.uid) {
+    notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
+    return
+  }
   if (session.value.playerTries < 1) {
+    notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'dicePrimary' })
     return
   }
   if (!diceOnBoard.value.length) {
+    notifier({ content: 'Ta main est complète', color: 'dicePrimary' })
     return
   }
+  shakeRoll().play()
+  await sleep(3000)
 
   let diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
@@ -623,6 +579,11 @@ const removeDice = async (index: number) => {
   if (!session.value) {
     return
   }
+  if (playerTurn.value?.playerId !== user.value?.uid) {
+    notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
+    return
+  }
+  diceSound().play()
   const diceSession = session.value
   diceOnBoard.value.push(diceOnHand.value[index])
   diceSession.diceOnBoard.push(diceOnHand.value[index])
@@ -636,6 +597,11 @@ const addDice = async (index: number) => {
   if (!session.value) {
     return
   }
+  if (playerTurn.value?.playerId !== user.value?.uid) {
+    notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
+    return
+  }
+  diceSound().play()
   const diceSession = session.value
   diceOnHand.value.push(diceOnBoard.value[index])
   diceSession.diceOnHand.push(diceOnBoard.value[index])
@@ -652,27 +618,30 @@ const sendMessage = async () => {
   const username = session.value?.players.find(
     (player: any) => player.id === user.value?.uid
   )?.username
-  await setDoc(
-    sessionRef,
-    {
-      messages: arrayUnion({
-        username,
-        content: message.value
-      })
-    },
-    { merge: true }
+  await setDoc(sessionRef, {
+    messages: arrayUnion({
+      username,
+      content: message.value
+    })
+  },
+  { merge: true }
   )
   message.value = ''
 }
 
-const mutedEvent = () => {
-  if (isMuted.value) {
-    sound.muted = false
-    isMuted.value = false
-  } else if (!isMuted.value) {
-    sound.muted = true
-    isMuted.value = true
-  }
+// const mutedEvent = () => {
+//   if (!sound) { return }
+//   if (isMuted.value) {
+//     sound.muted = false
+//     isMuted.value = false
+//   } else if (!isMuted.value) {
+//     sound.muted = true
+//     isMuted.value = true
+//   }
+// }
+
+const sleep = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 </script>
 
@@ -728,13 +697,13 @@ const mutedEvent = () => {
 }
 
 .dice-plate-container {
-  height: 70px;
+  height: 90px;
   border: 2px solid rgba(0, 0, 0, 0.8);
 }
 
 .dice-container {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border: 2px solid rgba(0, 0, 0, 0.8);
   border-radius: 5px;
   margin: 5px;
