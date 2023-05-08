@@ -157,13 +157,9 @@ const create = async () => {
   try {
     const sessionsQuery = query(sessionsRef, where('isFull', '==', false))
     const sessionsSnapshot = await getDocs(sessionsQuery)
-    const sessions = sessionsSnapshot.docs.map(
-      doc => doc.data() as LocalDiceSessionType
-    )
-    const session = sessions.find(session =>
-      session.players.find(player => player.id === user.value?.uid)
-    )
-    if (session) {
+    const sessions = sessionsSnapshot.docs.map(doc => doc.data())
+    const session = sessions.find(session => session.players.find(player => player.id === user.value?.uid))
+    if (session?.isFinished === false) {
       notifier({ content: 'Tu es déjà dans une session', color: 'error' })
       return
     }
