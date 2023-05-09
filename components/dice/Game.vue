@@ -495,6 +495,10 @@ const rollOne = async () => {
     notifier({ content: 'La partie n\'a pas encore commencé', color: 'dicePrimary' })
     return
   }
+  if (session.value.isFinished === true) {
+    notifier({ content: 'La partie est terminée', color: 'dicePrimary' })
+    return
+  }
   if (playerTurn.value?.playerId !== user.value?.uid) {
     notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
     return
@@ -531,6 +535,10 @@ const rollTwo = async () => {
   }
   if (session.value.isStarted === false) {
     notifier({ content: 'La partie n\'a pas encore commencé', color: 'dicePrimary' })
+    return
+  }
+  if (session.value.isFinished === true) {
+    notifier({ content: 'La partie est terminée', color: 'dicePrimary' })
     return
   }
   if (playerTurn.value?.playerId !== user.value?.uid) {
@@ -575,6 +583,10 @@ const rollThree = async () => {
   }
   if (session.value.isStarted === false) {
     notifier({ content: 'La partie n\'a pas encore commencé', color: 'dicePrimary' })
+    return
+  }
+  if (session.value.isFinished === true) {
+    notifier({ content: 'La partie est terminée', color: 'dicePrimary' })
     return
   }
   if (playerTurn.value?.playerId !== user.value?.uid) {
