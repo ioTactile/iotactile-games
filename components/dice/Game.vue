@@ -1,10 +1,10 @@
 <template>
-  <v-container v-if="session" fluid class="container">
+  <v-container v-if="session && playerTurn" fluid class="container">
     <v-row>
       <v-col cols="12" md="9" class="background-image">
         <v-row>
           <v-col class="d-flex" cols="12">
-            <dice-players :players="session.players" />
+            <dice-players :players="session.players" :is-finished="session.isFinished" :player-turn-id="playerTurn.playerId" />
           </v-col>
           <v-col cols="6">
             <dice-board
@@ -15,6 +15,9 @@
           <v-col cols="6" class="right-side-container pb-0">
             <v-row class="h-100">
               <v-col cols="10">
+                <div v-if="shakeClass" class="mt-16 ml-16">
+                  <v-img src="/cup-animation.png" alt="Animation gobelet" height="300" width="300" :class="shakeClass" />
+                </div>
                 <v-btn
                   v-for="(dice, i) in session.diceOnBoard"
                   :key="i"
@@ -25,45 +28,45 @@
                 </v-btn>
               </v-col>
               <v-col cols="2">
-                <div class="timer-container">
+                <!-- <div class="timer-container">
                   <span class="timer-content bg-dicePrimary text-h5 px-2">{{
                     timeLeft
                   }}</span>
-                </div>
+                </div> -->
                 <div class="cup-one-container">
                   <v-btn
                     class="d-flex justify-center align-center"
                     variant="text"
-                    heigth="80px"
-                    width="50px"
+                    heigth="100px"
+                    width="60px"
                     :style="session.playerTries < 3 ? 'opacity: 0.5' : ''"
                     @click="rollOne"
                   >
-                    <v-img src="/cup-no-bg.png" alt="gobelet un" height="80" width="50" />
+                    <v-img src="/cup-no-bg.png" alt="gobelet un" height="100" width="60" />
                   </v-btn>
                 </div>
                 <div class="cup-two-container">
                   <v-btn
                     class="d-flex justify-center align-center"
                     variant="text"
-                    heigth="80px"
-                    width="50px"
+                    heigth="100px"
+                    width="60px"
                     :style="session.playerTries < 2 ? 'opacity: 0.5' : ''"
                     @click="rollTwo"
                   >
-                    <v-img src="/cup-no-bg.png" alt="gobelet deux" height="80" width="50" />
+                    <v-img src="/cup-no-bg.png" alt="gobelet deux" height="100" width="60" />
                   </v-btn>
                 </div>
                 <div class="cup-three-container">
                   <v-btn
                     class="d-flex justify-center align-center"
                     variant="text"
-                    heigth="80px"
-                    width="50px"
+                    heigth="100px"
+                    width="60px"
                     :style="session.playerTries < 1 ? 'opacity: 0.5' : ''"
                     @click="rollThree"
                   >
-                    <v-img src="/cup-no-bg.png" alt="gobelet trois" height="80" width="50" />
+                    <v-img src="/cup-no-bg.png" alt="gobelet trois" height="100" width="60" />
                   </v-btn>
                 </div>
               </v-col>
@@ -222,7 +225,8 @@ import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
 import { diceSessionConverter, diceSessionPlayerTurnConverter } from '~/stores'
 import { useDicesStore } from '~/stores/dices'
-import { useTimerStore } from '~/stores/timer'
+import { CardUser } from '~/functions/src/types'
+// import { useTimerStore } from '~/stores/timer'
 
 // Firebase
 
@@ -232,37 +236,26 @@ const user = useCurrentUser()
 const route = useRoute()
 
 const dicesStore = useDicesStore()
-const timerStore = useTimerStore()
+// const timerStore = useTimerStore()
 const { diceOnBoard, diceOnHand } = storeToRefs(dicesStore)
-const { timer } = storeToRefs(timerStore)
+// const { timer } = storeToRefs(timerStore)
 
-const sessionRef = doc(
-  db,
-  'diceSessions',
-  route.params.id as string
-).withConverter(diceSessionConverter)
+const sessionRef = doc(db, 'diceSessions', route.params.id as string).withConverter(diceSessionConverter)
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
-const playerTurnRef = doc(
-  db,
-  'diceSessionPlayerTurn',
-  route.params.id as string
-).withConverter(diceSessionPlayerTurnConverter)
-const playerTurn = useDocument(
-  doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id)
-)
+const playerTurnRef = doc(db, 'diceSessionPlayerTurn', route.params.id as string).withConverter(diceSessionPlayerTurnConverter)
+const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id))
 const scoresRef = doc(db, 'diceSessionScores', route.params.id as string)
-const scores = useDocument(
-  doc(collection(db, 'diceSessionScores'), scoresRef.id)
-)
+const scores = useDocument(doc(collection(db, 'diceSessionScores'), scoresRef.id))
 
 // Refs
 
 const message = ref<string>('')
-const timeLeft = ref<string>('1:30')
-const isTimerRunning = ref(false)
+const shakeClass = ref<string>('')
+// const timeLeft = ref<string>('1:30')
+// const isTimerRunning = ref(false)
 const isFinishedLocal = ref(false)
 // const isMuted = ref(false)
-let intervalId: NodeJS.Timeout | null = null
+// let intervalId: NodeJS.Timeout | null = null
 // let sound: HTMLAudioElement | null = null
 
 // New Sound Effects
@@ -320,17 +313,38 @@ watch(isFinishedLocal, async (value) => {
     }
   }
 })
-onSnapshot(playerTurnRef, () => {
-  if (isTimerRunning.value && !session.value?.isFinished) {
-    startTimer()
-  }
-})
+// onSnapshot(playerTurnRef, () => {
+//   if (isTimerRunning.value && !session.value?.isFinished) {
+//     startTimer()
+//   }
+// })
 onSnapshot(sessionRef, async (snapshot) => {
   if (snapshot.data()?.remainingTurns === 0) {
     await setDoc(sessionRef, { isFinished: true }, { merge: true })
     isFinishedLocal.value = true
   }
 })
+// onSnapshot(sessionRef, { includeMetadataChanges: true }, async (snapshot) => {
+//   let previousData = 0
+//   const metadata = snapshot.metadata
+//   if (metadata.hasPendingWrites) { return }
+//   if (metadata.fromCache) { return }
+//   if (session.value?.playerTries === 3) { return }
+//   if (session.value?.playerTries === 2) {
+//     previousData = 3
+//   } else if (session.value?.playerTries === 1) {
+//     previousData = 2
+//   } else if (session.value?.playerTries === 0) {
+//     previousData = 1
+//   }
+//   if (previousData !== snapshot.data()?.playerTries) {
+//     shakeRoll().play()
+//     await sleep(500)
+//     shakeClass.value = 'shake'
+//     await sleep(1800)
+//     shakeClass.value = ''
+//   }
+// })
 
 // Computed values
 
@@ -448,26 +462,26 @@ const startGame = async () => {
     return
   }
   await setDoc(sessionRef, { isStarted: true }, { merge: true })
-  startTimer()
+  // startTimer()
 }
 
-const startTimer = () => {
-  clearInterval(intervalId!)
-  timer.value = 90
-  timeLeft.value = '1:30'
-  intervalId = setInterval(() => {
-    if (timer.value === 0 || !timer.value) {
-      clearInterval(intervalId!)
-      isTimerRunning.value = false
-      return
-    }
-    timer.value--
-    const minutes = Math.floor(timer.value / 60)
-    const seconds = timer.value % 60
-    timeLeft.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
-  }, 1000)
-  isTimerRunning.value = true
-}
+// const startTimer = () => {
+//   clearInterval(intervalId!)
+//   timer.value = 90
+//   timeLeft.value = '1:30'
+//   intervalId = setInterval(() => {
+//     if (timer.value === 0 || !timer.value) {
+//       clearInterval(intervalId!)
+//       isTimerRunning.value = false
+//       return
+//     }
+//     timer.value--
+//     const minutes = Math.floor(timer.value / 60)
+//     const seconds = timer.value % 60
+//     timeLeft.value = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+//   }, 1000)
+//   isTimerRunning.value = true
+// }
 
 const trueRandom = () => {
   return Math.floor(Math.random() * 6) + 1
@@ -475,6 +489,10 @@ const trueRandom = () => {
 
 const rollOne = async () => {
   if (!session.value) {
+    return
+  }
+  if (session.value.isStarted === false) {
+    notifier({ content: 'La partie n\'a pas encore commencé', color: 'dicePrimary' })
     return
   }
   if (playerTurn.value?.playerId !== user.value?.uid) {
@@ -485,11 +503,15 @@ const rollOne = async () => {
     notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'dicePrimary' })
     return
   }
-  shakeRoll().play()
-  await sleep(3000)
 
   diceOnBoard.value = []
   diceOnHand.value = []
+
+  shakeRoll().play()
+  await sleep(500)
+  shakeClass.value = 'shake'
+  await sleep(1800)
+  shakeClass.value = ''
 
   for (let i = 0; i < 5; i++) {
     const dice = trueRandom()
@@ -507,6 +529,10 @@ const rollTwo = async () => {
   if (!session.value) {
     return
   }
+  if (session.value.isStarted === false) {
+    notifier({ content: 'La partie n\'a pas encore commencé', color: 'dicePrimary' })
+    return
+  }
   if (playerTurn.value?.playerId !== user.value?.uid) {
     notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
     return
@@ -519,14 +545,18 @@ const rollTwo = async () => {
     notifier({ content: 'Ta main est complète', color: 'dicePrimary' })
     return
   }
-  shakeRoll().play()
-  await sleep(3000)
 
   let diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
   diceSession.diceOnBoard = []
   await setDoc(sessionRef, diceSession, { merge: true })
+
+  shakeRoll().play()
+  await sleep(500)
+  shakeClass.value = 'shake'
+  await sleep(1800)
+  shakeClass.value = ''
 
   for (let i = 0; i < diceOnBoardLength; i++) {
     const dice = trueRandom()
@@ -543,6 +573,10 @@ const rollThree = async () => {
   if (!session.value) {
     return
   }
+  if (session.value.isStarted === false) {
+    notifier({ content: 'La partie n\'a pas encore commencé', color: 'dicePrimary' })
+    return
+  }
   if (playerTurn.value?.playerId !== user.value?.uid) {
     notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
     return
@@ -555,14 +589,18 @@ const rollThree = async () => {
     notifier({ content: 'Ta main est complète', color: 'dicePrimary' })
     return
   }
-  shakeRoll().play()
-  await sleep(3000)
 
   let diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
   diceSession.diceOnBoard = []
   await setDoc(sessionRef, diceSession, { merge: true })
+
+  shakeRoll().play()
+  await sleep(500)
+  shakeClass.value = 'shake'
+  await sleep(1800)
+  shakeClass.value = ''
 
   for (let i = 0; i < diceOnBoardLength; i++) {
     const dice = trueRandom()
@@ -612,11 +650,11 @@ const addDice = async (index: number) => {
 }
 
 const sendMessage = async () => {
-  if (!message.value && !user.value && !session.value) {
+  if (!message.value && !session.value) {
     return
   }
   const username = session.value?.players.find(
-    (player: any) => player.id === user.value?.uid
+    (player: CardUser) => player.id === user.value?.uid
   )?.username
   await setDoc(sessionRef, {
     messages: arrayUnion({
@@ -676,23 +714,23 @@ const sleep = (ms: number) => {
   cursor: pointer;
   position: absolute;
   top: 120px;
-  right: 30px;
+  right: 40px;
   transform: rotate(15deg);
 }
 
 .cup-two-container {
   cursor: pointer;
   position: absolute;
-  top: 200px;
-  right: 30px;
+  top: 220px;
+  right: 40px;
   transform: rotate(15deg);
 }
 
 .cup-three-container {
   cursor: pointer;
   position: absolute;
-  top: 280px;
-  right: 30px;
+  top: 320px;
+  right: 40px;
   transform: rotate(15deg);
 }
 
@@ -763,5 +801,18 @@ const sleep = (ms: number) => {
   font-weight: bold;
   color: rgb(8, 255, 173);
   text-shadow: 2px 2px #000;
+}
+
+/* secouement */
+.shake {
+  animation: shake 0.5s ease-in-out 0s 3;
+}
+
+@keyframes shake {
+  0% { transform: translateY(0); }
+  25% { transform: translateY(20px); }
+  50% { transform: translateY(-20px); }
+  75% { transform: translateY(20px); }
+  100% { transform: translateY(0); }
 }
 </style>

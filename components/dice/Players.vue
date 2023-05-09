@@ -14,6 +14,8 @@
         <div class="d-flex text-center text-h6 pa-2">
           <span class="letter-spacing">A</span>
           <span>{{ players[0]?.username }}</span>
+          <v-spacer />
+          <v-img v-if="!isFinished && playerTurnId === players[0].id" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
         </div>
       </v-card>
     </v-col>
@@ -31,6 +33,8 @@
         <div class="d-flex text-center text-h6 pa-2">
           <span class="letter-spacing">B</span>
           <span>{{ players[1]?.username }}</span>
+          <v-spacer />
+          <v-img v-if="playerTurnId === players[1].id" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
         </div>
       </v-card>
     </v-col>
@@ -48,6 +52,8 @@
         <div class="d-flex text-center text-h6 pa-2">
           <span class="letter-spacing">C</span>
           <span>{{ players[2]?.username }}</span>
+          <v-spacer />
+          <v-img v-if="playerTurnId === players[2]?.id" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
         </div>
       </v-card>
     </v-col>
@@ -65,25 +71,25 @@
         <div class="d-flex text-center text-h6 pa-2">
           <span class="letter-spacing">D</span>
           <span>{{ players[3]?.username }}</span>
+          <v-spacer />
+          <v-img v-if="playerTurnId === players[3]?.id" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
         </div>
       </v-card>
     </v-col>
   </v-row>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup async>
 import { CardUser } from '~/functions/src/types'
 
-const user = useCurrentUser()
+// Firebase
 
+const user = useCurrentUser()
 defineProps<{
   players: CardUser[]
+  playerTurnId: string
+  isFinished: boolean
 }>()
-
-// const userLetter = (index: number) => {
-//   const letters = ['A', 'B', 'C', 'D']
-//   return letters[index]
-// }
 </script>
 
 <style scoped>
