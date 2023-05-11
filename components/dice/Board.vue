@@ -32,10 +32,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveOneInput()"
                 >
                   {{ oneInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerOne.one !== 69 ? scores.playerOne.one : ''
                 }}</span>
               </td>
@@ -46,10 +47,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveOneInput()"
                 >
                   {{ oneInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerTwo.one !== 69 ? scores.playerTwo.one : ''
                 }}</span>
               </td>
@@ -64,7 +66,7 @@
                     @click="saveOneInput()"
                   >
                     {{ oneInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerThree.one !== 69 ? scores.playerThree.one : ''
                   }}</span>
                 </div>
@@ -80,7 +82,7 @@
                     @click="saveOneInput()"
                   >
                     {{ oneInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerFour.one !== 69 ? scores.playerFour.one : ''
                   }}</span>
                 </div>
@@ -97,10 +99,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveTwoInput()"
                 >
                   {{ twoInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerOne.two !== 69 ? scores.playerOne.two : ''
                 }}</span>
               </td>
@@ -111,10 +114,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveTwoInput()"
                 >
                   {{ twoInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerTwo.two !== 69 ? scores.playerTwo.two : ''
                 }}</span>
               </td>
@@ -129,7 +133,7 @@
                     @click="saveTwoInput()"
                   >
                     {{ twoInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerThree.two !== 69 ? scores.playerThree.two : ''
                   }}</span>
                 </div>
@@ -145,7 +149,7 @@
                     @click="saveTwoInput()"
                   >
                     {{ twoInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerFour.two !== 69 ? scores.playerFour.two : ''
                   }}</span>
                 </div>
@@ -162,10 +166,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveThreeInput()"
                 >
                   {{ threeInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerOne.three !== 69 ? scores.playerOne.three : ''
                 }}</span>
               </td>
@@ -176,10 +181,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveThreeInput()"
                 >
                   {{ threeInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerTwo.three !== 69 ? scores.playerTwo.three : ''
                 }}</span>
               </td>
@@ -194,7 +200,7 @@
                     @click="saveThreeInput()"
                   >
                     {{ threeInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerThree.three !== 69 ? scores.playerThree.three : ''
                   }}</span>
                 </div>
@@ -210,7 +216,7 @@
                     @click="saveThreeInput()"
                   >
                     {{ threeInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerFour.three !== 69 ? scores.playerFour.three : ''
                   }}</span>
                 </div>
@@ -227,10 +233,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveFourInput()"
                 >
                   {{ fourInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerOne.four !== 69 ? scores.playerOne.four : ''
                 }}</span>
               </td>
@@ -241,10 +248,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveFourInput()"
                 >
                   {{ fourInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerTwo.four !== 69 ? scores.playerTwo.four : ''
                 }}</span>
               </td>
@@ -259,7 +267,7 @@
                     @click="saveFourInput()"
                   >
                     {{ fourInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerThree.four !== 69 ? scores.playerThree.four : ''
                   }}</span>
                 </div>
@@ -275,7 +283,7 @@
                     @click="saveFourInput()"
                   >
                     {{ fourInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerFour.four !== 69 ? scores.playerFour.four : ''
                   }}</span>
                 </div>
@@ -292,10 +300,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveFiveInput()"
                 >
                   {{ fiveInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerOne.five !== 69 ? scores.playerOne.five : ''
                 }}</span>
               </td>
@@ -306,10 +315,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveFiveInput()"
                 >
                   {{ fiveInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerTwo.five !== 69 ? scores.playerTwo.five : ''
                 }}</span>
               </td>
@@ -324,7 +334,7 @@
                     @click="saveFiveInput()"
                   >
                     {{ fiveInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerThree.five !== 69 ? scores.playerThree.five : ''
                   }}</span>
                 </div>
@@ -340,7 +350,7 @@
                     @click="saveFiveInput()"
                   >
                     {{ fiveInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerFour.five !== 69 ? scores.playerFour.five : ''
                   }}</span>
                 </div>
@@ -357,10 +367,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveSixInput()"
                 >
                   {{ sixInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerOne.six !== 69 ? scores.playerOne.six : ''
                 }}</span>
               </td>
@@ -371,10 +382,11 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveSixInput()"
                 >
                   {{ sixInput }}
-                </v-btn><span v-else>{{
+                </v-btn><span v-else class="indie-flower">{{
                   scores.playerTwo.six !== 69 ? scores.playerTwo.six : ''
                 }}</span>
               </td>
@@ -389,7 +401,7 @@
                     @click="saveSixInput()"
                   >
                     {{ sixInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerThree.six !== 69 ? scores.playerThree.six : ''
                   }}</span>
                 </div>
@@ -405,7 +417,7 @@
                     @click="saveSixInput()"
                   >
                     {{ sixInput }}
-                  </v-btn><span v-else>{{
+                  </v-btn><span v-else class="indie-flower">{{
                     scores.playerFour.six !== 69 ? scores.playerFour.six : ''
                   }}</span>
                 </div>
@@ -508,11 +520,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveThreeOfAKindInput()"
                 >
                   {{ threeOfAKindInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerOne.threeOfAKind !== 69 ? scores.playerOne.threeOfAKind : ''
                 }}</span>
               </td>
@@ -523,11 +536,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveThreeOfAKindInput()"
                 >
                   {{ threeOfAKindInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerTwo.threeOfAKind !== 69 ? scores.playerTwo.threeOfAKind : ''
                 }}</span>
               </td>
@@ -543,7 +557,7 @@
                   >
                     {{ threeOfAKindInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerThree.threeOfAKind !== 69 ? scores.playerThree.threeOfAKind : ''
                   }}</span>
                 </div>
@@ -560,7 +574,7 @@
                   >
                     {{ threeOfAKindInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerFour.threeOfAKind !== 69 ? scores.playerFour.threeOfAKind : ''
                   }}</span>
                 </div>
@@ -577,11 +591,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveFourOfAKindInput()"
                 >
                   {{ fourOfAKindInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerOne.fourOfAKind !== 69 ? scores.playerOne.fourOfAKind : ''
                 }}</span>
               </td>
@@ -592,11 +607,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveFourOfAKindInput()"
                 >
                   {{ fourOfAKindInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerTwo.fourOfAKind !== 69 ? scores.playerTwo.fourOfAKind : ''
                 }}</span>
               </td>
@@ -612,7 +628,7 @@
                   >
                     {{ fourOfAKindInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerThree.fourOfAKind !== 69 ? scores.playerThree.fourOfAKind : ''
                   }}</span>
                 </div>
@@ -629,7 +645,7 @@
                   >
                     {{ fourOfAKindInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerFour.fourOfAKind !== 69 ? scores.playerFour.fourOfAKind : ''
                   }}</span>
                 </div>
@@ -646,11 +662,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveFullHouseInput()"
                 >
                   {{ fullHouseInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerOne.fullHouse !== 69 ? scores.playerOne.fullHouse : ''
                 }}</span>
               </td>
@@ -661,11 +678,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveFullHouseInput()"
                 >
                   {{ fullHouseInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerTwo.fullHouse !== 69 ? scores.playerTwo.fullHouse : ''
                 }}</span>
               </td>
@@ -681,7 +699,7 @@
                   >
                     {{ fullHouseInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerThree.fullHouse !== 69 ? scores.playerThree.fullHouse : ''
                   }}</span>
                 </div>
@@ -698,7 +716,7 @@
                   >
                     {{ fullHouseInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerFour.fullHouse !== 69 ? scores.playerFour.fullHouse : ''
                   }}</span>
                 </div>
@@ -715,11 +733,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveSmallStraightInput()"
                 >
                   {{ smallStraightInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerOne.smallStraight !== 69 ? scores.playerOne.smallStraight : ''
                 }}</span>
               </td>
@@ -730,11 +749,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveSmallStraightInput()"
                 >
                   {{ smallStraightInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerTwo.smallStraight !== 69 ? scores.playerTwo.smallStraight : ''
                 }}</span>
               </td>
@@ -750,7 +770,7 @@
                   >
                     {{ smallStraightInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerThree.smallStraight !== 69 ? scores.playerThree.smallStraight : ''
                   }}</span>
                 </div>
@@ -767,7 +787,7 @@
                   >
                     {{ smallStraightInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerFour.smallStraight !== 69 ? scores.playerFour.smallStraight : ''
                   }}</span>
                 </div>
@@ -784,11 +804,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveLargeStraightInput()"
                 >
                   {{ largeStraightInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerOne.largeStraight !== 69 ? scores.playerOne.largeStraight : ''
                 }}</span>
               </td>
@@ -799,11 +820,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveLargeStraightInput()"
                 >
                   {{ largeStraightInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerTwo.largeStraight !== 69 ? scores.playerTwo.largeStraight : ''
                 }}</span>
               </td>
@@ -819,7 +841,7 @@
                   >
                     {{ largeStraightInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerThree.largeStraight !== 69 ? scores.playerThree.largeStraight : ''
                   }}</span>
                 </div>
@@ -836,7 +858,7 @@
                   >
                     {{ largeStraightInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerFour.largeStraight !== 69 ? scores.playerFour.largeStraight : ''
                   }}</span>
                 </div>
@@ -853,11 +875,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveDiceInput()"
                 >
                   {{ diceInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerOne.dice !== 69 ? scores.playerOne.dice : ''
                 }}</span>
               </td>
@@ -868,11 +891,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveDiceInput()"
                 >
                   {{ diceInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerTwo.dice !== 69 ? scores.playerTwo.dice : ''
                 }}</span>
               </td>
@@ -888,7 +912,7 @@
                   >
                     {{ diceInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerThree.dice !== 69 ? scores.playerThree.dice : ''
                   }}</span>
                 </div>
@@ -905,7 +929,7 @@
                   >
                     {{ diceInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerFour.dice !== 69 ? scores.playerFour.dice : ''
                   }}</span>
                 </div>
@@ -922,11 +946,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveChanceInput()"
                 >
                   {{ chanceInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerOne.chance !== 69 ? scores.playerOne.chance : ''
                 }}</span>
               </td>
@@ -937,11 +962,12 @@
                   variant="plain"
                   height="23"
                   rounded="0"
+                  class="indie-flower"
                   @click="saveChanceInput()"
                 >
                   {{ chanceInput }}
                 </v-btn>
-                <span v-else>{{
+               <span v-else class="indie-flower">{{
                   scores.playerTwo.chance !== 69 ? scores.playerTwo.chance : ''
                 }}</span>
               </td>
@@ -957,7 +983,7 @@
                   >
                     {{ chanceInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerThree.chance !== 69 ? scores.playerThree.chance : ''
                   }}</span>
                 </div>
@@ -974,7 +1000,7 @@
                   >
                     {{ chanceInput }}
                   </v-btn>
-                  <span v-else>{{
+                  <span v-else class="indie-flower">{{
                     scores.playerFour.chance !== 69 ? scores.playerFour.chance : ''
                   }}</span>
                 </div>

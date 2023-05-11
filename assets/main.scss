@@ -1,10 +1,19 @@
-@import url('https://fonts.googleapis.com/css?family=Noto Sans');
-@import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap');
-$font-family: 'Tilt Neon', cursive;
+// General
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+$font-family: 'Poppins', sans-serif;
+
+// Dice Board
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
 
 .v-application {
   [class*='text-'] {
     font-family: $font-family, sans-serif !important;
   }
   font-family: $font-family, sans-serif !important;
+}
+
+.indie-flower {
+  font-family: 'Indie Flower', cursive !important;
+  font-size: 1.5rem !important;
+  margin-bottom: 0.5rem !important;
 }
