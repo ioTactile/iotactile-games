@@ -2,13 +2,7 @@
   <v-row>
     <v-col cols="3" class="px-0 py-2">
       <v-card
-        class="mx-2"
-        color="dicePrimary"
-        :class="
-          players[0]?.id === user?.uid
-            ? 'card-container-currentuser'
-            : 'card-container'
-        "
+        class="mx-2 yellow-plate card-container"
         rounded="0"
       >
         <div class="d-flex text-center text-h6 pa-2">
@@ -21,13 +15,7 @@
     </v-col>
     <v-col cols="3" class="px-0 py-2">
       <v-card
-        class="mx-2"
-        color="dicePrimary"
-        :class="
-          players[1]?.id === user?.uid
-            ? 'card-container-currentuser'
-            : 'card-container'
-        "
+        class="mx-2 yellow-plate card-container"
         rounded="0"
       >
         <div class="d-flex text-center text-h6 pa-2">
@@ -40,13 +28,7 @@
     </v-col>
     <v-col cols="3" class="px-0 py-2">
       <v-card
-        class="mx-2"
-        color="dicePrimary"
-        :class="
-          players[2]?.id === user?.uid
-            ? 'card-container-currentuser'
-            : 'card-container'
-        "
+        class="mx-2 yellow-plate card-container"
         rounded="0"
       >
         <div class="d-flex text-center text-h6 pa-2">
@@ -59,13 +41,7 @@
     </v-col>
     <v-col cols="3" class="px-0 py-2">
       <v-card
-        class="mx-2"
-        color="dicePrimary"
-        :class="
-          players[3]?.id === user?.uid
-            ? 'card-container-currentuser'
-            : 'card-container'
-        "
+        class="mx-2 yellow-plate card-container"
         rounded="0"
       >
         <div class="d-flex text-center text-h6 pa-2">
@@ -80,6 +56,7 @@
 </template>
 
 <script lang="ts" setup async>
+import { VRow, VCol, VCard, VImg, VSpacer } from 'vuetify/components'
 import { CardUser } from '~/functions/src/types'
 
 // Firebase
@@ -98,10 +75,11 @@ defineProps<{
 }
 
 .card-container {
-  border: 1px solid red;
+  border: 1px solid rgb(var(--v-theme-dicePlayersBorder));
 }
 
-.card-container-currentuser {
-  border: 1px solid blue;
+/* players background */
+.yellow-plate {
+  background: linear-gradient(to top left, rgb(var(--v-theme-dicePrimary)), rgb(var(--v-theme-diceClosePrimary)));
 }
 </style>

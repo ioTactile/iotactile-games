@@ -70,6 +70,7 @@
 </template>
 
 <script lang="ts" setup>
+import { VContainer, VRow, VCol, VDivider, VCard, VCardTitle, VCardText, VCardActions, VBtn } from 'vuetify/components'
 import {
   Timestamp,
   collection,
@@ -125,8 +126,7 @@ const initScores = () => {
     four: 69,
     five: 69,
     six: 69,
-    subtotal: 0,
-    upperTotal: 0,
+    bonus: 0,
     threeOfAKind: 69,
     fourOfAKind: 69,
     fullHouse: 69,
@@ -134,7 +134,6 @@ const initScores = () => {
     largeStraight: 69,
     chance: 69,
     dice: 69,
-    lowerTotal: 0,
     total: 0
   }
 

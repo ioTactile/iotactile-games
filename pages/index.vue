@@ -65,6 +65,7 @@
 </template>
 
 <script lang="ts" setup>
+import { VContainer, VRow, VCol, VAlert, VImg, VBtn } from 'vuetify/components'
 </script>
 
 <style scoped>

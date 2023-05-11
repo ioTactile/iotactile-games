@@ -3,7 +3,7 @@
     <v-col cols="12">
       <v-text-field
         v-model="password"
-        :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+        :append-inner-icon="show ? mdiEye : mdiEyeOff"
         :rules="rules"
         :type="show ? 'text' : 'password'"
         label="Mot de passe"
@@ -18,9 +18,9 @@
     <v-col cols="12">
       <v-text-field
         v-model="passwordConfirm"
-        :append-inner-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+        :append-inner-icon="show2 ? mdiEye : mdiEyeOff"
         :rules="[
-          (v) => v === password || 'Les mots de passe doivent être similaire',
+          (v: any) => v === password || 'Les mots de passe doivent être similaire',
           ...rules,
         ]"
         :type="show2 ? 'text' : 'password'"
@@ -36,6 +36,9 @@
 </template>
 
 <script lang="ts" setup>
+import { VRow, VCol, VTextField } from 'vuetify/components'
+import { mdiEye, mdiEyeOff } from '@mdi/js'
+
 const MIN_LENGTH = 6
 
 defineProps<{

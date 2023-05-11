@@ -9,7 +9,7 @@
       <v-card-title class="d-flex align-center">
         <span class="text-h5 mr-auto"> Venez vous amuser ! </span>
         <v-btn
-          icon="mdi-close"
+          :icon="mdiClose"
           variant="text"
           :disabled="loading !== null"
           @click="emits('update:modelValue', false)"
@@ -101,7 +101,8 @@
 </template>
 
 <script lang="ts" setup>
-import { VForm } from 'vuetify/components'
+import { VForm, VDialog, VCard, VCardTitle, VCardText, VBtn, VWindow, VWindowItem, VTabs, VTab } from 'vuetify/components'
+import { mdiClose } from '@mdi/js'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,

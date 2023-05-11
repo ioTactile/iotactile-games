@@ -9,7 +9,8 @@
         </v-app-bar-title>
       </NuxtLink>
       <v-spacer />
-      <v-btn icon="mdi-account" size="large" @click="isLogin('/profil')" />
+      <v-btn :icon="mdiThemeLightDark" @click="toggleTheme"/>
+      <v-btn :icon="mdiAccount" size="large" @click="isLogin('/profil')" />
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" width="200">
       <v-list nav class="pa-0">
@@ -32,9 +33,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useFirestore, useCurrentUser } from 'vuefire'
+import { VAppBar, VAppBarNavIcon, VAppBarTitle, VBtn, VIcon, VList, VListItem, VNavigationDrawer, VSpacer } from 'vuetify/components'
+import { useTheme } from 'vuetify'
+import { mdiAccount, mdiThemeLightDark } from '@mdi/js'
 
 const user = useCurrentUser()
+const theme = useTheme()
+
 const login = ref(false)
 const drawer = ref(false)
 const group = ref(null)
@@ -60,5 +65,9 @@ const isLogin = (path: string) => {
   } else {
     navigateTo(path)
   }
+}
+
+const toggleTheme = () => {
+  theme.global.name.value = theme.name.value === 'myCustomLightTheme' ? 'myCustomDarkTheme' : 'myCustomLightTheme'
 }
 </script>

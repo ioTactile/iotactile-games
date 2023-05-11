@@ -6,12 +6,15 @@
     type="text"
     :label="label"
     :variant="variant"
-    :append-inner-icon="icon ? 'mdi-account' : undefined"
+    :append-inner-icon="icon ? mdiAccount : undefined"
     @update:model-value="$emit('update:model-value', $event)"
   />
 </template>
 
 <script lang="ts" setup>
+import { VTextField } from 'vuetify/components'
+import { mdiAccount } from '@mdi/js'
+
 const MIN_LENGTH = 3
 
 withDefaults(

@@ -29,6 +29,7 @@
 </template>
 
 <script lang="ts" setup>
+import { VFooter, VBtn, VRow, VCol } from 'vuetify/components'
 import { useDisplay } from 'vuetify'
 
 const { xs } = useDisplay()

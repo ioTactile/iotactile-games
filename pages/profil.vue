@@ -6,7 +6,7 @@
           Mon profil
         </h2>
         <v-btn
-          icon="mdi-dots-vertical"
+          :icon="mdiDotsVertical"
           variant="text"
           @click="openDeleteUser = !openDeleteUser"
         />
@@ -21,7 +21,7 @@
             />
             <v-btn
               class="ml-2"
-              icon="mdi-pencil"
+              :icon="mdiPencil"
               variant="text"
               @click="isChange()"
             />
@@ -65,6 +65,8 @@
 </template>
 
 <script lang="ts" setup>
+import { VContainer, VCard, VCardTitle, VCardText, VForm, VDivider, VBtn } from 'vuetify/components'
+import { mdiPencil} from '@mdi/js'
 import { deleteUser, signOut } from '@firebase/auth'
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore'
 import { useFirestore, useFirebaseAuth, useCurrentUser } from 'vuefire'

@@ -6,7 +6,7 @@
     <template #actions>
       <v-btn
         color="stroke"
-        icon="mdi-close"
+        :icon="mdiClose"
         @click="notification.show = false"
       />
     </template>
@@ -14,5 +14,7 @@
 </template>
 
 <script lang="ts" setup>
+import { VSnackbar, VBtn } from 'vuetify/components';
+import { mdiClose } from '@mdi/js'
 const { notification } = useNotifier()
 </script>

@@ -61,6 +61,10 @@
   </v-container>
 </template>
 
+<script lang="ts" setup>
+import { VContainer } from 'vuetify/components'
+</script>
+
 <style scoped>
 .container {
   max-width: 1200px !important;

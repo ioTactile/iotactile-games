@@ -7,12 +7,15 @@
     autocomplete="email"
     :label="label"
     :variant="variant"
-    :append-inner-icon="icon ? 'mdi-email' : undefined"
+    :append-inner-icon="icon ? mdiEmail : undefined"
     @update:model-value="$emit('update:model-value', $event)"
   />
 </template>
 
 <script lang="ts" setup>
+import { VTextField } from 'vuetify/components'
+import { mdiEmail } from '@mdi/js'
+
 withDefaults(
   defineProps<{
     modelValue?: string

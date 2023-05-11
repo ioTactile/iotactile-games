@@ -5,17 +5,17 @@
         <v-table density="compact">
           <thead>
             <tr>
-              <th class="text-center border-yellow-right bg-dicePrimary" width="40%" />
-              <th class="text-center border-yellow-right bg-dicePrimary" width="15%">
+              <th class="text-center border-yellow-right bg-diceClosePrimary" width="40%" />
+              <th class="text-center border-yellow-right bg-diceClosePrimary" width="15%">
                 A
               </th>
-              <th class="text-center border-yellow-right bg-dicePrimary" width="15%">
+              <th class="text-center border-yellow-right bg-diceClosePrimary" width="15%">
                 B
               </th>
-              <th class="text-center border-yellow-right bg-dicePrimary" width="15%">
+              <th class="text-center border-yellow-right bg-diceClosePrimary" width="15%">
                 {{ session.players.length > 2 ? 'C' : '' }}
               </th>
-              <th class="text-center bg-dicePrimary" width="15%">
+              <th class="text-center bg-diceClosePrimary" width="15%">
                 {{ session.players.length > 3 ? 'D' : '' }}
               </th>
             </tr>
@@ -412,27 +412,27 @@
               </td>
             </tr>
             <tr>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="bg-diceClosePrimary border-yellow-right">
                 Sous-total
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkUpperSubtotalPlayerOne !== 0 ? checkUpperSubtotalPlayerOne : ''
                 }}</span>
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkUpperSubtotalPlayerTwo !== 0 ? checkUpperSubtotalPlayerTwo : ''
                 }}</span>
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
                     checkUpperSubtotalPlayerThree !== 0 ? checkUpperSubtotalPlayerThree : ''
                   }}</span>
                 </div>
               </td>
-              <td class="text-center bg-dicePrimary">
+              <td class="text-center bg-diceClosePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
                     checkUpperSubtotalPlayerFour !== 0 ? checkUpperSubtotalPlayerFour : ''
@@ -441,26 +441,26 @@
               </td>
             </tr>
             <tr>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="bg-diceClosePrimary border-yellow-right">
                 Bonus
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkBonusPlayerOne !== 0 ? checkBonusPlayerOne : ''
                 }}</span>
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkBonusPlayerTwo !== 0 ? checkBonusPlayerTwo : ''
                 }}</span>
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
                     checkBonusPlayerThree !== 0 ? checkBonusPlayerThree : ''
                   }}</span>
                 </div>
-              </td><td class="text-center bg-dicePrimary">
+              </td><td class="text-center bg-diceClosePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
                     checkBonusPlayerFour !== 0 ? checkBonusPlayerFour : ''
@@ -469,27 +469,27 @@
               </td>
             </tr>
             <tr>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="bg-diceClosePrimary border-yellow-right">
                 Total de la partie supérieure
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkUpperTotalPlayerOne !== 0 ? checkUpperTotalPlayerOne : ''
                 }}</span>
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkUpperTotalPlayerTwo !== 0 ? checkUpperTotalPlayerTwo : ''
                 }}</span>
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
                     checkUpperTotalPlayerThree !== 0 ? checkUpperTotalPlayerThree : ''
                   }}</span>
                 </div>
               </td>
-              <td class="text-center bg-dicePrimary">
+              <td class="text-center bg-diceClosePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
                     checkUpperTotalPlayerFour !== 0 ? checkUpperTotalPlayerFour : ''
@@ -981,27 +981,27 @@
               </td>
             </tr>
             <tr>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="bg-diceClosePrimary border-yellow-right">
                 Total de la partie inférieure
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkLowerTotalPlayerOne !== 0 ? checkLowerTotalPlayerOne : ''
                 }}</span>
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkLowerTotalPlayerTwo !== 0 ? checkLowerTotalPlayerTwo : ''
                 }}</span>
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
                     checkLowerTotalPlayerThree !== 0 ? checkLowerTotalPlayerThree : ''
                   }}</span>
                 </div>
               </td>
-              <td class="text-center bg-dicePrimary">
+              <td class="text-center bg-diceClosePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
                     checkLowerTotalPlayerFour !== 0 ? checkLowerTotalPlayerFour : ''
@@ -1010,27 +1010,27 @@
               </td>
             </tr>
             <tr>
-              <td class="bg-dicePrimary border-yellow-right">
+              <td class="bg-diceClosePrimary border-yellow-right">
                 Total de la partie
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkTotalPlayerOne !== 0 ? checkTotalPlayerOne : ''
                 }}</span>
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <span class="font-weight-bold">{{
                   checkTotalPlayerTwo !== 0 ? checkTotalPlayerTwo : ''
                 }}</span>
               </td>
-              <td class="text-center bg-dicePrimary border-yellow-right">
+              <td class="text-center bg-diceClosePrimary border-yellow-right">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
                     checkTotalPlayerThree !== 0 ? checkTotalPlayerThree : ''
                   }}</span>
                 </div>
               </td>
-              <td class="text-center bg-dicePrimary">
+              <td class="text-center bg-diceClosePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
                     checkTotalPlayerFour !== 0 ? checkTotalPlayerFour : ''
@@ -1046,6 +1046,7 @@
 </template>
 
 <script lang="ts" setup async>
+import { VCard, VRow, VCol, VTable, VBtn } from 'vuetify/components'
 import { doc, collection, setDoc, getDoc } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
@@ -1206,6 +1207,34 @@ const reduceRemainingTurn = () => {
   }
   const remainingTurns = session.value.remainingTurns - 1
   return remainingTurns
+}
+const playerOneBonus = async () => {
+  if (!scores.value) { return }
+  if (scores.value.playerOne.bonus === 35) { return }
+  scores.value.playerOne.bonus = 35
+  scores.value.playerOne.total += 35
+  await setDoc(scoresRef, scores.value, { merge: true })
+}
+const playerTwoBonus = async () => {
+  if (!scores.value) { return }
+  if (scores.value.playerTwo.bonus === 35) { return }
+  scores.value.playerTwo.bonus = 35
+  scores.value.playerTwo.total += 35
+  await setDoc(scoresRef, scores.value, { merge: true })
+}
+const playerThreeBonus = async () => {
+  if (!scores.value) { return }
+  if (scores.value.playerThree.bonus === 35) { return }
+  scores.value.playerThree.bonus = 35
+  scores.value.playerThree.total += 35
+  await setDoc(scoresRef, scores.value, { merge: true })
+}
+const playerFourBonus = async () => {
+  if (!scores.value) { return }
+  if (scores.value.playerFour.bonus === 35) { return }
+  scores.value.playerFour.bonus = 35
+  scores.value.playerFour.total += 35
+  await setDoc(scoresRef, scores.value, { merge: true })
 }
 
 // Inputs value
@@ -1706,7 +1735,9 @@ const checkUpperSubtotalPlayerOne = computed(() => {
   if (scores.value.playerOne.six !== 69) {
     subtotal += scores.value.playerOne.six
   }
-
+  if (subtotal >= 63) {
+    playerOneBonus()
+  }
   return subtotal
 })
 
@@ -1781,7 +1812,9 @@ const checkUpperSubtotalPlayerTwo = computed(() => {
   if (scores.value.playerTwo.six !== 69) {
     subtotal += scores.value.playerTwo.six
   }
-
+  if (subtotal >= 63) {
+    playerTwoBonus()
+  }
   return subtotal
 })
 
@@ -1856,7 +1889,9 @@ const checkUpperSubtotalPlayerThree = computed(() => {
   if (scores.value.playerThree.six !== 69) {
     subtotal += scores.value.playerThree.six
   }
-
+  if (subtotal >= 63) {
+    playerThreeBonus()
+  }
   return subtotal
 })
 
@@ -1931,7 +1966,9 @@ const checkUpperSubtotalPlayerFour = computed(() => {
   if (scores.value.playerFour.six !== 69) {
     subtotal += scores.value.playerFour.six
   }
-
+  if (subtotal >= 63) {
+    playerFourBonus()
+  }
   return subtotal
 })
 
@@ -1988,7 +2025,7 @@ const checkTotalPlayerFour = computed(() => {
 }
 
 .border-yellow-right {
-  border-right: 1px solid #e0dda3;
+  border-right: 1px solid #c2c2c2;
 }
 
 .card-container {

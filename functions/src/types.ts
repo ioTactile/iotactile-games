@@ -114,8 +114,7 @@ export type Scores = {
   four: number
   five: number
   six: number
-  subtotal: number
-  upperTotal: number
+  bonus: number
   threeOfAKind: number
   fourOfAKind: number
   fullHouse: number
@@ -123,6 +122,5 @@ export type Scores = {
   largeStraight: number
   chance: number
   dice: number
-  lowerTotal: number
   total: number
 }

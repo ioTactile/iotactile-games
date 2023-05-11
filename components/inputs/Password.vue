@@ -1,7 +1,7 @@
 <template>
   <v-text-field
     :model-value="modelValue"
-    :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+    :append-inner-icon="show ? mdiEye : mdiEyeOff"
     :rules="rules"
     :type="show ? 'text' : 'password'"
     :rounded="rounded"
@@ -16,6 +16,9 @@
 </template>
 
 <script lang="ts" setup>
+import { VTextField } from 'vuetify/components'
+import { mdiEye, mdiEyeOff } from '@mdi/js'
+
 const MIN_LENGTH = 6
 
 defineProps<{
