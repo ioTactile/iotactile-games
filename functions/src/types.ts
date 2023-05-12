@@ -18,23 +18,27 @@ export const userConverter = {
   },
 };
 
-export const wordConverter = {
-  toFirestore: (word: Word): DocumentData => word,
-  fromFirestore(snapshot: QueryDocumentSnapshot<Word>): Word {
-    return snapshot.data();
-  },
-};
-
-export const lvSessionConverter = {
-  toFirestore: (session: LvSession): DocumentData => session,
-  fromFirestore(snapshot: QueryDocumentSnapshot<LvSession>): LvSession {
-    return snapshot.data();
-  },
-};
-
 export const diceSessionConverter = {
   toFirestore: (session: DiceSession): DocumentData => session,
   fromFirestore(snapshot: QueryDocumentSnapshot<DiceSession>): DiceSession {
+    return snapshot.data();
+  },
+};
+
+export const diceSessionPlayerTurnConverter = {
+  toFirestore: (playerTurn: DiceSessionPlayerTurn): DocumentData => playerTurn,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<DiceSessionPlayerTurn>
+  ): DiceSessionPlayerTurn {
+    return snapshot.data();
+  },
+};
+
+export const diceSessionScoreConverter = {
+  toFirestore: (score: DiceSessionScore): DocumentData => score,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<DiceSessionScore>
+  ): DiceSessionScore {
     return snapshot.data();
   },
 };
@@ -45,24 +49,6 @@ export type User = {
   username: string
   creationDate: Timestamp
   updateDate: Timestamp
-}
-
-export type Word = {
-  id: string
-  word: string
-}
-
-export type LvSession = {
-  id: string
-  word?: string
-  playerOne?: string
-  playerTwo?: string
-  playerOneScore?: number
-  playerTwoScore?: number
-  isFull: boolean
-  isStarted: boolean
-  isFinished: boolean
-  creationDate: Timestamp
 }
 
 export type DiceSession = {
@@ -78,7 +64,6 @@ export type DiceSession = {
   remainingTurns: number
   diceOnBoard: number[]
   diceOnHand: number[]
-  playerTries: number
   creationDate: Timestamp
 }
 
@@ -91,36 +76,74 @@ export type DiceSessionScore = {
   sessionId: string
   playerOne: {
     id: string
-    scores: Scores
+    one: number
+    two: number
+    three: number
+    four: number
+    five: number
+    six: number
+    bonus: number
+    threeOfAKind: number
+    fourOfAKind: number
+    fullHouse: number
+    smallStraight: number
+    largeStraight: number
+    chance: number
+    dice: number
+    total: number
   }
   playerTwo: {
     id: string
-    scores: Scores
+    one: number
+    two: number
+    three: number
+    four: number
+    five: number
+    six: number
+    bonus: number
+    threeOfAKind: number
+    fourOfAKind: number
+    fullHouse: number
+    smallStraight: number
+    largeStraight: number
+    chance: number
+    dice: number
+    total: number
   }
   playerThree?: {
     id: string
-    scores: Scores
+    one: number
+    two: number
+    three: number
+    four: number
+    five: number
+    six: number
+    bonus: number
+    threeOfAKind: number
+    fourOfAKind: number
+    fullHouse: number
+    smallStraight: number
+    largeStraight: number
+    chance: number
+    dice: number
+    total: number
   }
   playerFour?: {
     id: string
-    scores: Scores
+    one: number
+    two: number
+    three: number
+    four: number
+    five: number
+    six: number
+    bonus: number
+    threeOfAKind: number
+    fourOfAKind: number
+    fullHouse: number
+    smallStraight: number
+    largeStraight: number
+    chance: number
+    dice: number
+    total: number
   }
-}
-
-export type Scores = {
-  one: number
-  two: number
-  three: number
-  four: number
-  five: number
-  six: number
-  bonus: number
-  threeOfAKind: number
-  fourOfAKind: number
-  fullHouse: number
-  smallStraight: number
-  largeStraight: number
-  chance: number
-  dice: number
-  total: number
 }

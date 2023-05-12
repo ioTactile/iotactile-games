@@ -59,9 +59,8 @@
 import { VRow, VCol, VCard, VImg, VSpacer } from 'vuetify/components'
 import { CardUser } from '~/functions/src/types'
 
-// Firebase
+// Props
 
-const user = useCurrentUser()
 defineProps<{
   players: CardUser[]
   playerTurnId: string

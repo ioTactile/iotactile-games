@@ -175,10 +175,13 @@ const create = async () => {
       isStarted: false,
       isFinished: false,
       remainingTurns: 13,
-      playerTries: 3,
       diceOnBoard: [],
       diceOnHand: [],
       creationDate: Timestamp.fromDate(date.value)
+    })
+    const cupsRef = doc(sessionRef, 'cups', id.value)
+    await setDoc(cupsRef, {
+      playerTries: 3
     })
     await setDoc(doc(playerTurnRef, id.value), {
       id: id.value,

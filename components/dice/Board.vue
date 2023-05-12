@@ -525,7 +525,7 @@
                 >
                   {{ threeOfAKindInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerOne.threeOfAKind !== 69 ? scores.playerOne.threeOfAKind : ''
                 }}</span>
               </td>
@@ -541,7 +541,7 @@
                 >
                   {{ threeOfAKindInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerTwo.threeOfAKind !== 69 ? scores.playerTwo.threeOfAKind : ''
                 }}</span>
               </td>
@@ -596,7 +596,7 @@
                 >
                   {{ fourOfAKindInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerOne.fourOfAKind !== 69 ? scores.playerOne.fourOfAKind : ''
                 }}</span>
               </td>
@@ -612,7 +612,7 @@
                 >
                   {{ fourOfAKindInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerTwo.fourOfAKind !== 69 ? scores.playerTwo.fourOfAKind : ''
                 }}</span>
               </td>
@@ -667,7 +667,7 @@
                 >
                   {{ fullHouseInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerOne.fullHouse !== 69 ? scores.playerOne.fullHouse : ''
                 }}</span>
               </td>
@@ -683,7 +683,7 @@
                 >
                   {{ fullHouseInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerTwo.fullHouse !== 69 ? scores.playerTwo.fullHouse : ''
                 }}</span>
               </td>
@@ -738,7 +738,7 @@
                 >
                   {{ smallStraightInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerOne.smallStraight !== 69 ? scores.playerOne.smallStraight : ''
                 }}</span>
               </td>
@@ -754,7 +754,7 @@
                 >
                   {{ smallStraightInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerTwo.smallStraight !== 69 ? scores.playerTwo.smallStraight : ''
                 }}</span>
               </td>
@@ -809,7 +809,7 @@
                 >
                   {{ largeStraightInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerOne.largeStraight !== 69 ? scores.playerOne.largeStraight : ''
                 }}</span>
               </td>
@@ -825,7 +825,7 @@
                 >
                   {{ largeStraightInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerTwo.largeStraight !== 69 ? scores.playerTwo.largeStraight : ''
                 }}</span>
               </td>
@@ -880,7 +880,7 @@
                 >
                   {{ diceInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerOne.dice !== 69 ? scores.playerOne.dice : ''
                 }}</span>
               </td>
@@ -896,7 +896,7 @@
                 >
                   {{ diceInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerTwo.dice !== 69 ? scores.playerTwo.dice : ''
                 }}</span>
               </td>
@@ -951,7 +951,7 @@
                 >
                   {{ chanceInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerOne.chance !== 69 ? scores.playerOne.chance : ''
                 }}</span>
               </td>
@@ -967,7 +967,7 @@
                 >
                   {{ chanceInput }}
                 </v-btn>
-               <span v-else class="indie-flower">{{
+                <span v-else class="indie-flower">{{
                   scores.playerTwo.chance !== 69 ? scores.playerTwo.chance : ''
                 }}</span>
               </td>
@@ -1076,7 +1076,7 @@ import { VCard, VRow, VCol, VTable, VBtn } from 'vuetify/components'
 import { doc, collection, setDoc, getDoc } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
-import { diceSessionConverter, diceSessionPlayerTurnConverter } from '~/stores'
+import { diceSessionConverter, diceSessionPlayerTurnConverter, diceSessionScoreConverter } from '~/stores'
 import { useDicesStore } from '~/stores/dices'
 
 // Firebase
@@ -1085,13 +1085,13 @@ const db = useFirestore()
 const user = useCurrentUser()
 const route = useRoute()
 
-const sessionRef = doc(db, 'diceSessions', route.params.id as string).withConverter(diceSessionConverter)
+const sessionId = route.params.id as string
+const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(diceSessionConverter)
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
-const playerTurnRef = doc(db, 'diceSessionPlayerTurn', route.params.id as string).withConverter(diceSessionPlayerTurnConverter)
+const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(diceSessionPlayerTurnConverter)
 const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id))
-const scoresRef = doc(db, 'diceSessionScores', route.params.id as string)
+const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(diceSessionScoreConverter)
 const scores = useDocument(doc(collection(db, 'diceSessionScores'), scoresRef.id))
-
 const sessionDoc = await getDoc(sessionRef)
 const sessionDataPlayers = sessionDoc.data()?.players
 
@@ -1103,9 +1103,7 @@ const { diceOnBoard, diceOnHand } = storeToRefs(dicesStore)
 // Computed values
 
 const dices = computed(() => {
-  if (!session.value) {
-    return
-  }
+  if (!session.value) { return }
   const dicesOnHand = session.value.diceOnHand
   const dicesOnBoard = session.value.diceOnBoard
   const dicesItems = [...dicesOnHand, ...dicesOnBoard]
@@ -1216,11 +1214,12 @@ const switchPlayerTurn = async () => {
   await setDoc(sessionRef, {
     diceOnHand: [],
     diceOnBoard: [],
-    playerTries: 3,
     remainingTurns: reduceRemainingTurn()
   },
   { merge: true }
   )
+  const cupsRef = doc(sessionRef, 'cups', session.value.id)
+  await setDoc(cupsRef, { playerTries: 3 }, { merge: true })
   diceOnBoard.value = []
   diceOnHand.value = []
 }

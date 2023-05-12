@@ -7,10 +7,7 @@
             <dice-players :players="session.players" :is-finished="session.isFinished" :player-turn-id="playerTurn.playerId" />
           </v-col>
           <v-col cols="6">
-            <dice-board
-              :dice-on-hand="session.diceOnHand"
-              :dice-on-board="session.diceOnBoard"
-            />
+            <dice-board />
           </v-col>
           <v-col cols="6" class="right-side-container pb-0">
             <v-row class="h-100">
@@ -34,7 +31,7 @@
                     variant="text"
                     heigth="100px"
                     width="60px"
-                    :style="session.playerTries < 3 ? 'opacity: 0.5' : ''"
+                    :style="cups?.playerTries < 3 ? 'opacity: 0.5' : ''"
                     @click="rollOne"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet un" height="100" width="60" />
@@ -46,7 +43,7 @@
                     variant="text"
                     heigth="100px"
                     width="60px"
-                    :style="session.playerTries < 2 ? 'opacity: 0.5' : ''"
+                    :style="cups?.playerTries < 2 ? 'opacity: 0.5' : ''"
                     @click="rollTwo"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet deux" height="100" width="60" />
@@ -58,7 +55,7 @@
                     variant="text"
                     heigth="100px"
                     width="60px"
-                    :style="session.playerTries < 1 ? 'opacity: 0.5' : ''"
+                    :style="cups?.playerTries < 1 ? 'opacity: 0.5' : ''"
                     @click="rollThree"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet trois" height="100" width="60" />
@@ -216,7 +213,7 @@ import { VContainer, VRow, VCol, VBtn, VCard, VCardTitle, VCardText, VCardAction
 import { collection, doc, setDoc, getDoc, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
-import { diceSessionConverter, diceSessionPlayerTurnConverter } from '~/stores'
+import { diceSessionConverter, diceSessionPlayerTurnConverter, diceSessionScoreConverter, LocalDiceSessionScoreType } from '~/stores'
 import { useDicesStore } from '~/stores/dices'
 import { CardUser } from '~/functions/src/types'
 
@@ -234,24 +231,26 @@ const { diceOnBoard, diceOnHand } = storeToRefs(dicesStore)
 
 // Firestore
 
-const sessionRef = doc(db, 'diceSessions', route.params.id as string).withConverter(diceSessionConverter)
+const sessionId = route.params.id as string
+const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(diceSessionConverter)
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
-const playerTurnRef = doc(db, 'diceSessionPlayerTurn', route.params.id as string).withConverter(diceSessionPlayerTurnConverter)
+const cupsRef = doc(sessionRef, 'cups', sessionId)
+const cups = useDocument(doc(collection(sessionRef, 'cups'), cupsRef.id))
+const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(diceSessionPlayerTurnConverter)
 const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id))
-const scoresRef = doc(db, 'diceSessionScores', route.params.id as string)
-const scores = useDocument(doc(collection(db, 'diceSessionScores'), scoresRef.id))
 
 // Refs
 
 const message = ref<string>('')
 const shakeClass = ref<string>('')
 const isFinishedLocal = ref(false)
+const scores = ref<LocalDiceSessionScoreType|null>(null)
 
 // New Sound Effects
 
-const diceSound = () => {
-  return new Audio('/dice.mp3')
-}
+// const diceSound = () => {
+//   return new Audio('/dice.mp3')
+// }
 const shakeRoll = () => {
   return new Audio('/shake-and-roll.mp3')
 }
@@ -306,6 +305,20 @@ watch(session, async (newValue) => {
   if (newValue?.remainingTurns === 0) {
     await setDoc(sessionRef, { isFinished: true }, { merge: true })
     isFinishedLocal.value = true
+
+    const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(diceSessionScoreConverter)
+    const scoresDoc = await getDoc(scoresRef)
+    if (!scoresDoc.exists()) { return }
+    scores.value = scoresDoc.data()
+  }
+})
+watch(cups, async (newValue) => {
+  if (newValue && newValue.playerTries !== 3) {
+    shakeRoll().play()
+    await sleep(500)
+    shakeClass.value = 'shake'
+    await sleep(1800)
+    shakeClass.value = ''
   }
 })
 
@@ -444,7 +457,7 @@ const trueRandom = () => {
 }
 
 const rollOne = async () => {
-  if (!session.value) {
+  if (!session.value || !cups.value || !user.value || !playerTurn.value) {
     return
   }
   if (session.value.isStarted === false) {
@@ -455,11 +468,11 @@ const rollOne = async () => {
     notifier({ content: 'La partie est terminée', color: 'dicePrimary' })
     return
   }
-  if (playerTurn.value?.playerId !== user.value?.uid) {
+  if (playerTurn.value.playerId !== user.value.uid) {
     notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
     return
   }
-  if (session.value.playerTries < 3) {
+  if (cups.value.playerTries < 3) {
     notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'dicePrimary' })
     return
   }
@@ -468,29 +481,26 @@ const rollOne = async () => {
     return
   }
 
+  const diceSessionCups = cups.value
+  const diceSession = session.value
   diceOnBoard.value = []
   diceOnHand.value = []
-
-  shakeRoll().play()
-  await sleep(500)
-  shakeClass.value = 'shake'
-  await sleep(1800)
-  shakeClass.value = ''
 
   for (let i = 0; i < 5; i++) {
     const dice = trueRandom()
     diceOnBoard.value.push(dice)
   }
 
-  const diceSession = session.value
+  diceSessionCups.playerTries = 2
+  await setDoc(cupsRef, diceSessionCups, { merge: true })
+  await sleep(2300)
   diceSession.diceOnBoard = diceOnBoard.value
   diceSession.diceOnHand = diceOnHand.value
-  diceSession.playerTries = 2
   await setDoc(sessionRef, diceSession, { merge: true })
 }
 
 const rollTwo = async () => {
-  if (!session.value) {
+  if (!session.value || !cups.value || !user.value || !playerTurn.value) {
     return
   }
   if (session.value.isStarted === false) {
@@ -501,11 +511,11 @@ const rollTwo = async () => {
     notifier({ content: 'La partie est terminée', color: 'dicePrimary' })
     return
   }
-  if (playerTurn.value?.playerId !== user.value?.uid) {
+  if (playerTurn.value.playerId !== user.value.uid) {
     notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
     return
   }
-  if (session.value.playerTries < 2) {
+  if (cups.value.playerTries < 2) {
     notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'dicePrimary' })
     return
   }
@@ -518,31 +528,27 @@ const rollTwo = async () => {
     return
   }
 
-  let diceSession = session.value
+  const diceSessionCups = cups.value
+  const diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
   diceSession.diceOnBoard = []
   await setDoc(sessionRef, diceSession, { merge: true })
-
-  shakeRoll().play()
-  await sleep(500)
-  shakeClass.value = 'shake'
-  await sleep(1800)
-  shakeClass.value = ''
 
   for (let i = 0; i < diceOnBoardLength; i++) {
     const dice = trueRandom()
     diceOnBoard.value.push(dice)
   }
 
-  diceSession = session.value
+  diceSessionCups.playerTries = 1
+  await setDoc(cupsRef, diceSessionCups, { merge: true })
+  await sleep(2300)
   diceSession.diceOnBoard = diceOnBoard.value
-  diceSession.playerTries = 1
   await setDoc(sessionRef, diceSession, { merge: true })
 }
 
 const rollThree = async () => {
-  if (!session.value) {
+  if (!session.value || !cups.value || !user.value || !playerTurn.value) {
     return
   }
   if (session.value.isStarted === false) {
@@ -553,11 +559,11 @@ const rollThree = async () => {
     notifier({ content: 'La partie est terminée', color: 'dicePrimary' })
     return
   }
-  if (playerTurn.value?.playerId !== user.value?.uid) {
+  if (playerTurn.value.playerId !== user.value.uid) {
     notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
     return
   }
-  if (session.value.playerTries < 1) {
+  if (cups.value.playerTries < 1) {
     notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'dicePrimary' })
     return
   }
@@ -570,38 +576,33 @@ const rollThree = async () => {
     return
   }
 
-  let diceSession = session.value
+  const diceSessionCups = cups.value
+  const diceSession = session.value
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
   diceSession.diceOnBoard = []
   await setDoc(sessionRef, diceSession, { merge: true })
-
-  shakeRoll().play()
-  await sleep(500)
-  shakeClass.value = 'shake'
-  await sleep(1800)
-  shakeClass.value = ''
 
   for (let i = 0; i < diceOnBoardLength; i++) {
     const dice = trueRandom()
     diceOnBoard.value.push(dice)
   }
 
-  diceSession = session.value
+  diceSessionCups.playerTries = 0
+  await setDoc(cupsRef, diceSessionCups, { merge: true })
+  await sleep(2300)
   diceSession.diceOnBoard = diceOnBoard.value
-  diceSession.playerTries = 0
   await setDoc(sessionRef, diceSession, { merge: true })
 }
 
 const removeDice = async (index: number) => {
-  if (!session.value) {
+  if (!session.value || !cups.value || !user.value || !playerTurn.value) {
     return
   }
-  if (playerTurn.value?.playerId !== user.value?.uid) {
+  if (playerTurn.value.playerId !== user.value.uid) {
     notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
     return
   }
-  diceSound().play()
   const diceSession = session.value
   diceOnBoard.value.push(diceOnHand.value[index])
   diceSession.diceOnBoard.push(diceOnHand.value[index])
@@ -612,14 +613,13 @@ const removeDice = async (index: number) => {
 }
 
 const addDice = async (index: number) => {
-  if (!session.value) {
+  if (!session.value || !cups.value || !user.value || !playerTurn.value) {
     return
   }
-  if (playerTurn.value?.playerId !== user.value?.uid) {
+  if (playerTurn.value.playerId !== user.value.uid) {
     notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
     return
   }
-  diceSound().play()
   const diceSession = session.value
   diceOnHand.value.push(diceOnBoard.value[index])
   diceSession.diceOnHand.push(diceOnBoard.value[index])
