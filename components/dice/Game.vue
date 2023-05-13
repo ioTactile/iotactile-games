@@ -15,14 +15,17 @@
                 <div v-if="shakeClass" class="mt-16 ml-16">
                   <v-img src="/cup-animation.png" alt="Animation gobelet" height="300" width="300" :class="shakeClass" />
                 </div>
-                <v-btn
-                  v-for="(dice, i) in session.diceOnBoard"
-                  :key="i"
-                  class="dice-container"
-                  @click="addDice(i)"
-                >
-                  {{ dice }}
-                </v-btn>
+                <div class="left-side-dices-container">
+                  <v-btn
+                    v-for="(dice, i) in session.diceOnBoard"
+                    :key="i"
+                    variant="text"
+                    class="dice-container "
+                    @click="addDice(i)"
+                  >
+                    <v-img :src="getDiceFace(dice)" alt="dés" height="80" width="80" cover />
+                  </v-btn>
+                </div>
               </v-col>
               <v-col cols="2">
                 <div class="cup-one-container">
@@ -64,15 +67,18 @@
               </v-col>
               <v-col cols="12" align-self="end" class="pl-0 pb-0">
                 <div
-                  class="d-flex align-center yellow-plate dice-plate-container"
+                  class="yellow-plate dice-plate-container"
                 >
                   <v-btn
                     v-for="(dice, i) in session.diceOnHand"
                     :key="i"
-                    class="dice-container"
+                    heigth="80px"
+                    width="80px"
+                    variant="text"
+                    class="dice-container pa-0 mx-2"
                     @click="removeDice(i)"
                   >
-                    {{ dice }}
+                    <v-img :src="getDiceFace(dice)" alt="dés" height="84" width="84" cover />
                   </v-btn>
                 </div>
               </v-col>
@@ -456,6 +462,27 @@ const trueRandom = () => {
   return Math.floor(Math.random() * 6) + 1
 }
 
+const getDiceFace = (dice: number) => {
+  if (dice === 1) {
+    return '/dices/dice-one.png'
+  }
+  if (dice === 2) {
+    return '/dices/dice-two.png'
+  }
+  if (dice === 3) {
+    return '/dices/dice-three.png'
+  }
+  if (dice === 4) {
+    return '/dices/dice-four.png'
+  }
+  if (dice === 5) {
+    return '/dices/dice-five.png'
+  }
+  if (dice === 6) {
+    return '/dices/dice-six.png'
+  }
+}
+
 const rollOne = async () => {
   if (!session.value || !cups.value || !user.value || !playerTurn.value) {
     return
@@ -704,18 +731,30 @@ const sleep = (ms: number) => {
 }
 
 .dice-plate-container {
+  display: flex;
+  align-items: center;
   height: 90px;
+  width: 100%;
   border: 1px solid rgb(var(--v-theme-dicePlayersBorder));
+}
+@media screen and (max-width:1600px) {
+  .dice-plate-container {
+    display: inline-block;
+    align-items: center;
+    height: 180px;
+    width: 100%
+  }
+}
+
+.left-side-dices-container {
+  display: inline-block;
+  align-items: center;
 }
 
 .dice-container {
-  width: 80px;
-  height: 80px;
-  border: 2px solid rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
   margin: 5px;
-  background-color: rgba(255, 255, 255, 0.8);
-  display: inline-block;
+  height: 80px;
+  width: 80px;
 }
 
 .card-container {
