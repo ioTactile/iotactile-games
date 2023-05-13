@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VSnackbar, VBtn } from 'vuetify/components';
+import { VSnackbar, VBtn } from 'vuetify/components'
 import { mdiClose } from '@mdi/js'
 const { notification } = useNotifier()
 </script>

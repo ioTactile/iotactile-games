@@ -9,7 +9,13 @@
         </v-app-bar-title>
       </NuxtLink>
       <v-spacer />
-      <v-btn :icon="mdiThemeLightDark" @click="toggleTheme"/>
+      <v-menu :close-on-content-click="false">
+        <template #activator="{ props }">
+          <v-btn variant="text" :icon="mdiMusicNoteEighth" v-bind="props" />
+        </template>
+        <music-player />
+      </v-menu>
+      <v-btn :icon="mdiThemeLightDark" @click="toggleTheme" />
       <v-btn :icon="mdiAccount" size="large" @click="isLogin('/profil')" />
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" width="200">
@@ -33,9 +39,9 @@
 </template>
 
 <script lang="ts" setup>
-import { VAppBar, VAppBarNavIcon, VAppBarTitle, VBtn, VIcon, VList, VListItem, VNavigationDrawer, VSpacer } from 'vuetify/components'
+import { VAppBar, VAppBarNavIcon, VAppBarTitle, VBtn, VMenu, VList, VListItem, VNavigationDrawer, VSpacer } from 'vuetify/components'
 import { useTheme } from 'vuetify'
-import { mdiAccount, mdiThemeLightDark } from '@mdi/js'
+import { mdiAccount, mdiThemeLightDark, mdiMusicNoteEighth } from '@mdi/js'
 
 const user = useCurrentUser()
 const theme = useTheme()
