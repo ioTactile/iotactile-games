@@ -22,20 +22,21 @@ const myCustomLightTheme: ThemeDefinition = {
     // Dice
     dicePrimary: '#fffcb9', // yellow
     diceClosePrimary: '#ffd37f', // yellow
-    dicePlayersBorder: '#ffcc66' // yellow
+    diceBorder: '#e0e0e0', // grey
+    diceCloseBorder: '#e0e0e0' // grey
   }
 }
 const myCustomDarkTheme: ThemeDefinition = {
   dark: true,
   colors: {
     // Illustration
-    main: '#353535', // dark grey
-    secondary: '#0c0c0c', // white
+    main: '#000000', // dark
+    secondary: '#202327', // dark grey
     tertiary: '#d9376e', // pink
     stroke: '#0d0d0d', // black
     highlight: '#ff8e3c', // orange
     // Elements
-    background: '#353535', // dark grey
+    background: '#000000', // dark
     headline: '#0d0d0d', // black
     paragraph: '2a2a2a', // dark grey
     buttonBack: '#ff8e3c', // orange
@@ -44,9 +45,10 @@ const myCustomDarkTheme: ThemeDefinition = {
     error: '#ed4337', // red
     success: '#4caf50', // green
     // Dice
-    dicePrimary: '#fffcb9', // yellow
-    diceClosePrimary: '#ffd37f', // yellow
-    diceBorder: '#ffcc66' // yellow
+    dicePrimary: '#1a8cd8', // blue
+    diceClosePrimary: '#0f4e78', // blue
+    diceBorder: '#3c3c3c', // light grey
+    diceCloseBorder: '#3c3c3c' // light grey
   }
 }
 

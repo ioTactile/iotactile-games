@@ -3,12 +3,12 @@
     <v-row>
       <v-divider class="mb-4" />
       <v-col cols="6" class="text-end">
-        <v-btn variant="flat" color="tertiary" :loading="loading" @click="quickJoin">
+        <v-btn variant="flat" color="tertiary" class="text-subtitle-2 text-sm-h6" :loading="loading" @click="quickJoin">
           Partie rapide
         </v-btn>
       </v-col>
       <v-col cols="6" class="text-start">
-        <v-btn variant="flat" color="tertiary" :loading="loading" @click="create">
+        <v-btn variant="flat" color="tertiary" class="text-subtitle-2 text-sm-h6" :loading="loading" @click="create">
           Créer une session
         </v-btn>
       </v-col>

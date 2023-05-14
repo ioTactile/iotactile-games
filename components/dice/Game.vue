@@ -19,11 +19,12 @@
                   <v-btn
                     v-for="(dice, i) in session.diceOnBoard"
                     :key="i"
+                    width="60"
                     variant="text"
                     class="dice-container "
                     @click="addDice(i)"
                   >
-                    <v-img :src="getDiceFace(dice)" alt="dés" height="80" width="80" cover />
+                    <v-img :src="getDiceFace(dice)" alt="dés" height="60" width="60" cover />
                   </v-btn>
                 </div>
               </v-col>
@@ -67,18 +68,17 @@
               </v-col>
               <v-col cols="12" align-self="end" class="pl-0 pb-0">
                 <div
-                  class="yellow-plate dice-plate-container"
+                  class="dice-plate dice-plate-container"
                 >
                   <v-btn
                     v-for="(dice, i) in session.diceOnHand"
                     :key="i"
-                    heigth="80px"
-                    width="80px"
+                    width="60"
                     variant="text"
                     class="dice-container pa-0 mx-2"
                     @click="removeDice(i)"
                   >
-                    <v-img :src="getDiceFace(dice)" alt="dés" height="84" width="84" cover />
+                    <v-img :src="getDiceFace(dice)" alt="dés" height="60" width="60" cover />
                   </v-btn>
                 </div>
               </v-col>
@@ -733,7 +733,7 @@ const sleep = (ms: number) => {
 .dice-plate-container {
   display: flex;
   align-items: center;
-  height: 90px;
+  height: 70px;
   width: 100%;
   border: 1px solid rgb(var(--v-theme-dicePlayersBorder));
 }
@@ -741,7 +741,7 @@ const sleep = (ms: number) => {
   .dice-plate-container {
     display: inline-block;
     align-items: center;
-    height: 180px;
+    height: 140px;
     width: 100%
   }
 }
@@ -753,8 +753,8 @@ const sleep = (ms: number) => {
 
 .dice-container {
   margin: 5px;
-  height: 80px;
-  width: 80px;
+  height: 60px;
+  width: 60px;
 }
 
 .card-container {
@@ -825,7 +825,7 @@ const sleep = (ms: number) => {
 }
 
 /* dice board */
-.yellow-plate {
+.dice-plate {
   background: linear-gradient(to bottom right, rgb(var(--v-theme-dicePrimary)), rgb(var(--v-theme-diceClosePrimary)));
 }
 </style>

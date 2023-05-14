@@ -20,7 +20,7 @@
             href="https://github.com/ioTactile"
             class="text-decoration-none text-headline"
           >
-            <strong>iotactile</strong>
+            <strong class="text-tertiary">iotactile</strong>
           </a>
         </v-col>
       </v-row>

@@ -1,13 +1,13 @@
 <template>
   <v-container align="center">
-    <v-card max-width="500">
+    <v-card max-width="500" color="secondary">
       <v-card-title class="d-flex justify-space-between align-center">
         <h2 class="text-h5">
           Mon profil
         </h2>
         <v-btn
-          :icon="mdiDotsVertical"
           variant="text"
+          :icon="mdiDotsVertical"
           @click="openDeleteUser = !openDeleteUser"
         />
       </v-card-title>
@@ -66,7 +66,7 @@
 
 <script lang="ts" setup>
 import { VContainer, VCard, VCardTitle, VCardText, VForm, VDivider, VBtn } from 'vuetify/components'
-import { mdiPencil } from '@mdi/js'
+import { mdiPencil, mdiDotsVertical } from '@mdi/js'
 import { deleteUser, signOut } from '@firebase/auth'
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore'
 import { useFirestore, useFirebaseAuth, useCurrentUser } from 'vuefire'
