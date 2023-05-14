@@ -37,7 +37,7 @@ const myCustomDarkTheme: ThemeDefinition = {
     highlight: '#ff8e3c', // orange
     // Elements
     background: '#000000', // dark
-    headline: '#0d0d0d', // black
+    headline: '#fffffe', // white
     paragraph: '2a2a2a', // dark grey
     buttonBack: '#ff8e3c', // orange
     buttonText: '#0d0d0d', // black

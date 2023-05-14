@@ -13,7 +13,7 @@
         </v-btn>
       </v-col>
       <v-divider class="mt-4" />
-      <v-col cols="12" class="text-h4 my-4" align="center">
+      <v-col v-if="sessionsNotStarted.length > 0" cols="12" class="text-h4 my-4" align="center">
         <span>Rejoindre une session</span>
       </v-col>
       <v-col
@@ -121,6 +121,7 @@ const checkScoreboard = async () => {
     await setDoc(doc(scoreboardRef, user.value.uid), {
       userId: user.value.uid,
       username,
+      games: 0,
       maxScore: 0,
       victories: 0,
       dice: 0

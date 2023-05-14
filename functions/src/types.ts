@@ -79,6 +79,7 @@ export type DiceSession = {
 export type DiceScoreboard = {
   userId: string
   username: string
+  games: number
   maxScore: number
   victories: number
   dice: number

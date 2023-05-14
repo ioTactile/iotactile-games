@@ -134,7 +134,7 @@
           </v-card>
           <v-card class="d-flex align-center pa-2" rounded="0">
             <v-row class="pa-0">
-              <v-col cols="12" lg="6">
+              <v-col cols="12" xl="6">
                 <v-textarea
                   v-model="message"
                   placeholder="Votre message"
@@ -146,11 +146,11 @@
                   @keyup.enter="sendMessage"
                 />
               </v-col>
-              <v-col cols="12" lg="6" class="pt-0 pt-lg-3">
+              <v-col cols="12" xl="6" class="pt-0 pt-xl-3 align-self-center">
                 <v-btn
                   block
                   color="tertiary"
-                  height="56px"
+                  height="46px"
                   @click="sendMessage"
                 >
                   Envoyer
@@ -161,9 +161,10 @@
         </div>
       </v-col>
     </v-row>
+
     <client-only>
       <v-dialog v-model="isFinishedLocal" width="600">
-        <v-card color="dicePrimary card-container" rounded="lg">
+        <v-card color="diceClosePrimary card-container" rounded="lg">
           <v-card-title class="text-h5 text-center font-weight-bold">
             <span>Partie terminée</span>
           </v-card-title>
@@ -202,7 +203,8 @@
             <v-btn
               block
               variant="flat"
-              color="highlight"
+              elevation="6"
+              color="tertiary"
               to="/dice/jouer"
             >
               Retourner au menu principal

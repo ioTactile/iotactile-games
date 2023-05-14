@@ -14,6 +14,7 @@ export const createDiceScoreboardPlayer = functions
       await diceScoreboardRef.doc(data.id).set({
         userId: data.id,
         username: data.username,
+        games: 0,
         maxScore: 0,
         victories: 0,
         dice: 0,

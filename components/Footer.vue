@@ -18,7 +18,7 @@
           © {{ new Date().getFullYear() }} - Réalisé par
           <a
             href="https://github.com/ioTactile"
-            class="text-decoration-none text-headline"
+            class="text-decoration-none"
           >
             <strong class="text-tertiary">iotactile</strong>
           </a>

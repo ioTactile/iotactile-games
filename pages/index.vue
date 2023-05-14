@@ -16,7 +16,7 @@
       </v-col>
       <v-col cols="12" class="text-center">
         <v-alert
-          color="green"
+          color="secondary"
           elevation="2"
           class="text-h6 text-md-h5"
         >
@@ -24,12 +24,12 @@
             <v-col cols="12" md="8">
               <v-row align="center">
                 <v-col cols="12">
-                  <h3 class="text-h6 text-md-h5 mb-2">
+                  <span class="text-h6 text-md-h5">
                     Un nouveau jeu est disponible !
-                  </h3>
-                  <p class="text-h6 text-md-h5">
+                  </span>
+                  <h3 class="text-h6 text-md-h5 mt-2">
                     <strong>Dice</strong>
-                  </p>
+                  </h3>
                 </v-col>
                 <v-col cols="12">
                   <v-img
@@ -43,7 +43,7 @@
             </v-col>
             <v-col cols="12" md="4">
               <v-btn
-                color="dicePrimary"
+                color="buttonBack"
                 to="/dice/jouer"
                 width="200"
                 height="56"

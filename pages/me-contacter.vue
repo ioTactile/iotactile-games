@@ -1,5 +1,5 @@
 <template>
-  <v-container class="container">
+  <v-container class="container text-h6">
     <h3 class="text-h3">
       Contact
     </h3>

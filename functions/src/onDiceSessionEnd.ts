@@ -95,6 +95,7 @@ export const onDiceSessionEnd = functions
         await playerRef.set({
           userId: playerOne.id,
           username: user.username,
+          games: player.games + 1,
           maxScore: player.maxScore > playerOne.total ?
           player.maxScore : playerOne.total,
           victories: winner === playerOne.id ?
@@ -116,6 +117,7 @@ export const onDiceSessionEnd = functions
         await playerRef.set({
           userId: playerTwo.id,
           username: user.username,
+          games: player.games + 1,
           maxScore: player.maxScore > playerTwo.total ?
           player.maxScore : playerTwo.total,
           victories: winner === playerTwo.id ?
@@ -135,6 +137,7 @@ export const onDiceSessionEnd = functions
         await playerRef.set({
           userId: playerThree.id,
           username: user.username,
+          games: player.games + 1,
           maxScore: player.maxScore > playerThree.total ?
           player.maxScore : playerThree.total,
           victories: winner === playerThree.id ?
@@ -154,6 +157,7 @@ export const onDiceSessionEnd = functions
         await playerRef.set({
           userId: playerFour.id,
           username: user.username,
+          games: player.games + 1,
           maxScore: player.maxScore > playerFour.total ?
           player.maxScore : playerFour.total,
           victories: winner === playerFour.id ?
