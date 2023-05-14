@@ -85,22 +85,48 @@ import {
   where
 } from 'firebase/firestore'
 import { useFirestore, useCollection } from 'vuefire'
-import { diceSessionConverter, LocalDiceSessionType } from '~/stores'
+import { diceSessionConverter, diceScoreboardConverter, LocalDiceSessionType } from '~/stores'
+
+// Vuefire & Composables
 
 const { notifier } = useNotifier()
 const user = useCurrentUser()
 const db = useFirestore()
-const id = ref<string | null>(null)
-const date = ref(new Date(Date.now()))
 
-const loading = ref(false)
-const leaving = ref(false)
+// Firestore
+
 const sessionsRef = collection(db, 'diceSessions').withConverter(diceSessionConverter)
-// const sessions = useCollection(collection(db, 'diceSessions'))
 const sessionsStartedQuery = query(sessionsRef, where('isStarted', '==', false))
 const sessionsNotStarted = useCollection(sessionsStartedQuery)
 const playerTurnRef = collection(db, 'diceSessionPlayerTurn')
 const scoresRef = collection(db, 'diceSessionScores')
+const scoreboardRef = collection(db, 'diceScoreboard').withConverter(diceScoreboardConverter)
+
+// Refs
+
+const id = ref<string | null>(null)
+const date = ref(new Date(Date.now()))
+const loading = ref(false)
+const leaving = ref(false)
+
+// Methods
+
+const checkScoreboard = async () => {
+  if (!user.value) { return }
+  const scoreboardQuery = query(scoreboardRef, where('id', '==', user.value.uid))
+  const scoreboardSnapshot = await getDocs(scoreboardQuery)
+  const scoreboard = scoreboardSnapshot.docs.map(doc => doc.data())
+  if (scoreboard.length === 0) {
+    const username = await getUsername()
+    await setDoc(doc(scoreboardRef, user.value.uid), {
+      userId: user.value.uid,
+      username,
+      maxScore: 0,
+      victories: 0,
+      dice: 0
+    })
+  }
+}
 
 const getUsername = async () => {
   if (!user.value) {
@@ -191,6 +217,7 @@ const create = async () => {
       id: id.value,
       playerOne: initScores()
     })
+    checkScoreboard()
   } finally {
     reset()
   }
@@ -255,6 +282,7 @@ const quickJoin = async () => {
         { merge: true }
       )
     }
+    checkScoreboard()
   } finally {
     loading.value = false
     if (sessionToJoin) {
@@ -316,6 +344,7 @@ const join = async (sessionId: string) => {
         { merge: true }
       )
     }
+    checkScoreboard()
   } finally {
     loading.value = false
     navigateTo(`/dice/jouer/${sessionId}`)

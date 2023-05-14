@@ -116,16 +116,24 @@ import { Timestamp, doc, setDoc } from 'firebase/firestore'
 import { useFirestore, useCurrentUser, useFirebaseAuth } from 'vuefire'
 import { userConverter } from '~/stores'
 
+// Composable & Vuefire
+
 const { notifier } = useNotifier()
 const db = useFirestore()
 const user = useCurrentUser()
 const auth = useFirebaseAuth()
 
+// Props
+
 defineProps<{
   modelValue: boolean
 }>()
 
+// Emits
+
 const emits = defineEmits<{(e: 'update:modelValue', value: boolean): void }>()
+
+// Refs
 
 const email = ref('')
 const username = ref('')
@@ -138,6 +146,8 @@ const loading = ref<'email' | null>(null)
 const form = ref<VForm>()
 const tab = ref(null)
 
+// onBeforeMount
+
 onBeforeMount(async () => {
   if (user.value) {
     const { claims } = await getIdTokenResult(user.value, true)
@@ -145,10 +155,10 @@ onBeforeMount(async () => {
   }
 })
 
+// Methods
+
 const login = async () => {
-  if (!auth || !(await form.value?.validate())?.valid) {
-    return
-  }
+  if (!auth || !(await form.value?.validate())?.valid) { return }
   loading.value = 'email'
 
   try {

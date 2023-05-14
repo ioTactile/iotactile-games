@@ -25,6 +25,15 @@ export const diceSessionConverter = {
   },
 };
 
+export const diceScoreboardConverter = {
+  toFirestore: (scoreboard: DiceScoreboard): DocumentData => scoreboard,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<DiceScoreboard>
+  ): DiceScoreboard {
+    return snapshot.data();
+  },
+};
+
 export const diceSessionPlayerTurnConverter = {
   toFirestore: (playerTurn: DiceSessionPlayerTurn): DocumentData => playerTurn,
   fromFirestore(
@@ -65,6 +74,14 @@ export type DiceSession = {
   diceOnBoard: number[]
   diceOnHand: number[]
   creationDate: Timestamp
+}
+
+export type DiceScoreboard = {
+  userId: string
+  username: string
+  maxScore: number
+  victories: number
+  dice: number
 }
 
 export type DiceSessionPlayerTurn = {

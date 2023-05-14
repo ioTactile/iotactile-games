@@ -4,9 +4,6 @@
     <v-row class="mx-auto">
       <!-- Text -->
       <v-col cols="12">
-        <h1 class="text-h2 text-md-h1 mb-8">
-          ioTactile Games
-        </h1>
         <h2 class="text-h5 text-md-h4 mb-4">
           Bienvenue à toi
         </h2>
@@ -31,7 +28,7 @@
                     Un nouveau jeu est disponible !
                   </h3>
                   <p class="text-h6 text-md-h5">
-                    <strong>Le jeu Dice</strong>
+                    <strong>Dice</strong>
                   </p>
                 </v-col>
                 <v-col cols="12">

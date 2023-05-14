@@ -25,6 +25,8 @@ import { VContainer, VBtn } from 'vuetify/components'
 import { useDisplay } from 'vuetify'
 import { mdiAccountMultiple, mdiTextBox, mdiAccountDetails, mdiNoteText } from '@mdi/js'
 
+// Vuetify
+
 const { xs, sm } = useDisplay()
 
 const items = [

@@ -29,13 +29,13 @@ const myCustomDarkTheme: ThemeDefinition = {
   dark: true,
   colors: {
     // Illustration
-    main: '#eff0f3', // light grey
-    secondary: '#fffffe', // white
+    main: '#353535', // dark grey
+    secondary: '#0c0c0c', // white
     tertiary: '#d9376e', // pink
     stroke: '#0d0d0d', // black
     highlight: '#ff8e3c', // orange
     // Elements
-    background: '#eff0f3', // light grey
+    background: '#353535', // dark grey
     headline: '#0d0d0d', // black
     paragraph: '2a2a2a', // dark grey
     buttonBack: '#ff8e3c', // orange

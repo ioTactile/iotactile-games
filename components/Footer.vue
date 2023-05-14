@@ -8,7 +8,7 @@
           :to="link.link"
           color="buttonBack"
           variant="outlined"
-          class="mx-2"
+          class="mx-2 mb-1"
           :size="xs ? 'small' : 'default'"
           rounded="xl"
         >
@@ -31,6 +31,8 @@
 <script lang="ts" setup>
 import { VFooter, VBtn, VRow, VCol } from 'vuetify/components'
 import { useDisplay } from 'vuetify'
+
+// Vuetify
 
 const { xs } = useDisplay()
 

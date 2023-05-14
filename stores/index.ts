@@ -7,6 +7,7 @@ import {
   Timestamp,
   User,
   DiceSession,
+  DiceScoreboard,
   DiceSessionPlayerTurn,
   DiceSessionScore
 } from '~/functions/src/types'
@@ -64,6 +65,31 @@ export const diceSessionConverter: FirestoreDataConverter<LocalDiceSessionType> 
         ...data,
         id: snapshot.id,
         creationDate: data.creationDate.toDate()
+      }
+    }
+  }
+
+type DatabaseDiceScoreboardType = NestedTypeMapper<
+  DiceScoreboard,
+  Timestamp,
+  FirestoreTimestamp
+>
+export type LocalDiceScoreboardType = NestedTypeMapper<
+  DiceScoreboard,
+  Timestamp,
+  Date
+>
+export const diceScoreboardConverter: FirestoreDataConverter<LocalDiceScoreboardType> =
+  {
+    toFirestore: item => item,
+    fromFirestore: (
+      snapshot: QueryDocumentSnapshot<DatabaseDiceScoreboardType>,
+      options
+    ) => {
+      const data = snapshot.data(options)
+      return {
+        ...data,
+        id: snapshot.id
       }
     }
   }

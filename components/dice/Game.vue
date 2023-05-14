@@ -214,7 +214,7 @@
   </v-container>
 </template>
 
-<script lang="ts" setup async>
+<script lang="ts" setup>
 import { VContainer, VRow, VCol, VBtn, VCard, VCardTitle, VCardText, VCardActions, VImg, VDialog, VTextarea, VDivider } from 'vuetify/components'
 import { collection, doc, setDoc, getDoc, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'

@@ -66,21 +66,39 @@
 
 <script lang="ts" setup>
 import { VContainer, VCard, VCardTitle, VCardText, VForm, VDivider, VBtn } from 'vuetify/components'
-import { mdiPencil} from '@mdi/js'
+import { mdiPencil } from '@mdi/js'
 import { deleteUser, signOut } from '@firebase/auth'
 import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore'
 import { useFirestore, useFirebaseAuth, useCurrentUser } from 'vuefire'
 import { userConverter } from '~/stores'
+
+// Composable & Vuefire
 
 const { notifier } = useNotifier()
 const auth = useFirebaseAuth()
 const user = useCurrentUser()
 const db = useFirestore()
 
+// Refs
+
 const loading = ref(false)
 const change = ref(false)
 const openDeleteUser = ref(false)
 const username = ref('')
+
+// OnMounted
+
+onMounted(async () => {
+  if (!user.value) { return }
+  const userRef = doc(db, 'users', user.value.uid).withConverter(userConverter)
+  const userDoc = await getDoc(userRef)
+  const userFetched = userDoc.data()
+  if (userFetched) {
+    username.value = userFetched.username
+  }
+})
+
+// Methods
 
 const isChange = () => {
   if (!change.value) {
@@ -89,18 +107,6 @@ const isChange = () => {
     change.value = false
   }
 }
-
-onMounted(async () => {
-  if (!user.value) {
-    return
-  }
-  const userRef = doc(db, 'users', user.value.uid).withConverter(userConverter)
-  const userDoc = await getDoc(userRef)
-  const userFetched = userDoc.data()
-  if (userFetched) {
-    username.value = userFetched.username
-  }
-})
 
 const updateProfile = async () => {
   loading.value = true
@@ -128,9 +134,7 @@ const updateProfile = async () => {
 }
 
 const deleteProfile = async () => {
-  if (!user.value) {
-    return
-  }
+  if (!user.value) { return }
   loading.value = true
   try {
     const userRef = doc(db, 'users', user.value.uid)
@@ -149,9 +153,7 @@ const deleteProfile = async () => {
 }
 
 const logout = async () => {
-  if (!auth) {
-    return
-  }
+  if (!auth) { return }
   loading.value = true
   try {
     await signOut(auth)
