@@ -33,7 +33,7 @@
                 </v-col>
                 <v-col cols="12">
                   <v-img
-                    src="/dice.png"
+                    src="/dice-version-1.png"
                     alt="Dice"
                     aspect-ratio="16/9"
                     cover
@@ -43,7 +43,7 @@
             </v-col>
             <v-col cols="12" md="4">
               <v-btn
-                color="buttonBack"
+                color="diceClosePrimary"
                 to="/dice/jouer"
                 width="200"
                 height="56"

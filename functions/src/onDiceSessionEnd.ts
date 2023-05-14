@@ -10,11 +10,16 @@ export const onDiceSessionEnd = functions
     .region("europe-west3").firestore
     .document("diceSessions/{sessionId}")
     .onUpdate( async (change, context) => {
-      const after = change.after.exists ? change.after.data() : null;
-
-      if (after && after.remainingTurns !== 0) {
+      if (!change.after.exists) {
         return;
       }
+
+      const after = change.after.data();
+
+      if (after.isFinished === false) {
+        return;
+      }
+
       const firestore = getFirestore();
 
       const playersScoresRef = firestore
@@ -32,138 +37,137 @@ export const onDiceSessionEnd = functions
       const playersScores = playersScoresDoc.data();
       const playerOne = playersScores?.playerOne;
       const playerTwo = playersScores?.playerTwo;
-      const playerThree = playersScores?.playerThree;
-      const playerFour = playersScores?.playerFour;
-      let totalPlayerOne = 0;
-      let totalPlayerTwo = 0;
-      let totalPlayerThree = 0;
-      let totalPlayerFour = 0;
+      const playerThree = playersScores?.playerThree ?? null;
+      const playerFour = playersScores?.playerFour ?? null;
+
       let isDicePlayerOne = false;
       let isDicePlayerTwo = false;
       let isDicePlayerThree = false;
       let isDicePlayerFour = false;
-      if (playerOne) {
-        totalPlayerOne = playerOne.total;
-        isDicePlayerOne = playerOne.dice === 50 ? true : false;
-      }
-      if (playerTwo) {
-        totalPlayerTwo = playerTwo.total;
-        isDicePlayerTwo = playerTwo.dice === 50 ? true : false;
+      let playerOneTotal: number|undefined;
+      let playerTwoTotal: number|undefined;
+      let playerThreeTotal: number|undefined;
+      let playerFourTotal: number|undefined;
+      let winner: string|undefined;
+      const playersTotal: number[] = [];
+
+      if (playerOne && playerTwo) {
+        playerOneTotal = playerOne.total || 0;
+        playerTwoTotal = playerTwo.total || 0;
+        playersTotal.push(playerOneTotal, playerTwoTotal);
       }
       if (playerThree) {
-        totalPlayerThree = playerThree.total;
-        isDicePlayerThree = playerThree.dice === 50 ? true : false;
+        playerThreeTotal = playerThree.total || 0;
+        playersTotal.push(playerThreeTotal);
       }
-      if (playerFour) {
-        totalPlayerFour = playerFour.total;
-        isDicePlayerFour = playerFour.dice === 50 ? true : false;
+      if (playerOne && playerTwo && playerThree && playerFour) {
+        playerFourTotal = playerFour.total || 0;
+        playersTotal.push(playerFourTotal);
       }
+      if (playersTotal) {
+        playersTotal.sort((a, b) => b - a);
+        if (playerOne && playersTotal[0] === playerOneTotal) {
+          winner = playerOne.id;
+        }
+        if (playerTwo && playersTotal[0] === playerTwoTotal) {
+          winner = playerTwo.id;
+        }
+        if (playerThree && playersTotal[0] === playerThreeTotal) {
+          winner = playerThree.id;
+        }
+        if (playerFour && playersTotal[0] === playerFourTotal) {
+          winner = playerFour.id;
+        }
+      }
+      console.log("playersTotal", playersTotal);
+      console.log("winner", winner);
 
-      let winner;
-      if (totalPlayerOne > totalPlayerTwo &&
-        totalPlayerOne > totalPlayerThree &&
-        totalPlayerOne > totalPlayerFour) {
-        winner = playerOne?.id;
-      }
-      if (totalPlayerTwo > totalPlayerOne &&
-        totalPlayerTwo > totalPlayerThree &&
-        totalPlayerTwo > totalPlayerFour) {
-        winner = playerTwo?.id;
-      }
-      if (totalPlayerThree > totalPlayerOne &&
-        totalPlayerThree > totalPlayerTwo &&
-        totalPlayerThree > totalPlayerFour) {
-        winner = playerThree?.id;
-      }
-      if (totalPlayerFour > totalPlayerOne &&
-        totalPlayerFour > totalPlayerTwo &&
-        totalPlayerFour > totalPlayerThree) {
-        winner = playerFour?.id;
-      }
 
       if (playerOne) {
+        isDicePlayerOne = playerOne.dice === 50 ? true : false;
         const playerRef = diceScoreboardRef.doc(playerOne.id);
         const playerDoc = await playerRef.get();
         const player = playerDoc.data();
         const userDoc = await usersRef.doc(playerOne.id).get();
         const user = userDoc.data();
-        if (!user || !player) {
-          return;
-        }
-        console.log("playerOne", playerOne.id,
-            playerOne.total, player.victories, playerOne.dice);
-        await playerRef.set({
-          userId: playerOne.id,
-          username: user.username,
-          games: player.games + 1,
-          maxScore: player.maxScore > playerOne.total ?
+        if (user && player) {
+          console.log("playerOne", playerOne.id,
+              playerOne.total, player.victories, playerOne.dice);
+          await playerRef.set({
+            userId: playerOne.id,
+            username: user.username,
+            games: player.games + 1,
+            maxScore: player.maxScore > playerOne.total ?
           player.maxScore : playerOne.total,
-          victories: winner === playerOne.id ?
+            victories: winner === playerOne.id ?
           player.victories + 1 : player.victories,
-          dice: isDicePlayerOne ? player.dice + 1 : player.dice,
-        }, {merge: true});
+            dice: isDicePlayerOne ? player.dice + 1 : player.dice,
+          }, {merge: true});
+        }
       }
       if (playerTwo) {
+        isDicePlayerTwo = playerTwo.dice === 50 ? true : false;
         const playerRef = diceScoreboardRef.doc(playerTwo.id);
         const playerDoc = await playerRef.get();
         const player = playerDoc.data();
         const userDoc = await usersRef.doc(playerTwo.id).get();
         const user = userDoc.data();
-        if (!user || !player) {
-          return;
-        }
-        console.log("playerTwo", playerTwo.id,
-            playerTwo.total, player.victories, playerTwo.dice);
-        await playerRef.set({
-          userId: playerTwo.id,
-          username: user.username,
-          games: player.games + 1,
-          maxScore: player.maxScore > playerTwo.total ?
+        if (user && player) {
+          console.log("playerTwo", playerTwo.id,
+              playerTwo.total, player.victories, playerTwo.dice);
+          await playerRef.set({
+            userId: playerTwo.id,
+            username: user.username,
+            games: player.games + 1,
+            maxScore: player.maxScore > playerTwo.total ?
           player.maxScore : playerTwo.total,
-          victories: winner === playerTwo.id ?
+            victories: winner === playerTwo.id ?
           player.victories + 1 : player.victories,
-          dice: isDicePlayerTwo ? player.dice + 1 : player.dice,
-        }, {merge: true});
+            dice: isDicePlayerTwo ? player.dice + 1 : player.dice,
+          }, {merge: true});
+        }
       }
       if (playerThree) {
+        isDicePlayerThree = playerThree.dice === 50 ? true : false;
         const playerRef = diceScoreboardRef.doc(playerThree.id);
         const playeDoc = await playerRef.get();
         const player = playeDoc.data();
         const userDoc = await usersRef.doc(playerThree.id).get();
         const user = userDoc.data();
-        if (!user || !player) {
-          return;
-        }
-        await playerRef.set({
-          userId: playerThree.id,
-          username: user.username,
-          games: player.games + 1,
-          maxScore: player.maxScore > playerThree.total ?
+        if (user && player) {
+          await playerRef.set({
+            userId: playerThree.id,
+            username: user.username,
+            games: player.games + 1,
+            maxScore: player.maxScore > playerThree.total ?
           player.maxScore : playerThree.total,
-          victories: winner === playerThree.id ?
+            victories: winner === playerThree.id ?
           player.victories + 1 : player.victories,
-          dice: isDicePlayerThree ? player.dice + 1 : player.dice,
-        }, {merge: true});
+            dice: isDicePlayerThree ? player.dice + 1 : player.dice,
+          }, {merge: true});
+        }
       }
       if (playerFour) {
+        isDicePlayerFour = playerFour.dice === 50 ? true : false;
         const playerRef = diceScoreboardRef.doc(playerFour.id);
         const playerDoc = await playerRef.get();
         const player = playerDoc.data();
         const userDoc = await usersRef.doc(playerFour.id).get();
         const user = userDoc.data();
-        if (!user || !player) {
-          return;
-        }
-        await playerRef.set({
-          userId: playerFour.id,
-          username: user.username,
-          games: player.games + 1,
-          maxScore: player.maxScore > playerFour.total ?
+        if (user && player) {
+          await playerRef.set({
+            userId: playerFour.id,
+            username: user.username,
+            games: player.games + 1,
+            maxScore: player.maxScore > playerFour.total ?
           player.maxScore : playerFour.total,
-          victories: winner === playerFour.id ?
+            victories: winner === playerFour.id ?
             player.victories + 1 : player.victories,
-          dice: isDicePlayerFour ? player.dice + 1 : player.dice,
-        }, {merge: true});
+            dice: isDicePlayerFour ? player.dice + 1 : player.dice,
+          }, {merge: true});
+        }
       }
+
+      return;
     });
 
