@@ -525,7 +525,6 @@ const rollOne = async () => {
     return
   }
 
-  const rollCups = cups.value
   const rollDices = dices.value
   diceOnBoard.value = []
   diceOnHand.value = []
@@ -535,8 +534,7 @@ const rollOne = async () => {
     diceOnBoard.value.push(dice)
   }
 
-  rollCups.tries = 2
-  await setDoc(cupsRef, rollCups, { merge: true })
+  await setDoc(cupsRef, { tries: 2 }, { merge: true })
   await sleep(2300)
   rollDices.diceOnBoard = diceOnBoard.value
   rollDices.diceOnHand = diceOnHand.value
@@ -572,20 +570,18 @@ const rollTwo = async () => {
     return
   }
 
-  const rollCups = cups.value
   const rollDices = dices.value
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
   rollDices.diceOnBoard = []
-  await setDoc(sessionRef, rollDices, { merge: true })
+  await setDoc(dicesRef, rollDices, { merge: true })
 
   for (let i = 0; i < diceOnBoardLength; i++) {
     const dice = trueRandom()
     diceOnBoard.value.push(dice)
   }
 
-  rollCups.tries = 1
-  await setDoc(cupsRef, rollCups, { merge: true })
+  await setDoc(cupsRef, { tries: 1 }, { merge: true })
   await sleep(2300)
   rollDices.diceOnBoard = diceOnBoard.value
   await setDoc(dicesRef, rollDices, { merge: true })
@@ -620,7 +616,6 @@ const rollThree = async () => {
     return
   }
 
-  const rollCups = cups.value
   const rollDices = dices.value
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
@@ -632,8 +627,7 @@ const rollThree = async () => {
     diceOnBoard.value.push(dice)
   }
 
-  rollCups.tries = 0
-  await setDoc(cupsRef, rollCups, { merge: true })
+  await setDoc(cupsRef, { tries: 0 }, { merge: true })
   await sleep(2300)
   rollDices.diceOnBoard = diceOnBoard.value
   await setDoc(dicesRef, rollDices, { merge: true })
