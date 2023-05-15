@@ -1339,6 +1339,7 @@ import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
   diceSessionRemainingTurnsConverter,
+  diceSessionPlayerTriesConverter,
   diceSessionDicesConverter,
   diceSessionScoreConverter
 } from '~/stores'
@@ -1371,6 +1372,9 @@ const remainingTurnsRef = doc(
 const remainingTurnsUseDoc = useDocument(
   doc(collection(db, 'diceSessionRemainingTurns'), remainingTurnsRef.id)
 )
+const cupsRef = doc(db, 'diceSessionPlayerTries', sessionId).withConverter(
+  diceSessionPlayerTriesConverter
+)
 const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(
   diceSessionScoreConverter
 )
@@ -1391,9 +1395,6 @@ const { diceOnBoard, diceOnHand } = storeToRefs(dicesStore)
 
 // Computed values
 
-const sessionDataPlayers = computed(() => {
-  return session.value?.players
-})
 const dices = computed(() => {
   if (!dicesUseDoc.value) {
     return
@@ -1401,6 +1402,7 @@ const dices = computed(() => {
   const dicesOnHand = dicesUseDoc.value.diceOnHand
   const dicesOnBoard = dicesUseDoc.value.diceOnBoard
   const dicesItems = [...dicesOnHand, ...dicesOnBoard]
+  console.log(dicesItems)
   return dicesItems
 })
 const isPlayerTurnOne = computed(() => {
@@ -1449,43 +1451,46 @@ const isDices = computed(() => {
 // Methods
 
 const playerOne = () => {
-  if (!sessionDataPlayers || !user.value) {
+  if (!user.value || !session.value) {
     return
   }
-  if (user.value.uid === sessionDataPlayers[0].id) {
+  if (user.value.uid === session.value.players[0].id) {
     return false
   }
   return true
 }
 const playerTwo = () => {
-  if (!sessionDataPlayers || !user.value) {
+  if (!user.value || !session.value) {
     return
   }
-  if (user.value.uid === sessionDataPlayers[1].id) {
+  if (user.value.uid === session.value.players[1].id) {
     return false
   }
   return true
 }
 const playerThree = () => {
-  if (!sessionDataPlayers || !user.value) {
+  if (!user.value || !session.value) {
     return
   }
-  if (user.value.uid === sessionDataPlayers[2].id) {
+  if (user.value.uid === session.value.players[2].id) {
     return false
   }
   return true
 }
 const playerFour = () => {
-  if (!sessionDataPlayers || !user.value) {
+  if (!user.value || !session.value) {
     return
   }
-  if (user.value.uid === sessionDataPlayers[3].id) {
+  if (user.value.uid === session.value.players[3].id) {
     return false
   }
   return true
 }
 const reduceRemainingTurn = () => {
-  if (!remainingTurnsUseDoc.value && remainingTurnsUseDoc.value.remainingTurns === 0) {
+  if (
+    !remainingTurnsUseDoc.value ||
+    remainingTurnsUseDoc.value.remainingTurns === 0
+  ) {
     return
   }
   return remainingTurnsUseDoc.value.remainingTurns - 1
@@ -1577,7 +1582,7 @@ const oneInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const ones = dices.value.filter(dice => dice === 1)
   return ones.reduce((acc, dice) => acc + dice, 0)
@@ -1587,7 +1592,7 @@ const twoInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const twos = dices.value.filter(dice => dice === 2)
   return twos.reduce((acc, dice) => acc + dice, 0)
@@ -1597,7 +1602,7 @@ const threeInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const threes = dices.value.filter(dice => dice === 3)
   return threes.reduce((acc, dice) => acc + dice, 0)
@@ -1607,7 +1612,7 @@ const fourInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const fours = dices.value.filter(dice => dice === 4)
   return fours.reduce((acc, dice) => acc + dice, 0)
@@ -1617,7 +1622,7 @@ const fiveInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const fives = dices.value.filter(dice => dice === 5)
   return fives.reduce((acc, dice) => acc + dice, 0)
@@ -1627,7 +1632,7 @@ const sixInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const sixes = dices.value.filter(dice => dice === 6)
   return sixes.reduce((acc, dice) => acc + dice, 0)
@@ -1637,7 +1642,7 @@ const threeOfAKindInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   let ThreeOfAKind = false
   const newDices = dices.value.sort()
@@ -1660,7 +1665,7 @@ const fourOfAKindInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   let FourOfAKind = false
   const newDices = dices.value.sort()
@@ -1685,7 +1690,7 @@ const fullHouseInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const newDices = dices.value.sort()
   if (
@@ -1710,7 +1715,7 @@ const smallStraightInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const newDices = dices.value.sort()
   if (
@@ -1743,7 +1748,7 @@ const largeStraightInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const newDices = dices.value.sort()
   if (
@@ -1771,7 +1776,7 @@ const diceInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const newDices = dices.value.filter((dice) => {
     const newDices = dices.value?.filter(d => d === dice)
@@ -1788,7 +1793,7 @@ const chanceInput = computed(() => {
     return
   }
   if (dices.value.length !== 5) {
-    return
+    return 0
   }
   const chance = dices.value
   if (chance.length === 5) {

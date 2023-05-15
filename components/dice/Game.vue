@@ -127,7 +127,7 @@
                 :key="i"
                 class="d-flex"
               >
-                <span>{{ messageItem.username }}:</span>
+                <span class="mr-1">{{ messageItem.username }}:</span>
                 <span>{{ messageItem.content }}</span>
               </div>
             </v-card-text>
