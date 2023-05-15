@@ -348,13 +348,8 @@ watch(cups, async (newValue) => {
   }
 })
 watch(playerTurn, (newValue) => {
-  if (newValue && session.value?.isFinished === false) {
+  if (newValue && newValue.playerId === user.value?.uid && session.value?.isFinished === false) {
     notification().play()
-  }
-})
-watch(dices, (newValue) => {
-  if (newValue && session.value?.isFinished === false) {
-    diceSound().play()
   }
 })
 
@@ -654,6 +649,7 @@ const removeDice = async (index: number) => {
     notifier({ content: 'Attends ton tour', color: 'error' })
     return
   }
+  diceSound().play()
   const removeDices = dices.value
   diceOnBoard.value.push(diceOnHand.value[index])
   removeDices.diceOnBoard.push(diceOnHand.value[index])
@@ -671,6 +667,7 @@ const addDice = async (index: number) => {
     notifier({ content: 'Attends ton tour', color: 'error' })
     return
   }
+  diceSound().play()
   const addDices = dices.value
   diceOnHand.value.push(diceOnBoard.value[index])
   addDices.diceOnHand.push(diceOnBoard.value[index])
