@@ -271,9 +271,12 @@ const scores = ref<LocalDiceSessionScoreType|null>(null)
 
 // New Sound Effects
 
-// const diceSound = () => {
-//   return new Audio('/dice.mp3')
-// }
+const diceSound = () => {
+  return new Audio('/dice.mp3')
+}
+const notification = () => {
+  return new Audio('/notification.wav')
+}
 const shakeRoll = () => {
   return new Audio('/shake-and-roll.mp3')
 }
@@ -325,7 +328,7 @@ watch(isFinishedLocal, async (value) => {
   }
 })
 watch(remainingTurns, async (newValue) => {
-  if (newValue?.remainingTurns === 0) {
+  if (newValue && newValue.remainingTurns === 0) {
     await setDoc(sessionRef, { isFinished: true }, { merge: true })
     isFinishedLocal.value = true
 
@@ -342,6 +345,16 @@ watch(cups, async (newValue) => {
     shakeClass.value = 'shake'
     await sleep(1800)
     shakeClass.value = ''
+  }
+})
+watch(playerTurn, (newValue) => {
+  if (newValue && session.value?.isFinished === false) {
+    notification().play()
+  }
+})
+watch(dices, (newValue) => {
+  if (newValue && session.value?.isFinished === false) {
+    diceSound().play()
   }
 })
 
