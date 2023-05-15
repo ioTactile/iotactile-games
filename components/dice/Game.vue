@@ -620,7 +620,7 @@ const rollThree = async () => {
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
   rollDices.diceOnBoard = []
-  await setDoc(cupsRef, rollDices, { merge: true })
+  await setDoc(dicesRef, rollDices, { merge: true })
 
   for (let i = 0; i < diceOnBoardLength; i++) {
     const dice = trueRandom()
