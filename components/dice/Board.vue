@@ -1520,7 +1520,7 @@ const switchPlayerTurn = async () => {
     { remainingTurns: reduceRemainingTurn() },
     { merge: true }
   )
-  await setDoc(cupsRef, { playerTries: 3 }, { merge: true })
+  await setDoc(cupsRef, { tries: 3 }, { merge: true })
 
   diceOnBoard.value = []
   diceOnHand.value = []

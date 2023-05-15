@@ -35,7 +35,7 @@
                     variant="text"
                     heigth="100px"
                     width="60px"
-                    :style="cups?.playerTries < 3 ? 'opacity: 0.5' : ''"
+                    :style="cups?.tries < 3 ? 'opacity: 0.5' : ''"
                     @click="rollOne"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet un" height="100" width="60" />
@@ -47,7 +47,7 @@
                     variant="text"
                     heigth="100px"
                     width="60px"
-                    :style="cups?.playerTries < 2 ? 'opacity: 0.5' : ''"
+                    :style="cups?.tries < 2 ? 'opacity: 0.5' : ''"
                     @click="rollTwo"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet deux" height="100" width="60" />
@@ -59,7 +59,7 @@
                     variant="text"
                     heigth="100px"
                     width="60px"
-                    :style="cups?.playerTries < 1 ? 'opacity: 0.5' : ''"
+                    :style="cups?.tries < 1 ? 'opacity: 0.5' : ''"
                     @click="rollThree"
                   >
                     <v-img src="/cup-no-bg.png" alt="gobelet trois" height="100" width="60" />
@@ -336,7 +336,7 @@ watch(remainingTurns, async (newValue) => {
   }
 })
 watch(cups, async (newValue) => {
-  if (newValue && newValue.playerTries !== 3) {
+  if (newValue && newValue.tries !== 3) {
     shakeRoll().play()
     await sleep(500)
     shakeClass.value = 'shake'
@@ -516,7 +516,7 @@ const rollOne = async () => {
     notifier({ content: 'Attends ton tour', color: 'error' })
     return
   }
-  if (cups.value.playerTries < 3) {
+  if (cups.value.tries < 3) {
     notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'error' })
     return
   }
@@ -535,7 +535,7 @@ const rollOne = async () => {
     diceOnBoard.value.push(dice)
   }
 
-  rollCups.playerTries = 2
+  rollCups.tries = 2
   await setDoc(cupsRef, rollCups, { merge: true })
   await sleep(2300)
   rollDices.diceOnBoard = diceOnBoard.value
@@ -567,7 +567,7 @@ const rollTwo = async () => {
     notifier({ content: 'Attends ton tour', color: 'error' })
     return
   }
-  if (cups.value.playerTries < 2) {
+  if (cups.value.tries < 2) {
     notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'error' })
     return
   }
@@ -584,7 +584,7 @@ const rollTwo = async () => {
     diceOnBoard.value.push(dice)
   }
 
-  rollCups.playerTries = 1
+  rollCups.tries = 1
   await setDoc(cupsRef, rollCups, { merge: true })
   await sleep(2300)
   rollDices.diceOnBoard = diceOnBoard.value
@@ -615,7 +615,7 @@ const rollThree = async () => {
     notifier({ content: 'Attends ton tour', color: 'error' })
     return
   }
-  if (cups.value.playerTries < 1) {
+  if (cups.value.tries < 1) {
     notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'error' })
     return
   }
@@ -632,7 +632,7 @@ const rollThree = async () => {
     diceOnBoard.value.push(dice)
   }
 
-  rollCups.playerTries = 0
+  rollCups.tries = 0
   await setDoc(cupsRef, rollCups, { merge: true })
   await sleep(2300)
   rollDices.diceOnBoard = diceOnBoard.value
