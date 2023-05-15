@@ -1306,7 +1306,7 @@ const threeOfAKindInput = computed(() => {
     ThreeOfAKind = true
   }
 
-  if (ThreeOfAKind) {
+  if (ThreeOfAKind && newDices.length === 5) {
     return dices.value.reduce((acc, dice) => acc + dice, 0)
   } else {
     return 0
@@ -1326,7 +1326,7 @@ const fourOfAKindInput = computed(() => {
   ) {
     FourOfAKind = true
   }
-  if (FourOfAKind) {
+  if (FourOfAKind && newDices.length === 5) {
     return dices.value.reduce((acc, dice) => acc + dice, 0)
   } else {
     return 0
@@ -1347,7 +1347,7 @@ const fullHouseInput = computed(() => {
       newDices[3] === newDices[4] &&
       newDices[0] !== newDices[4])
   ) {
-    return 25
+    if (newDices.length === 5) { return 25 }
   } else {
     return 0
   }
@@ -1375,7 +1375,7 @@ const smallStraightInput = computed(() => {
     newDices.includes(5) &&
     newDices.includes(6)
   ) {
-    return 30
+    if (newDices.length === 5) { return 30 }
   } else {
     return 0
   }
@@ -1398,7 +1398,7 @@ const largeStraightInput = computed(() => {
     newDices.includes(5) &&
     newDices.includes(6)
   ) {
-    return 40
+    if (newDices.length === 5) { return 40 }
   } else {
     return 0
   }
@@ -1418,7 +1418,11 @@ const diceInput = computed(() => {
 const chanceInput = computed(() => {
   if (!dices.value) { return }
   const chance = dices.value
-  return chance.reduce((acc, dice) => acc + dice, 0)
+  if (chance.length === 5) {
+    return chance.reduce((acc, dice) => acc + dice, 0)
+  } else {
+    return 0
+  }
 })
 
 // Save Inputs value
