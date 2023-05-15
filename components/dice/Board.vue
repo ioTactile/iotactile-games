@@ -1266,36 +1266,43 @@ const playerFourBonus = async () => {
 
 const oneInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const ones = dices.value.filter(dice => dice === 1)
   return ones.reduce((acc, dice) => acc + dice, 0)
 })
 const twoInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const twos = dices.value.filter(dice => dice === 2)
   return twos.reduce((acc, dice) => acc + dice, 0)
 })
 const threeInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const threes = dices.value.filter(dice => dice === 3)
   return threes.reduce((acc, dice) => acc + dice, 0)
 })
 const fourInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const fours = dices.value.filter(dice => dice === 4)
   return fours.reduce((acc, dice) => acc + dice, 0)
 })
 const fiveInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const fives = dices.value.filter(dice => dice === 5)
   return fives.reduce((acc, dice) => acc + dice, 0)
 })
 const sixInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const sixes = dices.value.filter(dice => dice === 6)
   return sixes.reduce((acc, dice) => acc + dice, 0)
 })
 const threeOfAKindInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   let ThreeOfAKind = false
   const newDices = dices.value.sort()
   if (
@@ -1306,7 +1313,7 @@ const threeOfAKindInput = computed(() => {
     ThreeOfAKind = true
   }
 
-  if (ThreeOfAKind && newDices.length === 5) {
+  if (ThreeOfAKind) {
     return dices.value.reduce((acc, dice) => acc + dice, 0)
   } else {
     return 0
@@ -1314,6 +1321,7 @@ const threeOfAKindInput = computed(() => {
 })
 const fourOfAKindInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   let FourOfAKind = false
   const newDices = dices.value.sort()
   if (
@@ -1326,7 +1334,7 @@ const fourOfAKindInput = computed(() => {
   ) {
     FourOfAKind = true
   }
-  if (FourOfAKind && newDices.length === 5) {
+  if (FourOfAKind) {
     return dices.value.reduce((acc, dice) => acc + dice, 0)
   } else {
     return 0
@@ -1334,6 +1342,7 @@ const fourOfAKindInput = computed(() => {
 })
 const fullHouseInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const newDices = dices.value.sort()
   if (
     (newDices[0] === newDices[1] &&
@@ -1347,13 +1356,14 @@ const fullHouseInput = computed(() => {
       newDices[3] === newDices[4] &&
       newDices[0] !== newDices[4])
   ) {
-    if (newDices.length === 5) { return 25 }
+    return 25
   } else {
     return 0
   }
 })
 const smallStraightInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const newDices = dices.value.sort()
   if (
     newDices.includes(1) &&
@@ -1375,13 +1385,14 @@ const smallStraightInput = computed(() => {
     newDices.includes(5) &&
     newDices.includes(6)
   ) {
-    if (newDices.length === 5) { return 30 }
+    return 30
   } else {
     return 0
   }
 })
 const largeStraightInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const newDices = dices.value.sort()
   if (
     newDices.includes(1) &&
@@ -1398,13 +1409,14 @@ const largeStraightInput = computed(() => {
     newDices.includes(5) &&
     newDices.includes(6)
   ) {
-    if (newDices.length === 5) { return 40 }
+    return 40
   } else {
     return 0
   }
 })
 const diceInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const newDices = dices.value.filter((dice) => {
     const newDices = dices.value?.filter(d => d === dice)
     return newDices?.length === 5
@@ -1417,6 +1429,7 @@ const diceInput = computed(() => {
 })
 const chanceInput = computed(() => {
   if (!dices.value) { return }
+  if (dices.value.length !== 5) { return }
   const chance = dices.value
   if (chance.length === 5) {
     return chance.reduce((acc, dice) => acc + dice, 0)

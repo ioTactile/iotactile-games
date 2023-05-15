@@ -43,6 +43,44 @@ export const diceSessionPlayerTurnConverter = {
   },
 };
 
+export const diceSessionRemainingTurnsConverter = {
+  toFirestore: (remainingTurns: DiceSessionRemainingTurns): DocumentData =>
+    remainingTurns,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<DiceSessionRemainingTurns>
+  ): DiceSessionRemainingTurns {
+    return snapshot.data();
+  },
+};
+
+export const diceSessionDicesConverter = {
+  toFirestore: (dices: DiceSessionDices): DocumentData => dices,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<DiceSessionDices>
+  ): DiceSessionDices {
+    return snapshot.data();
+  },
+};
+
+export const diceSessionPlayerTriesConverter = {
+  toFirestore: (playerTries: DiceSessionPlayerTries): DocumentData =>
+    playerTries,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<DiceSessionPlayerTries>
+  ): DiceSessionPlayerTries {
+    return snapshot.data();
+  },
+};
+
+export const diceSessionChatConverter = {
+  toFirestore: (chat: DiceSessionChat): DocumentData => chat,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<DiceSessionChat>
+  ): DiceSessionChat {
+    return snapshot.data();
+  },
+};
+
 export const diceSessionScoreConverter = {
   toFirestore: (score: DiceSessionScore): DocumentData => score,
   fromFirestore(
@@ -63,17 +101,39 @@ export type User = {
 export type DiceSession = {
   id: string
   players: CardUser[]
+  isFull: boolean
+  isStarted: boolean
+  isFinished: boolean
+  creationDate: Timestamp
+}
+
+export type DiceSessionPlayerTurn = {
+  id: string
+  playerId: string
+}
+
+export type DiceSessionRemainingTurns = {
+  id: string
+  remainingTurns: number
+}
+
+export type DiceSessionDices = {
+  id: string
+  diceOnBoard: number[]
+  diceOnHand: number[]
+}
+
+export type DiceSessionPlayerTries = {
+  id: string
+  tries: number
+}
+
+export type DiceSessionChat = {
+  id: string
   messages?: {
     username: string
     message: string
   }[]
-  isFull: boolean
-  isStarted: boolean
-  isFinished: boolean
-  remainingTurns: number
-  diceOnBoard: number[]
-  diceOnHand: number[]
-  creationDate: Timestamp
 }
 
 export type DiceScoreboard = {
@@ -85,13 +145,9 @@ export type DiceScoreboard = {
   dice: number
 }
 
-export type DiceSessionPlayerTurn = {
-  sessionId: string
-  playerId: string
-}
 
 export type DiceSessionScore = {
-  sessionId: string
+  id: string
   playerOne: {
     id: string
     one: number
