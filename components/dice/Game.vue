@@ -17,7 +17,7 @@
                 </div>
                 <div class="left-side-dices-container">
                   <v-btn
-                    v-for="(dice, i) in session.diceOnBoard"
+                    v-for="(dice, i) in dices?.diceOnBoard"
                     :key="i"
                     width="60"
                     variant="text"
@@ -71,7 +71,7 @@
                   class="dice-plate dice-plate-container"
                 >
                   <v-btn
-                    v-for="(dice, i) in session.diceOnHand"
+                    v-for="(dice, i) in dices?.diceOnHand"
                     :key="i"
                     width="60"
                     variant="text"
@@ -123,7 +123,7 @@
             </v-card-title>
             <v-card-text>
               <div
-                v-for="(messageItem, i) in session.messages"
+                v-for="(messageItem, i) in chat?.messages"
                 :key="i"
                 class="d-flex"
               >
@@ -221,7 +221,16 @@ import { VContainer, VRow, VCol, VBtn, VCard, VCardTitle, VCardText, VCardAction
 import { collection, doc, setDoc, getDoc, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
-import { diceSessionConverter, diceSessionPlayerTurnConverter, diceSessionScoreConverter, LocalDiceSessionScoreType } from '~/stores'
+import {
+  diceSessionConverter,
+  diceSessionPlayerTurnConverter,
+  diceSessionRemainingTurnsConverter,
+  diceSessionScoreConverter,
+  diceSessionPlayerTriesConverter,
+  diceSessionDicesConverter,
+  diceSessionChatConverter,
+  LocalDiceSessionScoreType
+} from '~/stores'
 import { useDicesStore } from '~/stores/dices'
 import { CardUser } from '~/functions/src/types'
 
@@ -242,10 +251,16 @@ const { diceOnBoard, diceOnHand } = storeToRefs(dicesStore)
 const sessionId = route.params.id as string
 const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(diceSessionConverter)
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
-const cupsRef = doc(sessionRef, 'cups', sessionId)
-const cups = useDocument(doc(collection(sessionRef, 'cups'), cupsRef.id))
 const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(diceSessionPlayerTurnConverter)
 const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id))
+const remainingTurnsRef = doc(db, 'diceSessionRemainingTurns', sessionId).withConverter(diceSessionRemainingTurnsConverter)
+const remainingTurns = useDocument(doc(collection(db, 'diceSessionRemainingTurns'), remainingTurnsRef.id))
+const cupsRef = doc(db, 'diceSessionPlayerTries', sessionId).withConverter(diceSessionPlayerTriesConverter)
+const cups = useDocument(doc(collection(db, 'diceSessionPlayerTries'), cupsRef.id))
+const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(diceSessionDicesConverter)
+const dices = useDocument(doc(collection(db, 'diceSessionDices'), dicesRef.id))
+const chatRef = doc(db, 'diceSessionChat', sessionId).withConverter(diceSessionChatConverter)
+const chat = useDocument(doc(collection(db, 'diceSessionChat'), chatRef.id))
 
 // Refs
 
@@ -309,7 +324,7 @@ watch(isFinishedLocal, async (value) => {
     }
   }
 })
-watch(session, async (newValue) => {
+watch(remainingTurns, async (newValue) => {
   if (newValue?.remainingTurns === 0) {
     await setDoc(sessionRef, { isFinished: true }, { merge: true })
     isFinishedLocal.value = true
@@ -486,32 +501,32 @@ const getDiceFace = (dice: number) => {
 }
 
 const rollOne = async () => {
-  if (!session.value || !cups.value || !user.value || !playerTurn.value) {
+  if (!session.value || !cups.value || !dices.value || !user.value || !playerTurn.value) {
     return
   }
   if (session.value.isStarted === false) {
-    notifier({ content: 'La partie n\'a pas encore commencé', color: 'dicePrimary' })
+    notifier({ content: 'La partie n\'a pas encore commencé', color: 'error' })
     return
   }
   if (session.value.isFinished === true) {
-    notifier({ content: 'La partie est terminée', color: 'dicePrimary' })
+    notifier({ content: 'La partie est terminée', color: 'error' })
     return
   }
   if (playerTurn.value.playerId !== user.value.uid) {
-    notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
+    notifier({ content: 'Attends ton tour', color: 'error' })
     return
   }
   if (cups.value.playerTries < 3) {
-    notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'dicePrimary' })
+    notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'error' })
     return
   }
-  if ((session.value.diceOnBoard.length + session.value.diceOnHand.length) > 5) {
-    notifier({ content: 'Le jeu lague, attends', color: 'dicePrimary' })
+  if ((dices.value?.diceOnBoard.length + dices.value?.diceOnHand.length) > 5) {
+    notifier({ content: 'Le jeu lague, attends', color: 'error' })
     return
   }
 
-  const diceSessionCups = cups.value
-  const diceSession = session.value
+  const rollCups = cups.value
+  const rollDices = dices.value
   diceOnBoard.value = []
   diceOnHand.value = []
 
@@ -520,152 +535,152 @@ const rollOne = async () => {
     diceOnBoard.value.push(dice)
   }
 
-  diceSessionCups.playerTries = 2
-  await setDoc(cupsRef, diceSessionCups, { merge: true })
+  rollCups.playerTries = 2
+  await setDoc(cupsRef, rollCups, { merge: true })
   await sleep(2300)
-  diceSession.diceOnBoard = diceOnBoard.value
-  diceSession.diceOnHand = diceOnHand.value
-  await setDoc(sessionRef, diceSession, { merge: true })
+  rollDices.diceOnBoard = diceOnBoard.value
+  rollDices.diceOnHand = diceOnHand.value
+  await setDoc(dicesRef, rollDices, { merge: true })
 }
 
 const rollTwo = async () => {
-  if (!session.value || !cups.value || !user.value || !playerTurn.value) {
+  if (!session.value || !cups.value || !dices.value || !user.value || !playerTurn.value) {
+    return
+  }
+  if ((diceOnBoard.value.length + diceOnHand.value.length) > 5) {
+    notifier({ content: 'Le jeu lague, attends', color: 'error' })
+    return
+  }
+  if (!diceOnBoard.value.length) {
+    notifier({ content: 'Ta main est complète', color: 'error' })
     return
   }
   if (session.value.isStarted === false) {
-    notifier({ content: 'La partie n\'a pas encore commencé', color: 'dicePrimary' })
+    notifier({ content: 'La partie n\'a pas encore commencé', color: 'error' })
     return
   }
   if (session.value.isFinished === true) {
-    notifier({ content: 'La partie est terminée', color: 'dicePrimary' })
+    notifier({ content: 'La partie est terminée', color: 'error' })
     return
   }
   if (playerTurn.value.playerId !== user.value.uid) {
-    notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
+    notifier({ content: 'Attends ton tour', color: 'error' })
     return
   }
   if (cups.value.playerTries < 2) {
-    notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'dicePrimary' })
-    return
-  }
-  if (!diceOnBoard.value.length) {
-    notifier({ content: 'Ta main est complète', color: 'dicePrimary' })
-    return
-  }
-  if ((session.value.diceOnBoard.length + session.value.diceOnHand.length) > 5) {
-    notifier({ content: 'Le jeu lague, attends', color: 'dicePrimary' })
+    notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'error' })
     return
   }
 
-  const diceSessionCups = cups.value
-  const diceSession = session.value
+  const rollCups = cups.value
+  const rollDices = dices.value
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
-  diceSession.diceOnBoard = []
-  await setDoc(sessionRef, diceSession, { merge: true })
+  rollDices.diceOnBoard = []
+  await setDoc(sessionRef, rollDices, { merge: true })
 
   for (let i = 0; i < diceOnBoardLength; i++) {
     const dice = trueRandom()
     diceOnBoard.value.push(dice)
   }
 
-  diceSessionCups.playerTries = 1
-  await setDoc(cupsRef, diceSessionCups, { merge: true })
+  rollCups.playerTries = 1
+  await setDoc(cupsRef, rollCups, { merge: true })
   await sleep(2300)
-  diceSession.diceOnBoard = diceOnBoard.value
-  await setDoc(sessionRef, diceSession, { merge: true })
+  rollDices.diceOnBoard = diceOnBoard.value
+  await setDoc(dicesRef, rollDices, { merge: true })
 }
 
 const rollThree = async () => {
-  if (!session.value || !cups.value || !user.value || !playerTurn.value) {
+  if (!session.value || !cups.value || !dices.value || !user.value || !playerTurn.value) {
     return
   }
-  if (session.value.isStarted === false) {
-    notifier({ content: 'La partie n\'a pas encore commencé', color: 'dicePrimary' })
-    return
-  }
-  if (session.value.isFinished === true) {
-    notifier({ content: 'La partie est terminée', color: 'dicePrimary' })
-    return
-  }
-  if (playerTurn.value.playerId !== user.value.uid) {
-    notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
-    return
-  }
-  if (cups.value.playerTries < 1) {
-    notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'dicePrimary' })
+  if ((diceOnBoard.value.length + diceOnHand.value.length) > 5) {
+    notifier({ content: 'Le jeu lague, attends', color: 'error' })
     return
   }
   if (!diceOnBoard.value.length) {
-    notifier({ content: 'Ta main est complète', color: 'dicePrimary' })
+    notifier({ content: 'Ta main est complète', color: 'error' })
     return
   }
-  if ((session.value.diceOnBoard.length + session.value.diceOnHand.length) > 5) {
-    notifier({ content: 'Le jeu lague, attends', color: 'dicePrimary' })
+  if (session.value.isStarted === false) {
+    notifier({ content: 'La partie n\'a pas encore commencé', color: 'error' })
+    return
+  }
+  if (session.value.isFinished === true) {
+    notifier({ content: 'La partie est terminée', color: 'error' })
+    return
+  }
+  if (playerTurn.value.playerId !== user.value.uid) {
+    notifier({ content: 'Attends ton tour', color: 'error' })
+    return
+  }
+  if (cups.value.playerTries < 1) {
+    notifier({ content: 'Tu as déjà lancé les dés de ce gobelet', color: 'error' })
     return
   }
 
-  const diceSessionCups = cups.value
-  const diceSession = session.value
+  const rollCups = cups.value
+  const rollDices = dices.value
   const diceOnBoardLength = diceOnBoard.value.length
   diceOnBoard.value = []
-  diceSession.diceOnBoard = []
-  await setDoc(sessionRef, diceSession, { merge: true })
+  rollDices.diceOnBoard = []
+  await setDoc(cupsRef, rollDices, { merge: true })
 
   for (let i = 0; i < diceOnBoardLength; i++) {
     const dice = trueRandom()
     diceOnBoard.value.push(dice)
   }
 
-  diceSessionCups.playerTries = 0
-  await setDoc(cupsRef, diceSessionCups, { merge: true })
+  rollCups.playerTries = 0
+  await setDoc(cupsRef, rollCups, { merge: true })
   await sleep(2300)
-  diceSession.diceOnBoard = diceOnBoard.value
-  await setDoc(sessionRef, diceSession, { merge: true })
+  rollDices.diceOnBoard = diceOnBoard.value
+  await setDoc(dicesRef, rollDices, { merge: true })
 }
 
 const removeDice = async (index: number) => {
-  if (!session.value || !cups.value || !user.value || !playerTurn.value) {
+  if (!dices.value || !user.value || !playerTurn.value) {
     return
   }
   if (playerTurn.value.playerId !== user.value.uid) {
-    notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
+    notifier({ content: 'Attends ton tour', color: 'error' })
     return
   }
-  const diceSession = session.value
+  const removeDices = dices.value
   diceOnBoard.value.push(diceOnHand.value[index])
-  diceSession.diceOnBoard.push(diceOnHand.value[index])
-  await setDoc(sessionRef, diceSession, { merge: true })
+  removeDices.diceOnBoard.push(diceOnHand.value[index])
+  await setDoc(dicesRef, removeDices, { merge: true })
   diceOnHand.value.splice(index, 1)
-  diceSession.diceOnHand.splice(index, 1)
-  await setDoc(sessionRef, diceSession, { merge: true })
+  removeDices.diceOnHand.splice(index, 1)
+  await setDoc(dicesRef, removeDices, { merge: true })
 }
 
 const addDice = async (index: number) => {
-  if (!session.value || !cups.value || !user.value || !playerTurn.value) {
+  if (!dices.value || !user.value || !playerTurn.value) {
     return
   }
   if (playerTurn.value.playerId !== user.value.uid) {
-    notifier({ content: 'Attends ton tour', color: 'dicePrimary' })
+    notifier({ content: 'Attends ton tour', color: 'error' })
     return
   }
-  const diceSession = session.value
+  const addDices = dices.value
   diceOnHand.value.push(diceOnBoard.value[index])
-  diceSession.diceOnHand.push(diceOnBoard.value[index])
-  await setDoc(sessionRef, diceSession, { merge: true })
+  addDices.diceOnHand.push(diceOnBoard.value[index])
+  await setDoc(dicesRef, addDices, { merge: true })
   diceOnBoard.value.splice(index, 1)
-  diceSession.diceOnBoard.splice(index, 1)
-  await setDoc(sessionRef, diceSession, { merge: true })
+  addDices.diceOnBoard.splice(index, 1)
+  await setDoc(dicesRef, addDices, { merge: true })
 }
 
 const sendMessage = async () => {
-  if (!message.value && !session.value) {
+  if (!session.value || !message.value || !user.value) {
     return
   }
-  const username = session.value?.players.find(
+  const username = session.value.players.find(
     (player: CardUser) => player.id === user.value?.uid
-  )?.username
-  await setDoc(sessionRef, {
+  ).username
+  await setDoc(chatRef, {
     messages: arrayUnion({
       username,
       content: message.value
