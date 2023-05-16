@@ -176,6 +176,8 @@ const checkScoreboard = async () => {
       username,
       games: 0,
       maxScore: 0,
+      averageScore: 0,
+      totalScore: 0,
       victories: 0,
       dice: 0
     })
