@@ -19,12 +19,12 @@
                   <v-btn
                     v-for="(dice, i) in dices?.diceOnBoard"
                     :key="i"
-                    width="60"
+                    width="70"
                     variant="text"
                     class="dice-container "
                     @click="addDice(i)"
                   >
-                    <v-img :src="getDiceFace(dice)" alt="dés" height="60" width="60" cover />
+                    <v-img :src="getDiceFace(dice)" alt="dés" height="70" width="70" cover />
                   </v-btn>
                 </div>
               </v-col>
@@ -73,12 +73,12 @@
                   <v-btn
                     v-for="(dice, i) in dices?.diceOnHand"
                     :key="i"
-                    width="60"
+                    width="70"
                     variant="text"
                     class="dice-container pa-0 mx-2"
                     @click="removeDice(i)"
                   >
-                    <v-img :src="getDiceFace(dice)" alt="dés" height="60" width="60" cover />
+                    <v-img :src="getDiceFace(dice)" alt="dés" height="70" width="70" cover />
                   </v-btn>
                 </div>
               </v-col>
@@ -218,6 +218,7 @@
 
 <script lang="ts" setup>
 import { VContainer, VRow, VCol, VBtn, VCard, VCardTitle, VCardText, VCardActions, VImg, VDialog, VTextarea, VDivider } from 'vuetify/components'
+import { useTheme } from 'vuetify'
 import { collection, doc, setDoc, getDoc, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
@@ -233,6 +234,10 @@ import {
 } from '~/stores'
 import { useDicesStore } from '~/stores/dices'
 import { CardUser } from '~/functions/src/types'
+
+// Vuetify
+
+const theme = useTheme()
 
 // Vuefire & Composables
 
@@ -489,22 +494,46 @@ const trueRandom = () => {
 
 const getDiceFace = (dice: number) => {
   if (dice === 1) {
-    return '/dices/dice-one.png'
+    if (theme.current.value.dark) {
+      return '/dices/dice-one.png'
+    } else {
+      return '/dices/dice-white-one.png'
+    }
   }
   if (dice === 2) {
-    return '/dices/dice-two.png'
+    if (theme.current.value.dark) {
+      return '/dices/dice-two.png'
+    } else {
+      return '/dices/dice-white-two.png'
+    }
   }
   if (dice === 3) {
-    return '/dices/dice-three.png'
+    if (theme.current.value.dark) {
+      return '/dices/dice-three.png'
+    } else {
+      return '/dices/dice-white-three.png'
+    }
   }
   if (dice === 4) {
-    return '/dices/dice-four.png'
+    if (theme.current.value.dark) {
+      return '/dices/dice-four.png'
+    } else {
+      return '/dices/dice-white-four.png'
+    }
   }
   if (dice === 5) {
-    return '/dices/dice-five.png'
+    if (theme.current.value.dark) {
+      return '/dices/dice-five.png'
+    } else {
+      return '/dices/dice-white-five.png'
+    }
   }
   if (dice === 6) {
-    return '/dices/dice-six.png'
+    if (theme.current.value.dark) {
+      return '/dices/dice-six.png'
+    } else {
+      return '/dices/dice-white-six.png'
+    }
   }
 }
 
@@ -754,7 +783,7 @@ const sleep = (ms: number) => {
 .dice-plate-container {
   display: flex;
   align-items: center;
-  height: 70px;
+  height: 80px;
   width: 100%;
   border: 1px solid rgb(var(--v-theme-dicePlayersBorder));
 }
@@ -762,7 +791,7 @@ const sleep = (ms: number) => {
   .dice-plate-container {
     display: inline-block;
     align-items: center;
-    height: 140px;
+    height: 160px;
     width: 100%
   }
 }
@@ -774,8 +803,8 @@ const sleep = (ms: number) => {
 
 .dice-container {
   margin: 5px;
-  height: 60px;
-  width: 60px;
+  height: 70px;
+  width: 70px;
 }
 
 .card-container {
