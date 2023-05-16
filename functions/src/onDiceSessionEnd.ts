@@ -80,9 +80,6 @@ export const onDiceSessionEnd = functions
           winner = playerFour.id;
         }
       }
-      console.log("playersTotal", playersTotal);
-      console.log("winner", winner);
-
 
       if (playerOne) {
         isDicePlayerOne = playerOne.dice === 50 ? true : false;

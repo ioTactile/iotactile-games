@@ -444,7 +444,7 @@ const leave = async (sessionId: string) => {
     const session = sessionDoc.data()
     const playerTurnRef = doc(collection(db, 'diceSessionPlayerTurn'), sessionId)
     const scoresRef = doc(collection(db, 'diceSessionScores'), sessionId)
-    const remainingTurnsRef = doc(collection(db, 'diceSessionRemainingTurns', sessionId))
+    const remainingTurnsRef = doc(collection(db, 'diceSessionRemainingTurns'), sessionId)
     const dicesRef = doc(collection(db, 'diceSessionDices'), sessionId)
     const playerTriesRef = doc(collection(db, 'diceSessionPlayerTries'), sessionId)
     const scoresDoc = await getDoc(scoresRef)
