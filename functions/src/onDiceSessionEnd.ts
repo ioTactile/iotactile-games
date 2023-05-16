@@ -21,11 +21,12 @@ export const onDiceSessionEnd = functions
       }
 
       const firestore = getFirestore();
+      const sessionId = context.params.sessionId;
 
       const playersScoresRef = firestore
           .collection("diceSessionScores")
           .withConverter(diceSessionScoreConverter)
-          .doc(context.params.sessionId);
+          .doc(sessionId);
       const diceScoreboardRef = firestore
           .collection("diceScoreboard")
           .withConverter(diceScoreboardConverter);
@@ -167,6 +168,17 @@ export const onDiceSessionEnd = functions
           }, {merge: true});
         }
       }
+
+      await firestore.collection("diceSessionPlayerTurn")
+          .doc(sessionId).delete();
+      await firestore.collection("diceSessionRemainingTurns")
+          .doc(sessionId).delete();
+      await firestore.collection("diceSessionPlayerTries")
+          .doc(sessionId).delete();
+      await firestore.collection("diceSessionDices")
+          .doc(sessionId).delete();
+      await firestore.collection("diceSessionChat")
+          .doc(sessionId).delete();
 
       return;
     });

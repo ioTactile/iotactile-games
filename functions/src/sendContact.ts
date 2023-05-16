@@ -6,9 +6,17 @@ const awsAccessKeyId = defineSecret("AWS_ACCESS_KEY_ID");
 const awsSecretAccessKey = defineSecret("AWS_SECRET_ACCESS_KEY");
 
 export const sendContact = functions
-    .runWith({secrets: [awsAccessKeyId, awsSecretAccessKey]})
+    .runWith({
+      enforceAppCheck: true,
+      secrets: [awsAccessKeyId, awsSecretAccessKey],
+    })
     .region("europe-west3").https
-    .onCall(async (data) => {
+    .onCall(async (data, context) => {
+      if (context.app == undefined) {
+        throw new functions.https.HttpsError(
+            "failed-precondition",
+            "The function must be called from an App Check verified app.");
+      }
       if (typeof data.sender !== "string" ||
             typeof data.subject !== "string" ||
           typeof data.text !== "string") {
