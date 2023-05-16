@@ -141,6 +141,8 @@ export type DiceScoreboard = {
   username: string
   games: number
   maxScore: number
+  averageScore: number
+  totalScore: number
   victories: number
   dice: number
 }

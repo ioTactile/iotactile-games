@@ -19,6 +19,12 @@
                 Score le plus haut
               </th>
               <th class="text-center">
+                Score moyen
+              </th>
+              <th class="text-center">
+                Score total
+              </th>
+              <th class="text-center">
                 Nombre de 5 identiques
               </th>
             </tr>
@@ -36,6 +42,12 @@
               </td>
               <td class="text-center">
                 {{ player.maxScore }}
+              </td>
+              <td class="text-center">
+                {{ player.averageScore }}
+              </td>
+              <td class="text-center">
+                {{ player.totalScore }}
               </td>
               <td class="text-center">
                 {{ player.dice }}

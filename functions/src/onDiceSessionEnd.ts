@@ -92,14 +92,16 @@ export const onDiceSessionEnd = functions
         const userDoc = await usersRef.doc(playerOne.id).get();
         const user = userDoc.data();
         if (user && player) {
-          console.log("playerOne", playerOne.id,
-              playerOne.total, player.victories, playerOne.dice);
+          const averageScore = player.games === 0 ? playerOne.total : (
+            (player.totalScore + playerOne.total) / (player.games + 1));
           await playerRef.set({
             userId: playerOne.id,
             username: user.username,
             games: player.games + 1,
             maxScore: player.maxScore > playerOne.total ?
           player.maxScore : playerOne.total,
+            averageScore: averageScore,
+            totalScore: player.totalScore + playerOne.total,
             victories: winner === playerOne.id ?
           player.victories + 1 : player.victories,
             dice: isDicePlayerOne ? player.dice + 1 : player.dice,
@@ -114,14 +116,16 @@ export const onDiceSessionEnd = functions
         const userDoc = await usersRef.doc(playerTwo.id).get();
         const user = userDoc.data();
         if (user && player) {
-          console.log("playerTwo", playerTwo.id,
-              playerTwo.total, player.victories, playerTwo.dice);
+          const averageScore = player.games === 0 ? playerTwo.total : (
+            (player.totalScore + playerTwo.total) / (player.games + 1));
           await playerRef.set({
             userId: playerTwo.id,
             username: user.username,
             games: player.games + 1,
             maxScore: player.maxScore > playerTwo.total ?
           player.maxScore : playerTwo.total,
+            averageScore: averageScore,
+            totalScore: player.totalScore + playerTwo.total,
             victories: winner === playerTwo.id ?
           player.victories + 1 : player.victories,
             dice: isDicePlayerTwo ? player.dice + 1 : player.dice,
@@ -136,12 +140,16 @@ export const onDiceSessionEnd = functions
         const userDoc = await usersRef.doc(playerThree.id).get();
         const user = userDoc.data();
         if (user && player) {
+          const averageScore = player.games === 0 ? playerThree.total : (
+            (player.totalScore + playerThree.total) / (player.games + 1));
           await playerRef.set({
             userId: playerThree.id,
             username: user.username,
             games: player.games + 1,
             maxScore: player.maxScore > playerThree.total ?
           player.maxScore : playerThree.total,
+            averageScore: averageScore,
+            totalScore: player.totalScore + playerThree.total,
             victories: winner === playerThree.id ?
           player.victories + 1 : player.victories,
             dice: isDicePlayerThree ? player.dice + 1 : player.dice,
@@ -156,12 +164,16 @@ export const onDiceSessionEnd = functions
         const userDoc = await usersRef.doc(playerFour.id).get();
         const user = userDoc.data();
         if (user && player) {
+          const averageScore = player.games === 0 ? playerFour.total : (
+            (player.totalScore + playerFour.total) / (player.games + 1));
           await playerRef.set({
             userId: playerFour.id,
             username: user.username,
             games: player.games + 1,
             maxScore: player.maxScore > playerFour.total ?
           player.maxScore : playerFour.total,
+            averageScore: averageScore,
+            totalScore: player.totalScore + playerFour.total,
             victories: winner === playerFour.id ?
             player.victories + 1 : player.victories,
             dice: isDicePlayerFour ? player.dice + 1 : player.dice,

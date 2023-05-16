@@ -25,15 +25,15 @@
           </thead>
           <tbody>
             <tr v-for="(player, i) in scoreboard" :key="i">
-              <td class="d-flex justify-start align-center text-center">
+              <td class="d-flex justify-center align-center">
                 <v-img
-                  v-if="i <= 3"
+                  v-if="i < 3"
                   :src="medal(i)"
                   alt="medal"
                   width="40"
                   height="40"
                 />
-                <span>{{ i + 1 }}</span>
+                <span v-else>{{ i + 1 }}</span>
               </td>
               <td class="text-center">
                 {{ player.username }}
