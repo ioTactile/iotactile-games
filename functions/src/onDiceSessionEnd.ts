@@ -7,16 +7,16 @@ import {
 } from "./types.js";
 
 export const onDiceSessionEnd = functions
-    .region("europe-west3").firestore
-    .document("diceSessions/{sessionId}")
-    .onUpdate( async (change, context) => {
+    .region("europe-west3")
+    .firestore.document("diceSessions/{sessionId}")
+    .onUpdate(async (change, context) => {
       if (!change.after.exists) {
         return;
       }
 
       const after = change.after.data();
 
-      if (after.isFinished === false) {
+      if (!after.isFinished) {
         return;
       }
 
@@ -36,159 +36,79 @@ export const onDiceSessionEnd = functions
 
       const playersScoresDoc = await playersScoresRef.get();
       const playersScores = playersScoresDoc.data();
-      const playerOne = playersScores?.playerOne;
-      const playerTwo = playersScores?.playerTwo;
-      const playerThree = playersScores?.playerThree ?? null;
-      const playerFour = playersScores?.playerFour ?? null;
 
-      let isDicePlayerOne = false;
-      let isDicePlayerTwo = false;
-      let isDicePlayerThree = false;
-      let isDicePlayerFour = false;
-      let playerOneTotal: number|undefined;
-      let playerTwoTotal: number|undefined;
-      let playerThreeTotal: number|undefined;
-      let playerFourTotal: number|undefined;
-      let winner: string|undefined;
+      const players = [
+        playersScores?.playerOne,
+        playersScores?.playerTwo,
+        playersScores?.playerThree,
+        playersScores?.playerFour,
+      ];
+
       const playersTotal: number[] = [];
+      let winner: string | undefined;
 
-      if (playerOne && playerTwo) {
-        playerOneTotal = playerOne.total || 0;
-        playerTwoTotal = playerTwo.total || 0;
-        playersTotal.push(playerOneTotal, playerTwoTotal);
-      }
-      if (playerThree) {
-        playerThreeTotal = playerThree.total || 0;
-        playersTotal.push(playerThreeTotal);
-      }
-      if (playerOne && playerTwo && playerThree && playerFour) {
-        playerFourTotal = playerFour.total || 0;
-        playersTotal.push(playerFourTotal);
-      }
-      if (playersTotal) {
-        playersTotal.sort((a, b) => b - a);
-        if (playerOne && playersTotal[0] === playerOneTotal) {
-          winner = playerOne.id;
-        }
-        if (playerTwo && playersTotal[0] === playerTwoTotal) {
-          winner = playerTwo.id;
-        }
-        if (playerThree && playersTotal[0] === playerThreeTotal) {
-          winner = playerThree.id;
-        }
-        if (playerFour && playersTotal[0] === playerFourTotal) {
-          winner = playerFour.id;
-        }
-      }
+      players.forEach((player) => {
+        if (player) {
+          const {total = 0, id} = player;
+          playersTotal.push(total);
 
-      if (playerOne) {
-        isDicePlayerOne = playerOne.dice === 50 ? true : false;
-        const playerRef = diceScoreboardRef.doc(playerOne.id);
-        const playerDoc = await playerRef.get();
-        const player = playerDoc.data();
-        const userDoc = await usersRef.doc(playerOne.id).get();
-        const user = userDoc.data();
-        if (user && player) {
-          const averageScore = player.games === 0 ? playerOne.total : (
-            (player.totalScore + playerOne.total) / (player.games + 1));
-          await playerRef.set({
-            userId: playerOne.id,
-            username: user.username,
-            games: player.games + 1,
-            maxScore: player.maxScore > playerOne.total ?
-          player.maxScore : playerOne.total,
-            averageScore: averageScore,
-            totalScore: player.totalScore + playerOne.total,
-            victories: winner === playerOne.id ?
-          player.victories + 1 : player.victories,
-            dice: isDicePlayerOne ? player.dice + 1 : player.dice,
-          }, {merge: true});
+          if (playersTotal.length === 1 || total > playersTotal[0]) {
+            winner = id;
+          }
         }
-      }
-      if (playerTwo) {
-        isDicePlayerTwo = playerTwo.dice === 50 ? true : false;
-        const playerRef = diceScoreboardRef.doc(playerTwo.id);
-        const playerDoc = await playerRef.get();
-        const player = playerDoc.data();
-        const userDoc = await usersRef.doc(playerTwo.id).get();
-        const user = userDoc.data();
-        if (user && player) {
-          const averageScore = player.games === 0 ? playerTwo.total : (
-            (player.totalScore + playerTwo.total) / (player.games + 1));
-          await playerRef.set({
-            userId: playerTwo.id,
-            username: user.username,
-            games: player.games + 1,
-            maxScore: player.maxScore > playerTwo.total ?
-          player.maxScore : playerTwo.total,
-            averageScore: averageScore,
-            totalScore: player.totalScore + playerTwo.total,
-            victories: winner === playerTwo.id ?
-          player.victories + 1 : player.victories,
-            dice: isDicePlayerTwo ? player.dice + 1 : player.dice,
-          }, {merge: true});
-        }
-      }
-      if (playerThree) {
-        isDicePlayerThree = playerThree.dice === 50 ? true : false;
-        const playerRef = diceScoreboardRef.doc(playerThree.id);
-        const playeDoc = await playerRef.get();
-        const player = playeDoc.data();
-        const userDoc = await usersRef.doc(playerThree.id).get();
-        const user = userDoc.data();
-        if (user && player) {
-          const averageScore = player.games === 0 ? playerThree.total : (
-            (player.totalScore + playerThree.total) / (player.games + 1));
-          await playerRef.set({
-            userId: playerThree.id,
-            username: user.username,
-            games: player.games + 1,
-            maxScore: player.maxScore > playerThree.total ?
-          player.maxScore : playerThree.total,
-            averageScore: averageScore,
-            totalScore: player.totalScore + playerThree.total,
-            victories: winner === playerThree.id ?
-          player.victories + 1 : player.victories,
-            dice: isDicePlayerThree ? player.dice + 1 : player.dice,
-          }, {merge: true});
-        }
-      }
-      if (playerFour) {
-        isDicePlayerFour = playerFour.dice === 50 ? true : false;
-        const playerRef = diceScoreboardRef.doc(playerFour.id);
-        const playerDoc = await playerRef.get();
-        const player = playerDoc.data();
-        const userDoc = await usersRef.doc(playerFour.id).get();
-        const user = userDoc.data();
-        if (user && player) {
-          const averageScore = player.games === 0 ? playerFour.total : (
-            (player.totalScore + playerFour.total) / (player.games + 1));
-          await playerRef.set({
-            userId: playerFour.id,
-            username: user.username,
-            games: player.games + 1,
-            maxScore: player.maxScore > playerFour.total ?
-          player.maxScore : playerFour.total,
-            averageScore: averageScore,
-            totalScore: player.totalScore + playerFour.total,
-            victories: winner === playerFour.id ?
-            player.victories + 1 : player.victories,
-            dice: isDicePlayerFour ? player.dice + 1 : player.dice,
-          }, {merge: true});
-        }
-      }
+      });
 
-      await firestore.collection("diceSessionPlayerTurn")
-          .doc(sessionId).delete();
-      await firestore.collection("diceSessionRemainingTurns")
-          .doc(sessionId).delete();
-      await firestore.collection("diceSessionPlayerTries")
-          .doc(sessionId).delete();
-      await firestore.collection("diceSessionDices")
-          .doc(sessionId).delete();
-      await firestore.collection("diceSessionChat")
-          .doc(sessionId).delete();
+      players.forEach(async (player) => {
+        if (player) {
+          const {id, total = 0, dice} = player;
+          const isDicePlayer = dice === 50;
+          const playerRef = diceScoreboardRef.doc(id);
+          const [playerDoc, userDoc] = await Promise.all([
+            playerRef.get(),
+            usersRef.doc(id).get(),
+          ]);
+          const playerData = playerDoc.data();
+          const userData = userDoc.data();
+
+          if (playerData && userData) {
+            const averageScore =
+            playerData.games === 0 ?
+              total :
+              (playerData.totalScore + total) / (playerData.games + 1);
+
+            const updatedPlayerData = {
+              userId: id,
+              username: userData.username,
+              games: playerData.games + 1,
+              maxScore: Math.max(playerData.maxScore, total),
+              averageScore,
+              totalScore: playerData.totalScore + total,
+              victories: winner === id ?
+              playerData.victories + 1 : playerData.victories,
+              dice: isDicePlayer ? playerData.dice + 1 : playerData.dice,
+            };
+
+            await playerRef.set(updatedPlayerData, {merge: true});
+          }
+        }
+      });
+
+      const deletePromises = [
+        firestore.collection("diceSessions")
+            .doc(sessionId).delete(),
+        firestore.collection("diceSessionPlayerTurn")
+            .doc(sessionId).delete(),
+        firestore.collection("diceSessionRemainingTurns")
+            .doc(sessionId).delete(),
+        firestore.collection("diceSessionPlayerTries")
+            .doc(sessionId).delete(),
+        firestore.collection("diceSessionDices")
+            .doc(sessionId).delete(),
+        firestore.collection("diceSessionChat")
+            .doc(sessionId).delete(),
+      ];
+
+      await Promise.all(deletePromises);
 
       return;
     });
-

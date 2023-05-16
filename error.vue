@@ -23,6 +23,7 @@
 </template>
 
 <script lang="ts" setup>
+import { VApp, VMain, VContainer, VBtn } from 'vuetify/components'
 const props = defineProps<{
   error: {
     statusCode: number
