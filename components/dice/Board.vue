@@ -1332,7 +1332,10 @@
 
 <script lang="ts" setup async>
 import { VCard, VRow, VCol, VTable, VBtn } from 'vuetify/components'
-import { doc, collection, setDoc } from 'firebase/firestore'
+import {
+  doc, collection, setDoc
+  //  getDoc
+} from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
 import {
@@ -1342,6 +1345,7 @@ import {
   diceSessionPlayerTriesConverter,
   diceSessionDicesConverter,
   diceSessionScoreConverter
+  // diceScoreboardConverter
 } from '~/stores'
 import { useDicesStore } from '~/stores/dices'
 
@@ -1387,6 +1391,7 @@ const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(
 const dicesUseDoc = useDocument(
   doc(collection(db, 'diceSessionDices'), dicesRef.id)
 )
+// const diceScoreboardRef = collection(db, 'diceScoreboard').withConverter(diceScoreboardConverter)
 
 // Refs
 
@@ -1402,7 +1407,6 @@ const dices = computed(() => {
   const dicesOnHand = dicesUseDoc.value.diceOnHand
   const dicesOnBoard = dicesUseDoc.value.diceOnBoard
   const dicesItems = [...dicesOnHand, ...dicesOnBoard]
-  console.log(dicesItems)
   return dicesItems
 })
 const isPlayerTurnOne = computed(() => {
@@ -1802,6 +1806,24 @@ const chanceInput = computed(() => {
     return 0
   }
 })
+
+// Watchers
+
+// watch(diceInput, async (newValue) => {
+//   if (!playerTurn.value || !scores.value || !user.value) {
+//     return
+//   }
+//   if (newValue === 50 && user.value.uid === playerTurn.value.playerId) {
+//     const playerId = user.value.uid
+//     const playerScoreboardRef = doc(diceScoreboardRef, playerId).withConverter(diceScoreboardConverter)
+//     const playerScoreboardDoc = await getDoc(playerScoreboardRef)
+//     if (!playerScoreboardDoc.exists()) { return }
+//     const diceNumber = playerScoreboardDoc.data()?.dice
+//     await setDoc(doc(diceScoreboardRef, playerId), {
+//       dice: diceNumber + 1
+//     }, { merge: true })
+//   }
+// })
 
 // Save Inputs value
 
