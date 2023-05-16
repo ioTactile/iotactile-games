@@ -16,6 +16,8 @@ export const createDiceScoreboardPlayer = functions
         username: data.username,
         games: 0,
         maxScore: 0,
+        averageScore: 0,
+        totalScore: 0,
         victories: 0,
         dice: 0,
       });
