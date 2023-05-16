@@ -93,22 +93,5 @@ export const onDiceSessionEnd = functions
         }
       });
 
-      const deletePromises = [
-        firestore.collection("diceSessions")
-            .doc(sessionId).delete(),
-        firestore.collection("diceSessionPlayerTurn")
-            .doc(sessionId).delete(),
-        firestore.collection("diceSessionRemainingTurns")
-            .doc(sessionId).delete(),
-        firestore.collection("diceSessionPlayerTries")
-            .doc(sessionId).delete(),
-        firestore.collection("diceSessionDices")
-            .doc(sessionId).delete(),
-        firestore.collection("diceSessionChat")
-            .doc(sessionId).delete(),
-      ];
-
-      await Promise.all(deletePromises);
-
       return;
     });

@@ -2,124 +2,129 @@
   <v-container v-if="session && playerTurn" fluid class="container">
     <v-row>
       <v-col cols="12" md="9" class="background-image">
-        <v-row>
-          <v-col class="d-flex" cols="12">
-            <dice-players
-              :players="session.players"
-              :is-finished="session.isFinished"
-              :player-turn-id="playerTurn.playerId"
-            />
-          </v-col>
-          <v-col cols="6">
-            <dice-board />
-          </v-col>
-          <v-col cols="6" class="right-side-container pb-0">
-            <v-row class="h-100">
-              <v-col cols="10">
-                <div v-if="shakeClass" class="mt-16 ml-16">
-                  <v-img
-                    src="/cup-animation.png"
-                    alt="Animation gobelet"
-                    height="300"
-                    width="300"
-                    :class="shakeClass"
-                  />
-                </div>
-                <div class="left-side-dices-container">
-                  <v-btn
-                    v-for="(dice, i) in dices?.diceOnBoard"
-                    :key="i"
-                    width="70"
-                    variant="text"
-                    class="dice-container"
-                    @click="addDice(i)"
-                  >
+        <div ref="gameContainer" class="fullscreen-content" :class="{ 'fullscreen': isFullscreen }">
+          <div class="fullscreen-btn">
+            <v-btn :icon="isFullscreen ? mdiFullscreenExit : mdiFullscreen" variant="text" size="x-large" @click="toggleFullscreen" />
+          </div>
+          <v-row>
+            <v-col class="d-flex" cols="12">
+              <dice-players
+                :players="session.players"
+                :is-finished="session.isFinished"
+                :player-turn-id="playerTurn.playerId"
+              />
+            </v-col>
+            <v-col cols="6">
+              <dice-board />
+            </v-col>
+            <v-col cols="6" class="right-side-container pb-0">
+              <v-row class="h-100">
+                <v-col cols="10">
+                  <div v-if="shakeClass" class="mt-16 ml-16">
                     <v-img
-                      :src="getDiceFace(dice)"
-                      alt="dés"
-                      height="70"
+                      src="/cup-animation.png"
+                      alt="Animation gobelet"
+                      height="300"
+                      width="300"
+                      :class="shakeClass"
+                    />
+                  </div>
+                  <div class="left-side-dices-container">
+                    <v-btn
+                      v-for="(dice, i) in dices?.diceOnBoard"
+                      :key="i"
                       width="70"
-                      cover
-                    />
-                  </v-btn>
-                </div>
-              </v-col>
-              <v-col cols="2">
-                <div class="cup-one-container">
-                  <v-btn
-                    class="d-flex justify-center align-center"
-                    variant="text"
-                    heigth="100px"
-                    width="60px"
-                    :style="cups?.tries < 3 ? 'opacity: 0.5' : ''"
-                    @click="rollOne"
-                  >
-                    <v-img
-                      src="/cup-no-bg.png"
-                      alt="gobelet un"
-                      height="100"
-                      width="60"
-                    />
-                  </v-btn>
-                </div>
-                <div class="cup-two-container">
-                  <v-btn
-                    class="d-flex justify-center align-center"
-                    variant="text"
-                    heigth="100px"
-                    width="60px"
-                    :style="cups?.tries < 2 ? 'opacity: 0.5' : ''"
-                    @click="rollTwo"
-                  >
-                    <v-img
-                      src="/cup-no-bg.png"
-                      alt="gobelet deux"
-                      height="100"
-                      width="60"
-                    />
-                  </v-btn>
-                </div>
-                <div class="cup-three-container">
-                  <v-btn
-                    class="d-flex justify-center align-center"
-                    variant="text"
-                    heigth="100px"
-                    width="60px"
-                    :style="cups?.tries < 1 ? 'opacity: 0.5' : ''"
-                    @click="rollThree"
-                  >
-                    <v-img
-                      src="/cup-no-bg.png"
-                      alt="gobelet trois"
-                      height="100"
-                      width="60"
-                    />
-                  </v-btn>
-                </div>
-              </v-col>
-              <v-col cols="12" align-self="end" class="pl-0 pb-0">
-                <div class="dice-plate dice-plate-container">
-                  <v-btn
-                    v-for="(dice, i) in dices?.diceOnHand"
-                    :key="i"
-                    width="70"
-                    variant="text"
-                    class="dice-container pa-0 mx-2"
-                    @click="removeDice(i)"
-                  >
-                    <v-img
-                      :src="getDiceFace(dice)"
-                      alt="dés"
-                      height="70"
+                      variant="text"
+                      class="dice-container"
+                      @click="addDice(i)"
+                    >
+                      <v-img
+                        :src="getDiceFace(dice)"
+                        alt="dés"
+                        height="70"
+                        width="70"
+                        cover
+                      />
+                    </v-btn>
+                  </div>
+                </v-col>
+                <v-col cols="2">
+                  <div class="cup-one-container">
+                    <v-btn
+                      class="d-flex justify-center align-center"
+                      variant="text"
+                      heigth="100px"
+                      width="60px"
+                      :style="cups?.tries < 3 ? 'opacity: 0.5' : ''"
+                      @click="rollOne"
+                    >
+                      <v-img
+                        src="/cup-no-bg.png"
+                        alt="gobelet un"
+                        height="100"
+                        width="60"
+                      />
+                    </v-btn>
+                  </div>
+                  <div class="cup-two-container">
+                    <v-btn
+                      class="d-flex justify-center align-center"
+                      variant="text"
+                      heigth="100px"
+                      width="60px"
+                      :style="cups?.tries < 2 ? 'opacity: 0.5' : ''"
+                      @click="rollTwo"
+                    >
+                      <v-img
+                        src="/cup-no-bg.png"
+                        alt="gobelet deux"
+                        height="100"
+                        width="60"
+                      />
+                    </v-btn>
+                  </div>
+                  <div class="cup-three-container">
+                    <v-btn
+                      class="d-flex justify-center align-center"
+                      variant="text"
+                      heigth="100px"
+                      width="60px"
+                      :style="cups?.tries < 1 ? 'opacity: 0.5' : ''"
+                      @click="rollThree"
+                    >
+                      <v-img
+                        src="/cup-no-bg.png"
+                        alt="gobelet trois"
+                        height="100"
+                        width="60"
+                      />
+                    </v-btn>
+                  </div>
+                </v-col>
+                <v-col cols="12" align-self="end" class="pl-0 pb-0">
+                  <div class="dice-plate dice-plate-container">
+                    <v-btn
+                      v-for="(dice, i) in dices?.diceOnHand"
+                      :key="i"
                       width="70"
-                      cover
-                    />
-                  </v-btn>
-                </div>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
+                      variant="text"
+                      class="dice-container pa-0 mx-2"
+                      @click="removeDice(i)"
+                    >
+                      <v-img
+                        :src="getDiceFace(dice)"
+                        alt="dés"
+                        height="70"
+                        width="70"
+                        cover
+                      />
+                    </v-btn>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </div>
       </v-col>
       <v-col cols="12" md="3">
         <div class="d-flex justify-space-between">
@@ -276,7 +281,7 @@ import {
   VDialog
 } from 'vuetify/components'
 import { useTheme } from 'vuetify'
-import { mdiVolumeHigh, mdiVolumeOff } from '@mdi/js'
+import { mdiVolumeHigh, mdiVolumeOff, mdiFullscreenExit, mdiFullscreen } from '@mdi/js'
 import { collection, doc, setDoc, getDoc, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
@@ -357,6 +362,8 @@ const message = ref<string>('')
 const shakeClass = ref<string>('')
 const isSoundMuted = ref(false)
 const isFinishedLocal = ref(false)
+const isFullscreen = ref(false)
+const gameContainer = ref<HTMLElement | null>(null)
 const scores = ref<LocalDiceSessionScoreType | null>(null)
 
 // New Sound Effects
@@ -477,7 +484,41 @@ const sleep = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const playSound = (soundPath) => {
+const toggleFullscreen = () => {
+  isFullscreen.value = !isFullscreen.value
+
+  if (isFullscreen.value) {
+    enterFullscreen(gameContainer.value)
+  } else {
+    exitFullscreen()
+  }
+}
+
+const enterFullscreen = (element) => {
+  if (element.requestFullscreen) {
+    element.requestFullscreen()
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen()
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen()
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen()
+  }
+}
+
+const exitFullscreen = () => {
+  if (document.exitFullscreen) {
+    document.exitFullscreen()
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen()
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen()
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen()
+  }
+}
+
+const playSound = (soundPath: string) => {
   if (isSoundMuted.value) {
     return
   }
@@ -719,6 +760,26 @@ const sendMessage = async () => {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.fullscreen-content {
+  position: relative;
+}
+
+.fullscreen-btn {
+  z-index: 9999;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.fullscreen {
+  background-image: url('/green-slate.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
 }
 
 .right-side-container {
