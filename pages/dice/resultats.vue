@@ -38,13 +38,13 @@
                 {{ player.victories }}
               </td>
               <td class="text-center">
-                {{ (player.victories / player.games * 100) || 0 }}%
+                {{ numberFormatter(player.victories / player.games * 100) || 0 }}%
               </td>
               <td class="text-center">
                 {{ player.maxScore }}
               </td>
               <td class="text-center">
-                {{ player.averageScore }}
+                {{ numberFormatter(player.averageScore) }}
               </td>
               <td class="text-center">
                 {{ player.totalScore }}
@@ -86,5 +86,11 @@ onMounted(async () => {
   if (!playerDoc.exists()) { return }
   player.value = playerDoc.data()
 })
+
+// Methods
+
+const numberFormatter = (value: number) => {
+  return value.toFixed(2)
+}
 
 </script>
