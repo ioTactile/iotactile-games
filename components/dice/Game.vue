@@ -101,7 +101,7 @@
                     </v-btn>
                   </div>
                 </v-col>
-                <v-col cols="12" align-self="end" class="pl-0 pb-0">
+                <v-col cols="12" align-self="end" :class="mdAndUp ? 'pl-0 pb-0' : ''">
                   <div class="dice-plate dice-plate-container">
                     <v-btn
                       v-for="(dice, i) in dices?.diceOnHand"
@@ -305,7 +305,7 @@ import {
   VDialog,
   VSlider
 } from 'vuetify/components'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 import { mdiVolumeHigh, mdiVolumeOff, mdiFullscreenExit, mdiFullscreen } from '@mdi/js'
 import { collection, doc, setDoc, getDoc, deleteDoc, updateDoc, deleteField, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
@@ -332,6 +332,7 @@ type diceFaces = {
 // Vuetify
 
 const theme = useTheme()
+const { mdAndUp } = useDisplay()
 
 // Vuefire & Composables
 
@@ -962,14 +963,11 @@ const leaveGame = async () => {
   align-items: center;
   height: 80px;
   width: 100%;
-  border: 1px solid rgb(var(--v-theme-dicePlayersBorder));
 }
 @media screen and (max-width: 1600px) {
   .dice-plate-container {
     display: inline-block;
-    align-items: center;
     height: 160px;
-    width: 100%;
   }
 }
 

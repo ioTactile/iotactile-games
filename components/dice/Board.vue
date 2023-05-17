@@ -568,7 +568,7 @@
             </tr>
             <tr>
               <td class="bg-diceClosePrimary border-darker">
-                Bonus
+                Bonus (à partir de 63)
               </td>
               <td class="text-center bg-diceClosePrimary border-darker">
                 <span class="font-weight-bold">{{
