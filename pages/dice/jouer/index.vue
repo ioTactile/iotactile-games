@@ -60,7 +60,7 @@
               Quitter
             </v-btn>
             <v-btn
-              v-if="!checkUserInSession"
+              v-if="checkUserInSession"
               color="tertiary"
               :loading="loading"
               @click="join(session.id)"
@@ -163,12 +163,17 @@ const checkUserInSession = async (sessionId: string) => {
   const sessionRef = doc(sessionsRef, sessionId)
   const sessionDoc = await getDoc(sessionRef)
   const session = sessionDoc.data()
+  if (!session) {
+    return false
+  }
 
-  for (const player in session?.players) {
-    if (player === user.value?.uid) {
+  session.players.forEach((player) => {
+    if (player.id === user.value?.uid) {
+      return false
+    } else {
       return true
     }
-  }
+  })
 }
 
 const checkScoreboard = async () => {
