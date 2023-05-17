@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 $font-family: 'Poppins', sans-serif;
 
-// Dice Board
+// Dice
 @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
 
 .v-application {
@@ -16,4 +16,9 @@ $font-family: 'Poppins', sans-serif;
   font-family: 'Indie Flower', cursive !important;
   font-size: 1.5rem !important;
   margin-bottom: 0.5rem !important;
+}
+
+.dice-logo {
+  font-family: 'Indie Flower', cursive !important;
+  font-size: 3rem !important;
 }

@@ -22,7 +22,7 @@
           <span class="letter-spacing">B</span>
           <span>{{ players[1]?.username }}</span>
           <v-spacer />
-          <v-img v-if="playerTurnId === players[1].id" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
+          <v-img v-if="playerTurnId === players[1]?.id" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
         </div>
       </v-card>
     </v-col>

@@ -2,7 +2,7 @@
   <v-container v-if="session && playerTurn" fluid class="container">
     <v-row>
       <v-col cols="12" md="9" class="background-image">
-        <div ref="gameContainer" class="fullscreen-content" :class="{ 'fullscreen': isFullscreen }">
+        <div ref="gameContainer" class="relative" :class="{ 'fullscreen': isFullscreen }">
           <div class="fullscreen-btn">
             <v-btn :icon="isFullscreen ? mdiFullscreenExit : mdiFullscreen" variant="text" size="x-large" @click="toggleFullscreen" />
           </div>
@@ -14,10 +14,10 @@
                 :player-turn-id="playerTurn.playerId"
               />
             </v-col>
-            <v-col cols="6">
+            <v-col cols="12" md="6">
               <dice-board />
             </v-col>
-            <v-col cols="6" class="right-side-container pb-0">
+            <v-col cols="12" md="6" class="right-side-container pb-0">
               <v-row class="h-100">
                 <v-col cols="10">
                   <div v-if="shakeClass" class="mt-16 ml-16">
@@ -127,12 +127,25 @@
         </div>
       </v-col>
       <v-col cols="12" md="3">
-        <div class="d-flex justify-space-between">
-          <h2 class="h6">
+        <div class="d-flex justify-space-between align-center">
+          <h2 class="dice-logo">
             Dice
           </h2>
-          <v-btn :icon="isSoundMuted ? mdiVolumeHigh : mdiVolumeOff" variant="text" @click="toggleSound" />
+          <v-btn :icon="isSoundMuted ? mdiVolumeOff : mdiVolumeHigh" variant="text" @click="toggleVolume" />
         </div>
+        <v-card v-if="volumeCard" rounded="xl" height="60" class="d-flex justify-center align-center">
+          <v-slider
+            v-model="volume"
+            density="compact"
+            min="0"
+            max="100"
+            thumb-size="12"
+            track-size="2"
+            thumb-label
+            hide-details
+            @change="adjustVolume"
+          />
+        </v-card>
         <v-divider class="my-4" />
         <div class="text-center">
           <v-btn
@@ -140,12 +153,23 @@
             height="50px"
             block
             color="tertiary"
+            class="mb-2"
             @click="startGame"
           >
             Démarrer la partie
           </v-btn>
           <v-btn
-            v-if="session.isFinished === true"
+            v-if="!session.isStarted"
+            height="50px"
+            :loading="leaving"
+            block
+            color="headline"
+            @click="leaveGame"
+          >
+            Quitter la partie
+          </v-btn>
+          <v-btn
+            v-if="session.isFinished"
             height="50px"
             block
             color="tertiary"
@@ -278,11 +302,12 @@ import {
   VImg,
   VTextarea,
   VDivider,
-  VDialog
+  VDialog,
+  VSlider
 } from 'vuetify/components'
 import { useTheme } from 'vuetify'
 import { mdiVolumeHigh, mdiVolumeOff, mdiFullscreenExit, mdiFullscreen } from '@mdi/js'
-import { collection, doc, setDoc, getDoc, arrayUnion } from 'firebase/firestore'
+import { collection, doc, setDoc, getDoc, deleteDoc, updateDoc, deleteField, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
 import {
@@ -355,15 +380,21 @@ const chatRef = doc(db, 'diceSessionChat', sessionId).withConverter(
   diceSessionChatConverter
 )
 const chat = useDocument(doc(collection(db, 'diceSessionChat'), chatRef.id))
+const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(
+  diceSessionScoreConverter
+)
 
 // Refs
 
 const message = ref<string>('')
 const shakeClass = ref<string>('')
+const volume = ref<number>(50)
 const isSoundMuted = ref(false)
 const isFinishedLocal = ref(false)
 const isFullscreen = ref(false)
-const gameContainer = ref<HTMLElement | null>(null)
+const volumeCard = ref(false)
+const leaving = ref(false)
+const gameContainer = ref<HTMLElement>()
 const scores = ref<LocalDiceSessionScoreType | null>(null)
 
 // New Sound Effects
@@ -371,6 +402,7 @@ const scores = ref<LocalDiceSessionScoreType | null>(null)
 const sounds = {
   dice: '/dice.mp3',
   notification: '/notification.wav',
+  message: '/message.mp3',
   shakeRoll: '/shake-and-roll.mp3',
   spongeBobDisappointed: '/sponge-bob-disappointed.mp3',
   spongeBobVictory: '/sponge-bob-victory.mp3',
@@ -420,9 +452,6 @@ watch(remainingTurns, async (newValue) => {
     await setDoc(sessionRef, { isFinished: true }, { merge: true })
     isFinishedLocal.value = true
 
-    const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(
-      diceSessionScoreConverter
-    )
     const scoresDoc = await getDoc(scoresRef)
     if (!scoresDoc.exists()) {
       return
@@ -445,9 +474,29 @@ watch(playerTurn, (newValue) => {
   if (
     newValue &&
     newValue.playerId === user.value?.uid &&
-    session.value?.isFinished === false
+    session.value?.isStarted &&
+    !session.value?.isFinished
   ) {
     playSound(sounds.notification)
+  }
+})
+watch(volume, (newValue) => {
+  if (newValue === 0) {
+    isSoundMuted.value = true
+    muteAllSounds()
+    localStorage.setItem('isSoundMuted', 'true')
+  } else {
+    isSoundMuted.value = false
+    unmuteAllSounds()
+    localStorage.setItem('isSoundMuted', 'false')
+  }
+})
+watch(chat, (newValue) => {
+  if (newValue && newValue.messages.length > 0) {
+    const lastMessage = newValue.messages[newValue.messages.length - 1]
+    if (lastMessage.userId !== user.value?.uid) {
+      playSound(sounds.message)
+    }
   }
 })
 
@@ -458,10 +507,18 @@ const secondPlace = computed(() => getPlaceName(2))
 const thirdPlace = computed(() => getPlaceName(3))
 const fourthPlace = computed(() => getPlaceName(4))
 
+const adjustedVolume = computed(() => {
+  return isSoundMuted.value ? 0 : volume.value
+})
+
 // Methods
 
 const startGame = async () => {
   if (!session.value) {
+    return
+  }
+  if (session.value.players.length < 2) {
+    notifier({ content: 'Vous devez être au moins 2 joueurs pour commencer la partie', color: 'error' })
     return
   }
 
@@ -488,34 +545,36 @@ const toggleFullscreen = () => {
   isFullscreen.value = !isFullscreen.value
 
   if (isFullscreen.value) {
-    enterFullscreen(gameContainer.value)
+    enterFullscreen(gameContainer.value as HTMLElement)
   } else {
     exitFullscreen()
   }
 }
 
-const enterFullscreen = (element) => {
+const enterFullscreen = (element: HTMLElement) => {
   if (element.requestFullscreen) {
     element.requestFullscreen()
-  } else if (element.mozRequestFullScreen) {
-    element.mozRequestFullScreen()
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen()
-  } else if (element.msRequestFullscreen) {
-    element.msRequestFullscreen()
   }
+  // else if (element.mozRequestFullScreen) {
+  //   element.mozRequestFullScreen()
+  // } else if (element.webkitRequestFullscreen) {
+  //   element.webkitRequestFullscreen()
+  // } else if (element.msRequestFullscreen) {
+  //   element.msRequestFullscreen()
+  // }
 }
 
 const exitFullscreen = () => {
   if (document.exitFullscreen) {
     document.exitFullscreen()
-  } else if (document.mozCancelFullScreen) {
-    document.mozCancelFullScreen()
-  } else if (document.webkitExitFullscreen) {
-    document.webkitExitFullscreen()
-  } else if (document.msExitFullscreen) {
-    document.msExitFullscreen()
   }
+  // else if (document.mozCancelFullScreen) {
+  //   document.mozCancelFullScreen()
+  // } else if (document.webkitExitFullscreen) {
+  //   document.webkitExitFullscreen()
+  // } else if (document.msExitFullscreen) {
+  //   document.msExitFullscreen()
+  // }
 }
 
 const playSound = (soundPath: string) => {
@@ -527,17 +586,6 @@ const playSound = (soundPath: string) => {
     const audio = new Audio(soundPath)
     audio.play()
   }
-}
-
-const toggleSound = () => {
-  isSoundMuted.value = !isSoundMuted.value
-  if (isSoundMuted.value) {
-    muteAllSounds()
-  } else {
-    unmuteAllSounds()
-  }
-
-  localStorage.setItem('isSoundMuted', JSON.stringify(isSoundMuted.value))
 }
 
 const muteAllSounds = () => {
@@ -552,6 +600,17 @@ const unmuteAllSounds = () => {
     const audio = new Audio(soundPath)
     audio.muted = false
   })
+}
+
+const adjustVolume = () => {
+  Object.values(sounds).forEach((soundPath) => {
+    const audio = new Audio(soundPath)
+    audio.volume = adjustedVolume.value
+  })
+}
+
+const toggleVolume = () => {
+  volumeCard.value = !volumeCard.value
 }
 
 const getDiceFace = (dice: number) => {
@@ -739,6 +798,7 @@ const sendMessage = async () => {
     chatRef,
     {
       messages: arrayUnion({
+        userId: uid,
         username,
         content: message.value
       })
@@ -747,6 +807,82 @@ const sendMessage = async () => {
   )
 
   message.value = ''
+}
+
+const leaveGame = async () => {
+  if (!user.value) {
+    notifier({ content: 'Tu dois être connecté', color: 'error' })
+    return
+  }
+  leaving.value = true
+
+  try {
+    const sessionDoc = await getDoc(sessionRef)
+    const session = sessionDoc.data()
+    const scoresDoc = await getDoc(scoresRef)
+    const scores = scoresDoc.data()
+
+    if (!session) {
+      return
+    }
+    if (!session.players.find(player => player.id === user.value?.uid)) {
+      notifier({ content: "Tu n'es pas dans cette session", color: 'error' })
+      return
+    }
+    if (session.isStarted) {
+      notifier({ content: 'La partie a déjà commencé', color: 'error' })
+      return
+    }
+    if (session.players.length === 1) {
+      await deleteDoc(sessionRef)
+      await deleteDoc(playerTurnRef)
+      await deleteDoc(scoresRef)
+      await deleteDoc(remainingTurnsRef)
+      await deleteDoc(dicesRef)
+      await deleteDoc(cupsRef)
+      return
+    }
+
+    if (scores?.playerOne.id === user.value.uid) {
+      await updateDoc(scoresRef, {
+        playerOne: deleteField()
+      })
+    } else if (scores?.playerTwo.id === user.value.uid) {
+      await updateDoc(scoresRef, {
+        playerTwo: deleteField()
+      })
+    } else if (scores?.playerThree?.id === user.value.uid) {
+      await updateDoc(scoresRef, {
+        playerThree: deleteField()
+      })
+    } else if (scores?.playerFour?.id === user.value.uid) {
+      await updateDoc(scoresRef, {
+        playerFour: deleteField()
+      })
+    }
+    session.players = session.players.filter(
+      player => player.id !== user.value?.uid
+    )
+
+    const joinRemainingTurnsDoc = await getDoc(remainingTurnsRef)
+    if (!joinRemainingTurnsDoc.exists()) {
+      return
+    }
+    const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns
+
+    await setDoc(doc(remainingTurnsRef, sessionId), {
+      id: sessionId,
+      remainingTurns: joinRemainingTurns - 13
+    })
+
+    if (session.players.length < 4) {
+      session.isFull = false
+    }
+    await setDoc(sessionRef, session)
+  } finally {
+    leaving.value = false
+    navigateTo('/dice/jouer/')
+  }
 }
 </script>
 
@@ -762,7 +898,7 @@ const sendMessage = async () => {
   background-repeat: no-repeat;
 }
 
-.fullscreen-content {
+.relative {
   position: relative;
 }
 
@@ -770,7 +906,7 @@ const sendMessage = async () => {
   z-index: 9999;
   position: absolute;
   bottom: 10px;
-  right: 10px;
+  right: 0;
 }
 
 .fullscreen {

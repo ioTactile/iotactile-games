@@ -60,18 +60,15 @@
               Quitter
             </v-btn>
             <v-btn
-              v-if="!session.isFull && session.players[0].id !== user?.uid"
+              v-if="!checkUserInSession"
               color="tertiary"
               :loading="loading"
               @click="join(session.id)"
             >
-              {{ session.isFull ? 'Session pleine' : 'Rejoindre' }}
+              Rejoindre
             </v-btn>
             <v-btn
-              v-if="
-                session.players.length > 1 &&
-                  session.players[0].id === user?.uid
-              "
+              v-else
               color="tertiary"
               variant="outlined"
               :loading="loading"
@@ -161,6 +158,18 @@ const loading = ref(false)
 const leaving = ref(false)
 
 // Methods
+
+const checkUserInSession = async (sessionId: string) => {
+  const sessionRef = doc(sessionsRef, sessionId)
+  const sessionDoc = await getDoc(sessionRef)
+  const session = sessionDoc.data()
+
+  for (const player in session?.players) {
+    if (player === user.value?.uid) {
+      return true
+    }
+  }
+}
 
 const checkScoreboard = async () => {
   const scoreboardQuery = query(
@@ -300,16 +309,21 @@ const quickJoin = async () => {
 
   try {
     const username = await getUsername()
-    const sessionsQuery = query(sessionsRef, where('isFull', '==', false), where('isStarted', '==', false))
-    const sessionsSnapshot = await getDocs(sessionsQuery)
-    const sessions = sessionsSnapshot.docs.map(
-      doc => doc.data()
+    const sessionsQuery = query(
+      sessionsRef,
+      where('isFull', '==', false),
+      where('isStarted', '==', false)
     )
+    const sessionsSnapshot = await getDocs(sessionsQuery)
+    const sessions = sessionsSnapshot.docs.map(doc => doc.data())
     const session = sessions.find(session =>
       session.players.find(player => player.id === user.value?.uid)
     )
     if (session) {
-      notifier({ content: 'Tu es déjà dans une session en cours', color: 'error' })
+      notifier({
+        content: 'Tu es déjà dans une session en cours',
+        color: 'error'
+      })
       return
     }
     if (sessions.length === 0) {
@@ -328,7 +342,9 @@ const quickJoin = async () => {
 
     const joinRemainingTurnsRef = doc(remainingTurnsRef, sessionToJoin.id)
     const joinRemainingTurnsDoc = await getDoc(joinRemainingTurnsRef)
-    if (!joinRemainingTurnsDoc.exists()) { return }
+    if (!joinRemainingTurnsDoc.exists()) {
+      return
+    }
     const joinRemainingTurns = joinRemainingTurnsDoc.data().remainingTurns
 
     await setDoc(doc(remainingTurnsRef, sessionToJoin.id), {
@@ -337,21 +353,13 @@ const quickJoin = async () => {
     })
     await setDoc(doc(sessionsRef, sessionToJoin.id), sessionToJoin)
 
+    const scoresDoc = doc(scoresRef, sessionToJoin.id)
     if (sessionToJoin.players.length === 1) {
-      await setDoc(doc(scoresRef, sessionToJoin.id),
-        { playerTwo: initScores() },
-        { merge: true }
-      )
+      await setDoc(scoresDoc, { playerTwo: initScores() }, { merge: true })
     } else if (sessionToJoin.players.length === 2) {
-      await setDoc(doc(scoresRef, sessionToJoin.id),
-        { playerThree: initScores() },
-        { merge: true }
-      )
+      await setDoc(scoresDoc, { playerThree: initScores() }, { merge: true })
     } else if (sessionToJoin.players.length === 3) {
-      await setDoc(doc(scoresRef, sessionToJoin.id),
-        { playerFour: initScores() },
-        { merge: true }
-      )
+      await setDoc(scoresDoc, { playerFour: initScores() }, { merge: true })
     }
     checkScoreboard()
   } finally {
@@ -399,7 +407,9 @@ const join = async (sessionId: string) => {
 
     const joinRemainingTurnsRef = doc(remainingTurnsRef, sessionId)
     const joinRemainingTurnsDoc = await getDoc(joinRemainingTurnsRef)
-    if (!joinRemainingTurnsDoc.exists()) { return }
+    if (!joinRemainingTurnsDoc.exists()) {
+      return
+    }
     const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns
 
     await setDoc(doc(remainingTurnsRef, sessionId), {
@@ -409,17 +419,20 @@ const join = async (sessionId: string) => {
     await setDoc(sessionRef, session)
 
     if (session.players.length === 2) {
-      await setDoc(doc(scoresRef, sessionId),
+      await setDoc(
+        doc(scoresRef, sessionId),
         { playerTwo: initScores() },
         { merge: true }
       )
     } else if (session.players.length === 3) {
-      await setDoc(doc(scoresRef, sessionId),
+      await setDoc(
+        doc(scoresRef, sessionId),
         { playerThree: initScores() },
         { merge: true }
       )
     } else if (session.players.length === 4) {
-      await setDoc(doc(scoresRef, sessionId),
+      await setDoc(
+        doc(scoresRef, sessionId),
         { playerFour: initScores() },
         { merge: true }
       )
@@ -442,18 +455,27 @@ const leave = async (sessionId: string) => {
     const sessionRef = doc(sessionsRef, sessionId)
     const sessionDoc = await getDoc(sessionRef)
     const session = sessionDoc.data()
-    const playerTurnRef = doc(collection(db, 'diceSessionPlayerTurn'), sessionId)
+    const playerTurnRef = doc(
+      collection(db, 'diceSessionPlayerTurn'),
+      sessionId
+    )
     const scoresRef = doc(collection(db, 'diceSessionScores'), sessionId)
-    const remainingTurnsRef = doc(collection(db, 'diceSessionRemainingTurns'), sessionId)
+    const remainingTurnsRef = doc(
+      collection(db, 'diceSessionRemainingTurns'),
+      sessionId
+    )
     const dicesRef = doc(collection(db, 'diceSessionDices'), sessionId)
-    const playerTriesRef = doc(collection(db, 'diceSessionPlayerTries'), sessionId)
+    const playerTriesRef = doc(
+      collection(db, 'diceSessionPlayerTries'),
+      sessionId
+    )
     const scoresDoc = await getDoc(scoresRef)
     const scores = scoresDoc.data()
     if (!session) {
       return
     }
     if (!session.players.find(player => player.id === user.value?.uid)) {
-      notifier({ content: 'Tu n\'es pas dans cette session', color: 'error' })
+      notifier({ content: "Tu n'es pas dans cette session", color: 'error' })
       return
     }
     if (session.isStarted) {
@@ -492,7 +514,9 @@ const leave = async (sessionId: string) => {
     )
 
     const joinRemainingTurnsDoc = await getDoc(remainingTurnsRef)
-    if (!joinRemainingTurnsDoc.exists()) { return }
+    if (!joinRemainingTurnsDoc.exists()) {
+      return
+    }
     const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns
 
     await setDoc(doc(remainingTurnsRef, sessionId), {

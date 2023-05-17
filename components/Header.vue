@@ -18,13 +18,14 @@
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" width="200" color="secondary">
       <v-sheet class="d-flex flex-column" height="100%">
-        <v-list nav class="ml-3">
+        <v-list nav>
           <v-list-item
             v-for="(item, i) in items"
             :key="i"
             :value="item"
             :to="item.link"
             active-color="highlight"
+            class="pl-4"
           >
             {{ item.title }}
           </v-list-item>
