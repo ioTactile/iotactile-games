@@ -133,15 +133,15 @@
           </h2>
           <v-btn :icon="isSoundMuted ? mdiVolumeOff : mdiVolumeHigh" variant="text" @click="toggleVolume" />
         </div>
-        <v-card v-if="volumeCard" rounded="xl" height="60" class="d-flex justify-center align-center">
+        <v-card v-if="volumeCard" rounded="xl" height="42" class="d-flex justify-center align-center px-2">
           <v-slider
             v-model="volume"
             density="compact"
             min="0"
-            max="100"
+            max="1"
+            step="0.01"
             thumb-size="12"
             track-size="2"
-            thumb-label
             hide-details
             @change="adjustVolume"
           />
@@ -389,7 +389,7 @@ const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(
 
 const message = ref<string>('')
 const shakeClass = ref<string>('')
-const volume = ref<number>(50)
+const volume = ref<number>(0.5)
 const isSoundMuted = ref(false)
 const isFinishedLocal = ref(false)
 const isFullscreen = ref(false)
@@ -413,9 +413,13 @@ const sounds = {
 // onMounted
 
 onMounted(() => {
-  const storedValue = localStorage.getItem('isSoundMuted')
+  const storedValue = localStorage.getItem('soundVolume')
   if (storedValue !== null) {
-    isSoundMuted.value = storedValue === 'true'
+    volume.value = parseFloat(storedValue)
+
+    if (volume.value === 0) {
+      isSoundMuted.value = true
+    }
   }
 })
 
@@ -481,17 +485,17 @@ watch(playerTurn, (newValue) => {
     playSound(sounds.notification)
   }
 })
+
 watch(volume, (newValue) => {
   if (newValue === 0) {
     isSoundMuted.value = true
     muteAllSounds()
-    localStorage.setItem('isSoundMuted', 'true')
   } else {
     isSoundMuted.value = false
     unmuteAllSounds()
-    localStorage.setItem('isSoundMuted', 'false')
   }
 })
+
 watch(chat, (newValue) => {
   if (newValue && newValue.messages.length > 0) {
     const lastMessage = newValue.messages[newValue.messages.length - 1]
@@ -510,6 +514,15 @@ const fourthPlace = computed(() => getPlaceName(4))
 
 const adjustedVolume = computed(() => {
   return isSoundMuted.value ? 0 : volume.value
+})
+
+const adjustVolume = computed(() => {
+  Object.values(sounds).forEach((soundPath) => {
+    const audio = new Audio(soundPath)
+    audio.volume = adjustedVolume.value
+
+    localStorage.setItem('soundVolume', adjustedVolume.value.toString())
+  })
 })
 
 // Methods
@@ -600,13 +613,6 @@ const unmuteAllSounds = () => {
   Object.values(sounds).forEach((soundPath) => {
     const audio = new Audio(soundPath)
     audio.muted = false
-  })
-}
-
-const adjustVolume = () => {
-  Object.values(sounds).forEach((soundPath) => {
-    const audio = new Audio(soundPath)
-    audio.volume = adjustedVolume.value
   })
 }
 
@@ -772,12 +778,14 @@ const getPlaceName = (position: number) => {
   }
 
   const players = session.value.players
-  const sortedPlayers = [...players].sort(
-    (a, b) =>
-      playerTotals[players.indexOf(b)] - playerTotals[players.indexOf(a)]
-  )
+  const sortedPlayers = players.filter((_: number, index: number) => playerScores[index] !== undefined)
+    .sort((a: number, b: number) => playerTotals[players.indexOf(b)] - playerTotals[players.indexOf(a)])
 
-  return players[sortedPlayers[position - 1]].username
+  if (position > sortedPlayers.length) {
+    return false
+  }
+
+  return sortedPlayers[position - 1].username
 }
 
 const sendMessage = async () => {

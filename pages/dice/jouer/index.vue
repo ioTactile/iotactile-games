@@ -157,9 +157,9 @@ const date = ref(new Date(Date.now()))
 const loading = ref(false)
 const leaving = ref(false)
 
-// Methods
+// Computed
 
-const checkUserInSession = async (sessionId: string) => {
+const checkUserInSession = computed(async (sessionId: string) => {
   const sessionRef = doc(sessionsRef, sessionId)
   const sessionDoc = await getDoc(sessionRef)
   const session = sessionDoc.data()
@@ -174,7 +174,9 @@ const checkUserInSession = async (sessionId: string) => {
       return true
     }
   })
-}
+})
+
+// Methods
 
 const checkScoreboard = async () => {
   const scoreboardQuery = query(

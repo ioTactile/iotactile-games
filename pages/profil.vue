@@ -12,7 +12,7 @@
         />
       </v-card-title>
       <v-card-text>
-        <v-form @submit.prevent="updateProfile">
+        <v-form ref="form" @submit.prevent="updateProfile">
           <div class="d-flex">
             <InputsUsername
               v-model="username"
@@ -85,6 +85,7 @@ const loading = ref(false)
 const change = ref(false)
 const openDeleteUser = ref(false)
 const username = ref('')
+const form = ref(VForm)
 
 // OnMounted
 
@@ -109,7 +110,9 @@ const isChange = () => {
 }
 
 const updateProfile = async () => {
+  if (!user.value || !(await form.value?.validate())?.valid) { return }
   loading.value = true
+
   try {
     if (user.value) {
       const userId = user.value.uid
