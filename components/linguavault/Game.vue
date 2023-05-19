@@ -1,3 +1,5 @@
 <template>
-  <div>Partie1</div>
+  <div class="text-center">
+    En cours de développement
+  </div>
 </template>

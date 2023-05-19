@@ -1,58 +1,64 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-divider class="mb-4" />
-      <v-col cols="12">
-        <v-table>
-          <thead>
-            <tr>
-              <th class="text-center">
-                Classement
-              </th>
-              <th class="text-center">
-                Nom
-              </th>
-              <th class="text-center">
-                Nombre de victoire
-              </th>
-              <th class="text-center">
-                Score le plus haut
-              </th>
-              <th class="text-center">
-                Nombre de 5 identiques
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(player, i) in scoreboard" :key="i">
-              <td class="d-flex justify-center align-center">
-                <v-img
-                  v-if="i < 3"
-                  :src="medal(i)"
-                  alt="medal"
-                  width="40"
-                  height="40"
-                />
-                <span v-else>{{ i + 1 }}</span>
-              </td>
-              <td class="text-center">
-                {{ player.username }}
-              </td>
-              <td class="text-center">
-                {{ player.victories }}
-              </td>
-              <td class="text-center">
-                {{ player.maxScore }}
-              </td>
-              <td class="text-center">
-                {{ player.dice }}
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-col>
-    </v-row>
-  </v-container>
+  <div>
+    <Head>
+      <Title>Classement de Dice - ioTactile Games</Title>
+      <Meta name="description" content="Page du classement général pour le jeu Dice" />
+    </Head>
+    <v-container>
+      <v-row>
+        <v-divider class="mb-4" />
+        <v-col cols="12">
+          <v-table>
+            <thead>
+              <tr>
+                <th class="text-center">
+                  Classement
+                </th>
+                <th class="text-center">
+                  Nom
+                </th>
+                <th class="text-center">
+                  Nombre de victoire
+                </th>
+                <th class="text-center">
+                  Score le plus haut
+                </th>
+                <th class="text-center">
+                  Nombre de 5 identiques
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(player, i) in scoreboard" :key="i">
+                <td class="d-flex justify-center align-center">
+                  <v-img
+                    v-if="i < 3"
+                    :src="medal(i)"
+                    alt="medal"
+                    width="40"
+                    height="40"
+                  />
+                  <span v-else>{{ i + 1 }}</span>
+                </td>
+                <td class="text-center">
+                  {{ player.username }}
+                </td>
+                <td class="text-center">
+                  {{ player.victories }}
+                </td>
+                <td class="text-center">
+                  {{ player.maxScore }}
+                </td>
+                <td class="text-center">
+                  {{ player.dice }}
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts" setup>

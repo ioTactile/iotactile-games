@@ -1,11 +1,17 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12" class="d-flex justify-center align-center">
-        En cours de développement
-      </v-col>
-    </v-row>
-  </v-container>
+  <div>
+    <Head>
+      <Title>Classement de Lingua Vault - ioTactile Games</Title>
+      <Meta name="description" content="Page du classement général pour le jeu Lingua Vault" />
+    </Head>
+    <v-container>
+      <v-row>
+        <v-col cols="12" class="d-flex justify-center align-center">
+          En cours de développement
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts" setup>

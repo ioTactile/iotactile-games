@@ -1,55 +1,61 @@
 <template>
-  <v-container class="container text-h6">
-    <h3 class="text-h3">
-      Contact
-    </h3>
-    <v-form ref="form" class="mt-10" @submit.prevent="sendMail">
-      <v-row>
-        <v-col cols="12" md="6">
-          <v-text-field
-            v-model="contact.name"
-            label="Nom"
-            variant="outlined"
-            hide-details
-          />
-        </v-col>
-        <v-col cols="12" md="6">
-          <InputsEmail
-            v-model="contact.email"
-            variant="outlined"
-            icon
-          />
-        </v-col>
-        <v-col cols="12" class="pt-0">
-          <v-textarea
-            v-model="contact.message"
-            v-row
-            label="Message"
-            variant="outlined"
-            rows="5"
-            cols="5"
-          />
-        </v-col>
-        <v-col cols="12" class="text-end ">
-          <template v-if="!isSended">
-            <v-btn
-              :loading="loading"
-              type="submit"
-              color="tertiary"
-              class="mr-2"
-            >
-              Envoyer
-            </v-btn>
-          </template>
-          <template v-else>
-            <v-alert type="success">
-              Votre message a bien été envoyé !
-            </v-alert>
-          </template>
-        </v-col>
-      </v-row>
-    </v-form>
-  </v-container>
+  <div>
+    <Head>
+      <Title>Contact - ioTactile Games</Title>
+      <Meta name="description" content="Page pour me contacter" />
+    </Head>
+    <v-container class="container text-h6">
+      <h3 class="text-h3">
+        Contact
+      </h3>
+      <v-form ref="form" class="mt-10" @submit.prevent="sendMail">
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="contact.name"
+              label="Nom"
+              variant="outlined"
+              hide-details
+            />
+          </v-col>
+          <v-col cols="12" md="6">
+            <InputsEmail
+              v-model="contact.email"
+              variant="outlined"
+              icon
+            />
+          </v-col>
+          <v-col cols="12" class="pt-0">
+            <v-textarea
+              v-model="contact.message"
+              v-row
+              label="Message"
+              variant="outlined"
+              rows="5"
+              cols="5"
+            />
+          </v-col>
+          <v-col cols="12" class="text-end ">
+            <template v-if="!isSended">
+              <v-btn
+                :loading="loading"
+                type="submit"
+                color="tertiary"
+                class="mr-2"
+              >
+                Envoyer
+              </v-btn>
+            </template>
+            <template v-else>
+              <v-alert type="success">
+                Votre message a bien été envoyé !
+              </v-alert>
+            </template>
+          </v-col>
+        </v-row>
+      </v-form>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts" setup>

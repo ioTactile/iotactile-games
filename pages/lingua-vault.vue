@@ -1,23 +1,29 @@
 <template>
-  <v-container fluid>
-    <div class="d-flex flex-wrap justify-center mb-4">
-      <v-btn
-        v-for="(item, i) in items"
-        :key="i"
-        :to="`/lingua-vault${item.link}`"
-        :append-icon="item.icon"
-        color="buttonBack"
-        variant="outlined"
-        rounded="xl"
-        class="mx-1"
-        :class="xs || sm ? 'mb-2' : ''"
-        :size="xs ? 'small' : 'default'"
-      >
-        {{ item.title }}
-      </v-btn>
-    </div>
-    <NuxtPage />
-  </v-container>
+  <div>
+    <Head>
+      <Title>Accueil Lingua Vault - ioTactile Games</Title>
+      <Meta name="description" content="Page d'accueil pour le jeu Lingua Vault" />
+    </Head>
+    <v-container fluid>
+      <div class="d-flex flex-wrap justify-center mb-4">
+        <v-btn
+          v-for="(item, i) in items"
+          :key="i"
+          :to="`/lingua-vault${item.link}`"
+          :append-icon="item.icon"
+          color="buttonBack"
+          variant="outlined"
+          rounded="xl"
+          class="mx-1"
+          :class="xs || sm ? 'mb-2' : ''"
+          :size="xs ? 'small' : 'default'"
+        >
+          {{ item.title }}
+        </v-btn>
+      </div>
+      <NuxtPage />
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts" setup>

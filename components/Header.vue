@@ -69,6 +69,12 @@ const login = ref(false)
 const drawer = ref(false)
 const group = ref(null)
 
+// onMounted
+
+onMounted(() => {
+  localStorage.getItem('theme') === 'myCustomDarkTheme' ? theme.global.name.value = 'myCustomDarkTheme' : theme.global.name.value = 'myCustomLightTheme'
+})
+
 // Watchers
 
 watch(group, () => {
@@ -98,5 +104,6 @@ const isLogin = (path: string) => {
 
 const toggleTheme = () => {
   theme.global.name.value = theme.name.value === 'myCustomLightTheme' ? 'myCustomDarkTheme' : 'myCustomLightTheme'
+  localStorage.setItem('theme', theme.global.name.value)
 }
 </script>

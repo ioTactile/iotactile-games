@@ -1,67 +1,73 @@
 <template>
-  <v-container align="center">
-    <v-card max-width="500" color="secondary">
-      <v-card-title class="d-flex justify-space-between align-center">
-        <h2 class="text-h5">
-          Mon profil
-        </h2>
-        <v-btn
-          variant="text"
-          :icon="mdiDotsVertical"
-          @click="openDeleteUser = !openDeleteUser"
-        />
-      </v-card-title>
-      <v-card-text>
-        <v-form ref="form" @submit.prevent="updateProfile">
-          <div class="d-flex">
-            <InputsUsername
-              v-model="username"
-              :disabled="!change"
-              variant="outlined"
-            />
-            <v-btn
-              class="ml-2"
-              :icon="mdiPencil"
-              variant="text"
-              @click="isChange()"
-            />
-          </div>
+  <div>
+    <Head>
+      <Title>Profil - ioTactile Games</Title>
+      <Meta name="description" content="Page profil" />
+    </Head>
+    <v-container align="center">
+      <v-card max-width="500" color="secondary">
+        <v-card-title class="d-flex justify-space-between align-center">
+          <h2 class="text-h5">
+            Mon profil
+          </h2>
           <v-btn
-            v-if="change"
+            variant="text"
+            :icon="mdiDotsVertical"
+            @click="openDeleteUser = !openDeleteUser"
+          />
+        </v-card-title>
+        <v-card-text>
+          <v-form ref="form" @submit.prevent="updateProfile">
+            <div class="d-flex">
+              <InputsUsername
+                v-model="username"
+                :disabled="!change"
+                variant="outlined"
+              />
+              <v-btn
+                class="ml-2"
+                :icon="mdiPencil"
+                variant="text"
+                @click="isChange()"
+              />
+            </div>
+            <v-btn
+              v-if="change"
+              block
+              type="submit"
+              color="buttonBack"
+              :loadind="loading"
+            >
+              Modifier
+            </v-btn>
+          </v-form>
+        </v-card-text>
+        <v-divider />
+        <v-card-text>
+          <v-btn
+            class="mt-2"
             block
-            type="submit"
             color="buttonBack"
-            :loadind="loading"
+            :disabled="loading"
+            @click="logout"
           >
-            Modifier
+            Se déconnecter
           </v-btn>
-        </v-form>
-      </v-card-text>
-      <v-divider />
-      <v-card-text>
-        <v-btn
-          class="mt-2"
-          block
-          color="buttonBack"
-          :disabled="loading"
-          @click="logout"
-        >
-          Se déconnecter
-        </v-btn>
-        <v-btn
-          v-if="openDeleteUser"
-          class="mt-4"
-          block
-          color="buttonBack"
-          variant="outlined"
-          :disabled="loading"
-          @click="deleteProfile"
-        >
-          Supprimer ton compte
-        </v-btn>
-      </v-card-text>
-    </v-card>
-  </v-container>
+          <v-btn
+            v-if="openDeleteUser"
+            class="mt-4"
+            block
+            color="buttonBack"
+            variant="outlined"
+            :disabled="loading"
+            @click="deleteProfile"
+          >
+            Supprimer ton compte
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts" setup>

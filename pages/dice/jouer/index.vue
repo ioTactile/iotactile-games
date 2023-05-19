@@ -1,86 +1,92 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-divider class="mb-4" />
-      <v-col cols="6" class="text-end">
-        <v-btn
-          variant="flat"
-          color="tertiary"
-          class="text-subtitle-2 text-sm-h6"
-          :loading="loading"
-          @click="quickJoin"
+  <div>
+    <Head>
+      <Title>Jouer à Dice - ioTactile Games</Title>
+      <Meta name="description" content="Page pour jouer à Dice" />
+    </Head>
+    <v-container>
+      <v-row>
+        <v-divider class="mb-4" />
+        <v-col cols="6" class="text-end">
+          <v-btn
+            variant="flat"
+            color="tertiary"
+            class="text-subtitle-2 text-sm-h6"
+            :loading="loading"
+            @click="quickJoin"
+          >
+            Partie rapide
+          </v-btn>
+        </v-col>
+        <v-col cols="6" class="text-start">
+          <v-btn
+            variant="flat"
+            color="tertiary"
+            class="text-subtitle-2 text-sm-h6"
+            :loading="loading"
+            @click="create"
+          >
+            Créer une session
+          </v-btn>
+        </v-col>
+        <v-divider class="mt-4" />
+        <v-col
+          v-if="sessionsNotStarted.length > 0"
+          cols="12"
+          class="text-h4 my-4"
+          align="center"
         >
-          Partie rapide
-        </v-btn>
-      </v-col>
-      <v-col cols="6" class="text-start">
-        <v-btn
-          variant="flat"
-          color="tertiary"
-          class="text-subtitle-2 text-sm-h6"
-          :loading="loading"
-          @click="create"
+          <span>Rejoindre une session</span>
+        </v-col>
+        <v-col
+          v-for="(session, i) in sessionsNotStarted"
+          :key="i"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
         >
-          Créer une session
-        </v-btn>
-      </v-col>
-      <v-divider class="mt-4" />
-      <v-col
-        v-if="sessionsNotStarted.length > 0"
-        cols="12"
-        class="text-h4 my-4"
-        align="center"
-      >
-        <span>Rejoindre une session</span>
-      </v-col>
-      <v-col
-        v-for="(session, i) in sessionsNotStarted"
-        :key="i"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
-      >
-        <v-card v-if="!session.isStarted">
-          <v-card-title class="text-h5 text-center">
-            <span>Session {{ i + 1 }}</span>
-          </v-card-title>
-          <v-card-text>
-            <div
-              v-for="(player, j) in session.players"
-              :key="j"
-              class="d-flex justify-space-between text-h6"
-            >
-              <span>Joueur {{ j + 1 }}:</span>
-              <span>{{ player.username }}</span>
-            </div>
-          </v-card-text>
-          <v-card-actions class="d-flex justify-space-between">
-            <v-btn color="error" :loading="leaving" @click="leave(session.id)">
-              Quitter
-            </v-btn>
-            <v-btn
-              v-if="checkUserInSession"
-              color="tertiary"
-              :loading="loading"
-              @click="join(session.id)"
-            >
-              Rejoindre
-            </v-btn>
-            <v-btn
-              v-else
-              color="tertiary"
-              variant="outlined"
-              :loading="loading"
-              @click="goTo(session.id)"
-            >
-              Rejoindre
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
+          <v-card v-if="!session.isStarted">
+            <v-card-title class="text-h5 text-center">
+              <span>Session {{ i + 1 }}</span>
+            </v-card-title>
+            <v-card-text>
+              <div
+                v-for="(player, j) in session.players"
+                :key="j"
+                class="d-flex justify-space-between text-h6"
+              >
+                <span>Joueur {{ j + 1 }}:</span>
+                <span>{{ player.username }}</span>
+              </div>
+            </v-card-text>
+            <v-card-actions class="d-flex justify-space-between">
+              <v-btn color="error" :loading="leaving" @click="leave(session.id)">
+                Quitter
+              </v-btn>
+              <v-btn
+                v-if="checkUserInSession"
+                color="tertiary"
+                :loading="loading"
+                @click="join(session.id)"
+              >
+                Rejoindre
+              </v-btn>
+              <v-btn
+                v-else
+                color="tertiary"
+                variant="outlined"
+                :loading="loading"
+                @click="goTo(session.id)"
+              >
+                Rejoindre
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script lang="ts" setup>
