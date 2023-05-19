@@ -468,21 +468,12 @@ const leave = async (sessionId: string) => {
     const sessionRef = doc(sessionsRef, sessionId)
     const sessionDoc = await getDoc(sessionRef)
     const session = sessionDoc.data()
-    const playerTurnRef = doc(
-      collection(db, 'diceSessionPlayerTurn'),
-      sessionId
-    )
-    const scoresRef = doc(collection(db, 'diceSessionScores'), sessionId)
-    const remainingTurnsRef = doc(
-      collection(db, 'diceSessionRemainingTurns'),
-      sessionId
-    )
-    const dicesRef = doc(collection(db, 'diceSessionDices'), sessionId)
-    const playerTriesRef = doc(
-      collection(db, 'diceSessionPlayerTries'),
-      sessionId
-    )
-    const scoresDoc = await getDoc(scoresRef)
+    const playerTurnDoc = doc(playerTurnRef, sessionId)
+    const scoresDocRef = doc(scoresRef, sessionId)
+    const remainingTurnsDoc = doc(remainingTurnsRef, sessionId)
+    const dicesDoc = doc(dicesRef, sessionId)
+    const playerTriesDoc = doc(playerTriesRef, sessionId)
+    const scoresDoc = await getDoc(scoresDocRef)
     const scores = scoresDoc.data()
     if (!session) {
       return
@@ -497,28 +488,28 @@ const leave = async (sessionId: string) => {
     }
     if (session.players.length === 1) {
       await deleteDoc(sessionRef)
-      await deleteDoc(playerTurnRef)
-      await deleteDoc(scoresRef)
-      await deleteDoc(remainingTurnsRef)
-      await deleteDoc(dicesRef)
-      await deleteDoc(playerTriesRef)
+      await deleteDoc(playerTurnDoc)
+      await deleteDoc(scoresDocRef)
+      await deleteDoc(remainingTurnsDoc)
+      await deleteDoc(dicesDoc)
+      await deleteDoc(playerTriesDoc)
       return
     }
 
     if (scores?.playerOne.id === user.value.uid) {
-      await updateDoc(scoresRef, {
+      await updateDoc(scoresDocRef, {
         playerOne: deleteField()
       })
     } else if (scores?.playerTwo.id === user.value.uid) {
-      await updateDoc(scoresRef, {
+      await updateDoc(scoresDocRef, {
         playerTwo: deleteField()
       })
     } else if (scores?.playerThree.id === user.value.uid) {
-      await updateDoc(scoresRef, {
+      await updateDoc(scoresDocRef, {
         playerThree: deleteField()
       })
     } else if (scores?.playerFour.id === user.value.uid) {
-      await updateDoc(scoresRef, {
+      await updateDoc(scoresDocRef, {
         playerFour: deleteField()
       })
     }
@@ -526,7 +517,7 @@ const leave = async (sessionId: string) => {
       player => player.id !== user.value?.uid
     )
 
-    const joinRemainingTurnsDoc = await getDoc(remainingTurnsRef)
+    const joinRemainingTurnsDoc = await getDoc(remainingTurnsDoc)
     if (!joinRemainingTurnsDoc.exists()) {
       return
     }
