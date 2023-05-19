@@ -9,10 +9,14 @@ export const deleteExpiredDiceSession = functions
     .onRun(async (context) => {
       const firestore = getFirestore();
       const now = Timestamp.now();
+      const expirationDate = new Date(now.toMillis() - 24 * 60 * 60 * 1000);
 
       const diceSessionsQuery = firestore
-          .collection("diceSessions").where("creationDate", "<=", now);
+          .collection("diceSessions")
+          .where("creationDate", "<=", expirationDate);
       const diceSessionsSnapshot = await diceSessionsQuery.get();
+
+      console.log("Found", diceSessionsSnapshot.size, "expired dice sessions");
 
       const deletePromises: Promise<WriteResult>[] = [];
 

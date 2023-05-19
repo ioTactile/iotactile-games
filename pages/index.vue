@@ -9,9 +9,12 @@
       <v-row class="mx-auto">
         <!-- Text -->
         <v-col cols="12">
-          <h2 class="text-h5 text-md-h4 mb-4">
+          <h1 class="text-h4 text-md-h3 mb-4 font-weight-bold">
+            ioTactile Games
+          </h1>
+          <span class="text-h5 text-md-h4 mb-4">
             Bienvenue à toi
-          </h2>
+          </span>
           <p class="text-h6 text-md-h5">
             De nombreux jeux t'attendent pour t'amuser en famille ou entre
             amis.<br>

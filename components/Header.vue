@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app-bar color="secondary">
-      <v-app-bar-nav-icon class="mr-4" @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon class="mr-4" @click="toggleDrawer" />
       <v-spacer class="d-block d-sm-none" />
       <NuxtLink to="/" class="w-100">
         <v-img :src="theme.current.value.dark ? '/logo-dark.png' : '/logo.png'" alt="logo" height="80" width="200" />
@@ -100,6 +100,10 @@ const isLogin = (path: string) => {
   } else {
     navigateTo(path)
   }
+}
+
+const toggleDrawer = () => {
+  drawer.value = !drawer.value
 }
 
 const toggleTheme = () => {
