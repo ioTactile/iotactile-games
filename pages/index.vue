@@ -5,9 +5,7 @@
       <Meta name="description" content="ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs" />
     </Head>
     <v-container class="container">
-      <!-- Hero -->
       <v-row class="mx-auto">
-        <!-- Text -->
         <v-col cols="12">
           <h1 class="text-h4 text-md-h3 mb-4 font-weight-bold">
             ioTactile Games
@@ -62,8 +60,6 @@
               </v-col>
             </v-row>
           </v-alert>
-        <!-- Logo -->
-        <!-- <img/> -->
         </v-col>
       </v-row>
     </v-container>

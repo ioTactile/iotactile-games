@@ -153,6 +153,7 @@ export type DiceSessionScore = {
   id: string
   playerOne: {
     id: string
+    username: string
     one: number
     two: number
     three: number
@@ -171,6 +172,7 @@ export type DiceSessionScore = {
   }
   playerTwo: {
     id: string
+    username: string
     one: number
     two: number
     three: number
@@ -189,6 +191,7 @@ export type DiceSessionScore = {
   }
   playerThree?: {
     id: string
+    username: string
     one: number
     two: number
     three: number
@@ -207,6 +210,7 @@ export type DiceSessionScore = {
   }
   playerFour?: {
     id: string
+    username: string
     one: number
     two: number
     three: number
@@ -223,4 +227,5 @@ export type DiceSessionScore = {
     dice: number
     total: number
   }
+  creationDate?: Timestamp
 }

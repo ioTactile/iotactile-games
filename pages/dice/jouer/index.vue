@@ -84,6 +84,39 @@
             </v-card-actions>
           </v-card>
         </v-col>
+        <v-divider class="mt-4" />
+        <v-col
+          v-if="sessionStarted.length > 0"
+          cols="12"
+          class="text-h4 my-4"
+          align="center"
+        >
+          <span>Parties en cours</span>
+        </v-col>
+        <v-col
+          v-for="(session, i) in sessionStarted"
+          :key="i"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
+        >
+          <v-card v-if="session.isStarted">
+            <v-card-title class="text-h5 text-center">
+              <span>Session {{ i + 1 }}</span>
+            </v-card-title>
+            <v-card-text>
+              <div
+                v-for="(player, j) in session.players"
+                :key="j"
+                class="d-flex justify-space-between text-h6"
+              >
+                <span>Joueur {{ j + 1 }}:</span>
+                <span>{{ player.username }}</span>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -136,8 +169,10 @@ const db = useFirestore()
 const sessionsRef = collection(db, 'diceSessions').withConverter(
   diceSessionConverter
 )
-const sessionsStartedQuery = query(sessionsRef, where('isStarted', '==', false))
-const sessionsNotStarted = useCollection(sessionsStartedQuery)
+const sessionsNotStartedQuery = query(sessionsRef, where('isStarted', '==', false))
+const sessionsNotStarted = useCollection(sessionsNotStartedQuery)
+const sessionStartedQuery = query(sessionsRef, where('isStarted', '==', true), where('isFinished', '==', false))
+const sessionStarted = useCollection(sessionStartedQuery)
 const playerTurnRef = collection(db, 'diceSessionPlayerTurn').withConverter(
   diceSessionPlayerTurnConverter
 )
@@ -166,6 +201,7 @@ const leaving = ref(false)
 // Computed
 
 const checkUserInSession = computed(async (sessionId: string) => {
+  if (!sessionId) { return false }
   const sessionRef = doc(sessionsRef, sessionId)
   const sessionDoc = await getDoc(sessionRef)
   const session = sessionDoc.data()
@@ -304,7 +340,8 @@ const create = async () => {
     })
     await setDoc(doc(scoresRef, id.value), {
       id: id.value,
-      playerOne: initScores()
+      playerOne: initScores(),
+      creationDate: Timestamp.fromDate(date.value)
     })
     checkScoreboard()
   } finally {

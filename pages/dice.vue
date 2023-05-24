@@ -13,7 +13,7 @@
           :append-icon="item.icon"
           color="buttonBack"
           variant="outlined"
-          rounded="xl"
+          :rounded="0"
           class="mx-1"
           :class="xs || sm ? 'mb-2' : ''"
           :size="xs ? 'small' : 'default'"

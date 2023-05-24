@@ -243,7 +243,8 @@ export const diceSessionScoreConverter: FirestoreDataConverter<LocalDiceSessionS
     const data = snapshot.data(options)
     return {
       ...data,
-      id: snapshot.id
+      id: snapshot.id,
+      creationDate: data.creationDate ? data.creationDate.toDate() : undefined
     }
   }
 }

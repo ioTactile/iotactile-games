@@ -37,6 +37,12 @@ export const deleteExpiredDiceSession = functions
               .doc(sessionId).delete(),
         ];
         deletePromises.push(...deletePromisesPerSession);
+        if (doc.data().players.length === 1) {
+          deletePromises.push(
+              firestore.collection("diceSessionScore")
+                  .doc(sessionId).delete()
+          );
+        }
       });
 
       await Promise.allSettled(deletePromises);

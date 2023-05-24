@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="scores && user && session" rounded="0" class="card-container">
+  <v-card v-if="scores && user && session" :rounded="0" class="card-container">
     <v-row>
       <v-col cols="12" class="pr-0">
         <v-table density="compact">
