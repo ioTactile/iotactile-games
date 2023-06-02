@@ -1,12 +1,12 @@
 <template>
   <v-container v-if="session && playerTurn" fluid class="container">
     <v-row>
-      <v-col cols="12" md="9" class="background-image">
-        <div ref="gameContainer" class="relative" :class="{ 'fullscreen': isFullscreen }">
+      <v-col cols="12" md="9">
+        <div ref="fullscreenElement" class="background-image " :class="isFullscreen ? 'fullscreen' : 'fullscreenElementClassic'">
           <div class="fullscreen-btn">
             <v-btn :icon="isFullscreen ? mdiFullscreenExit : mdiFullscreen" variant="text" size="x-large" @click="toggleFullscreen" />
           </div>
-          <v-row>
+          <v-row class="ma-0">
             <v-col class="d-flex" cols="12">
               <dice-players
                 :players="session.players"
@@ -15,7 +15,7 @@
               />
             </v-col>
             <v-col cols="12" md="6">
-              <dice-board />
+              <dice-board :is-fullscreen="isFullscreen" />
             </v-col>
             <v-col cols="12" md="6" class="right-side-container pb-0">
               <v-row class="h-100">
@@ -395,8 +395,8 @@ const isFinishedLocal = ref(false)
 const isFullscreen = ref(false)
 const volumeCard = ref(false)
 const leaving = ref(false)
-const gameContainer = ref<HTMLElement>()
 const scores = ref<LocalDiceSessionScoreType | null>(null)
+const fullscreenElement = ref<HTMLElement | null>(null)
 
 // New Sound Effects
 
@@ -410,17 +410,36 @@ const sounds = {
   spongeBobRemix: '/sponge-bob-remix.mp3'
 }
 
+const diceSound = new Audio(sounds.dice)
+const notificationSound = new Audio(sounds.notification)
+const messageSound = new Audio(sounds.message)
+const shakeRollSound = new Audio(sounds.shakeRoll)
+const spongeBobDisappointedSound = new Audio(sounds.spongeBobDisappointed)
+const spongeBobVictorySound = new Audio(sounds.spongeBobVictory)
+const spongeBobRemixSound = new Audio(sounds.spongeBobRemix)
+
 // onMounted
 
 onMounted(() => {
+  fullscreenElement.value = fullscreenElement.value as HTMLElement
+  document.addEventListener('fullscreenchange', handleFullscreenChange)
+
   const storedValue = localStorage.getItem('soundVolume')
   if (storedValue !== null) {
+    console.log('storedValue', storedValue)
     volume.value = parseFloat(storedValue)
+    console.log('volume', volume.value)
 
     if (volume.value === 0) {
       isSoundMuted.value = true
     }
   }
+})
+
+console.log('volume outside', volume.value)
+
+onUnmounted(() => {
+  document.removeEventListener('fullscreenchange', handleFullscreenChange)
 })
 
 // Watchers
@@ -436,18 +455,18 @@ watch(isFinishedLocal, async (value) => {
     const isUserFourthPlace = fourthPlace.value === username
 
     if (isUserFirstPlace) {
-      playSound(sounds.spongeBobVictory)
+      spongeBobVictorySound.play()
       setTimeout(() => {
-        playSound(sounds.spongeBobRemix)
+        spongeBobRemixSound.play()
       }, 7000)
     } else if (isUserSecondPlace) {
-      playSound(sounds.spongeBobDisappointed)
+      spongeBobDisappointedSound.play()
     } else if (isUserThirdPlace) {
-      playSound(sounds.spongeBobDisappointed)
+      spongeBobDisappointedSound.play()
     } else if (isUserFourthPlace) {
-      playSound(sounds.spongeBobDisappointed)
+      spongeBobDisappointedSound.play()
     } else {
-      playSound(sounds.spongeBobDisappointed)
+      spongeBobDisappointedSound.play()
     }
   }
 })
@@ -467,7 +486,7 @@ watch(remainingTurns, async (newValue) => {
 
 watch(cups, async (newValue) => {
   if (newValue && newValue.tries !== 3) {
-    playSound(sounds.shakeRoll)
+    shakeRollSound.play()
     await sleep(500)
     shakeClass.value = 'shake'
     await sleep(1800)
@@ -482,17 +501,16 @@ watch(playerTurn, (newValue) => {
     session.value?.isStarted &&
     !session.value?.isFinished
   ) {
-    playSound(sounds.notification)
+    notificationSound.play()
   }
 })
 
 watch(volume, (newValue) => {
   if (newValue === 0) {
     isSoundMuted.value = true
-    muteAllSounds()
+    pauseAllSounds()
   } else {
     isSoundMuted.value = false
-    unmuteAllSounds()
   }
 })
 
@@ -500,7 +518,7 @@ watch(chat, (newValue) => {
   if (newValue && newValue.messages.length > 0) {
     const lastMessage = newValue.messages[newValue.messages.length - 1]
     if (lastMessage.userId !== user.value?.uid) {
-      playSound(sounds.message)
+      messageSound.play()
     }
   }
 })
@@ -517,12 +535,15 @@ const adjustedVolume = computed(() => {
 })
 
 const adjustVolume = computed(() => {
-  Object.values(sounds).forEach((soundPath) => {
-    const audio = new Audio(soundPath)
-    audio.volume = adjustedVolume.value
+  diceSound.volume = adjustedVolume.value
+  notificationSound.volume = adjustedVolume.value
+  messageSound.volume = adjustedVolume.value
+  shakeRollSound.volume = adjustedVolume.value
+  spongeBobDisappointedSound.volume = adjustedVolume.value
+  spongeBobVictorySound.volume = adjustedVolume.value
+  spongeBobRemixSound.volume = adjustedVolume.value
 
-    localStorage.setItem('soundVolume', adjustedVolume.value.toString())
-  })
+  localStorage.setItem('soundVolume', adjustedVolume.value.toString())
 })
 
 // Methods
@@ -555,26 +576,16 @@ const sleep = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const toggleFullscreen = () => {
-  isFullscreen.value = !isFullscreen.value
-
-  if (isFullscreen.value) {
-    enterFullscreen(gameContainer.value as HTMLElement)
-  } else {
-    exitFullscreen()
+const enterFullscreen = () => {
+  if (fullscreenElement.value?.requestFullscreen) {
+    fullscreenElement.value.requestFullscreen()
   }
-}
-
-const enterFullscreen = (element: HTMLElement) => {
-  if (element.requestFullscreen) {
-    element.requestFullscreen()
-  }
-  // else if (element.mozRequestFullScreen) {
-  //   element.mozRequestFullScreen()
-  // } else if (element.webkitRequestFullscreen) {
-  //   element.webkitRequestFullscreen()
-  // } else if (element.msRequestFullscreen) {
-  //   element.msRequestFullscreen()
+  // else if (fullscreenElement.value?.mozRequestFullScreen) {
+  //   fullscreenElement.value.mozRequestFullScreen()
+  // } else if (fullscreenElement.value?.webkitRequestFullscreen) {
+  //   fullscreenElement.value.webkitRequestFullscreen()
+  // } else if (fullscreenElement.value?.msRequestFullscreen) {
+  //   fullscreenElement.value.msRequestFullscreen()
   // }
 }
 
@@ -591,29 +602,16 @@ const exitFullscreen = () => {
   // }
 }
 
-const playSound = (soundPath: string) => {
-  if (isSoundMuted.value) {
-    return
-  }
-
-  if (soundPath) {
-    const audio = new Audio(soundPath)
-    audio.play()
+const toggleFullscreen = () => {
+  if (isFullscreen.value) {
+    exitFullscreen()
+  } else {
+    enterFullscreen()
   }
 }
 
-const muteAllSounds = () => {
-  Object.values(sounds).forEach((soundPath) => {
-    const audio = new Audio(soundPath)
-    audio.muted = true
-  })
-}
-
-const unmuteAllSounds = () => {
-  Object.values(sounds).forEach((soundPath) => {
-    const audio = new Audio(soundPath)
-    audio.muted = false
-  })
+const handleFullscreenChange = () => {
+  isFullscreen.value = document.fullscreenElement !== null
 }
 
 const toggleVolume = () => {
@@ -735,7 +733,7 @@ const manipulateDice = async (index: number, action: 'add' | 'remove') => {
     return
   }
 
-  playSound(sounds.dice)
+  diceSound.play()
 
   const diceData = dices.value
   const diceOnHandData = diceOnHand.value
@@ -893,6 +891,25 @@ const leaveGame = async () => {
     navigateTo('/dice/jouer/')
   }
 }
+
+const pauseAllSounds = () => {
+  diceSound.pause()
+  diceSound.currentTime = 0
+  notificationSound.pause()
+  notificationSound.currentTime = 0
+  messageSound.pause()
+  messageSound.currentTime = 0
+  shakeRollSound.pause()
+  shakeRollSound.currentTime = 0
+  spongeBobDisappointedSound.pause()
+  spongeBobDisappointedSound.currentTime = 0
+  spongeBobVictorySound.pause()
+  spongeBobVictorySound.currentTime = 0
+  spongeBobRemixSound.pause()
+  spongeBobRemixSound.currentTime = 0
+
+  console.log('All sounds paused')
+}
 </script>
 
 <style scoped>
@@ -907,15 +924,25 @@ const leaveGame = async () => {
   background-repeat: no-repeat;
 }
 
-.relative {
+.fullscreenElement {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+
+.fullscreenElementClassic {
   position: relative;
+  width: 100%;
 }
 
 .fullscreen-btn {
   z-index: 9999;
   position: absolute;
   bottom: 10px;
-  right: 0;
+  right: 10px;
 }
 
 .fullscreen {

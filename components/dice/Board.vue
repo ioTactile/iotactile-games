@@ -2,7 +2,7 @@
   <v-card v-if="scores && user && session" :rounded="0" class="card-container">
     <v-row>
       <v-col cols="12" class="pr-0">
-        <v-table density="compact">
+        <v-table :density="isFullscreen ? 'default' : 'compact'">
           <thead>
             <tr>
               <th
@@ -1384,6 +1384,12 @@ import {
   // diceScoreboardConverter
 } from '~/stores'
 import { useDicesStore } from '~/stores/dices'
+
+// Props
+
+defineProps<{
+ isFullscreen: boolean
+}>()
 
 // Vuefire
 
