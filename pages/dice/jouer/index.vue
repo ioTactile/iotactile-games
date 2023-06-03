@@ -65,58 +65,49 @@
                 Quitter
               </v-btn>
               <v-btn
-                v-if="checkUserInSession"
                 color="tertiary"
                 :loading="loading"
                 @click="join(session.id)"
               >
                 Rejoindre
               </v-btn>
-              <v-btn
-                v-else
-                color="tertiary"
-                variant="outlined"
-                :loading="loading"
-                @click="goTo(session.id)"
-              >
-                Rejoindre
-              </v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
-        <v-divider class="mt-4" />
-        <v-col
-          v-if="sessionStarted.length > 0"
-          cols="12"
-          class="text-h4 my-4"
-          align="center"
-        >
-          <span>Parties en cours</span>
-        </v-col>
-        <v-col
-          v-for="(session, i) in sessionStarted"
-          :key="i"
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
-        >
-          <v-card v-if="session.isStarted">
-            <v-card-title class="text-h5 text-center">
-              <span>Session {{ i + 1 }}</span>
-            </v-card-title>
-            <v-card-text>
-              <div
-                v-for="(player, j) in session.players"
-                :key="j"
-                class="d-flex justify-space-between text-h6"
-              >
-                <span>Joueur {{ j + 1 }}:</span>
-                <span>{{ player.username }}</span>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-col>
+        <template v-if="sessionStarted.length > 0">
+          <v-divider class="mt-4" />
+          <v-col
+            cols="12"
+            class="text-h4 my-4"
+            align="center"
+          >
+            <span>Parties en cours</span>
+          </v-col>
+          <v-col
+            v-for="(session, i) in sessionStarted"
+            :key="i"
+            cols="12"
+            sm="6"
+            md="4"
+            lg="3"
+          >
+            <v-card v-if="session.isStarted">
+              <v-card-title class="text-h5 text-center">
+                <span>Session {{ i + 1 }}</span>
+              </v-card-title>
+              <v-card-text>
+                <div
+                  v-for="(player, j) in session.players"
+                  :key="j"
+                  class="d-flex justify-space-between text-h6"
+                >
+                  <span>Joueur {{ j + 1 }}:</span>
+                  <span>{{ player.username }}</span>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </template>
       </v-row>
     </v-container>
   </div>
@@ -198,26 +189,6 @@ const date = ref(new Date(Date.now()))
 const loading = ref(false)
 const leaving = ref(false)
 
-// Computed
-
-const checkUserInSession = computed(async (sessionId: string) => {
-  if (!sessionId) { return false }
-  const sessionRef = doc(sessionsRef, sessionId)
-  const sessionDoc = await getDoc(sessionRef)
-  const session = sessionDoc.data()
-  if (!session) {
-    return false
-  }
-
-  session.players.forEach((player) => {
-    if (player.id === user.value?.uid) {
-      return false
-    } else {
-      return true
-    }
-  })
-})
-
 // Methods
 
 const checkScoreboard = async () => {
@@ -278,10 +249,6 @@ const initScores = () => {
   }
 
   return scores
-}
-
-const goTo = (sessionId: string) => {
-  navigateTo(`/dice/jouer/${sessionId}`)
 }
 
 const create = async () => {
@@ -440,7 +407,8 @@ const join = async (sessionId: string) => {
       return
     }
     if (session.players.find(player => player.id === user.value?.uid)) {
-      notifier({ content: 'Tu es déjà dans cette session', color: 'error' })
+      navigateTo(`/dice/jouer/${sessionId}`)
+      // notifier({ content: 'Tu es déjà dans cette session', color: 'error' })
       return
     }
     if (session.players.length >= 4) {
@@ -490,7 +458,6 @@ const join = async (sessionId: string) => {
     checkScoreboard()
   } finally {
     loading.value = false
-    navigateTo(`/dice/jouer/${sessionId}`)
   }
 }
 

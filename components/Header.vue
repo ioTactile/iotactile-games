@@ -24,7 +24,7 @@
             :key="i"
             :value="item"
             :to="item.link"
-            active-color="highlight"
+            color="highlight"
             class="pl-4"
           >
             {{ item.title }}

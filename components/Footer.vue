@@ -10,7 +10,6 @@
           variant="outlined"
           class="mx-2 mb-1"
           :size="xs ? 'small' : 'default'"
-          :rounded="0"
         >
           {{ link.title }}
         </v-btn>

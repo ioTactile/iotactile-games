@@ -65,7 +65,7 @@
           </h3>
         </v-col>
         <v-divider class="my-4" />
-        <v-btn class="mx-auto" color="buttonBack" :rounded="0" @click="toggleDiceSession">
+        <v-btn class="mx-auto" color="buttonBack" @click="toggleDiceSession">
           <span v-if="showSessions">Cacher</span>
           <span v-else>Afficher</span> les sessions
         </v-btn>
