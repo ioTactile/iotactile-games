@@ -426,9 +426,7 @@ onMounted(() => {
 
   const storedValue = localStorage.getItem('soundVolume')
   if (storedValue !== null) {
-    console.log('storedValue', storedValue)
     volume.value = parseFloat(storedValue)
-    console.log('volume', volume.value)
 
     if (volume.value === 0) {
       isSoundMuted.value = true
@@ -436,10 +434,9 @@ onMounted(() => {
   }
 })
 
-console.log('volume outside', volume.value)
-
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange)
+  pauseAllSounds()
 })
 
 // Watchers
@@ -491,6 +488,8 @@ watch(cups, async (newValue) => {
     shakeClass.value = 'shake'
     await sleep(1800)
     shakeClass.value = ''
+    shakeRollSound.pause()
+    shakeRollSound.currentTime = 0
   }
 })
 
@@ -502,6 +501,7 @@ watch(playerTurn, (newValue) => {
     !session.value?.isFinished
   ) {
     notificationSound.play()
+    notificationSound.currentTime = 0
   }
 })
 
@@ -752,6 +752,9 @@ const manipulateDice = async (index: number, action: 'add' | 'remove') => {
   }
 
   await setDoc(dicesRef, diceData, { merge: true })
+
+  diceSound.pause()
+  diceSound.currentTime = 0
 }
 
 const getPlaceName = (position: number) => {
@@ -907,8 +910,6 @@ const pauseAllSounds = () => {
   spongeBobVictorySound.currentTime = 0
   spongeBobRemixSound.pause()
   spongeBobRemixSound.currentTime = 0
-
-  console.log('All sounds paused')
 }
 </script>
 
