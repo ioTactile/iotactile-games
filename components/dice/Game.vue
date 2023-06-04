@@ -436,6 +436,9 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('fullscreenchange', handleFullscreenChange)
+})
+
+onBeforeRouteLeave(() => {
   pauseAllSounds()
 })
 
