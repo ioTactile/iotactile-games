@@ -322,6 +322,7 @@ import {
 } from '~/stores'
 import { useDicesStore } from '~/stores/dices'
 import { CardUser } from '~/functions/src/types'
+import SoundService from '~/utils/soundService'
 
 // Types
 
@@ -398,6 +399,8 @@ const leaving = ref(false)
 const scores = ref<LocalDiceSessionScoreType | null>(null)
 const fullscreenElement = ref<HTMLElement | null>(null)
 
+const soundService = new SoundService()
+
 // New Sound Effects
 
 const sounds = {
@@ -410,19 +413,19 @@ const sounds = {
   spongeBobRemix: '/sponge-bob-remix.mp3'
 }
 
-const diceSound = new Audio(sounds.dice)
-const notificationSound = new Audio(sounds.notification)
-const messageSound = new Audio(sounds.message)
-const shakeRollSound = new Audio(sounds.shakeRoll)
-const spongeBobDisappointedSound = new Audio(sounds.spongeBobDisappointed)
-const spongeBobVictorySound = new Audio(sounds.spongeBobVictory)
-const spongeBobRemixSound = new Audio(sounds.spongeBobRemix)
-
 // onMounted
 
 onMounted(() => {
   fullscreenElement.value = fullscreenElement.value as HTMLElement
   document.addEventListener('fullscreenchange', handleFullscreenChange)
+
+  soundService.loadSound('dice', sounds.dice)
+  soundService.loadSound('notification', sounds.notification)
+  soundService.loadSound('message', sounds.message)
+  soundService.loadSound('shakeRoll', sounds.shakeRoll)
+  soundService.loadSound('spongeBobDisappointed', sounds.spongeBobDisappointed)
+  soundService.loadSound('spongeBobVictory', sounds.spongeBobVictory)
+  soundService.loadSound('spongeBobRemix', sounds.spongeBobRemix)
 
   const storedValue = localStorage.getItem('soundVolume')
   if (storedValue !== null) {
@@ -439,7 +442,7 @@ onUnmounted(() => {
 })
 
 onBeforeRouteLeave(() => {
-  pauseAllSounds()
+  soundService.stopAllSounds()
 })
 
 // Watchers
@@ -455,18 +458,18 @@ watch(isFinishedLocal, async (value) => {
     const isUserFourthPlace = fourthPlace.value === username
 
     if (isUserFirstPlace) {
-      spongeBobVictorySound.play()
+      soundService.playSound('spongeBobVictory')
       setTimeout(() => {
-        spongeBobRemixSound.play()
+        soundService.playSound('spongeBobRemix')
       }, 7000)
     } else if (isUserSecondPlace) {
-      spongeBobDisappointedSound.play()
+      soundService.playSound('spongeBobDisappointed')
     } else if (isUserThirdPlace) {
-      spongeBobDisappointedSound.play()
+      soundService.playSound('spongeBobDisappointed')
     } else if (isUserFourthPlace) {
-      spongeBobDisappointedSound.play()
+      soundService.playSound('spongeBobDisappointed')
     } else {
-      spongeBobDisappointedSound.play()
+      soundService.playSound('spongeBobDisappointed')
     }
   }
 })
@@ -486,13 +489,11 @@ watch(remainingTurns, async (newValue) => {
 
 watch(cups, async (newValue) => {
   if (newValue && newValue.tries !== 3) {
-    shakeRollSound.play()
+    soundService.playSound('shakeRoll')
     await sleep(500)
     shakeClass.value = 'shake'
     await sleep(1800)
     shakeClass.value = ''
-    shakeRollSound.pause()
-    shakeRollSound.currentTime = 0
   }
 })
 
@@ -503,15 +504,13 @@ watch(playerTurn, (newValue) => {
     session.value?.isStarted &&
     !session.value?.isFinished
   ) {
-    notificationSound.play()
-    notificationSound.currentTime = 0
+    soundService.playSound('notification')
   }
 })
 
 watch(volume, (newValue) => {
   if (newValue === 0) {
     isSoundMuted.value = true
-    pauseAllSounds()
   } else {
     isSoundMuted.value = false
   }
@@ -521,7 +520,7 @@ watch(chat, (newValue) => {
   if (newValue && newValue.messages.length > 0) {
     const lastMessage = newValue.messages[newValue.messages.length - 1]
     if (lastMessage.userId !== user.value?.uid) {
-      messageSound.play()
+      soundService.playSound('message')
     }
   }
 })
@@ -533,20 +532,8 @@ const secondPlace = computed(() => getPlaceName(2))
 const thirdPlace = computed(() => getPlaceName(3))
 const fourthPlace = computed(() => getPlaceName(4))
 
-const adjustedVolume = computed(() => {
-  return isSoundMuted.value ? 0 : volume.value
-})
-
 const adjustVolume = computed(() => {
-  diceSound.volume = adjustedVolume.value
-  notificationSound.volume = adjustedVolume.value
-  messageSound.volume = adjustedVolume.value
-  shakeRollSound.volume = adjustedVolume.value
-  spongeBobDisappointedSound.volume = adjustedVolume.value
-  spongeBobVictorySound.volume = adjustedVolume.value
-  spongeBobRemixSound.volume = adjustedVolume.value
-
-  localStorage.setItem('soundVolume', adjustedVolume.value.toString())
+  soundService.setGlobalVolume(volume.value)
 })
 
 // Methods
@@ -736,7 +723,7 @@ const manipulateDice = async (index: number, action: 'add' | 'remove') => {
     return
   }
 
-  diceSound.play()
+  soundService.playSound('dice')
 
   const diceData = dices.value
   const diceOnHandData = diceOnHand.value
@@ -755,9 +742,6 @@ const manipulateDice = async (index: number, action: 'add' | 'remove') => {
   }
 
   await setDoc(dicesRef, diceData, { merge: true })
-
-  diceSound.pause()
-  diceSound.currentTime = 0
 }
 
 const getPlaceName = (position: number) => {
@@ -896,23 +880,6 @@ const leaveGame = async () => {
     leaving.value = false
     navigateTo('/dice/jouer/')
   }
-}
-
-const pauseAllSounds = () => {
-  diceSound.pause()
-  diceSound.currentTime = 0
-  notificationSound.pause()
-  notificationSound.currentTime = 0
-  messageSound.pause()
-  messageSound.currentTime = 0
-  shakeRollSound.pause()
-  shakeRollSound.currentTime = 0
-  spongeBobDisappointedSound.pause()
-  spongeBobDisappointedSound.currentTime = 0
-  spongeBobVictorySound.pause()
-  spongeBobVictorySound.currentTime = 0
-  spongeBobRemixSound.pause()
-  spongeBobRemixSound.currentTime = 0
 }
 </script>
 
