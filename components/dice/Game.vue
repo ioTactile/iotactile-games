@@ -49,6 +49,9 @@
                   </div>
                 </v-col>
                 <v-col cols="2">
+                  <div>
+                    <!-- <SoundService v-model="volume" /> -->
+                  </div>
                   <div class="cup-one-container">
                     <v-btn
                       class="d-flex justify-center align-center"
@@ -409,7 +412,6 @@ const sounds = {
   message: '/message.mp3',
   shakeRoll: '/shake-and-roll.mp3',
   spongeBobDisappointed: '/sponge-bob-disappointed.mp3',
-  spongeBobVictory: '/sponge-bob-victory.mp3',
   spongeBobRemix: '/sponge-bob-remix.mp3'
 }
 
@@ -424,7 +426,6 @@ onMounted(() => {
   soundService.loadSound('message', sounds.message)
   soundService.loadSound('shakeRoll', sounds.shakeRoll)
   soundService.loadSound('spongeBobDisappointed', sounds.spongeBobDisappointed)
-  soundService.loadSound('spongeBobVictory', sounds.spongeBobVictory)
   soundService.loadSound('spongeBobRemix', sounds.spongeBobRemix)
 
   const storedValue = localStorage.getItem('soundVolume')
@@ -458,10 +459,7 @@ watch(isFinishedLocal, async (value) => {
     const isUserFourthPlace = fourthPlace.value === username
 
     if (isUserFirstPlace) {
-      soundService.playSound('spongeBobVictory')
-      setTimeout(() => {
-        soundService.playSound('spongeBobRemix')
-      }, 7000)
+      soundService.playSound('spongeBobRemix')
     } else if (isUserSecondPlace) {
       soundService.playSound('spongeBobDisappointed')
     } else if (isUserThirdPlace) {
