@@ -49,9 +49,9 @@
                   </div>
                 </v-col>
                 <v-col cols="2">
-                  <div>
-                    <!-- <SoundService v-model="volume" /> -->
-                  </div>
+                  <!-- <div>
+                    <SoundService v-model="volume" />
+                  </div> -->
                   <div class="cup-one-container">
                     <v-btn
                       class="d-flex justify-center align-center"
