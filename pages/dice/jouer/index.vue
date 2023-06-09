@@ -78,10 +78,10 @@
             </v-card-actions>
           </v-card>
         </v-col>
-        <template v-if="sessionStarted.length > 0 && sessionsNotStarted.length > 0">
-          <v-divider class="mt-4" />
+        <template v-if="sessionStarted.length > 0">
+          <v-divider v-if="sessionsNotStarted.length > 0" class="mt-4" />
           <v-col cols="12" class="text-h4 my-4" align="center">
-            <span>Parties en cours</span>
+            <span>{{ sessionStarted.length === 1 ? 'Partie' : 'Parties' }} en cours</span>
           </v-col>
           <v-col
             v-for="(session, i) in sessionStarted"
@@ -417,13 +417,12 @@ const join = async (sessionId: string) => {
     if (!session) {
       return
     }
-    if (session.isStarted) {
-      notifier({ content: 'La partie a déjà commencé', color: 'error' })
-      return
-    }
     if (session.players.find(player => player.id === user.value?.uid)) {
       navigateTo(`/dice/jouer/${sessionId}`)
-      // notifier({ content: 'Tu es déjà dans cette session', color: 'error' })
+      return
+    }
+    if (session.isStarted) {
+      notifier({ content: 'La partie a déjà commencé', color: 'error' })
       return
     }
     if (session.players.length >= 4) {

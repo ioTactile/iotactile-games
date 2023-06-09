@@ -2,11 +2,11 @@
   <v-container v-if="session && playerTurn" fluid class="container">
     <v-row>
       <v-col cols="12" md="9">
-        <div ref="fullscreenElement" class="background-image " :class="isFullscreen ? 'fullscreen' : 'fullscreenElementClassic'">
+        <div ref="fullscreenElement" class="background-image" :class="isFullscreen ? 'fullscreen' : 'notFullscreen'">
           <div class="fullscreen-btn">
             <v-btn :icon="isFullscreen ? mdiFullscreenExit : mdiFullscreen" variant="text" size="x-large" @click="toggleFullscreen" />
           </div>
-          <v-row class="ma-0">
+          <v-row class="ma-0" :class="{'h-100' : isFullscreen}">
             <v-col class="d-flex" cols="12">
               <dice-players
                 :players="session.players"
@@ -573,37 +573,15 @@ const sleep = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-const enterFullscreen = () => {
-  if (fullscreenElement.value?.requestFullscreen) {
-    fullscreenElement.value.requestFullscreen()
-  }
-  // else if (fullscreenElement.value?.mozRequestFullScreen) {
-  //   fullscreenElement.value.mozRequestFullScreen()
-  // } else if (fullscreenElement.value?.webkitRequestFullscreen) {
-  //   fullscreenElement.value.webkitRequestFullscreen()
-  // } else if (fullscreenElement.value?.msRequestFullscreen) {
-  //   fullscreenElement.value.msRequestFullscreen()
-  // }
-}
-
-const exitFullscreen = () => {
-  if (document.exitFullscreen) {
-    document.exitFullscreen()
-  }
-  // else if (document.mozCancelFullScreen) {
-  //   document.mozCancelFullScreen()
-  // } else if (document.webkitExitFullscreen) {
-  //   document.webkitExitFullscreen()
-  // } else if (document.msExitFullscreen) {
-  //   document.msExitFullscreen()
-  // }
+const getFullscreenElement = () => {
+  return document.fullscreenElement
 }
 
 const toggleFullscreen = () => {
-  if (isFullscreen.value) {
-    exitFullscreen()
+  if (getFullscreenElement()) {
+    document.exitFullscreen()
   } else {
-    enterFullscreen()
+    fullscreenElement.value?.requestFullscreen()
   }
 }
 
@@ -915,16 +893,12 @@ const leaveGame = async () => {
   background-repeat: no-repeat;
 }
 
-.fullscreenElement {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #000;
+.fullscreen {
+  max-width: 1080px;
+  max-height: 1920px;
 }
 
-.fullscreenElementClassic {
+.notFullscreen {
   position: relative;
   width: 100%;
 }
@@ -934,15 +908,6 @@ const leaveGame = async () => {
   position: absolute;
   bottom: 10px;
   right: 10px;
-}
-
-.fullscreen {
-  background-image: url('/green-slate.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  width: 100vw;
-  height: 100vh;
 }
 
 .volume-fullscreen {
