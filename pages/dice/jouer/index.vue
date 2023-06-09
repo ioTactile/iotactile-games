@@ -78,7 +78,7 @@
             </v-card-actions>
           </v-card>
         </v-col>
-        <template v-if="sessionStarted.length > 0">
+        <template v-if="sessionStarted.length > 0 && sessionsNotStarted.length > 0">
           <v-divider class="mt-4" />
           <v-col cols="12" class="text-h4 my-4" align="center">
             <span>Parties en cours</span>
@@ -105,6 +105,15 @@
                   <span>{{ player.username }}</span>
                 </div>
               </v-card-text>
+              <v-card-actions class="d-flex justify-end">
+                <v-btn
+                  color="tertiary"
+                  :loading="loading"
+                  @click="join(session.id)"
+                >
+                  Rejoindre
+                </v-btn>
+              </v-card-actions>
             </v-card>
           </v-col>
         </template>
@@ -533,7 +542,7 @@ const leave = async (sessionId: string) => {
     }
     const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns
 
-    await setDoc(doc(remainingTurnsRef, sessionId), {
+    await setDoc(remainingTurnsDoc, {
       id: sessionId,
       remainingTurns: joinRemainingTurns - 13
     })

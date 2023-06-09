@@ -1,10 +1,10 @@
-import { ServiceAccount } from 'firebase-admin/app'
+// import { ServiceAccount } from 'firebase-admin/app'
 
-const serviceAccount: ServiceAccount = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-}
+// const serviceAccount: ServiceAccount = {
+//   projectId: process.env.FIREBASE_PROJECT_ID,
+//   clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+//   privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+// }
 
 export default defineNuxtConfig({
   ssr: false,
@@ -32,7 +32,7 @@ export default defineNuxtConfig({
       messagingSenderId: '863733555330',
       appId: '1:863733555330:web:5f68e24010403d7d6b949b',
       measurementId: 'G-7F7CDGDN3F'
-    },
-    admin: { serviceAccount }
+    }
+    // admin: { serviceAccount }
   }
 })

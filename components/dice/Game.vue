@@ -49,9 +49,15 @@
                   </div>
                 </v-col>
                 <v-col cols="2">
-                  <!-- <div>
-                    <SoundService v-model="volume" />
-                  </div> -->
+                  <div class="">
+                    <volume-fullscreen
+                      :volume="volume"
+                      :is-fullscreen="isFullscreen"
+                      :class="isSoundIconHover ? 'volume-fullscreen-hover' : 'volume-fullscreen'"
+                      @update:volume="updateVolume"
+                      @hoverEvent="isSoundIconHover = $event"
+                    />
+                  </div>
                   <div class="cup-one-container">
                     <v-btn
                       class="d-flex justify-center align-center"
@@ -399,10 +405,11 @@ const isFinishedLocal = ref(false)
 const isFullscreen = ref(false)
 const volumeCard = ref(false)
 const leaving = ref(false)
+const isSoundIconHover = ref(false)
 const scores = ref<LocalDiceSessionScoreType | null>(null)
 const fullscreenElement = ref<HTMLElement | null>(null)
 
-const soundService = new SoundService()
+let soundService: SoundService
 
 // New Sound Effects
 
@@ -420,6 +427,8 @@ const sounds = {
 onMounted(() => {
   fullscreenElement.value = fullscreenElement.value as HTMLElement
   document.addEventListener('fullscreenchange', handleFullscreenChange)
+
+  soundService = new SoundService()
 
   soundService.loadSound('dice', sounds.dice)
   soundService.loadSound('notification', sounds.notification)
@@ -448,8 +457,8 @@ onBeforeRouteLeave(() => {
 
 // Watchers
 
-watch(isFinishedLocal, async (value) => {
-  if (value) {
+watch(isFinishedLocal, async (newValue) => {
+  if (newValue) {
     const userRef = doc(db, 'users', user.value?.uid as string)
     const userDoc = await getDoc(userRef)
     const username = userDoc.data()?.username
@@ -606,6 +615,11 @@ const toggleVolume = () => {
   volumeCard.value = !volumeCard.value
 }
 
+const updateVolume = (value: number) => {
+  volume.value = value
+  soundService.setGlobalVolume(volume.value)
+}
+
 const getDiceFace = (dice: number) => {
   const diceFaces: diceFaces = {
     1: { dark: '/dices/dice-one.png', light: '/dices/dice-white-one.png' },
@@ -665,6 +679,14 @@ const rollDice = async (tries: number) => {
   if (cups.value.tries < tries) {
     notifier({
       content: 'Tu as déjà lancé les dés de ce gobelet',
+      color: 'error'
+    })
+    return
+  }
+
+  if ((cups.value.tries === 3 && tries === 2) || (cups.value.tries === 2 && tries === 1)) {
+    notifier({
+      content: 'Lances les dés du gobelet supérieur',
       color: 'error'
     })
     return
@@ -865,7 +887,7 @@ const leaveGame = async () => {
     }
     const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns
 
-    await setDoc(doc(remainingTurnsRef, sessionId), {
+    await setDoc(remainingTurnsRef, {
       id: sessionId,
       remainingTurns: joinRemainingTurns - 13
     })
@@ -921,6 +943,20 @@ const leaveGame = async () => {
   background-repeat: no-repeat;
   width: 100vw;
   height: 100vh;
+}
+
+.volume-fullscreen {
+  position: absolute;
+  top: 10px;
+  right: 0px;
+  z-index: 9999;
+}
+
+.volume-fullscreen-hover {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 9999;
 }
 
 .right-side-container {
