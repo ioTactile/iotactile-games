@@ -7,6 +7,7 @@ const serviceAccount: ServiceAccount = {
 }
 
 export default defineNuxtConfig({
+  ssr: false,
   css: ['vuetify/styles', '~/assets/main.scss'],
   modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', 'nuxt-vuefire'],
   build: { transpile: ['vuetify'] },
