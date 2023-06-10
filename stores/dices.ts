@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia'
+import { Dice } from '~/functions/src/types'
 
 export const useDicesStore = defineStore('dices', () => {
-  const diceOnBoard = ref<number[]>([])
-  const diceOnHand = ref<number[]>([])
+  const dices = ref<Dice[]>([])
 
   return {
-    diceOnBoard,
-    diceOnHand
+    dices
   }
 }, {
   persist: true

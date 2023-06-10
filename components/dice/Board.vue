@@ -1370,7 +1370,6 @@
 import { VCard, VRow, VCol, VTable, VBtn } from 'vuetify/components'
 import {
   doc, collection, setDoc
-  //  getDoc
 } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
 import { storeToRefs } from 'pinia'
@@ -1381,9 +1380,9 @@ import {
   diceSessionPlayerTriesConverter,
   diceSessionDicesConverter,
   diceSessionScoreConverter
-  // diceScoreboardConverter
 } from '~/stores'
 import { useDicesStore } from '~/stores/dices'
+import { Dice } from '~/functions/src/types'
 
 // Props
 
@@ -1433,12 +1432,11 @@ const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(
 const dicesUseDoc = useDocument(
   doc(collection(db, 'diceSessionDices'), dicesRef.id)
 )
-// const diceScoreboardRef = collection(db, 'diceScoreboard').withConverter(diceScoreboardConverter)
 
 // Refs
 
 const dicesStore = useDicesStore()
-const { diceOnBoard, diceOnHand } = storeToRefs(dicesStore)
+const { dices: storedDices } = storeToRefs(dicesStore)
 
 // Computed values
 
@@ -1446,11 +1444,10 @@ const dices = computed(() => {
   if (!dicesUseDoc.value) {
     return
   }
-  const dicesOnHand = dicesUseDoc.value.diceOnHand
-  const dicesOnBoard = dicesUseDoc.value.diceOnBoard
-  const dicesItems = [...dicesOnHand, ...dicesOnBoard]
+  const dicesItems = dicesUseDoc.value.dices
   return dicesItems
 })
+
 const isPlayerTurnOne = computed(() => {
   if (!playerTurn.value || !session.value) {
     return
@@ -1460,6 +1457,7 @@ const isPlayerTurnOne = computed(() => {
   }
   return false
 })
+
 const isPlayerTurnTwo = computed(() => {
   if (!playerTurn.value || !session.value) {
     return
@@ -1469,6 +1467,7 @@ const isPlayerTurnTwo = computed(() => {
   }
   return false
 })
+
 const isPlayerTurnThree = computed(() => {
   if (!playerTurn.value || !session.value) {
     return
@@ -1478,6 +1477,7 @@ const isPlayerTurnThree = computed(() => {
   }
   return false
 })
+
 const isPlayerTurnFour = computed(() => {
   if (!playerTurn.value || !session.value) {
     return
@@ -1487,6 +1487,7 @@ const isPlayerTurnFour = computed(() => {
   }
   return false
 })
+
 const isDices = computed(() => {
   if (!dices.value?.length) {
     return false
@@ -1561,8 +1562,7 @@ const switchPlayerTurn = async () => {
   await setDoc(
     dicesRef,
     {
-      diceOnHand: [],
-      diceOnBoard: []
+      dices: []
     },
     { merge: true }
   )
@@ -1573,8 +1573,7 @@ const switchPlayerTurn = async () => {
   )
   await setDoc(cupsRef, { tries: 3 }, { merge: true })
 
-  diceOnBoard.value = []
-  diceOnHand.value = []
+  storedDices.value = []
 }
 const playerOneBonus = async () => {
   if (!scores.value) {
@@ -1630,8 +1629,8 @@ const oneInput = computed(() => {
   if (dices.value.length !== 5) {
     return 0
   }
-  const ones = dices.value.filter(dice => dice === 1)
-  return ones.reduce((acc, dice) => acc + dice, 0)
+  const ones = dices.value.filter((dice: Dice) => dice.face === 1)
+  return ones.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
 })
 const twoInput = computed(() => {
   if (!dices.value) {
@@ -1640,8 +1639,8 @@ const twoInput = computed(() => {
   if (dices.value.length !== 5) {
     return 0
   }
-  const twos = dices.value.filter(dice => dice === 2)
-  return twos.reduce((acc, dice) => acc + dice, 0)
+  const twos = dices.value.filter((dice: Dice) => dice.face === 2)
+  return twos.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
 })
 const threeInput = computed(() => {
   if (!dices.value) {
@@ -1650,8 +1649,8 @@ const threeInput = computed(() => {
   if (dices.value.length !== 5) {
     return 0
   }
-  const threes = dices.value.filter(dice => dice === 3)
-  return threes.reduce((acc, dice) => acc + dice, 0)
+  const threes = dices.value.filter((dice: Dice) => dice.face === 3)
+  return threes.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
 })
 const fourInput = computed(() => {
   if (!dices.value) {
@@ -1660,8 +1659,8 @@ const fourInput = computed(() => {
   if (dices.value.length !== 5) {
     return 0
   }
-  const fours = dices.value.filter(dice => dice === 4)
-  return fours.reduce((acc, dice) => acc + dice, 0)
+  const fours = dices.value.filter((dice: Dice) => dice.face === 4)
+  return fours.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
 })
 const fiveInput = computed(() => {
   if (!dices.value) {
@@ -1670,8 +1669,8 @@ const fiveInput = computed(() => {
   if (dices.value.length !== 5) {
     return 0
   }
-  const fives = dices.value.filter(dice => dice === 5)
-  return fives.reduce((acc, dice) => acc + dice, 0)
+  const fives = dices.value.filter((dice: Dice) => dice.face === 5)
+  return fives.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
 })
 const sixInput = computed(() => {
   if (!dices.value) {
@@ -1680,8 +1679,8 @@ const sixInput = computed(() => {
   if (dices.value.length !== 5) {
     return 0
   }
-  const sixes = dices.value.filter(dice => dice === 6)
-  return sixes.reduce((acc, dice) => acc + dice, 0)
+  const sixes = dices.value.filter((dice: Dice) => dice.face === 6)
+  return sixes.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
 })
 const threeOfAKindInput = computed(() => {
   if (!dices.value) {
@@ -1701,7 +1700,7 @@ const threeOfAKindInput = computed(() => {
   }
 
   if (ThreeOfAKind) {
-    return dices.value.reduce((acc, dice) => acc + dice, 0)
+    return dices.value.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
   } else {
     return 0
   }
@@ -1726,7 +1725,7 @@ const fourOfAKindInput = computed(() => {
     FourOfAKind = true
   }
   if (FourOfAKind) {
-    return dices.value.reduce((acc, dice) => acc + dice, 0)
+    return dices.value.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
   } else {
     return 0
   }
@@ -1824,8 +1823,8 @@ const diceInput = computed(() => {
   if (dices.value.length !== 5) {
     return 0
   }
-  const newDices = dices.value.filter((dice) => {
-    const newDices = dices.value?.filter(d => d === dice)
+  const newDices = dices.value.filter((dice: Dice) => {
+    const newDices = dices.value?.filter((d: Dice) => d === dice)
     return newDices?.length === 5
   })
   if (newDices.length === 5) {
@@ -1843,7 +1842,7 @@ const chanceInput = computed(() => {
   }
   const chance = dices.value
   if (chance.length === 5) {
-    return chance.reduce((acc, dice) => acc + dice, 0)
+    return chance.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
   } else {
     return 0
   }

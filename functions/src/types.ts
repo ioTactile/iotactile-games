@@ -11,6 +11,12 @@ export type CardUser = {
   username: string
 }
 
+export type Dice = {
+  id: number
+  face: number
+  isOnBoard: boolean
+}
+
 export const userConverter = {
   toFirestore: (user: User): DocumentData => user,
   fromFirestore(snapshot: QueryDocumentSnapshot<User>): User {
@@ -119,8 +125,7 @@ export type DiceSessionRemainingTurns = {
 
 export type DiceSessionDices = {
   id: string
-  diceOnBoard: number[]
-  diceOnHand: number[]
+  dices: Dice[]
 }
 
 export type DiceSessionPlayerTries = {
