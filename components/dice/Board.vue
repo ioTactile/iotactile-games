@@ -1372,7 +1372,7 @@ import {
   doc, collection, setDoc
 } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
-import { storeToRefs } from 'pinia'
+// import { storeToRefs } from 'pinia'
 import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
@@ -1381,7 +1381,7 @@ import {
   diceSessionDicesConverter,
   diceSessionScoreConverter
 } from '~/stores'
-import { useDicesStore } from '~/stores/dices'
+// import { useDicesStore } from '~/stores/dices'
 import { Dice } from '~/functions/src/types'
 
 // Props
@@ -1433,10 +1433,10 @@ const dicesUseDoc = useDocument(
   doc(collection(db, 'diceSessionDices'), dicesRef.id)
 )
 
-// Refs
+// Stores
 
-const dicesStore = useDicesStore()
-const { dices: storedDices } = storeToRefs(dicesStore)
+// const dicesStore = useDicesStore()
+// const { dices: storedDices } = storeToRefs(dicesStore)
 
 // Computed values
 
@@ -1573,7 +1573,7 @@ const switchPlayerTurn = async () => {
   )
   await setDoc(cupsRef, { tries: 3 }, { merge: true })
 
-  storedDices.value = []
+  // storedDices.value = []
 }
 const playerOneBonus = async () => {
   if (!scores.value) {
@@ -1623,229 +1623,172 @@ const playerFourBonus = async () => {
 // Inputs value
 
 const oneInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
+  if (!dices.value || dices.value.length !== 5) {
     return 0
-  }
-  const ones = dices.value.filter((dice: Dice) => dice.face === 1)
-  return ones.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
-})
-const twoInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
-    return 0
-  }
-  const twos = dices.value.filter((dice: Dice) => dice.face === 2)
-  return twos.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
-})
-const threeInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
-    return 0
-  }
-  const threes = dices.value.filter((dice: Dice) => dice.face === 3)
-  return threes.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
-})
-const fourInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
-    return 0
-  }
-  const fours = dices.value.filter((dice: Dice) => dice.face === 4)
-  return fours.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
-})
-const fiveInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
-    return 0
-  }
-  const fives = dices.value.filter((dice: Dice) => dice.face === 5)
-  return fives.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
-})
-const sixInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
-    return 0
-  }
-  const sixes = dices.value.filter((dice: Dice) => dice.face === 6)
-  return sixes.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
-})
-const threeOfAKindInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
-    return 0
-  }
-  let ThreeOfAKind = false
-  const newDices = dices.value.sort()
-  if (
-    (newDices[0] === newDices[1] && newDices[0] === newDices[2]) ||
-    (newDices[1] === newDices[2] && newDices[1] === newDices[3]) ||
-    (newDices[2] === newDices[3] && newDices[2] === newDices[4])
-  ) {
-    ThreeOfAKind = true
   }
 
-  if (ThreeOfAKind) {
+  const faceLength = dices.value.filter((dice: Dice) => dice.face === 1).length
+  return faceLength * 1
+})
+
+const twoInput = computed(() => {
+  if (!dices.value || dices.value.length !== 5) {
+    return 0
+  }
+
+  const faceLength = dices.value.filter((dice: Dice) => dice.face === 2).length
+  return faceLength * 2
+})
+
+const threeInput = computed(() => {
+  if (!dices.value || dices.value.length !== 5) {
+    return 0
+  }
+
+  const faceLength = dices.value.filter((dice: Dice) => dice.face === 3).length
+  return faceLength * 3
+})
+
+const fourInput = computed(() => {
+  if (!dices.value || dices.value.length !== 5) {
+    return 0
+  }
+
+  const faceLength = dices.value.filter((dice: Dice) => dice.face === 4).length
+  return faceLength * 4
+})
+
+const fiveInput = computed(() => {
+  if (!dices.value || dices.value.length !== 5) {
+    return 0
+  }
+
+  const faceLength = dices.value.filter((dice: Dice) => dice.face === 5).length
+  return faceLength * 5
+})
+
+const sixInput = computed(() => {
+  if (!dices.value || dices.value.length !== 5) {
+    return 0
+  }
+
+  const faceLength = dices.value.filter((dice: Dice) => dice.face === 6).length
+  return faceLength * 6
+})
+
+const threeOfAKindInput = computed(() => {
+  if (!dices.value || dices.value.length !== 5) {
+    return 0
+  }
+
+  const faceCounts: { [key: number]: number } = {}
+
+  for (const dice of dices.value) {
+    if (faceCounts[dice.face]) {
+      faceCounts[dice.face]++
+    } else {
+      faceCounts[dice.face] = 1
+    }
+  }
+
+  const hasThreeOfAKind = Object.values(faceCounts).some((count: number) => count >= 3)
+
+  if (hasThreeOfAKind) {
     return dices.value.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
   } else {
     return 0
   }
 })
+
 const fourOfAKindInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
+  if (!dices.value || dices.value.length !== 5) {
     return 0
   }
-  let FourOfAKind = false
-  const newDices = dices.value.sort()
-  if (
-    (newDices[0] === newDices[1] &&
-      newDices[0] === newDices[2] &&
-      newDices[0] === newDices[3]) ||
-    (newDices[1] === newDices[2] &&
-      newDices[1] === newDices[3] &&
-      newDices[1] === newDices[4])
-  ) {
-    FourOfAKind = true
+
+  const faceCounts: { [key: number]: number } = {}
+
+  for (const dice of dices.value) {
+    if (faceCounts[dice.face]) {
+      faceCounts[dice.face]++
+    } else {
+      faceCounts[dice.face] = 1
+    }
   }
-  if (FourOfAKind) {
+
+  const hasFourOfAKind = Object.values(faceCounts).some((count: number) => count >= 4)
+
+  if (hasFourOfAKind) {
     return dices.value.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
   } else {
     return 0
   }
 })
+
 const fullHouseInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
+  if (!dices.value || dices.value.length !== 5) {
     return 0
   }
-  const newDices = dices.value.sort()
-  if (
-    (newDices[0] === newDices[1] &&
-      newDices[0] === newDices[2] &&
-      newDices[1] === newDices[2] &&
-      newDices[3] === newDices[4] &&
-      newDices[0] !== newDices[4]) ||
-    (newDices[0] === newDices[1] &&
-      newDices[2] === newDices[3] &&
-      newDices[2] === newDices[4] &&
-      newDices[3] === newDices[4] &&
-      newDices[0] !== newDices[4])
-  ) {
-    return 25
-  } else {
-    return 0
-  }
+
+  const sortedDices = dices.value.slice().sort((a: Dice, b: Dice) => a.face - b.face)
+
+  const isFullHouse =
+    (sortedDices[0].face === sortedDices[1].face && sortedDices[0].face === sortedDices[2].face && sortedDices[3].face === sortedDices[4].face) ||
+    (sortedDices[0].face === sortedDices[1].face && sortedDices[2].face === sortedDices[3].face && sortedDices[2].face === sortedDices[4].face)
+
+  return isFullHouse ? 25 : 0
 })
+
 const smallStraightInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
+  if (!dices.value || dices.value.length !== 5) {
     return 0
   }
-  const newDices = dices.value.sort()
-  if (
-    newDices.includes(1) &&
-    newDices.includes(2) &&
-    newDices.includes(3) &&
-    newDices.includes(4)
-  ) {
-    return 30
-  } else if (
-    newDices.includes(2) &&
-    newDices.includes(3) &&
-    newDices.includes(4) &&
-    newDices.includes(5)
-  ) {
-    return 30
-  } else if (
-    newDices.includes(3) &&
-    newDices.includes(4) &&
-    newDices.includes(5) &&
-    newDices.includes(6)
-  ) {
-    return 30
-  } else {
-    return 0
-  }
+
+  const sortedDices = dices.value.slice().sort((a: Dice, b: Dice) => a.face - b.face)
+
+  const faces = new Set(sortedDices.map((dice: Dice) => dice.face))
+
+  const isSmallStraight = (
+    (faces.has(1) && faces.has(2) && faces.has(3) && faces.has(4)) ||
+    (faces.has(2) && faces.has(3) && faces.has(4) && faces.has(5)) ||
+    (faces.has(3) && faces.has(4) && faces.has(5) && faces.has(6))
+  )
+
+  return isSmallStraight ? 30 : 0
 })
+
 const largeStraightInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
+  if (!dices.value || dices.value.length !== 5) {
     return 0
   }
-  const newDices = dices.value.sort()
-  if (
-    newDices.includes(1) &&
-    newDices.includes(2) &&
-    newDices.includes(3) &&
-    newDices.includes(4) &&
-    newDices.includes(5)
-  ) {
-    return 40
-  } else if (
-    newDices.includes(2) &&
-    newDices.includes(3) &&
-    newDices.includes(4) &&
-    newDices.includes(5) &&
-    newDices.includes(6)
-  ) {
-    return 40
-  } else {
-    return 0
-  }
+
+  const sortedDices = dices.value.slice().sort((a: Dice, b: Dice) => a.face - b.face)
+
+  const isLargeStraight =
+    (sortedDices[0].face === 1 && sortedDices[1].face === 2 && sortedDices[2].face === 3 && sortedDices[3].face === 4 && sortedDices[4].face === 5) ||
+    (sortedDices[0].face === 2 && sortedDices[1].face === 3 && sortedDices[2].face === 4 && sortedDices[3].face === 5 && sortedDices[4].face === 6)
+
+  return isLargeStraight ? 40 : 0
 })
+
 const diceInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
+  if (!dices.value || dices.value.length !== 5) {
     return 0
   }
-  const newDices = dices.value.filter((dice: Dice) => {
-    const newDices = dices.value?.filter((d: Dice) => d === dice)
-    return newDices?.length === 5
-  })
-  if (newDices.length === 5) {
-    return 50
-  } else {
-    return 0
-  }
+
+  const firstFace = dices.value[0].face
+
+  const isDice = dices.value.every((dice: Dice) => dice.face === firstFace)
+
+  return isDice ? 50 : 0
 })
+
 const chanceInput = computed(() => {
-  if (!dices.value) {
-    return
-  }
-  if (dices.value.length !== 5) {
+  if (!dices.value || dices.value.length !== 5) {
     return 0
   }
+
   const chance = dices.value
-  if (chance.length === 5) {
-    return chance.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
-  } else {
-    return 0
-  }
+  return chance.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
 })
 
 // Watchers

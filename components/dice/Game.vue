@@ -29,7 +29,7 @@
                       :class="shakeClass"
                     />
                   </div>
-                  <div class="left-side-dices-container">
+                  <div v-if="!hideDiceOnBoard" class="left-side-dices-container">
                     <v-btn
                       v-for="(dice, i) in diceOnBoard"
                       :key="i"
@@ -318,7 +318,7 @@ import { useTheme, useDisplay } from 'vuetify'
 import { mdiVolumeHigh, mdiVolumeOff, mdiFullscreenExit, mdiFullscreen } from '@mdi/js'
 import { collection, doc, setDoc, getDoc, deleteDoc, updateDoc, deleteField, arrayUnion } from 'firebase/firestore'
 import { useFirestore, useDocument } from 'vuefire'
-import { storeToRefs } from 'pinia'
+// import { storeToRefs } from 'pinia'
 import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
@@ -329,7 +329,7 @@ import {
   diceSessionChatConverter,
   LocalDiceSessionScoreType
 } from '~/stores'
-import { useDicesStore } from '~/stores/dices'
+// import { useDicesStore } from '~/stores/dices'
 import { CardUser, Dice } from '~/functions/src/types'
 import SoundService from '~/utils/soundService'
 
@@ -353,8 +353,8 @@ const route = useRoute()
 
 // Stores
 
-const dicesStore = useDicesStore()
-const { dices: storedDices } = storeToRefs(dicesStore)
+// const dicesStore = useDicesStore()
+// const { dices: storedDices } = storeToRefs(dicesStore)
 
 // Firestore
 
@@ -401,6 +401,7 @@ const message = ref<string>('')
 const shakeClass = ref<string>('')
 const volume = ref<number>(0.5)
 const isSoundMuted = ref(false)
+const hideDiceOnBoard = ref(false)
 const isFinishedLocal = ref(false)
 const isFullscreen = ref(false)
 const volumeCard = ref(false)
@@ -496,13 +497,27 @@ watch(remainingTurns, async (newValue) => {
 
 watch(cups, async (newValue) => {
   if (newValue && newValue.tries !== 3) {
+    hideDiceOnBoard.value = true
     soundService.playSound('shakeRoll')
     await sleep(500)
     shakeClass.value = 'shake'
     await sleep(1800)
     shakeClass.value = ''
+    hideDiceOnBoard.value = false
   }
 })
+
+// watch(dices, (newValue) => {
+//   if (!newValue || !newValue.dices) {
+//     return
+//   }
+
+//   const diceOnBoard = newValue.dices.map((dice: Dice) => dice.isOnBoard === false)
+
+//   if (diceOnBoard.some((value: any) => value === false)) {
+//     soundService.playSound('dice')
+//   }
+// })
 
 watch(playerTurn, (newValue) => {
   if (
@@ -643,11 +658,6 @@ const rollDice = async (tries: number) => {
     return
   }
 
-  if ((!storedDices.value.length && tries !== 3)) {
-    notifier({ content: 'Ta main est complète', color: 'error' })
-    return
-  }
-
   if (session.value.isStarted === false) {
     notifier({ content: "La partie n'a pas encore commencé", color: 'error' })
     return
@@ -680,13 +690,15 @@ const rollDice = async (tries: number) => {
   }
 
   const rollDices = dices.value
-  const storedRollDices = storedDices.value || []
-  const diceOnBoard = storedRollDices.filter(dice => dice.isOnBoard === true)
+  // const storedRollDices = storedDices.value || []
+  const diceOnBoard = rollDices.dices ? rollDices.dices.filter((dice: Dice) => dice.isOnBoard === true) : []
 
   if (diceOnBoard.length === 0) {
+    rollDices.dices = []
+
     for (let i = 0; i < 5; i++) {
       const dice = trueRandom()
-      storedRollDices.push({
+      rollDices.dices.push({
         id: i,
         face: dice,
         isOnBoard: true
@@ -695,13 +707,12 @@ const rollDice = async (tries: number) => {
   } else {
     for (let i = 0; i < diceOnBoard.length; i++) {
       const dice = trueRandom()
-      storedRollDices[diceOnBoard[i].id].face = dice
+      rollDices.dices[diceOnBoard[i].id].face = dice
     }
   }
 
   await setDoc(cupsRef, { tries: tries - 1 }, { merge: true })
   await sleep(2300)
-  rollDices.dices = storedRollDices
   await setDoc(dicesRef, rollDices, { merge: true })
 }
 
@@ -742,14 +753,14 @@ const manipulateDice = async (id: number, action: 'add' | 'remove') => {
   soundService.playSound('dice')
 
   const dicesData = dices.value
-  const storedDicesData = storedDices.value
+  // const storedDicesData = storedDices.value
 
   if (action === 'add') {
-    storedDicesData.find(dice => dice.id === id).isOnBoard = false
-    dicesData.dices.find(dice => dice.id === id).isOnBoard = false
+    // storedDicesData.find(dice => dice.id === id).isOnBoard = false
+    dicesData.dices.find((dice: Dice) => dice.id === id).isOnBoard = false
   } else if (action === 'remove') {
-    storedDicesData.find(dice => dice.id === id).isOnBoard = true
-    dicesData.dices.find(dice => dice.id === id).isOnBoard = true
+    // storedDicesData.find(dice => dice.id === id).isOnBoard = true
+    dicesData.dices.find((dice: Dice) => dice.id === id).isOnBoard = true
   }
 
   await setDoc(dicesRef, dicesData, { merge: true })

@@ -1,84 +1,36 @@
 <template>
   <v-row>
-    <v-col cols="3" class="px-0 py-2">
-      <v-card
-        class="mx-2 yellow-plate card-container"
-        rounded="0"
-      >
-        <div class="d-flex text-center text-h6 pa-2">
-          <span class="letter-spacing">A</span>
-          <span>{{ players[0]?.username }}</span>
-          <v-spacer />
-          <v-img v-if="!isFinished && playerTurnId === players[0].id" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
-        </div>
-      </v-card>
-    </v-col>
-    <v-col cols="3" class="px-0 py-2">
-      <v-card
-        class="mx-2 yellow-plate card-container"
-        rounded="0"
-      >
-        <div class="d-flex text-center text-h6 pa-2">
-          <span class="letter-spacing">B</span>
-          <span>{{ players[1]?.username }}</span>
-          <v-spacer />
-          <v-img v-if="playerTurnId === players[1]?.id" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
-        </div>
-      </v-card>
-    </v-col>
-    <v-col cols="3" class="px-0 py-2">
-      <v-card
-        class="mx-2 yellow-plate card-container"
-        rounded="0"
-      >
-        <div class="d-flex text-center text-h6 pa-2">
-          <span class="letter-spacing">C</span>
-          <span>{{ players[2]?.username }}</span>
-          <v-spacer />
-          <v-img v-if="playerTurnId === players[2]?.id" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
-        </div>
-      </v-card>
-    </v-col>
-    <v-col cols="3" class="px-0 py-2">
-      <v-card
-        class="mx-2 yellow-plate card-container"
-        rounded="0"
-      >
-        <div class="d-flex text-center text-h6 pa-2">
-          <span class="letter-spacing">D</span>
-          <span>{{ players[3]?.username }}</span>
-          <v-spacer />
-          <v-img v-if="playerTurnId === players[3]?.id" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
-        </div>
-      </v-card>
+    <v-col v-for="index in 4" :key="index" cols="3" class="px-0 py-2">
+      <dice-player-card
+        :player="getPlayer(index)"
+        :order-letter="getLetter(index)"
+        :is-player-turn="getPlayer(index)?.id === playerTurnId"
+        :is-finished="isFinished"
+      />
     </v-col>
   </v-row>
 </template>
 
-<script lang="ts" setup async>
-import { VRow, VCol, VCard, VImg, VSpacer } from 'vuetify/components'
+<script lang="ts" setup>
+import { VRow, VCol } from 'vuetify/components'
 import { CardUser } from '~/functions/src/types'
 
 // Props
 
-defineProps<{
+const props = defineProps<{
   players: CardUser[]
   playerTurnId: string
   isFinished: boolean
 }>()
+
+const getLetter = (index: number) => {
+  if (index === 1) { return 'A' }
+  if (index === 2) { return 'B' }
+  if (index === 3) { return 'C' }
+  if (index === 4) { return 'D' }
+}
+
+const getPlayer = (index: number) => {
+  return props.players[index - 1]
+}
 </script>
-
-<style scoped>
-.letter-spacing {
-  width: 30px;
-}
-
-.card-container {
-  border: 1px solid rgb(var(--v-theme-dicePlayersBorder));
-}
-
-/* players background */
-.yellow-plate {
-  background: linear-gradient(to top left, rgb(var(--v-theme-dicePrimary)), rgb(var(--v-theme-diceClosePrimary)));
-}
-</style>
