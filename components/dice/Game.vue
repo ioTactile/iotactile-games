@@ -329,10 +329,10 @@ import {
 } from '@mdi/js'
 import {
   collection,
-  doc, setDoc,
+  doc,
+  updateDoc,
   getDoc,
   deleteDoc,
-  updateDoc,
   deleteField,
   arrayUnion
 } from 'firebase/firestore'
@@ -508,7 +508,7 @@ watch(isFinishedLocal, async (newValue) => {
 
 watch(remainingTurns, async (newValue) => {
   if (newValue && newValue.remainingTurns === 0) {
-    await setDoc(sessionRef, { isFinished: true }, { merge: true })
+    await updateDoc(sessionRef, { isFinished: true })
     isFinishedLocal.value = true
 
     const scoresDoc = await getDoc(scoresRef)
@@ -527,7 +527,7 @@ watch(cups, async (newValue) => {
     shakeClass.value = 'shake'
     await sleep(1800)
     shakeClass.value = ''
-    await sleep(200)
+    await sleep(100)
     hideDiceOnBoard.value = false
   }
 })
@@ -600,7 +600,7 @@ const startGame = async () => {
     return
   }
 
-  await setDoc(sessionRef, { isStarted: true }, { merge: true })
+  await updateDoc(sessionRef, { isStarted: true })
 }
 
 const removeDice = async (index: number) => {
@@ -727,9 +727,9 @@ const rollDice = async (tries: number) => {
     }
   }
 
-  await setDoc(cupsRef, { tries: tries - 1 }, { merge: true })
+  await updateDoc(cupsRef, { tries: tries - 1 })
   await sleep(2300)
-  await setDoc(dicesRef, rollDices, { merge: true })
+  await updateDoc(dicesRef, rollDices)
 }
 
 const rollOne = async () => {
@@ -776,7 +776,7 @@ const manipulateDice = async (id: number, action: 'add' | 'remove') => {
     dicesData.dices.find((dice: Dice) => dice.id === id).isOnBoard = true
   }
 
-  await setDoc(dicesRef, dicesData, { merge: true })
+  await updateDoc(dicesRef, dicesData)
 }
 
 const getPlaceName = (position: number) => {
@@ -826,7 +826,7 @@ const sendMessage = async () => {
 
   const { username } = currentUser
 
-  await setDoc(
+  await updateDoc(
     chatRef,
     {
       messages: arrayUnion({
@@ -834,8 +834,7 @@ const sendMessage = async () => {
         username,
         content: message.value
       })
-    },
-    { merge: true }
+    }
   )
 
   message.value = ''
@@ -902,7 +901,7 @@ const leaveGame = async () => {
     }
     const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns
 
-    await setDoc(remainingTurnsRef, {
+    await updateDoc(remainingTurnsRef, {
       id: sessionId,
       remainingTurns: joinRemainingTurns - 13
     })
@@ -910,7 +909,7 @@ const leaveGame = async () => {
     if (session.players.length < 4) {
       session.isFull = false
     }
-    await setDoc(sessionRef, session)
+    await updateDoc(sessionRef, session)
   } finally {
     leaving.value = false
     navigateTo('/dice/jouer/')

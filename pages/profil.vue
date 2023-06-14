@@ -74,8 +74,7 @@
 import { VContainer, VCard, VCardTitle, VCardText, VForm, VDivider, VBtn } from 'vuetify/components'
 import { mdiPencil, mdiDotsVertical } from '@mdi/js'
 import { deleteUser, signOut } from '@firebase/auth'
-import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore'
-import { useFirestore, useFirebaseAuth, useCurrentUser } from 'vuefire'
+import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore'
 import { userConverter } from '~/stores'
 
 // Composable & Vuefire
@@ -123,7 +122,7 @@ const updateProfile = async () => {
     if (user.value) {
       const userId = user.value.uid
       const userRef = doc(db, 'users', userId).withConverter(userConverter)
-      await setDoc(userRef, { username: username.value }, { merge: true })
+      await updateDoc(userRef, { username: username.value })
       notifier({
         content: 'Profil mis à jour',
         color: 'main'

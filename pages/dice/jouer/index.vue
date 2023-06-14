@@ -385,19 +385,19 @@ const quickJoin = async () => {
     }
     const joinRemainingTurns = joinRemainingTurnsDoc.data().remainingTurns
 
-    await setDoc(doc(remainingTurnsRef, sessionToJoin.id), {
+    await updateDoc(doc(remainingTurnsRef, sessionToJoin.id), {
       id: sessionToJoin.id,
       remainingTurns: joinRemainingTurns + 13
     })
-    await setDoc(doc(sessionsRef, sessionToJoin.id), sessionToJoin)
+    await updateDoc(doc(sessionsRef, sessionToJoin.id), sessionToJoin)
 
     const scoresDoc = doc(scoresRef, sessionToJoin.id)
     if (sessionToJoin.players.length === 1) {
-      await setDoc(scoresDoc, { playerTwo: initScores() }, { merge: true })
+      await updateDoc(scoresDoc, { playerTwo: initScores() })
     } else if (sessionToJoin.players.length === 2) {
-      await setDoc(scoresDoc, { playerThree: initScores() }, { merge: true })
+      await updateDoc(scoresDoc, { playerThree: initScores() })
     } else if (sessionToJoin.players.length === 3) {
-      await setDoc(scoresDoc, { playerFour: initScores() }, { merge: true })
+      await updateDoc(scoresDoc, { playerFour: initScores() })
     }
     checkScoreboard()
   } finally {
@@ -450,29 +450,26 @@ const join = async (sessionId: string) => {
     }
     const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns
 
-    await setDoc(doc(remainingTurnsRef, sessionId), {
+    await updateDoc(doc(remainingTurnsRef, sessionId), {
       id: sessionId,
       remainingTurns: joinRemainingTurns + 13
     })
-    await setDoc(sessionRef, session)
+    await updateDoc(sessionRef, session)
 
     if (session.players.length === 2) {
-      await setDoc(
+      await updateDoc(
         doc(scoresRef, sessionId),
-        { playerTwo: initScores() },
-        { merge: true }
+        { playerTwo: initScores() }
       )
     } else if (session.players.length === 3) {
-      await setDoc(
+      await updateDoc(
         doc(scoresRef, sessionId),
-        { playerThree: initScores() },
-        { merge: true }
+        { playerThree: initScores() }
       )
     } else if (session.players.length === 4) {
-      await setDoc(
+      await updateDoc(
         doc(scoresRef, sessionId),
-        { playerFour: initScores() },
-        { merge: true }
+        { playerFour: initScores() }
       )
     }
     checkScoreboard()
@@ -547,7 +544,7 @@ const leave = async (sessionId: string) => {
     }
     const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns
 
-    await setDoc(remainingTurnsDoc, {
+    await updateDoc(remainingTurnsDoc, {
       id: sessionId,
       remainingTurns: joinRemainingTurns - 13
     })
@@ -555,7 +552,7 @@ const leave = async (sessionId: string) => {
     if (session.players.length < 4) {
       session.isFull = false
     }
-    await setDoc(sessionRef, session)
+    await updateDoc(sessionRef, session)
   } finally {
     leaving.value = false
   }

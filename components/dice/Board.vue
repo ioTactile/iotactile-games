@@ -1369,7 +1369,7 @@
 <script lang="ts" setup async>
 import { VCard, VRow, VCol, VTable, VBtn } from 'vuetify/components'
 import {
-  doc, collection, setDoc
+  doc, collection, updateDoc
 } from 'firebase/firestore'
 import {
   diceSessionPlayerTurnConverter,
@@ -1535,24 +1535,16 @@ const switchPlayerTurn = async () => {
       ? 0
       : playerTurnIndex + 1
 
-  await setDoc(
+  await updateDoc(
     playerTurnRef,
-    { playerId: props.players[nextPlayerTurnIndex].id },
-    { merge: true }
+    { playerId: props.players[nextPlayerTurnIndex].id }
   )
-  await setDoc(
-    dicesRef,
-    {
-      dices: []
-    },
-    { merge: true }
-  )
-  await setDoc(
+  await updateDoc(dicesRef, { dices: [] })
+  await updateDoc(
     remainingTurnsRef,
-    { remainingTurns: reduceRemainingTurn() },
-    { merge: true }
+    { remainingTurns: reduceRemainingTurn() }
   )
-  await setDoc(cupsRef, { tries: 3 }, { merge: true })
+  await updateDoc(cupsRef, { tries: 3 })
 }
 
 const playerOneBonus = async () => {
@@ -1564,7 +1556,7 @@ const playerOneBonus = async () => {
   }
   scores.value.playerOne.bonus = 35
   scores.value.playerOne.total += 35
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
 }
 
 const playerTwoBonus = async () => {
@@ -1576,7 +1568,7 @@ const playerTwoBonus = async () => {
   }
   scores.value.playerTwo.bonus = 35
   scores.value.playerTwo.total += 35
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
 }
 
 const playerThreeBonus = async () => {
@@ -1588,7 +1580,7 @@ const playerThreeBonus = async () => {
   }
   scores.value.playerThree.bonus = 35
   scores.value.playerThree.total += 35
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
 }
 
 const playerFourBonus = async () => {
@@ -1600,7 +1592,7 @@ const playerFourBonus = async () => {
   }
   scores.value.playerFour.bonus = 35
   scores.value.playerFour.total += 35
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
 }
 
 // Inputs value
@@ -1793,7 +1785,7 @@ const saveOneInput = async () => {
     scores.value.playerFour.one = oneInput.value
     scores.value.playerFour.total += oneInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -1814,7 +1806,7 @@ const saveTwoInput = async () => {
     scores.value.playerFour.two = twoInput.value
     scores.value.playerFour.total += twoInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -1835,7 +1827,7 @@ const saveThreeInput = async () => {
     scores.value.playerFour.three = threeInput.value
     scores.value.playerFour.total += threeInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -1856,7 +1848,7 @@ const saveFourInput = async () => {
     scores.value.playerFour.four = fourInput.value
     scores.value.playerFour.total += fourInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -1877,7 +1869,7 @@ const saveFiveInput = async () => {
     scores.value.playerFour.five = fiveInput.value
     scores.value.playerFour.total += fiveInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -1898,7 +1890,7 @@ const saveSixInput = async () => {
     scores.value.playerFour.six = sixInput.value
     scores.value.playerFour.total += sixInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -1919,7 +1911,7 @@ const saveThreeOfAKindInput = async () => {
     scores.value.playerFour.threeOfAKind = threeOfAKindInput.value
     scores.value.playerFour.total += threeOfAKindInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -1940,7 +1932,7 @@ const saveFourOfAKindInput = async () => {
     scores.value.playerFour.fourOfAKind = fourOfAKindInput.value
     scores.value.playerFour.total += fourOfAKindInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -1961,7 +1953,7 @@ const saveFullHouseInput = async () => {
     scores.value.playerFour.fullHouse = fullHouseInput.value
     scores.value.playerFour.total += fullHouseInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -1982,7 +1974,7 @@ const saveSmallStraightInput = async () => {
     scores.value.playerFour.smallStraight = smallStraightInput.value
     scores.value.playerFour.total += smallStraightInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -2003,7 +1995,7 @@ const saveLargeStraightInput = async () => {
     scores.value.playerFour.largeStraight = largeStraightInput.value
     scores.value.playerFour.total += largeStraightInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -2024,7 +2016,7 @@ const saveDiceInput = async () => {
     scores.value.playerFour.dice = diceInput.value
     scores.value.playerFour.total += diceInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
@@ -2045,7 +2037,7 @@ const saveChanceInput = async () => {
     scores.value.playerFour.chance = chanceInput.value
     scores.value.playerFour.total += chanceInput.value
   }
-  await setDoc(scoresRef, scores.value, { merge: true })
+  await updateDoc(scoresRef, scores.value)
   switchPlayerTurn()
 }
 
