@@ -1,5 +1,5 @@
 <template>
-  <v-container v-if="session && playerTurn" fluid class="container">
+  <v-container v-if="session && playerTurn && dices && remainingTurns" fluid class="container">
     <v-row>
       <v-col cols="12" md="9">
         <div ref="fullscreenElement" class="background-image" :class="isFullscreen ? 'fullscreen' : 'notFullscreen'">
@@ -15,7 +15,13 @@
               />
             </v-col>
             <v-col cols="12" md="6">
-              <dice-board :is-fullscreen="isFullscreen" />
+              <dice-board
+                :is-fullscreen="isFullscreen"
+                :players="session.players"
+                :player-turn-id="playerTurn.playerId"
+                :remaining-turns="remainingTurns.remainingTurns"
+                :dices="dices.dices"
+              />
             </v-col>
             <v-col cols="12" md="6" class="right-side-container pb-0">
               <v-row class="h-100">
@@ -315,10 +321,21 @@ import {
   VSlider
 } from 'vuetify/components'
 import { useTheme, useDisplay } from 'vuetify'
-import { mdiVolumeHigh, mdiVolumeOff, mdiFullscreenExit, mdiFullscreen } from '@mdi/js'
-import { collection, doc, setDoc, getDoc, deleteDoc, updateDoc, deleteField, arrayUnion } from 'firebase/firestore'
-import { useFirestore, useDocument } from 'vuefire'
-// import { storeToRefs } from 'pinia'
+import {
+  mdiVolumeHigh,
+  mdiVolumeOff,
+  mdiFullscreenExit,
+  mdiFullscreen
+} from '@mdi/js'
+import {
+  collection,
+  doc, setDoc,
+  getDoc,
+  deleteDoc,
+  updateDoc,
+  deleteField,
+  arrayUnion
+} from 'firebase/firestore'
 import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
@@ -329,7 +346,6 @@ import {
   diceSessionChatConverter,
   LocalDiceSessionScoreType
 } from '~/stores'
-// import { useDicesStore } from '~/stores/dices'
 import { CardUser, Dice } from '~/functions/src/types'
 import SoundService from '~/utils/soundService'
 
@@ -351,46 +367,54 @@ const db = useFirestore()
 const user = useCurrentUser()
 const route = useRoute()
 
-// Stores
-
-// const dicesStore = useDicesStore()
-// const { dices: storedDices } = storeToRefs(dicesStore)
-
 // Firestore
 
 const sessionId = route.params.id as string
+
 const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(
   diceSessionConverter
 )
+
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
+
 const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(
   diceSessionPlayerTurnConverter
 )
+
 const playerTurn = useDocument(
   doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id)
 )
+
 const remainingTurnsRef = doc(
   db,
   'diceSessionRemainingTurns',
   sessionId
 ).withConverter(diceSessionRemainingTurnsConverter)
+
 const remainingTurns = useDocument(
   doc(collection(db, 'diceSessionRemainingTurns'), remainingTurnsRef.id)
 )
+
 const cupsRef = doc(db, 'diceSessionPlayerTries', sessionId).withConverter(
   diceSessionPlayerTriesConverter
 )
+
 const cups = useDocument(
   doc(collection(db, 'diceSessionPlayerTries'), cupsRef.id)
 )
+
 const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(
   diceSessionDicesConverter
 )
+
 const dices = useDocument(doc(collection(db, 'diceSessionDices'), dicesRef.id))
+
 const chatRef = doc(db, 'diceSessionChat', sessionId).withConverter(
   diceSessionChatConverter
 )
+
 const chat = useDocument(doc(collection(db, 'diceSessionChat'), chatRef.id))
+
 const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(
   diceSessionScoreConverter
 )
@@ -503,21 +527,10 @@ watch(cups, async (newValue) => {
     shakeClass.value = 'shake'
     await sleep(1800)
     shakeClass.value = ''
+    await sleep(200)
     hideDiceOnBoard.value = false
   }
 })
-
-// watch(dices, (newValue) => {
-//   if (!newValue || !newValue.dices) {
-//     return
-//   }
-
-//   const diceOnBoard = newValue.dices.map((dice: Dice) => dice.isOnBoard === false)
-
-//   if (diceOnBoard.some((value: any) => value === false)) {
-//     soundService.playSound('dice')
-//   }
-// })
 
 watch(playerTurn, (newValue) => {
   if (
@@ -690,7 +703,6 @@ const rollDice = async (tries: number) => {
   }
 
   const rollDices = dices.value
-  // const storedRollDices = storedDices.value || []
   const diceOnBoard = rollDices.dices ? rollDices.dices.filter((dice: Dice) => dice.isOnBoard === true) : []
 
   if (diceOnBoard.length === 0) {
@@ -753,13 +765,10 @@ const manipulateDice = async (id: number, action: 'add' | 'remove') => {
   soundService.playSound('dice')
 
   const dicesData = dices.value
-  // const storedDicesData = storedDices.value
 
   if (action === 'add') {
-    // storedDicesData.find(dice => dice.id === id).isOnBoard = false
     dicesData.dices.find((dice: Dice) => dice.id === id).isOnBoard = false
   } else if (action === 'remove') {
-    // storedDicesData.find(dice => dice.id === id).isOnBoard = true
     dicesData.dices.find((dice: Dice) => dice.id === id).isOnBoard = true
   }
 

@@ -4,7 +4,7 @@
       <span class="letter-spacing">{{ orderLetter }}</span>
       <span>{{ player?.username }}</span>
       <v-spacer />
-      <v-img v-if="isPlayerTurn" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
+      <v-img v-if="isPlayerTurn && !isFinished" src="https://media.tenor.com/LG4kcNOmsw4AAAAi/noisy-chicken.gif" alt="Noisy Chicken" height="32" />
     </div>
   </v-card>
 </template>
@@ -16,7 +16,7 @@ import { CardUser } from '~/functions/src/types'
 // Props
 
 defineProps<{
-    player: CardUser
+    player?: CardUser
     orderLetter?: string
     isPlayerTurn: boolean
     isFinished: boolean

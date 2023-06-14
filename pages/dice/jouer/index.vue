@@ -147,7 +147,6 @@ import {
   query,
   where
 } from 'firebase/firestore'
-import { useFirestore, useCollection } from 'vuefire'
 import {
   diceSessionConverter,
   diceScoreboardConverter,
@@ -169,9 +168,11 @@ const db = useFirestore()
 const sessionsRef = collection(db, 'diceSessions').withConverter(
   diceSessionConverter
 )
+
 const sessionsNotStarted = useCollection(
   query(sessionsRef, where('isStarted', '==', false))
 )
+
 const sessionStarted = useCollection(
   query(
     sessionsRef,
@@ -179,20 +180,26 @@ const sessionStarted = useCollection(
     where('isFinished', '==', false)
   )
 )
+
 const playerTurnRef = collection(db, 'diceSessionPlayerTurn').withConverter(
   diceSessionPlayerTurnConverter
 )
+
 const remainingTurnsRef = collection(
   db,
   'diceSessionRemainingTurns'
 ).withConverter(diceSessionRemainingTurnsConverter)
+
 const dicesRef = collection(db, 'diceSessionDices').withConverter(
   diceSessionDicesConverter
 )
+
 const playerTriesRef = collection(db, 'diceSessionPlayerTries').withConverter(
   diceSessionPlayerTriesConverter
 )
+
 const scoresRef = collection(db, 'diceSessionScores')
+
 const scoreboardRef = collection(db, 'diceScoreboard').withConverter(
   diceScoreboardConverter
 )
@@ -313,8 +320,7 @@ const create = async () => {
     })
     await setDoc(doc(dicesRef, id.value), {
       id: id.value,
-      diceOnBoard: [],
-      diceOnHand: []
+      dices: []
     })
     await setDoc(doc(playerTriesRef, id.value), {
       id: id.value,

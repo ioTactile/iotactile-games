@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="scores && user && session" :rounded="0" class="card-container">
+  <v-card v-if="scores && user && players" :rounded="0" class="card-container">
     <v-row>
       <v-col cols="12" class="pr-0">
         <v-table :density="isFullscreen ? 'default' : 'compact'">
@@ -19,16 +19,16 @@
                 class="text-center border-darker bg-diceClosePrimary"
                 width="15%"
               >
-                {{ session.players.length > 1 ? 'B' : '' }}
+                {{ players.length > 1 ? 'B' : '' }}
               </th>
               <th
                 class="text-center border-darker bg-diceClosePrimary"
                 width="15%"
               >
-                {{ session.players.length > 2 ? 'C' : '' }}
+                {{ players.length > 2 ? 'C' : '' }}
               </th>
               <th class="text-center bg-diceClosePrimary" width="15%">
-                {{ session.players.length > 3 ? 'D' : '' }}
+                {{ players.length > 3 ? 'D' : '' }}
               </th>
             </tr>
           </thead>
@@ -1371,23 +1371,23 @@ import { VCard, VRow, VCol, VTable, VBtn } from 'vuetify/components'
 import {
   doc, collection, setDoc
 } from 'firebase/firestore'
-import { useFirestore, useDocument } from 'vuefire'
-// import { storeToRefs } from 'pinia'
 import {
-  diceSessionConverter,
   diceSessionPlayerTurnConverter,
   diceSessionRemainingTurnsConverter,
   diceSessionPlayerTriesConverter,
   diceSessionDicesConverter,
   diceSessionScoreConverter
 } from '~/stores'
-// import { useDicesStore } from '~/stores/dices'
-import { Dice } from '~/functions/src/types'
+import { Dice, CardUser } from '~/functions/src/types'
 
 // Props
 
-defineProps<{
- isFullscreen: boolean
+const props = defineProps<{
+ isFullscreen: boolean,
+ players: CardUser[],
+ playerTurnId: string,
+ remainingTurns: number,
+ dices: Dice[]
 }>()
 
 // Vuefire
@@ -1399,97 +1399,77 @@ const route = useRoute()
 // Firestore
 
 const sessionId = route.params.id as string
-const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(
-  diceSessionConverter
-)
-const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
+
 const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(
   diceSessionPlayerTurnConverter
 )
-const playerTurn = useDocument(
-  doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id)
-)
+
 const remainingTurnsRef = doc(
   db,
   'diceSessionRemainingTurns',
   sessionId
 ).withConverter(diceSessionRemainingTurnsConverter)
-const remainingTurnsUseDoc = useDocument(
-  doc(collection(db, 'diceSessionRemainingTurns'), remainingTurnsRef.id)
-)
+
 const cupsRef = doc(db, 'diceSessionPlayerTries', sessionId).withConverter(
   diceSessionPlayerTriesConverter
 )
+
 const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(
   diceSessionScoreConverter
 )
-const scores = useDocument(
-  doc(collection(db, 'diceSessionScores'), scoresRef.id)
-)
+
 const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(
   diceSessionDicesConverter
 )
-const dicesUseDoc = useDocument(
-  doc(collection(db, 'diceSessionDices'), dicesRef.id)
+
+const scores = useDocument(
+  doc(collection(db, 'diceSessionScores'), scoresRef.id)
 )
-
-// Stores
-
-// const dicesStore = useDicesStore()
-// const { dices: storedDices } = storeToRefs(dicesStore)
 
 // Computed values
 
-const dices = computed(() => {
-  if (!dicesUseDoc.value) {
-    return
-  }
-  const dicesItems = dicesUseDoc.value.dices
-  return dicesItems
-})
-
 const isPlayerTurnOne = computed(() => {
-  if (!playerTurn.value || !session.value) {
+  if (!props.playerTurnId) {
     return
   }
-  if (playerTurn.value.playerId === session.value.players[0].id) {
+  if (props.playerTurnId === props.players[0].id) {
     return true
   }
   return false
 })
 
 const isPlayerTurnTwo = computed(() => {
-  if (!playerTurn.value || !session.value) {
+  if (!props.playerTurnId) {
     return
   }
-  if (playerTurn.value.playerId === session.value.players[1].id) {
+  if (props.playerTurnId === props.players[1].id) {
     return true
   }
   return false
 })
 
 const isPlayerTurnThree = computed(() => {
-  if (!playerTurn.value || !session.value) {
+  if (!props.playerTurnId) {
     return
   }
-  if (playerTurn.value.playerId === session.value.players[2].id) {
+  if (props.playerTurnId === props.players[2].id) {
     return true
   }
   return false
 })
 
 const isPlayerTurnFour = computed(() => {
-  if (!playerTurn.value || !session.value) {
+  if (!props.playerTurnId) {
     return
   }
-  if (playerTurn.value.playerId === session.value.players[3].id) {
+  if (props.playerTurnId === props.players[3].id) {
     return true
   }
   return false
 })
 
 const isDices = computed(() => {
-  if (!dices.value?.length) {
+  if (!props.dices.length) {
     return false
   }
   return true
@@ -1498,65 +1478,66 @@ const isDices = computed(() => {
 // Methods
 
 const playerOne = () => {
-  if (!user.value || !session.value) {
+  if (!user.value) {
     return
   }
-  if (user.value.uid === session.value.players[0].id) {
+  if (user.value.uid === props.players[0].id) {
     return false
   }
   return true
 }
+
 const playerTwo = () => {
-  if (!user.value || !session.value) {
+  if (!user.value) {
     return
   }
-  if (user.value.uid === session.value.players[1].id) {
+  if (user.value.uid === props.players[1].id) {
     return false
   }
   return true
 }
+
 const playerThree = () => {
-  if (!user.value || !session.value) {
+  if (!user.value) {
     return
   }
-  if (user.value.uid === session.value.players[2].id) {
+  if (user.value.uid === props.players[2].id) {
     return false
   }
   return true
 }
+
 const playerFour = () => {
-  if (!user.value || !session.value) {
+  if (!user.value) {
     return
   }
-  if (user.value.uid === session.value.players[3].id) {
+  if (user.value.uid === props.players[3].id) {
     return false
   }
   return true
 }
+
 const reduceRemainingTurn = () => {
   if (
-    !remainingTurnsUseDoc.value ||
-    remainingTurnsUseDoc.value.remainingTurns === 0
+    !props.remainingTurns ||
+    props.remainingTurns === 0
   ) {
     return
   }
-  return remainingTurnsUseDoc.value.remainingTurns - 1
+  return props.remainingTurns - 1
 }
+
 const switchPlayerTurn = async () => {
-  if (!session.value) {
-    return
-  }
-  const playerTurnIndex = session.value.players.findIndex(
-    (player: any) => player.id === playerTurn.value?.playerId
-  )
+  const playerTurnIndex = props.players.findIndex(
+    (player: any) => player.id === props.playerTurnId)
   const nextPlayerTurnIndex =
-    playerTurnIndex === session.value.players.length - 1
+    playerTurnIndex === props.players.length - 1
       ? 0
       : playerTurnIndex + 1
 
   await setDoc(
     playerTurnRef,
-    { playerId: session.value.players[nextPlayerTurnIndex].id },
+    { playerId: props.players[nextPlayerTurnIndex].id },
     { merge: true }
   )
   await setDoc(
@@ -1572,9 +1553,8 @@ const switchPlayerTurn = async () => {
     { merge: true }
   )
   await setDoc(cupsRef, { tries: 3 }, { merge: true })
-
-  // storedDices.value = []
 }
+
 const playerOneBonus = async () => {
   if (!scores.value) {
     return
@@ -1586,6 +1566,7 @@ const playerOneBonus = async () => {
   scores.value.playerOne.total += 35
   await setDoc(scoresRef, scores.value, { merge: true })
 }
+
 const playerTwoBonus = async () => {
   if (!scores.value) {
     return
@@ -1597,6 +1578,7 @@ const playerTwoBonus = async () => {
   scores.value.playerTwo.total += 35
   await setDoc(scoresRef, scores.value, { merge: true })
 }
+
 const playerThreeBonus = async () => {
   if (!scores.value) {
     return
@@ -1608,6 +1590,7 @@ const playerThreeBonus = async () => {
   scores.value.playerThree.total += 35
   await setDoc(scoresRef, scores.value, { merge: true })
 }
+
 const playerFourBonus = async () => {
   if (!scores.value) {
     return
@@ -1623,67 +1606,67 @@ const playerFourBonus = async () => {
 // Inputs value
 
 const oneInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const faceLength = dices.value.filter((dice: Dice) => dice.face === 1).length
+  const faceLength = props.dices.filter((dice: Dice) => dice.face === 1).length
   return faceLength * 1
 })
 
 const twoInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const faceLength = dices.value.filter((dice: Dice) => dice.face === 2).length
+  const faceLength = props.dices.filter((dice: Dice) => dice.face === 2).length
   return faceLength * 2
 })
 
 const threeInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const faceLength = dices.value.filter((dice: Dice) => dice.face === 3).length
+  const faceLength = props.dices.filter((dice: Dice) => dice.face === 3).length
   return faceLength * 3
 })
 
 const fourInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const faceLength = dices.value.filter((dice: Dice) => dice.face === 4).length
+  const faceLength = props.dices.filter((dice: Dice) => dice.face === 4).length
   return faceLength * 4
 })
 
 const fiveInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const faceLength = dices.value.filter((dice: Dice) => dice.face === 5).length
+  const faceLength = props.dices.filter((dice: Dice) => dice.face === 5).length
   return faceLength * 5
 })
 
 const sixInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const faceLength = dices.value.filter((dice: Dice) => dice.face === 6).length
+  const faceLength = props.dices.filter((dice: Dice) => dice.face === 6).length
   return faceLength * 6
 })
 
 const threeOfAKindInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
   const faceCounts: { [key: number]: number } = {}
 
-  for (const dice of dices.value) {
+  for (const dice of props.dices) {
     if (faceCounts[dice.face]) {
       faceCounts[dice.face]++
     } else {
@@ -1694,20 +1677,20 @@ const threeOfAKindInput = computed(() => {
   const hasThreeOfAKind = Object.values(faceCounts).some((count: number) => count >= 3)
 
   if (hasThreeOfAKind) {
-    return dices.value.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
+    return props.dices.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
   } else {
     return 0
   }
 })
 
 const fourOfAKindInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
   const faceCounts: { [key: number]: number } = {}
 
-  for (const dice of dices.value) {
+  for (const dice of props.dices) {
     if (faceCounts[dice.face]) {
       faceCounts[dice.face]++
     } else {
@@ -1718,18 +1701,18 @@ const fourOfAKindInput = computed(() => {
   const hasFourOfAKind = Object.values(faceCounts).some((count: number) => count >= 4)
 
   if (hasFourOfAKind) {
-    return dices.value.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
+    return props.dices.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
   } else {
     return 0
   }
 })
 
 const fullHouseInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const sortedDices = dices.value.slice().sort((a: Dice, b: Dice) => a.face - b.face)
+  const sortedDices = props.dices.slice().sort((a: Dice, b: Dice) => a.face - b.face)
 
   const isFullHouse =
     (sortedDices[0].face === sortedDices[1].face && sortedDices[0].face === sortedDices[2].face && sortedDices[3].face === sortedDices[4].face) ||
@@ -1739,11 +1722,11 @@ const fullHouseInput = computed(() => {
 })
 
 const smallStraightInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const sortedDices = dices.value.slice().sort((a: Dice, b: Dice) => a.face - b.face)
+  const sortedDices = props.dices.slice().sort((a: Dice, b: Dice) => a.face - b.face)
 
   const faces = new Set(sortedDices.map((dice: Dice) => dice.face))
 
@@ -1757,11 +1740,11 @@ const smallStraightInput = computed(() => {
 })
 
 const largeStraightInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const sortedDices = dices.value.slice().sort((a: Dice, b: Dice) => a.face - b.face)
+  const sortedDices = props.dices.slice().sort((a: Dice, b: Dice) => a.face - b.face)
 
   const isLargeStraight =
     (sortedDices[0].face === 1 && sortedDices[1].face === 2 && sortedDices[2].face === 3 && sortedDices[3].face === 4 && sortedDices[4].face === 5) ||
@@ -1771,50 +1754,29 @@ const largeStraightInput = computed(() => {
 })
 
 const diceInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const firstFace = dices.value[0].face
+  const firstFace = props.dices[0].face
 
-  const isDice = dices.value.every((dice: Dice) => dice.face === firstFace)
+  const isDice = props.dices.every((dice: Dice) => dice.face === firstFace)
 
   return isDice ? 50 : 0
 })
 
 const chanceInput = computed(() => {
-  if (!dices.value || dices.value.length !== 5) {
+  if (!props.dices || props.dices.length !== 5) {
     return 0
   }
 
-  const chance = dices.value
+  const chance = props.dices
   return chance.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
 })
-
-// Watchers
-
-// watch(diceInput, async (newValue) => {
-//   if (!playerTurn.value || !scores.value || !user.value) {
-//     return
-//   }
-//   if (newValue === 50 && user.value.uid === playerTurn.value.playerId) {
-//     const playerId = user.value.uid
-//     const playerScoreboardRef = doc(diceScoreboardRef, playerId).withConverter(diceScoreboardConverter)
-//     const playerScoreboardDoc = await getDoc(playerScoreboardRef)
-//     if (!playerScoreboardDoc.exists()) { return }
-//     const diceNumber = playerScoreboardDoc.data()?.dice
-//     await setDoc(doc(diceScoreboardRef, playerId), {
-//       dice: diceNumber + 1
-//     }, { merge: true })
-//   }
-// })
 
 // Save Inputs value
 
 const saveOneInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -1836,9 +1798,6 @@ const saveOneInput = async () => {
 }
 
 const saveTwoInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -1860,9 +1819,6 @@ const saveTwoInput = async () => {
 }
 
 const saveThreeInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -1884,9 +1840,6 @@ const saveThreeInput = async () => {
 }
 
 const saveFourInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -1908,9 +1861,6 @@ const saveFourInput = async () => {
 }
 
 const saveFiveInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -1932,9 +1882,6 @@ const saveFiveInput = async () => {
 }
 
 const saveSixInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -1956,9 +1903,6 @@ const saveSixInput = async () => {
 }
 
 const saveThreeOfAKindInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -1980,9 +1924,6 @@ const saveThreeOfAKindInput = async () => {
 }
 
 const saveFourOfAKindInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -2004,9 +1945,6 @@ const saveFourOfAKindInput = async () => {
 }
 
 const saveFullHouseInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -2028,9 +1966,6 @@ const saveFullHouseInput = async () => {
 }
 
 const saveSmallStraightInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -2052,9 +1987,6 @@ const saveSmallStraightInput = async () => {
 }
 
 const saveLargeStraightInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -2076,9 +2008,6 @@ const saveLargeStraightInput = async () => {
 }
 
 const saveDiceInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
@@ -2100,9 +2029,6 @@ const saveDiceInput = async () => {
 }
 
 const saveChanceInput = async () => {
-  if (!session.value) {
-    return
-  }
   if (!scores.value) {
     return
   }
