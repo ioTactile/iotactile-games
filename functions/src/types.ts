@@ -159,77 +159,77 @@ export type DiceSessionScore = {
   playerOne: {
     id: string
     username: string
-    one: number
-    two: number
-    three: number
-    four: number
-    five: number
-    six: number
+    one: number|null
+    two: number|null
+    three: number|null
+    four: number|null
+    five: number|null
+    six: number|null
     bonus: number
-    threeOfAKind: number
-    fourOfAKind: number
-    fullHouse: number
-    smallStraight: number
-    largeStraight: number
-    chance: number
-    dice: number
+    threeOfAKind: number|null
+    fourOfAKind: number|null
+    fullHouse: number|null
+    smallStraight: number|null
+    largeStraight: number|null
+    chance: number|null
+    dice: number|null
     total: number
   }
   playerTwo: {
     id: string
     username: string
-    one: number
-    two: number
-    three: number
-    four: number
-    five: number
-    six: number
+    one: number|null
+    two: number|null
+    three: number|null
+    four: number|null
+    five: number|null
+    six: number|null
     bonus: number
-    threeOfAKind: number
-    fourOfAKind: number
-    fullHouse: number
-    smallStraight: number
-    largeStraight: number
-    chance: number
-    dice: number
+    threeOfAKind: number|null
+    fourOfAKind: number|null
+    fullHouse: number|null
+    smallStraight: number|null
+    largeStraight: number|null
+    chance: number|null
+    dice: number|null
     total: number
   }
   playerThree?: {
     id: string
     username: string
-    one: number
-    two: number
-    three: number
-    four: number
-    five: number
-    six: number
+    one: number|null
+    two: number|null
+    three: number|null
+    four: number|null
+    five: number|null
+    six: number|null
     bonus: number
-    threeOfAKind: number
-    fourOfAKind: number
-    fullHouse: number
-    smallStraight: number
-    largeStraight: number
-    chance: number
-    dice: number
+    threeOfAKind: number|null
+    fourOfAKind: number|null
+    fullHouse: number|null
+    smallStraight: number|null
+    largeStraight: number|null
+    chance: number|null
+    dice: number|null
     total: number
   }
   playerFour?: {
     id: string
     username: string
-    one: number
-    two: number
-    three: number
-    four: number
-    five: number
-    six: number
+    one: number|null
+    two: number|null
+    three: number|null
+    four: number|null
+    five: number|null
+    six: number|null
     bonus: number
-    threeOfAKind: number
-    fourOfAKind: number
-    fullHouse: number
-    smallStraight: number
-    largeStraight: number
-    chance: number
-    dice: number
+    threeOfAKind: number|null
+    fourOfAKind: number|null
+    fullHouse: number|null
+    smallStraight: number|null
+    largeStraight: number|null
+    chance: number|null
+    dice: number|null
     total: number
   }
   creationDate?: Timestamp

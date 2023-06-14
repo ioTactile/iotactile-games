@@ -253,20 +253,20 @@ const initScores = () => {
   }
   const scores = {
     id: user.value.uid,
-    one: 69,
-    two: 69,
-    three: 69,
-    four: 69,
-    five: 69,
-    six: 69,
+    one: null,
+    two: null,
+    three: null,
+    four: null,
+    five: null,
+    six: null,
     bonus: 0,
-    threeOfAKind: 69,
-    fourOfAKind: 69,
-    fullHouse: 69,
-    smallStraight: 69,
-    largeStraight: 69,
-    chance: 69,
-    dice: 69,
+    threeOfAKind: null,
+    fourOfAKind: null,
+    fullHouse: null,
+    smallStraight: null,
+    largeStraight: null,
+    chance: null,
+    dice: null,
     total: 0
   }
 
