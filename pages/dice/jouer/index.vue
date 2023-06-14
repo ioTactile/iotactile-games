@@ -282,13 +282,13 @@ const create = async () => {
   id.value = doc(sessionsRef).id
 
   try {
-    const sessionsQuery = query(sessionsRef, where('isFull', '==', false))
+    const sessionsQuery = query(sessionsRef, where('isFinished', '==', false), where('isStarted', '==', true))
     const sessionsSnapshot = await getDocs(sessionsQuery)
     const sessions = sessionsSnapshot.docs.map(doc => doc.data())
-    const session = sessions.find(session =>
+    const userInSession = sessions.find(session =>
       session.players.find(player => player.id === user.value?.uid)
     )
-    if (session?.isFinished === false) {
+    if (userInSession) {
       notifier({
         content: 'Tu es déjà dans une session non terminée',
         color: 'error'
@@ -354,10 +354,10 @@ const quickJoin = async () => {
     )
     const sessionsSnapshot = await getDocs(sessionsQuery)
     const sessions = sessionsSnapshot.docs.map(doc => doc.data())
-    const session = sessions.find(session =>
+    const userInSession = sessions.find(session =>
       session.players.find(player => player.id === user.value?.uid)
     )
-    if (session) {
+    if (userInSession) {
       notifier({
         content: 'Tu es déjà dans une session en cours',
         color: 'error'
