@@ -575,14 +575,18 @@ const diceOnBoard = computed(() => {
   if (!dices.value || !dices.value.dices) {
     return
   }
-  return dices.value.dices.filter((dice: Dice) => dice.isOnBoard)
+  return dices.value.dices
+    .filter((dice: Dice) => dice.isOnBoard)
+    .sort((a: Dice, b: Dice) => a.face - b.face)
 })
 
 const diceOnHand = computed(() => {
   if (!dices.value || !dices.value.dices) {
     return
   }
-  return dices.value.dices.filter((dice: Dice) => !dice.isOnBoard)
+  return dices.value.dices
+    .filter((dice: Dice) => !dice.isOnBoard)
+    .sort((a: Dice, b: Dice) => a.face - b.face)
 })
 
 // Methods
