@@ -331,6 +331,7 @@ import {
   collection,
   doc,
   updateDoc,
+  setDoc,
   getDoc,
   deleteDoc,
   deleteField,
@@ -826,7 +827,7 @@ const sendMessage = async () => {
 
   const { username } = currentUser
 
-  await updateDoc(
+  await setDoc(
     chatRef,
     {
       messages: arrayUnion({
@@ -834,7 +835,8 @@ const sendMessage = async () => {
         username,
         content: message.value
       })
-    }
+    },
+    { merge: true }
   )
 
   message.value = ''

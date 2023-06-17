@@ -14,8 +14,8 @@
             <v-text-field
               v-model="contact.name"
               label="Nom"
+              :rules="rules.name"
               variant="outlined"
-              hide-details
             />
           </v-col>
           <v-col cols="12" md="6">
@@ -28,7 +28,7 @@
           <v-col cols="12" class="pt-0">
             <v-textarea
               v-model="contact.message"
-              v-row
+              :rules="rules.message"
               label="Message"
               variant="outlined"
               rows="5"
@@ -81,6 +81,17 @@ const contact = ref({
 
 // Methods
 
+const rules = {
+  name: [
+    (v: string) => !!v || 'Le nom est requis',
+    (v: string) => v.length <= 50 || 'Le nom ne doit pas dépasser 50 caractères'
+  ],
+  message: [
+    (v: string) => !!v || 'Le message est requis',
+    (v: string) => v.length <= 500 || 'Le message ne doit pas dépasser 500 caractères'
+  ]
+}
+
 const sendMail = async () => {
   if (!(await form.value.validate())?.valid) { return }
   loading.value = true
@@ -98,6 +109,14 @@ const sendMail = async () => {
   } finally {
     if (isSended.value === false) {
       notifier({ content: 'Une erreur est survenue lors de l\'envoi du message', color: 'error' })
+    } else {
+      subject.value = ''
+      text.value = ''
+      contact.value = {
+        name: undefined,
+        email: undefined,
+        message: undefined
+      }
     }
     loading.value = false
   }
