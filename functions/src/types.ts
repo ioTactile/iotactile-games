@@ -6,6 +6,15 @@ import {
 
 export {Timestamp};
 
+export const userConverter = {
+  toFirestore: (user: User): DocumentData => user,
+  fromFirestore(snapshot: QueryDocumentSnapshot<User>): User {
+    return snapshot.data();
+  },
+};
+
+// Dice
+
 export type CardUser = {
   id: string
   username: string
@@ -17,12 +26,6 @@ export type Dice = {
   isOnBoard: boolean
 }
 
-export const userConverter = {
-  toFirestore: (user: User): DocumentData => user,
-  fromFirestore(snapshot: QueryDocumentSnapshot<User>): User {
-    return snapshot.data();
-  },
-};
 
 export const diceSessionConverter = {
   toFirestore: (session: DiceSession): DocumentData => session,
@@ -233,4 +236,79 @@ export type DiceSessionScore = {
     total: number
   }
   creationDate?: Timestamp
+}
+
+
+// Lingua Vault
+
+export type Word = {
+  id: number
+  word: string
+  difficulty: number
+}
+
+export const linguaVaultSessionConverter = {
+  toFirestore: (session: LinguaVaultSession): DocumentData => session,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<LinguaVaultSession>): LinguaVaultSession {
+    return snapshot.data();
+  },
+};
+
+export const linguaVaultSessionWordsConverter = {
+  toFirestore:
+  (sessionWords: LinguaVaultSessionWords): DocumentData => sessionWords,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<LinguaVaultSessionWords>
+  ): LinguaVaultSessionWords {
+    return snapshot.data();
+  },
+};
+
+export const linguaVaultScoreboardConverter = {
+  toFirestore:
+  (scoreboard: LinguaVaultScoreboard): DocumentData => scoreboard,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<LinguaVaultScoreboard>
+  ): LinguaVaultScoreboard {
+    return snapshot.data();
+  },
+};
+
+export type LinguaVaultSession = {
+  id: string
+  playerOne: {
+    id: string
+    username: string
+    isFinder: boolean
+  }
+  playerTwo?: {
+    id: string
+    username: string
+    isFinder: boolean
+  }
+  isFull: boolean
+  isStarted: boolean
+  isFinished: boolean
+  creationDate: Timestamp
+}
+
+export type LinguaVaultSessionWords = {
+  id: string
+  words: Word[]
+  testedWords: string[]|null
+}
+
+export type LinguaVaultWords = {
+  id: string
+  words: Word[]
+}
+
+export type LinguaVaultScoreboard = {
+  userId: string
+  username: string
+  rounds: number
+  roundsWon: number
+  scoreToGuess: number
+  scoreToPropose: number
 }

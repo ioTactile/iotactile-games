@@ -13,7 +13,10 @@ import {
   DiceSessionDices,
   DiceSessionPlayerTries,
   DiceSessionChat,
-  DiceSessionScore
+  DiceSessionScore,
+  LinguaVaultSession,
+  LinguaVaultScoreboard,
+  LinguaVaultSessionWords
 } from '~/functions/src/types'
 
 type NestedTypeMapper<T, I, O> = T extends I
@@ -46,6 +49,8 @@ export const userConverter: FirestoreDataConverter<LocalUserType> = {
     }
   }
 }
+
+// Dice
 
 type DatabaseDiceSessionType = NestedTypeMapper<
   DiceSession,
@@ -245,6 +250,84 @@ export const diceSessionScoreConverter: FirestoreDataConverter<LocalDiceSessionS
       ...data,
       id: snapshot.id,
       creationDate: data.creationDate ? data.creationDate.toDate() : undefined
+    }
+  }
+}
+
+// Lingua Vault
+
+type DatabaseLinguaVaultSessionType = NestedTypeMapper<
+  LinguaVaultSession,
+  Timestamp,
+  FirestoreTimestamp
+>
+export type LocalLinguaVaultSessionType = NestedTypeMapper<
+  LinguaVaultSession,
+  Timestamp,
+  Date
+>
+export const linguaVaultSessionConverter: FirestoreDataConverter<LocalLinguaVaultSessionType> =
+{
+  toFirestore: item => item,
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultSessionType>,
+    options
+  ) => {
+    const data = snapshot.data(options)
+    return {
+      ...data,
+      id: snapshot.id,
+      creationDate: data.creationDate.toDate()
+    }
+  }
+}
+
+type DatabaseLinguaVaultScoreboardType = NestedTypeMapper<
+  LinguaVaultScoreboard,
+  Timestamp,
+  FirestoreTimestamp
+>
+export type LocalLinguaVaultScoreboardType = NestedTypeMapper<
+  LinguaVaultScoreboard,
+  Timestamp,
+  Date
+>
+export const linguaVaultScoreboardConverter: FirestoreDataConverter<LocalLinguaVaultScoreboardType> =
+{
+  toFirestore: item => item,
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultScoreboardType>,
+    options
+  ) => {
+    const data = snapshot.data(options)
+    return {
+      ...data,
+      id: snapshot.id
+    }
+  }
+}
+
+type DatabaseLinguaVaultSessionWordsType = NestedTypeMapper<
+  LinguaVaultSessionWords,
+  Timestamp,
+  FirestoreTimestamp
+>
+export type LocalLinguaVaultSessionWordsType = NestedTypeMapper<
+  LinguaVaultSessionWords,
+  Timestamp,
+  Date
+>
+export const linguaVaultSessionWordsConverter: FirestoreDataConverter<LocalLinguaVaultSessionWordsType> =
+{
+  toFirestore: item => item,
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultSessionWordsType>,
+    options
+  ) => {
+    const data = snapshot.data(options)
+    return {
+      ...data,
+      id: snapshot.id
     }
   }
 }
