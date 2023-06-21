@@ -163,6 +163,7 @@ import {
   linguaVaultScoreboardConverter,
   LocalLinguaVaultSessionType
 } from '~/stores'
+import { Word } from '~/functions/src/types'
 
 // Vuefire & Composables
 
@@ -204,7 +205,8 @@ const leaving = ref(false)
 const getRandomWords = async (sessionId: string): Promise<string[]> => {
   const wordsRef = doc(db, 'linguaVaultWords')
   const wordsDoc = await getDoc(wordsRef)
-  const words = wordsDoc.data().words || []
+  if (!wordsDoc.exists()) { return [] }
+  const words = wordsDoc.data().words
   const sessionRef = doc(db, 'linguaVaultSession', sessionId)
   const sessionDoc = await getDoc(sessionRef)
   const session = sessionDoc.data()
@@ -222,8 +224,8 @@ const getRandomWords = async (sessionId: string): Promise<string[]> => {
   const playerOneTotalScore = playerOneScoreboard?.scoreToGuess + playerOneScoreboard?.scoreToPropose
   const playerTwoTotalScore = playerTwoScoreboard?.scoreToGuess + playerTwoScoreboard?.scoreToPropose
 
-  const playerOneListWords = words.filter(word => word.difficulty >= playerOneTotalScore - 1000 && word.difficulty <= playerOneTotalScore + 1000)
-  const playerTwoListWords = words.filter(word => word.difficulty >= playerTwoTotalScore - 1000 && word.difficulty <= playerTwoTotalScore + 1000)
+  const playerOneListWords = words.filter((word: Word) => word.difficulty >= playerOneTotalScore - 1000 && word.difficulty <= playerOneTotalScore + 1000)
+  const playerTwoListWords = words.filter((word: Word) => word.difficulty >= playerTwoTotalScore - 1000 && word.difficulty <= playerTwoTotalScore + 1000)
 
   const playerOneRandomWords = playerOneListWords.sort(() => Math.random() - Math.random()).slice(0, 2)
   const playerTwoRandomWords = playerTwoListWords.sort(() => Math.random() - Math.random()).slice(0, 2)
@@ -395,12 +397,16 @@ const join = async (sessionId: string) => {
       },
       isFull: true
     })
+
     await checkScoreboard()
+
     const words = await getRandomWords(sessionId)
+
     await setDoc(doc(db, 'linguaVaultSession', sessionId, 'words', sessionId), {
       id: sessionId,
       words
     })
+
     navigateTo(`/lingua-vault/jouer/${sessionId}`)
   } finally {
     loading.value = false

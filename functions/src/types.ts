@@ -103,6 +103,7 @@ export type User = {
   id: string
   email: string
   username: string
+  role?: { admin: true }
   creationDate: Timestamp
   updateDate: Timestamp
 }

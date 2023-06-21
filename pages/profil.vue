@@ -64,6 +64,15 @@
           >
             Supprimer ton compte
           </v-btn>
+          <v-btn
+            v-if="userClaims?.admin"
+            class="mt-4"
+            block
+            color="paragraph"
+            to="/admin"
+          >
+            Espace d'administration
+          </v-btn>
         </v-card-text>
       </v-card>
     </v-container>
@@ -73,7 +82,7 @@
 <script lang="ts" setup>
 import { VContainer, VCard, VCardTitle, VCardText, VForm, VDivider, VBtn } from 'vuetify/components'
 import { mdiPencil, mdiDotsVertical } from '@mdi/js'
-import { deleteUser, signOut } from '@firebase/auth'
+import { deleteUser, getIdTokenResult, signOut } from '@firebase/auth'
 import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore'
 import { userConverter } from '~/stores'
 
@@ -86,6 +95,7 @@ const db = useFirestore()
 
 // Refs
 
+const userClaims = ref()
 const loading = ref(false)
 const change = ref(false)
 const openDeleteUser = ref(false)
@@ -102,6 +112,9 @@ onMounted(async () => {
   if (userFetched) {
     username.value = userFetched.username
   }
+
+  const { claims } = await getIdTokenResult(user.value, true)
+  userClaims.value = claims
 })
 
 // Methods
