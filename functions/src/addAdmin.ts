@@ -2,7 +2,7 @@ import * as functions from "firebase-functions";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {getAuth} from "firebase-admin/auth";
 
-export type Data = {
+interface Parameters {
   id: string;
   role: unknown;
 }
@@ -10,7 +10,12 @@ export type Data = {
 export const addAdmin = functions
     .runWith({enforceAppCheck: true})
     .region("europe-west3")
-    .https.onCall(async (data: Data, context) => {
+    .https.onCall(async (data: Parameters, context) => {
+      if (context.app == undefined) {
+        throw new functions.https.HttpsError(
+            "failed-precondition",
+            "The function must be called from an App Check verified app.");
+      }
       if (!context.auth) {
         throw new functions.https.HttpsError(
             "unauthenticated",
