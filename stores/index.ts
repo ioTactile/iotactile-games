@@ -14,6 +14,7 @@ import {
   DiceSessionPlayerTries,
   DiceSessionChat,
   DiceSessionScore,
+  LinguaVaultWords,
   LinguaVaultSession,
   LinguaVaultScoreboard,
   LinguaVaultSessionWords
@@ -255,6 +256,31 @@ export const diceSessionScoreConverter: FirestoreDataConverter<LocalDiceSessionS
 }
 
 // Lingua Vault
+
+type DatabaseLinguaVaultWordsType = NestedTypeMapper<
+  LinguaVaultWords,
+  Timestamp,
+  FirestoreTimestamp
+>
+export type LocalLinguaVaultWordsType = NestedTypeMapper<
+  LinguaVaultWords,
+  Timestamp,
+  Date
+>
+export const linguaVaultWordsConverter: FirestoreDataConverter<LocalLinguaVaultWordsType> =
+{
+  toFirestore: item => item,
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultWordsType>,
+    options
+  ) => {
+    const data = snapshot.data(options)
+    return {
+      ...data,
+      id: snapshot.id
+    }
+  }
+}
 
 type DatabaseLinguaVaultSessionType = NestedTypeMapper<
   LinguaVaultSession,

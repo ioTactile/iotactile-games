@@ -4,23 +4,58 @@
       <v-app-bar-nav-icon class="mr-4" @click="toggleDrawer" />
       <v-spacer class="d-block d-sm-none" />
       <NuxtLink to="/" class="w-100">
-        <v-img :src="theme.current.value.dark ? '/logo-dark.png' : '/logo.png'" alt="logo" height="80" width="200" />
+        <v-img
+          :src="theme.current.value.dark ? '/logo-dark.png' : '/logo.png'"
+          alt="logo"
+          height="80"
+          width="200"
+        />
       </NuxtLink>
       <v-spacer />
-      <v-menu class="d-none d-sm-block" :close-on-content-click="false">
+      <template v-if="admin && adminUser && smAndUp">
+        <v-btn to="/admin/lingua-vault" :icon="mdiFileWordBox" />
+        <v-btn to="/admin/utilisateurs" :icon="mdiAccountCheck" />
+        <v-divider vertical class="mx-2" />
+      </template>
+      <v-menu
+        v-if="!admin"
+        class="d-none d-sm-block"
+        :close-on-content-click="false"
+      >
         <template #activator="{ props }">
-          <v-btn class="d-none d-sm-block" variant="text" :icon="mdiMusicNoteEighth" v-bind="props" />
+          <v-btn
+            class="d-none d-sm-block"
+            variant="text"
+            :icon="mdiMusicNoteEighth"
+            v-bind="props"
+          />
         </template>
         <music-player />
       </v-menu>
-      <v-btn class="d-none d-sm-block" :icon="mdiThemeLightDark" @click="toggleTheme" />
-      <v-btn :icon="mdiAccount" size="large" @click="isLogin('/profil')" />
+      <v-btn
+        class="d-none d-sm-block"
+        :icon="mdiThemeLightDark"
+        @click="toggleTheme"
+      />
+      <v-btn :icon="mdiAccount" @click="isLogin('/profil')" />
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" width="200" color="secondary">
       <v-sheet class="d-flex flex-column" height="100%">
-        <v-list nav>
+        <v-list v-if="!admin" nav>
           <v-list-item
             v-for="(item, i) in items"
+            :key="i"
+            :value="item"
+            :to="item.link"
+            color="highlight"
+            class="pl-4"
+          >
+            {{ item.title }}
+          </v-list-item>
+        </v-list>
+        <v-list v-if="admin && adminUser" class="d-block d-sm-none" nav>
+          <v-list-item
+            v-for="(item, i) in adminItems"
             :key="i"
             :value="item"
             :to="item.link"
@@ -54,25 +89,62 @@
 </template>
 
 <script lang="ts" setup>
-import { VAppBar, VAppBarNavIcon, VSheet, VBtn, VDivider, VMenu, VList, VImg, VListItem, VNavigationDrawer, VSpacer } from 'vuetify/components'
-import { useTheme } from 'vuetify'
-import { mdiAccount, mdiThemeLightDark, mdiMusicNoteEighth } from '@mdi/js'
+import {
+  VAppBar,
+  VAppBarNavIcon,
+  VSheet,
+  VBtn,
+  VDivider,
+  VMenu,
+  VList,
+  VImg,
+  VListItem,
+  VNavigationDrawer,
+  VSpacer
+} from 'vuetify/components'
+import { useTheme, useDisplay } from 'vuetify'
+import { getIdTokenResult } from 'firebase/auth'
+import {
+  mdiAccount,
+  mdiThemeLightDark,
+  mdiMusicNoteEighth,
+  mdiAccountCheck,
+  mdiFileWordBox
+} from '@mdi/js'
 
 // Vuetify
 
-const user = useCurrentUser()
 const theme = useTheme()
+const { smAndUp } = useDisplay()
+
+// Props
+
+defineProps<{ admin?: boolean }>()
+
+// Vuefire
+
+const user = useCurrentUser()
 
 // Refs
 
 const login = ref(false)
 const drawer = ref(false)
 const group = ref(null)
+const adminUser = ref(false)
 
 // onMounted
 
-onMounted(() => {
-  localStorage.getItem('theme') === 'myCustomDarkTheme' ? theme.global.name.value = 'myCustomDarkTheme' : theme.global.name.value = 'myCustomLightTheme'
+onMounted(async () => {
+  localStorage.getItem('theme') === 'myCustomDarkTheme'
+    ? (theme.global.name.value = 'myCustomDarkTheme')
+    : (theme.global.name.value = 'myCustomLightTheme')
+
+  if (!user.value) {
+    return
+  }
+
+  const { claims } = await getIdTokenResult(user.value, true)
+  adminUser.value = claims.admin
 })
 
 // Watchers
@@ -92,6 +164,17 @@ const items = [
   }
 ]
 
+const adminItems = [
+  {
+    title: 'Utilisateurs',
+    link: '/admin/utilisateurs'
+  },
+  {
+    title: 'Lingua Vault',
+    link: '/admin/lingua-vault'
+  }
+]
+
 // Methods
 
 const isLogin = (path: string) => {
@@ -107,7 +190,10 @@ const toggleDrawer = () => {
 }
 
 const toggleTheme = () => {
-  theme.global.name.value = theme.name.value === 'myCustomLightTheme' ? 'myCustomDarkTheme' : 'myCustomLightTheme'
+  theme.global.name.value =
+    theme.name.value === 'myCustomLightTheme'
+      ? 'myCustomDarkTheme'
+      : 'myCustomLightTheme'
   localStorage.setItem('theme', theme.global.name.value)
 }
 </script>

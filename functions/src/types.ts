@@ -248,6 +248,14 @@ export type Word = {
   difficulty: number
 }
 
+export const linguaVaultWordsConverter = {
+  toFirestore: (word: Word): DocumentData => word,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<Word>): Word {
+    return snapshot.data();
+  },
+};
+
 export const linguaVaultSessionConverter = {
   toFirestore: (session: LinguaVaultSession): DocumentData => session,
   fromFirestore(

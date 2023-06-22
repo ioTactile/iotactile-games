@@ -44,9 +44,9 @@ import { VContainer, VTable, VBtn } from 'vuetify/components'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { collection, getDocs } from 'firebase/firestore'
 import { useFirebaseFunctions } from '~/composables/useFirebaseFunctions'
-import { userConverter } from '~/stores'
+import { LocalUserType, userConverter } from '~/stores'
 
-//   definePageMeta({ layout: 'admin' })
+definePageMeta({ layout: 'admin' })
 
 const db = useFirestore()
 const functions = useFirebaseFunctions()
@@ -54,10 +54,15 @@ const { notifier } = useNotifier()
 
 const removing = ref<string | null>(null)
 const adding = ref<string | null>(null)
+const users = ref<LocalUserType[]>([])
 
-const usersRef = collection(db, 'users').withConverter(userConverter)
-const usersDocs = await getDocs(usersRef)
-const users = ref(usersDocs.docs.map(doc => doc.data()))
+onMounted(async () => {
+  const usersRef = collection(db, 'users').withConverter(userConverter)
+  const usersDocs = await getDocs(usersRef)
+  if (!usersDocs.empty) {
+    users.value = usersDocs.docs.map(doc => doc.data())
+  }
+})
 
 const addAdmin = async (id: string) => {
   adding.value = id
@@ -68,8 +73,6 @@ const addAdmin = async (id: string) => {
       role: { admin: true }
     })
     notifier({ content: 'Admin ajouté', color: 'success' })
-  } catch (e) {
-    console.error(e)
   } finally {
     adding.value = null
   }
@@ -81,8 +84,6 @@ const removeAdmin = async (id: string) => {
   try {
     await functions('removeAdmin')({ id })
     notifier({ content: 'Admin retiré', color: 'success' })
-  } catch (e) {
-    console.error(e)
   } finally {
     removing.value = null
   }
