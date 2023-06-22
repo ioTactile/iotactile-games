@@ -3,7 +3,9 @@
     <div
       class="d-flex flex-column flex-sm-row justify-space-between align-center mt-2"
     >
-      <h2>Lingua Vault</h2>
+      <h2 class="mb-2 mb-sm-0">
+        Lingua Vault
+      </h2>
       <v-form ref="form" class="d-flex align-center">
         <v-text-field
           v-model="newWord"

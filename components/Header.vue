@@ -41,7 +41,8 @@
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" width="200" color="secondary">
       <v-sheet class="d-flex flex-column" height="100%">
-        <v-list v-if="!admin" nav>
+        <span class="mx-auto font-weight-bold text-h6 my-2">Jeux</span>
+        <v-list nav>
           <v-list-item
             v-for="(item, i) in items"
             :key="i"
@@ -53,18 +54,22 @@
             {{ item.title }}
           </v-list-item>
         </v-list>
-        <v-list v-if="admin && adminUser" class="d-block d-sm-none" nav>
-          <v-list-item
-            v-for="(item, i) in adminItems"
-            :key="i"
-            :value="item"
-            :to="item.link"
-            color="highlight"
-            class="pl-4"
-          >
-            {{ item.title }}
-          </v-list-item>
-        </v-list>
+        <template v-if="admin && adminUser">
+          <v-divider />
+          <span class="mx-auto font-weight-bold text-h6 my-2">Administration</span>
+          <v-list class="d-block d-sm-none" nav>
+            <v-list-item
+              v-for="(item, i) in adminItems"
+              :key="i"
+              :value="item"
+              :to="item.link"
+              color="highlight"
+              class="pl-4"
+            >
+              {{ item.title }}
+            </v-list-item>
+          </v-list>
+        </template>
         <div class="d-flex d-sm-none flex-column justify-center mt-auto mb-4">
           <v-divider class="mb-2" />
           <v-menu :close-on-content-click="false">
