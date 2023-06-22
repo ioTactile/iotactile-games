@@ -8,8 +8,8 @@ interface Parameters {
 
 export const removeAdmin = functions
     .runWith({enforceAppCheck: true})
-    .region("europe-west3")
-    .https.onCall(async (data: Parameters, context) => {
+    .region("europe-west3").https
+    .onCall(async (data: Parameters, context) => {
       if (context.app == undefined) {
         throw new functions.https.HttpsError(
             "failed-precondition",

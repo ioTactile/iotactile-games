@@ -16,7 +16,7 @@
           <td>
             <v-btn
               :icon="mdiCheck"
-              :disabled="adding !== null"
+              :disabled="adding !== null || user.role?.admin"
               :loading="adding === user.id"
               color="success"
               variant="text"
@@ -26,7 +26,7 @@
           <td>
             <v-btn
               :icon="mdiClose"
-              :disabled="removing !== null"
+              :disabled="removing !== null || !user.role?.admin"
               :loading="removing === user.id"
               color="error"
               variant="text"
