@@ -161,6 +161,8 @@ import {
   linguaVaultSessionConverter,
   linguaVaultSessionWordsConverter,
   linguaVaultScoreboardConverter,
+  linguaVaultSessionRemainingTurnsConverter,
+  linguaVaultSessionPlayerTurnConverter,
   LocalLinguaVaultSessionType
 } from '~/stores'
 import { Word } from '~/functions/src/types'
@@ -173,7 +175,7 @@ const db = useFirestore()
 
 // Firestore
 
-const sessionsRef = collection(db, 'linguaVaultSession').withConverter(
+const sessionsRef = collection(db, 'linguaVaultSessions').withConverter(
   linguaVaultSessionConverter
 )
 
@@ -203,11 +205,11 @@ const leaving = ref(false)
 // Methods
 
 const getRandomWords = async (sessionId: string): Promise<string[]> => {
-  const wordsRef = doc(db, 'linguaVaultWords')
+  const wordsRef = doc(db, 'linguaVaultWords', 'AI8rozWXYEmchhc1pwar')
   const wordsDoc = await getDoc(wordsRef)
   if (!wordsDoc.exists()) { return [] }
   const words = wordsDoc.data().words
-  const sessionRef = doc(db, 'linguaVaultSession', sessionId)
+  const sessionRef = doc(db, 'linguaVaultSessions', sessionId)
   const sessionDoc = await getDoc(sessionRef)
   const session = sessionDoc.data()
   const playerOneId = session?.playerOne.id
@@ -302,6 +304,12 @@ const create = async () => {
       isFinished: false,
       creationDate: Timestamp.fromDate(date.value)
     })
+
+    await setDoc(doc(db, 'linguaVaultSessions', id.value, 'playerTurn', id.value), {
+      id: id.value,
+      playerId: user.value.uid
+    })
+
     await checkScoreboard()
   } finally {
     reset()
@@ -352,9 +360,13 @@ const quickJoin = async () => {
     })
     await checkScoreboard()
     const words = await getRandomWords(sessionToJoin.id)
-    await setDoc(doc(db, 'linguaVaultSession', sessionToJoin.id, 'words', sessionToJoin.id), {
+    await setDoc(doc(db, 'linguaVaultSessions', sessionToJoin.id, 'words', sessionToJoin.id), {
       id: sessionToJoin.id,
       words
+    })
+    await setDoc(doc(db, 'linguaVaultSessions', sessionToJoin.id, 'remainingTurns', sessionToJoin.id), {
+      id: sessionToJoin.id,
+      remainingTurns: 4
     })
   } finally {
     loading.value = false
@@ -401,10 +413,16 @@ const join = async (sessionId: string) => {
     await checkScoreboard()
 
     const words = await getRandomWords(sessionId)
+    console.log(words)
 
-    await setDoc(doc(db, 'linguaVaultSession', sessionId, 'words', sessionId), {
+    await setDoc(doc(db, 'linguaVaultSessions', sessionId, 'words', sessionId), {
       id: sessionId,
       words
+    })
+
+    await setDoc(doc(db, 'linguaVaultSessions', sessionId, 'remainingTurns', sessionId), {
+      id: sessionId,
+      remainingTurns: 4
     })
 
     navigateTo(`/lingua-vault/jouer/${sessionId}`)
@@ -427,12 +445,18 @@ const leave = async (sessionId: string) => {
     if (!session) {
       return
     }
-    const wordsRef = doc(db, 'linguaVaultSession', sessionId, 'words', sessionId)
+    const wordsRef = doc(db, 'linguaVaultSessions', sessionId, 'words', sessionId)
       .withConverter(linguaVaultSessionWordsConverter)
+    const remainingTurnsRef = doc(db, 'linguaVaultSessions', sessionId, 'remainingTurns', sessionId)
+      .withConverter(linguaVaultSessionRemainingTurnsConverter)
+    const playerTurnRef = doc(db, 'linguaVaultSessions', sessionId, 'playerTurn', sessionId)
+      .withConverter(linguaVaultSessionPlayerTurnConverter)
 
     if (session.playerOne.id === user.value?.uid) {
       await deleteDoc(sessionRef)
       await deleteDoc(wordsRef)
+      await deleteDoc(remainingTurnsRef)
+      await deleteDoc(playerTurnRef)
     } else if (session.playerTwo?.id === user.value?.uid) {
       await updateDoc(sessionRef, {
         playerTwo: deleteField(),

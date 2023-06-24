@@ -17,6 +17,8 @@ import {
   LinguaVaultWords,
   LinguaVaultSession,
   LinguaVaultScoreboard,
+  LinguaVaultSessionRemainingTurns,
+  LinguaVaultSessionPlayerTurn,
   LinguaVaultSessionWords
 } from '~/functions/src/types'
 
@@ -323,6 +325,56 @@ export const linguaVaultScoreboardConverter: FirestoreDataConverter<LocalLinguaV
   toFirestore: item => item,
   fromFirestore: (
     snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultScoreboardType>,
+    options
+  ) => {
+    const data = snapshot.data(options)
+    return {
+      ...data,
+      id: snapshot.id
+    }
+  }
+}
+
+type DatabaseLinguaVaultSessionRemainingTurnsType = NestedTypeMapper<
+  LinguaVaultSessionRemainingTurns,
+  Timestamp,
+  FirestoreTimestamp
+>
+export type LocalLinguaVaultSessionRemainingTurnsType = NestedTypeMapper<
+  LinguaVaultSessionRemainingTurns,
+  Timestamp,
+  Date
+>
+export const linguaVaultSessionRemainingTurnsConverter: FirestoreDataConverter<LocalLinguaVaultSessionRemainingTurnsType> =
+{
+  toFirestore: item => item,
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultSessionRemainingTurnsType>,
+    options
+  ) => {
+    const data = snapshot.data(options)
+    return {
+      ...data,
+      id: snapshot.id
+    }
+  }
+}
+
+type DatabaseLinguaVaultSessionPlayerTurnType = NestedTypeMapper<
+  LinguaVaultSessionPlayerTurn,
+  Timestamp,
+  FirestoreTimestamp
+>
+export type LocalLinguaVaultSessionPlayerTurnType = NestedTypeMapper<
+  LinguaVaultSessionPlayerTurn,
+  Timestamp,
+  Date
+>
+export const linguaVaultSessionPlayerTurnConverter: FirestoreDataConverter<LocalLinguaVaultSessionPlayerTurnType> =
+{
+  toFirestore: item => item,
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultSessionPlayerTurnType>,
     options
   ) => {
     const data = snapshot.data(options)

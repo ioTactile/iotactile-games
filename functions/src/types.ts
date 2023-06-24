@@ -274,6 +274,27 @@ export const linguaVaultSessionWordsConverter = {
   },
 };
 
+export const linguaVaultSessionRemainingTurnsConverter = {
+  toFirestore:
+  (remainingTurns: LinguaVaultSessionRemainingTurns
+  ): DocumentData => remainingTurns,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<LinguaVaultSessionRemainingTurns>
+  ): LinguaVaultSessionRemainingTurns {
+    return snapshot.data();
+  },
+};
+
+export const linguaVaultSessionPlayerTurn = {
+  toFirestore:
+  (playerTurn: LinguaVaultSessionPlayerTurn): DocumentData => playerTurn,
+  fromFirestore(
+      snapshot: QueryDocumentSnapshot<LinguaVaultSessionPlayerTurn>
+  ): LinguaVaultSessionPlayerTurn {
+    return snapshot.data();
+  },
+};
+
 export const linguaVaultScoreboardConverter = {
   toFirestore:
   (scoreboard: LinguaVaultScoreboard): DocumentData => scoreboard,
@@ -306,6 +327,17 @@ export type LinguaVaultSessionWords = {
   id: string
   words: Word[]
   testedWords: string[]|null
+  clues: string[]|null
+}
+
+export type LinguaVaultSessionRemainingTurns = {
+  id: string
+  remainingTurns: number
+}
+
+export type LinguaVaultSessionPlayerTurn = {
+  id: string
+  playerId: string
 }
 
 export type LinguaVaultWords = {
