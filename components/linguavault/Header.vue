@@ -1,5 +1,5 @@
 <template>
-  <v-card color="yellow" elevation="0">
+  <v-card color="yellow" elevation="0" rounded="0">
     <v-card-title class="text-center text-subtitle-1 text-sm-h6">
       Manche {{ getTurns }} - {{ isFinder }}
     </v-card-title>
@@ -17,6 +17,8 @@
 
 <script lang="ts" setup>
 import { VCard, VCardTitle, VProgressLinear } from 'vuetify/components'
+import { storeToRefs } from 'pinia'
+import { useLvTimerStore } from '~/stores/lvTimer'
 import { Word } from '~/functions/src/types'
 
 // Interfaces
@@ -29,13 +31,14 @@ const props = defineProps<{
     isPlayerOneFinder: boolean
     words: Word[]
     getTurns: number
+    isRoundFinished: boolean
 }>()
 
-// Refs
+// Store
 
-const remainingTime = ref<number>(60)
-const linearProgress = ref<number>(0)
-const intervalId = ref<NodeJS.Timeout | null>(null)
+const lvTimerStoreRef = useLvTimerStore()
+const { linearProgress, isRunning } = storeToRefs(lvTimerStoreRef)
+const { start } = lvTimerStoreRef
 
 // Computed
 
@@ -52,51 +55,24 @@ const isFinder = computed(() => {
 const getWord = computed(() => {
   const isFinder = props.isPlayerOneFinder
 
+  if (props.isRoundFinished) {
+    return props.words[props.getTurns - 1].word
+  }
+
   if ((props.playerOne && isFinder) || (!props.playerOne && !isFinder)) {
     return props.words[props.getTurns - 1].word
   }
 })
-
-// Methods
-
-const getRemainingTimeFromLocalStorage = () => {
-  const storedValue = localStorage.getItem('remainingTime')
-  if (storedValue === null || storedValue <= '0') {
-    return 60
-  } else {
-    return parseInt(storedValue, 10)
-  }
-}
-
-const startTimer = () => {
-  stopTimer()
-
-  remainingTime.value = getRemainingTimeFromLocalStorage()
-
-  intervalId.value = setInterval(() => {
-    if (remainingTime.value > 0) {
-      remainingTime.value--
-      linearProgress.value = (remainingTime.value / 60) * 100
-      localStorage.setItem('remainingTime', remainingTime.value.toString())
-    } else {
-      stopTimer()
-    }
-  }, 1000)
-}
-
-const stopTimer = () => {
-  if (intervalId) {
-    clearInterval(intervalId.value as NodeJS.Timeout)
-    intervalId.value = null
-  }
-}
 
 // Watch
 
 watch(
   () => props.remainingTurns,
   () => {
-    startTimer()
+    if (isRunning.value || props.isRoundFinished) {
+      return
+    }
+    start()
   },
   { immediate: true }
 )

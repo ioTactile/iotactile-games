@@ -320,6 +320,9 @@ export type LinguaVaultSession = {
   isFull: boolean
   isStarted: boolean
   isFinished: boolean
+  isRoundFinished: boolean
+  isPlayerOneContinue: boolean|null
+  isPlayerTwoContinue: boolean|null
   creationDate: Timestamp
 }
 

@@ -32,12 +32,12 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="12" class="d-flex flex-column align-center mt-8">
+    <v-col v-if="!isRoundFinished" cols="12" class="d-flex flex-column align-center mt-8">
       <v-text-field
         v-if="
           ((props.playerOne && isPlayerOneFinder) ||
             (!props.playerOne && !isPlayerOneFinder)) &&
-            playerTurnId === user.uid &&
+            playerTurnId === user?.uid &&
             clues.length !== 4
         "
         v-model="newClue"
@@ -54,7 +54,7 @@
         v-if="
           ((props.playerOne && !isPlayerOneFinder) ||
             (!props.playerOne && isPlayerOneFinder)) &&
-            playerTurnId === user.uid &&
+            playerTurnId === user?.uid &&
             testedWords.length !== 4
         "
         v-model="newTestedWord"
@@ -68,7 +68,7 @@
         @keyup.enter="sendNewWord()"
       />
       <v-btn
-        v-if="playerTurnId === user.uid && (newClue || newTestedWord)"
+        v-if="playerTurnId === user?.uid"
         class="mt-8"
         color="light-blue"
         @click="sendNewWord()"
@@ -94,12 +94,13 @@ import { Word } from '~/functions/src/types'
 // Props
 
 const props = defineProps<{
-  testedWords: string[] | []
-  clues: string[] | []
+  testedWords: string[]
+  clues: string[]
   words: Word[]
   getTurns: number
   playerOne: boolean
   isPlayerOneFinder: boolean
+  isRoundFinished: boolean
   playerTurnId: string
 }>()
 

@@ -302,6 +302,9 @@ const create = async () => {
       isFull: false,
       isStarted: false,
       isFinished: false,
+      isRoundFinished: false,
+      isPlayerOneContinue: null,
+      isPlayerTwoContinue: null,
       creationDate: Timestamp.fromDate(date.value)
     })
 
@@ -413,7 +416,6 @@ const join = async (sessionId: string) => {
     await checkScoreboard()
 
     const words = await getRandomWords(sessionId)
-    console.log(words)
 
     await setDoc(doc(db, 'linguaVaultSessions', sessionId, 'words', sessionId), {
       id: sessionId,
@@ -424,10 +426,9 @@ const join = async (sessionId: string) => {
       id: sessionId,
       remainingTurns: 4
     })
-
-    navigateTo(`/lingua-vault/jouer/${sessionId}`)
   } finally {
     loading.value = false
+    navigateTo(`/lingua-vault/jouer/${sessionId}`)
   }
 }
 
