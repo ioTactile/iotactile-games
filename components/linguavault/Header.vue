@@ -21,8 +21,6 @@ import { storeToRefs } from 'pinia'
 import { useLvTimerStore } from '~/stores/lvTimer'
 import { Word } from '~/functions/src/types'
 
-// Interfaces
-
 // Props
 
 const props = defineProps<{

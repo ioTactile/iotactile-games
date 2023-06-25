@@ -128,24 +128,34 @@ const getWord = computed(() => {
 
 // Methods
 
+const isWordMatch = (trueWord: string, clueWord: string, options: string) => {
+  const trueWordWithoutAccent = trueWord.normalize('NFD').replace(/[\u0300-\u036F]/g, '').toLocaleLowerCase()
+  const clueWordWithoutAccent = clueWord.normalize('NFD').replace(/[\u0300-\u036F]/g, '').toLocaleLowerCase()
+
+  if (options === 'threeLetter' && (trueWordWithoutAccent.substring(0, 3) === clueWordWithoutAccent.substring(0, 3))) {
+    return true
+  } else if (options === 'same' && (trueWordWithoutAccent === clueWordWithoutAccent)) {
+    return true
+  }
+}
+
 const sendNewWord = () => {
   if (!newClue.value && !newTestedWord.value) {
     notifier({ content: 'Veuillez entrer un mot', color: 'error' })
     return
   }
 
-  if (
-    (newClue.value && props.clues.includes(newClue.value)) ||
-    (newTestedWord.value && props.testedWords.includes(newTestedWord.value))
-  ) {
-    notifier({ content: 'Cet indice existe déjà', color: 'error' })
+  if (newClue.value && getWord.value && isWordMatch(getWord.value, newClue.value, 'same')) {
+    notifier({ content: 'Tu ne peux pas donner le mot à trouver en indice', color: 'error' })
     return
   }
 
-  if (
-    (newClue.value && newClue.value.substring(0, 3) === getWord.value?.substring(0, 3)) ||
-  (newTestedWord.value && newTestedWord.value.substring(0, 3) === getWord.value?.substring(0, 3))
-  ) {
+  if (newClue.value && props.clues.some(clue => isWordMatch(clue, newClue.value, 'same'))) {
+    notifier({ content: 'Tu as déjà donné cet indice', color: 'error' })
+    return
+  }
+
+  if ((newClue.value && getWord.value && isWordMatch(getWord.value, newClue.value, 'threeLetter'))) {
     notifier({
       content: 'Les 3 premières lettres ne peuvent pas être identiques',
       color: 'error'
