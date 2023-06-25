@@ -155,7 +155,8 @@ import {
   deleteField,
   updateDoc,
   query,
-  where
+  where,
+  onSnapshot
 } from 'firebase/firestore'
 import {
   linguaVaultSessionConverter,
@@ -474,4 +475,27 @@ const reset = () => {
   id.value = null
   date.value = new Date(Date.now())
 }
+
+// WatchEffect
+
+watchEffect(() => {
+  const idValue = id.value
+  if (idValue) {
+    const unsubscribe = onSnapshot(doc(sessionsRef, idValue), async (snapshot) => {
+      const session = snapshot.data()
+      if (!session) {
+        return
+      }
+      if (session.playerTwo && !session.isStarted) {
+        await updateDoc(doc(sessionsRef, session.id), {
+          isStarted: true
+        })
+        navigateTo(`/lingua-vault/jouer/${session.id}`)
+      }
+    })
+
+    return () => unsubscribe()
+  }
+})
+
 </script>

@@ -44,7 +44,7 @@
           </v-btn>
         </v-col>
       </template>
-      <v-col cols="12" class="text-center">
+      <v-col v-if="session.isFinished" cols="12" class="text-center">
         <v-btn color="blue" to="/lingua-vault/jouer">
           Retour au menu
         </v-btn>
@@ -215,15 +215,37 @@ const stopGame = async () => {
   }
 }
 
+const isWordMatch = (trueWord: string, testedWord: string) => {
+  const trueWordWithoutAccent = trueWord.normalize('NFD').replace(/[\u0300-\u036F]/g, '').toLocaleLowerCase()
+  const testedWordWithoutAccent = testedWord.normalize('NFD').replace(/[\u0300-\u036F]/g, '').toLocaleLowerCase()
+
+  if (trueWord.length > 5 && testedWord.length > 5) {
+    let errorCount = 0
+
+    for (let i = 0; i < testedWordWithoutAccent.length; i++) {
+      if (testedWordWithoutAccent[i] !== trueWordWithoutAccent[i]) {
+        errorCount++
+        if (errorCount > 1) {
+          return false
+        }
+      }
+    }
+    return true
+  } else {
+    return trueWordWithoutAccent === testedWordWithoutAccent
+  }
+}
+
 // Watch
 
 watch(
-  () => words.value?.words,
+  () => words.value?.testedWords,
   async () => {
+    if (words.value?.testedWords?.length === 0) { return }
     const currentWord = words.value!.words[getTurns.value - 1].word
     const testedWords = words.value?.testedWords || []
 
-    if (testedWords.includes(currentWord)) {
+    if (isWordMatch(currentWord, testedWords[testedWords.length - 1])) {
       notifier({ content: 'Bravo !', color: 'success' })
       save()
       isWin.value = true
@@ -236,7 +258,7 @@ watch(
           isFinished: true
         })
       }
-    } else if (!testedWords.includes(currentWord) && testedWords.length === 4) {
+    } else if (!isWordMatch(currentWord, testedWords[testedWords.length - 1]) && testedWords.length === 4) {
       notifier({ content: 'Vous avez perdu', color: 'error' })
       save()
       await updateDoc(sessionRef, {
@@ -287,7 +309,9 @@ watch(
         remainingTurns: remainingTurns.value!.remainingTurns - 1
       })
     } else if (session.value?.isPlayerOneContinue === false && session.value?.isPlayerTwoContinue === false) {
-      navigateTo('/lingua-vault/jouer')
+      await updateDoc(sessionRef, {
+        isFinished: true
+      })
     }
   }
 )

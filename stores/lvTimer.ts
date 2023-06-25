@@ -8,12 +8,12 @@ export const useLvTimerStore = defineStore('lvTimer', () => {
   const isRunning = computed(() => intervalId.value !== null)
 
   const start = () => {
-    timer.value = 90
+    timer.value = 60
     savedTimer.value = 0
     intervalId.value = setInterval(() => {
       if (timer.value > 0) {
         timer.value--
-        linearProgress.value = (timer.value / 90) * 100
+        linearProgress.value = (timer.value / 60) * 100
       } else {
         stop()
       }
@@ -28,7 +28,7 @@ export const useLvTimerStore = defineStore('lvTimer', () => {
   }
 
   const save = () => {
-    savedTimer.value = 90 - timer.value
+    savedTimer.value = 60 - timer.value
     stop()
   }
 
