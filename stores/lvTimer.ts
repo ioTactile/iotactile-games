@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 export const useLvTimerStore = defineStore('lvTimer', () => {
   const timer = ref<number>(0)
   const savedTimer = ref<number>(0)
+  // const comingTime = ref<number>(0)
+  // const leavedTime = ref<number>(0)
   const linearProgress = ref<number>(0)
   const intervalId = ref<NodeJS.Timeout|null>(null)
   const isRunning = computed(() => intervalId.value !== null)
@@ -31,6 +33,21 @@ export const useLvTimerStore = defineStore('lvTimer', () => {
     savedTimer.value = 60 - timer.value
     stop()
   }
+
+  // onMounted(() => {
+  //   comingTime.value = Date.now()
+
+  //   if (leavedTime.value > 0) {
+  //     const timeDiff = Math.floor((leavedTime.value - comingTime.value) / 1000)
+  //     if (timeDiff > 0) {
+  //       timer.value = timer.value - timeDiff
+  //     }
+  //   }
+  // })
+
+  // onUnmounted(() => {
+  //   leavedTime.value = Date.now()
+  // })
 
   return {
     timer,
