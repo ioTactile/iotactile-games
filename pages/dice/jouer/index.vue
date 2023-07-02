@@ -223,7 +223,7 @@ const checkScoreboard = async () => {
   if (scoreboard.length === 0) {
     const username = await getUsername()
     await setDoc(doc(scoreboardRef, user.value?.uid), {
-      userId: user.value?.uid,
+      userId: user.value!.uid,
       username,
       games: 0,
       maxScore: 0,

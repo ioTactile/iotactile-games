@@ -507,42 +507,48 @@ watch(isFinishedLocal, async (newValue) => {
   }
 })
 
-watch(remainingTurns, async (newValue) => {
-  if (newValue && newValue.remainingTurns === 0) {
-    await updateDoc(sessionRef, { isFinished: true })
-    isFinishedLocal.value = true
+watch(
+  () => remainingTurns.value?.remainingTurns,
+  async (newValue) => {
+    if (newValue && newValue === 0) {
+      await updateDoc(sessionRef, { isFinished: true })
+      isFinishedLocal.value = true
 
-    const scoresDoc = await getDoc(scoresRef)
-    if (!scoresDoc.exists()) {
-      return
+      const scoresDoc = await getDoc(scoresRef)
+      if (!scoresDoc.exists()) {
+        return
+      }
+      scores.value = scoresDoc.data()
     }
-    scores.value = scoresDoc.data()
-  }
-})
+  })
 
-watch(cups, async (newValue) => {
-  if (newValue && newValue.tries !== 3) {
-    hideDiceOnBoard.value = true
-    soundService.playSound('shakeRoll')
-    await sleep(500)
-    shakeClass.value = 'shake'
-    await sleep(1800)
-    shakeClass.value = ''
-    await sleep(100)
-    hideDiceOnBoard.value = false
-  }
-})
+watch(
+  () => cups.value?.tries,
+  async (newValue, oldValue) => {
+    if (newValue !== undefined && oldValue !== undefined &&
+    newValue !== 3) {
+      hideDiceOnBoard.value = true
+      soundService.playSound('shakeRoll')
+      await sleep(500)
+      shakeClass.value = 'shake'
+      await sleep(1800)
+      shakeClass.value = ''
+      await sleep(100)
+      hideDiceOnBoard.value = false
+    }
+  })
 
-watch(playerTurn, (newValue) => {
-  if (
-    newValue &&
-    newValue.playerId === user.value?.uid &&
+watch(
+  () => playerTurn.value?.playerId,
+  (newValue, oldValue) => {
+    if (newValue && oldValue &&
+    newValue === user.value?.uid &&
     session.value?.isStarted &&
     !session.value?.isFinished
-  ) {
-    soundService.playSound('notification')
-  }
-})
+    ) {
+      soundService.playSound('notification')
+    }
+  })
 
 watch(volume, (newValue) => {
   if (newValue === 0) {
@@ -552,14 +558,17 @@ watch(volume, (newValue) => {
   }
 })
 
-watch(chat, (newValue) => {
-  if (newValue && newValue.messages.length > 0) {
-    const lastMessage = newValue.messages[newValue.messages.length - 1]
-    if (lastMessage.userId !== user.value?.uid) {
-      soundService.playSound('message')
+watch(
+  () => chat.value?.messages,
+  (newValue, oldValue) => {
+    if (newValue && oldValue &&
+    newValue.length > 0) {
+      const lastMessage = newValue[newValue.length - 1]
+      if (lastMessage.userId !== user.value?.uid) {
+        soundService.playSound('message')
+      }
     }
-  }
-})
+  })
 
 // Computed values
 
@@ -687,7 +696,7 @@ const rollDice = async (tries: number) => {
   }
 
   if (playerTurn.value.playerId !== user.value.uid) {
-    notifier({ content: 'Attends ton tour', color: 'error' })
+    notifier({ content: 'Tu dois attendre ton tour', color: 'error' })
     return
   }
 
@@ -701,7 +710,7 @@ const rollDice = async (tries: number) => {
 
   if ((cups.value.tries === 3 && tries === 2) || (cups.value.tries === 2 && tries === 1)) {
     notifier({
-      content: 'Lances les dés du gobelet supérieur',
+      content: 'Tu dois d\'abord lancer les dés du gobelet supérieur',
       color: 'error'
     })
     return
@@ -710,26 +719,31 @@ const rollDice = async (tries: number) => {
   const rollDices = dices.value
   const diceOnBoard = rollDices.dices ? rollDices.dices.filter((dice: Dice) => dice.isOnBoard === true) : []
 
+  await updateDoc(cupsRef, { tries: tries - 1 })
+
   if (diceOnBoard.length === 0) {
     rollDices.dices = []
 
-    for (let i = 0; i < 5; i++) {
-      const dice = trueRandom()
-      rollDices.dices.push({
-        id: i,
-        face: dice,
-        isOnBoard: true
-      })
-    }
+    setTimeout(() => {
+      for (let i = 0; i < 5; i++) {
+        const dice = trueRandom()
+        rollDices.dices.push({
+          id: i,
+          face: dice,
+          isOnBoard: true
+        })
+      }
+    }, 2300)
   } else {
-    for (let i = 0; i < diceOnBoard.length; i++) {
-      const dice = trueRandom()
-      rollDices.dices[diceOnBoard[i].id].face = dice
-    }
+    setTimeout(() => {
+      for (let i = 0; i < diceOnBoard.length; i++) {
+        const dice = trueRandom()
+        rollDices.dices[diceOnBoard[i].id].face = dice
+      }
+    }, 2300)
   }
 
-  await updateDoc(cupsRef, { tries: tries - 1 })
-  await sleep(2300)
+  // await sleep(2300)
   await updateDoc(dicesRef, rollDices)
 }
 
@@ -763,7 +777,7 @@ const manipulateDice = async (id: number, action: 'add' | 'remove') => {
   }
 
   if (playerTurn.value.playerId !== user.value.uid) {
-    notifier({ content: 'Attends ton tour', color: 'error' })
+    notifier({ content: 'Tu dois attendre ton tour', color: 'error' })
     return
   }
 

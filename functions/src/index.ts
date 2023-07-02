@@ -10,5 +10,5 @@ export {removeAdmin} from "./removeAdmin.js";
 export {onDiceSessionEnd} from "./onDiceSessionEnd.js";
 
 // PubSub functions
-export {deleteExpiredDiceSession} from "./deleteExpiredDiceSession.js";
+export {deleteExpiredSessions} from "./deleteExpiredSessions.js";
 

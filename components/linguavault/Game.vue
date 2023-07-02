@@ -240,8 +240,8 @@ const isWordMatch = (trueWord: string, testedWord: string) => {
 
 watch(
   () => words.value?.testedWords,
-  async () => {
-    if (words.value?.testedWords?.length === 0) { return }
+  async (newValue) => {
+    if (newValue && newValue.length === 0) { return }
     const currentWord = words.value!.words[getTurns.value - 1].word
     const testedWords = words.value?.testedWords || []
 
@@ -276,8 +276,8 @@ watch(
 
 watch(
   () => remainingTime.value,
-  async () => {
-    if (remainingTime.value === 0) {
+  async (newValue) => {
+    if (newValue && newValue === 0) {
       notifier({ content: 'Temps écoulé', color: 'error' })
       await updateDoc(sessionRef, {
         isRoundFinished: true
@@ -288,8 +288,9 @@ watch(
 
 watch(
   () => session.value,
-  async () => {
-    if (session.value?.isPlayerOneContinue && session.value?.isPlayerTwoContinue) {
+  async (newValue) => {
+    if (newValue && newValue.isPlayerOneContinue &&
+    newValue.isPlayerTwoContinue) {
       isWin.value = false
 
       await updateDoc(sessionRef, {
@@ -308,14 +309,15 @@ watch(
       await updateDoc(remainingTurnsRef, {
         remainingTurns: remainingTurns.value!.remainingTurns - 1
       })
-    } else if (session.value?.isPlayerOneContinue === false && session.value?.isPlayerTwoContinue === false) {
+    } else if (newValue &&
+    newValue.isPlayerOneContinue === false &&
+    newValue.isPlayerTwoContinue === false) {
       await updateDoc(sessionRef, {
         isFinished: true
       })
     }
   }
 )
-
 </script>
 
 <style scoped>
