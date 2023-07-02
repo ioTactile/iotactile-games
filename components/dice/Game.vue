@@ -61,7 +61,7 @@
                       :is-fullscreen="isFullscreen"
                       :class="isSoundIconHover ? 'volume-fullscreen-hover' : 'volume-fullscreen'"
                       @update:volume="updateVolume"
-                      @hoverEvent="isSoundIconHover = $event"
+                      @hover-event="isSoundIconHover = $event"
                     />
                   </div>
                   <div class="cup-one-container">
@@ -507,10 +507,9 @@ watch(isFinishedLocal, async (newValue) => {
   }
 })
 
-watch(
-  () => remainingTurns.value?.remainingTurns,
+watch(remainingTurns,
   async (newValue) => {
-    if (newValue && newValue === 0) {
+    if (newValue && newValue.remainingTurns === 0) {
       await updateDoc(sessionRef, { isFinished: true })
       isFinishedLocal.value = true
 
@@ -685,12 +684,12 @@ const rollDice = async (tries: number) => {
     return
   }
 
-  if (session.value.isStarted === false) {
+  if (!session.value.isStarted) {
     notifier({ content: "La partie n'a pas encore commencé", color: 'error' })
     return
   }
 
-  if (session.value.isFinished === true) {
+  if (session.value.isFinished) {
     notifier({ content: 'La partie est terminée', color: 'error' })
     return
   }
@@ -717,33 +716,31 @@ const rollDice = async (tries: number) => {
   }
 
   const rollDices = dices.value
-  const diceOnBoard = rollDices.dices ? rollDices.dices.filter((dice: Dice) => dice.isOnBoard === true) : []
+  const diceOnBoard = rollDices.dices ? rollDices.dices.filter((dice: Dice) => dice.isOnBoard) : []
 
   await updateDoc(cupsRef, { tries: tries - 1 })
 
-  if (diceOnBoard.length === 0) {
-    rollDices.dices = []
-
+  await new Promise<void>((resolve) => {
     setTimeout(() => {
-      for (let i = 0; i < 5; i++) {
-        const dice = trueRandom()
-        rollDices.dices.push({
-          id: i,
-          face: dice,
-          isOnBoard: true
-        })
+      if (diceOnBoard.length === 0) {
+        rollDices.dices = []
+        for (let i = 0; i < 5; i++) {
+          const dice = trueRandom()
+          rollDices.dices.push({
+            id: i,
+            face: dice,
+            isOnBoard: true
+          })
+        }
+      } else {
+        for (const dice of diceOnBoard) {
+          dice.face = trueRandom()
+        }
       }
+      resolve()
     }, 2300)
-  } else {
-    setTimeout(() => {
-      for (let i = 0; i < diceOnBoard.length; i++) {
-        const dice = trueRandom()
-        rollDices.dices[diceOnBoard[i].id].face = dice
-      }
-    }, 2300)
-  }
+  })
 
-  // await sleep(2300)
   await updateDoc(dicesRef, rollDices)
 }
 
