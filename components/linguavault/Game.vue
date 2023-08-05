@@ -163,33 +163,33 @@ const switchPlayerTurn = async () => {
   })
 }
 
-const switchPlayerRole = async () => {
-  if (!session.value?.playerTwo) { return }
+// const switchPlayerRole = async () => {
+//   if (!session.value?.playerTwo) { return }
 
-  const newPlayerOneIsFinder = !session.value?.playerOne.isFinder
-  const newPlayerTwoIsFinder = !session.value?.playerTwo.isFinder
+//   const newPlayerOneIsFinder = !session.value?.playerOne.isFinder
+//   const newPlayerTwoIsFinder = !session.value?.playerTwo.isFinder
 
-  const updatedPlayerOne = {
-    ...session.value.playerOne,
-    isFinder: newPlayerOneIsFinder
-  }
+//   const updatedPlayerOne = {
+//     ...session.value.playerOne,
+//     isFinder: newPlayerOneIsFinder
+//   }
 
-  const updatedPlayerTwo = {
-    ...session.value.playerTwo,
-    isFinder: newPlayerTwoIsFinder
-  }
+//   const updatedPlayerTwo = {
+//     ...session.value.playerTwo,
+//     isFinder: newPlayerTwoIsFinder
+//   }
 
-  await updateDoc(sessionRef, {
-    playerOne: updatedPlayerOne,
-    playerTwo: updatedPlayerTwo
-  })
+//   await updateDoc(sessionRef, {
+//     playerOne: updatedPlayerOne,
+//     playerTwo: updatedPlayerTwo
+//   })
 
-  await updateDoc(playerTurnRef, {
-    playerId: session.value?.playerOne.isFinder
-      ? session.value?.playerOne.id
-      : session.value?.playerTwo.id
-  })
-}
+//   await updateDoc(playerTurnRef, {
+//     playerId: session.value?.playerOne.isFinder
+//       ? session.value?.playerOne.id
+//       : session.value?.playerTwo.id
+//   })
+// }
 
 const continueGame = async () => {
   if (user.value?.uid === session.value?.playerOne.id) {
@@ -288,33 +288,33 @@ watch(
 
 watch(
   () => session.value,
-  async (newValue) => {
+  (newValue) => {
     if (newValue && newValue.isPlayerOneContinue &&
     newValue.isPlayerTwoContinue) {
       isWin.value = false
 
-      await updateDoc(sessionRef, {
-        isPlayerOneContinue: null,
-        isPlayerTwoContinue: null,
-        isRoundFinished: false
-      })
+      //   await updateDoc(sessionRef, {
+      //     isPlayerOneContinue: null,
+      //     isPlayerTwoContinue: null,
+      //     isRoundFinished: false
+      //   })
 
-      switchPlayerRole()
+      //   switchPlayerRole()
 
-      await updateDoc(wordsRef, {
-        testedWords: [],
-        clues: []
-      })
+      //   await updateDoc(wordsRef, {
+      //     testedWords: [],
+      //     clues: []
+      //   })
 
-      await updateDoc(remainingTurnsRef, {
-        remainingTurns: remainingTurns.value!.remainingTurns - 1
-      })
-    } else if (newValue &&
-    newValue.isPlayerOneContinue === false &&
-    newValue.isPlayerTwoContinue === false) {
-      await updateDoc(sessionRef, {
-        isFinished: true
-      })
+    //   await updateDoc(remainingTurnsRef, {
+    //     remainingTurns: remainingTurns.value!.remainingTurns - 1
+    //   })
+    // } else if (newValue &&
+    // newValue.isPlayerOneContinue === false &&
+    // newValue.isPlayerTwoContinue === false) {
+    //   await updateDoc(sessionRef, {
+    //     isFinished: true
+    //   })
     }
   }
 )

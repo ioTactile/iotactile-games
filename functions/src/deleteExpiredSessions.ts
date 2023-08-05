@@ -6,7 +6,7 @@ export const deleteExpiredSessions = functions
     .region("europe-west3")
     .pubsub.schedule("0 0 * * *")
     .timeZone("Europe/Paris")
-    .onRun(async (context) => {
+    .onRun(async () => {
       const firestore = getFirestore();
       const now = Timestamp.now();
       const expirationDate = new Date(now.toMillis() - 24 * 60 * 60 * 1000);

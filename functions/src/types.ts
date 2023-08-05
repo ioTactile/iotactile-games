@@ -285,7 +285,7 @@ export const linguaVaultSessionRemainingTurnsConverter = {
   },
 };
 
-export const linguaVaultSessionPlayerTurn = {
+export const linguaVaultSessionPlayerTurnConverter = {
   toFirestore:
   (playerTurn: LinguaVaultSessionPlayerTurn): DocumentData => playerTurn,
   fromFirestore(
