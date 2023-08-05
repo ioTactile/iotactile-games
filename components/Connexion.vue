@@ -7,7 +7,7 @@
   >
     <v-card color="main">
       <v-card-title class="d-flex align-center">
-        <span class="text-h5 mr-auto"> Venez vous amuser ! </span>
+        <span class="text-h5 mr-auto"> Viens t'amuser! </span>
         <v-btn
           :icon="mdiClose"
           variant="text"
@@ -217,7 +217,7 @@ const login = async () => {
         errMessage = 'Mot de passe incorrect'
         break
       default:
-        errMessage = 'une erreur est survenue'
+        errMessage = 'Une erreur est survenue'
         break
     }
     notifier({ content: errMessage, color: 'error', error })
