@@ -9,7 +9,7 @@ import {
 
 export const onLinguaVaultSessionRematch = functions
     .region("europe-west3")
-    .firestore.document("linguaVaultSessions/{sessiontId}")
+    .firestore.document("linguaVaultSessions/{sessionId}")
     .onUpdate(async (change, context) => {
       if (!change.after.exists) {
         return;
@@ -17,7 +17,9 @@ export const onLinguaVaultSessionRematch = functions
 
       const after = change.after.data();
 
-      if (!after.isFinished) {
+      functions.logger.log("onLinguaVaultSessionRematch", after);
+
+      if (!after.isFinished || !after.isRoundFinished) {
         return;
       }
 
@@ -27,7 +29,7 @@ export const onLinguaVaultSessionRematch = functions
       }
 
       const firestore = getFirestore();
-      const sessionId = context.params.sessiontId;
+      const sessionId = context.params.sessionId;
 
       const sessionRef = firestore
           .collection("linguaVaultSessions")
@@ -58,6 +60,9 @@ export const onLinguaVaultSessionRematch = functions
 
       if (after.isPlayerOneContinue === true &&
         after.isPlayerTwoContinue === true) {
+        functions.logger.log("onLinguaVaultSessionRematch",
+            "both players continue");
+
         await sessionRef.update({
           isRoundFinished: false,
           isPlayerOneContinue: null,
