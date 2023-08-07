@@ -84,6 +84,14 @@ export const onLinguaVaultSessionRematch = functions
           isFinder: newPlayerTwoIsFinder,
         };
 
+        await sessionRef.update({
+          isRoundFinished: false,
+          isPlayerOneContinue: null,
+          isPlayerTwoContinue: null,
+          playerOne: updatePlayerOne,
+          playerTwo: updatePlayerTwo,
+        });
+
         await playerTurnRef.update({
           playerId: session!.playerOne.isFinder ?
           session!.playerTwo!.id :
@@ -93,14 +101,6 @@ export const onLinguaVaultSessionRematch = functions
         await wordsRef.update({
           testedWords: [],
           clues: [],
-        });
-
-        await sessionRef.update({
-          isRoundFinished: false,
-          isPlayerOneContinue: null,
-          isPlayerTwoContinue: null,
-          playerOne: updatePlayerOne,
-          playerTwo: updatePlayerTwo,
         });
       } else if (after.isPlayerOneContinue === false &&
         after.isPlayerTwoContinue === false) {
