@@ -17,23 +17,17 @@ export const onLinguaVaultSessionRematch = functions
 
       const after = change.after.data();
 
-      functions.logger.log("onLinguaVaultSessionRematch", after);
-
-      if (!after.isFinished || !after.isRoundFinished) {
+      if (after.isFinished || !after.isRoundFinished) {
         return;
       }
 
       if (after.isPlayerOneContinue === null ||
         after.isPlayerTwoContinue === null) {
-        functions.logger.log("onLinguaVaultSessionRematch",
-            "both players haven't decided yet");
         return;
       }
 
       const firestore = getFirestore();
       const sessionId = context.params.sessionId;
-
-      functions.logger.log("onLinguaVaultSessionRematch", sessionId);
 
       const sessionRef = firestore
           .collection("linguaVaultSessions")
@@ -67,9 +61,6 @@ export const onLinguaVaultSessionRematch = functions
 
       if (after.isPlayerOneContinue === true &&
         after.isPlayerTwoContinue === true) {
-        functions.logger.log("onLinguaVaultSessionRematch",
-            "both players continue");
-
         await sessionRef.update({
           isRoundFinished: false,
           isPlayerOneContinue: null,
@@ -116,9 +107,6 @@ export const onLinguaVaultSessionRematch = functions
         });
       } else if (after.isPlayerOneContinue === false &&
         after.isPlayerTwoContinue === false) {
-        functions.logger.log("onLinguaVaultSessionRematch",
-            "both players don't continue");
-
         await sessionRef.update({
           isFinished: true,
         });
