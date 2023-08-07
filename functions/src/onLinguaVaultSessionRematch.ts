@@ -102,8 +102,8 @@ export const onLinguaVaultSessionRematch = functions
 
         await playerTurnRef.update({
           playerId: session!.playerOne.isFinder ?
-            session!.playerOne.id :
-            session!.playerTwo!.id,
+          session!.playerTwo!.id :
+            session!.playerOne.id,
         });
       } else if (after.isPlayerOneContinue === false &&
         after.isPlayerTwoContinue === false) {
