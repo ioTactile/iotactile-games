@@ -291,7 +291,9 @@ watch(
   (newValue) => {
     if (newValue && newValue.isPlayerOneContinue &&
     newValue.isPlayerTwoContinue && !newValue.isRoundFinished) {
-      isWin.value = false
+      setTimeout(() => {
+        isWin.value = false
+      }, 200)
 
       //   await updateDoc(sessionRef, {
       //     isPlayerOneContinue: null,

@@ -61,17 +61,6 @@ export const onLinguaVaultSessionRematch = functions
 
       if (after.isPlayerOneContinue === true &&
         after.isPlayerTwoContinue === true) {
-        await sessionRef.update({
-          isRoundFinished: false,
-          isPlayerOneContinue: null,
-          isPlayerTwoContinue: null,
-        });
-
-        await wordsRef.update({
-          testedWords: [],
-          clues: [],
-        });
-
         const remainingTurnsDoc = await remainingTurnsRef.get();
         const remainingTurns = remainingTurnsDoc.data();
 
@@ -95,15 +84,23 @@ export const onLinguaVaultSessionRematch = functions
           isFinder: newPlayerTwoIsFinder,
         };
 
-        await sessionRef.update({
-          playerOne: updatePlayerOne,
-          playerTwo: updatePlayerTwo,
-        });
-
         await playerTurnRef.update({
           playerId: session!.playerOne.isFinder ?
           session!.playerTwo!.id :
             session!.playerOne.id,
+        });
+
+        await wordsRef.update({
+          testedWords: [],
+          clues: [],
+        });
+
+        await sessionRef.update({
+          isRoundFinished: false,
+          isPlayerOneContinue: null,
+          isPlayerTwoContinue: null,
+          playerOne: updatePlayerOne,
+          playerTwo: updatePlayerTwo,
         });
       } else if (after.isPlayerOneContinue === false &&
         after.isPlayerTwoContinue === false) {
