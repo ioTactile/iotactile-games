@@ -26,7 +26,7 @@
             <v-col cols="12" md="6" class="right-side-container pb-0">
               <v-row class="h-100">
                 <v-col cols="10">
-                  <div v-if="shakeClass" class="mt-16 ml-16">
+                  <div v-if="shakeClass" class="shake-container">
                     <v-img
                       src="/cup-animation.png"
                       alt="Animation gobelet"
@@ -1091,6 +1091,14 @@ const leaveGame = async () => {
 }
 
 /* shaking */
+
+.shake-container {
+  position: absolute;
+  z-index: 9999;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 .shake {
   animation: shake 0.5s ease-in-out 0s 3;
 }
