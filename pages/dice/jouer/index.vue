@@ -30,12 +30,7 @@
           </v-btn>
         </v-col>
         <v-divider class="mt-4" />
-        <v-col
-          v-if="sessionsNotStarted.length > 0"
-          cols="12"
-          class="text-h4 my-4"
-          align="center"
-        >
+        <v-col v-if="sessionsNotStarted.length > 0" cols="12" class="text-h4 my-4" align="center">
           <span>Rejoindre une session</span>
         </v-col>
         <v-col
@@ -61,18 +56,10 @@
               </div>
             </v-card-text>
             <v-card-actions class="d-flex justify-space-between">
-              <v-btn
-                color="error"
-                :loading="leaving"
-                @click="leave(session.id)"
-              >
+              <v-btn color="error" :loading="leaving" @click="leave(session.id)">
                 Quitter
               </v-btn>
-              <v-btn
-                color="tertiary"
-                :loading="loading"
-                @click="join(session.id)"
-              >
+              <v-btn color="tertiary" :loading="loading" @click="join(session.id)">
                 Rejoindre
               </v-btn>
             </v-card-actions>
@@ -106,11 +93,7 @@
                 </div>
               </v-card-text>
               <v-card-actions class="d-flex justify-end">
-                <v-btn
-                  color="tertiary"
-                  :loading="loading"
-                  @click="join(session.id)"
-                >
+                <v-btn color="tertiary" :loading="loading" @click="join(session.id)">
                   Rejoindre
                 </v-btn>
               </v-card-actions>
@@ -165,34 +148,23 @@ const db = useFirestore()
 
 // Firestore
 
-const sessionsRef = collection(db, 'diceSessions').withConverter(
-  diceSessionConverter
-)
+const sessionsRef = collection(db, 'diceSessions').withConverter(diceSessionConverter)
 
-const sessionsNotStarted = useCollection(
-  query(sessionsRef, where('isStarted', '==', false))
-)
+const sessionsNotStarted = useCollection(query(sessionsRef, where('isStarted', '==', false)))
 
 const sessionStarted = useCollection(
-  query(
-    sessionsRef,
-    where('isStarted', '==', true),
-    where('isFinished', '==', false)
-  )
+  query(sessionsRef, where('isStarted', '==', true), where('isFinished', '==', false))
 )
 
 const playerTurnRef = collection(db, 'diceSessionPlayerTurn').withConverter(
   diceSessionPlayerTurnConverter
 )
 
-const remainingTurnsRef = collection(
-  db,
-  'diceSessionRemainingTurns'
-).withConverter(diceSessionRemainingTurnsConverter)
-
-const dicesRef = collection(db, 'diceSessionDices').withConverter(
-  diceSessionDicesConverter
+const remainingTurnsRef = collection(db, 'diceSessionRemainingTurns').withConverter(
+  diceSessionRemainingTurnsConverter
 )
+
+const dicesRef = collection(db, 'diceSessionDices').withConverter(diceSessionDicesConverter)
 
 const playerTriesRef = collection(db, 'diceSessionPlayerTries').withConverter(
   diceSessionPlayerTriesConverter
@@ -200,9 +172,7 @@ const playerTriesRef = collection(db, 'diceSessionPlayerTries').withConverter(
 
 const scoresRef = collection(db, 'diceSessionScores')
 
-const scoreboardRef = collection(db, 'diceScoreboard').withConverter(
-  diceScoreboardConverter
-)
+const scoreboardRef = collection(db, 'diceScoreboard').withConverter(diceScoreboardConverter)
 
 // Refs
 
@@ -214,10 +184,7 @@ const leaving = ref(false)
 // Methods
 
 const checkScoreboard = async () => {
-  const scoreboardQuery = query(
-    scoreboardRef,
-    where('userId', '==', user.value?.uid)
-  )
+  const scoreboardQuery = query(scoreboardRef, where('userId', '==', user.value?.uid))
   const scoreboardSnapshot = await getDocs(scoreboardQuery)
   const scoreboard = scoreboardSnapshot.docs.map(doc => doc.data())
   if (scoreboard.length === 0) {
@@ -282,7 +249,11 @@ const create = async () => {
   id.value = doc(sessionsRef).id
 
   try {
-    const sessionsQuery = query(sessionsRef, where('isFinished', '==', false), where('isStarted', '==', true))
+    const sessionsQuery = query(
+      sessionsRef,
+      where('isFinished', '==', false),
+      where('isStarted', '==', true)
+    )
     const sessionsSnapshot = await getDocs(sessionsQuery)
     const sessions = sessionsSnapshot.docs.map(doc => doc.data())
     const userInSession = sessions.find(session =>
@@ -457,20 +428,11 @@ const join = async (sessionId: string) => {
     await updateDoc(sessionRef, session)
 
     if (session.players.length === 2) {
-      await updateDoc(
-        doc(scoresRef, sessionId),
-        { playerTwo: initScores() }
-      )
+      await updateDoc(doc(scoresRef, sessionId), { playerTwo: initScores() })
     } else if (session.players.length === 3) {
-      await updateDoc(
-        doc(scoresRef, sessionId),
-        { playerThree: initScores() }
-      )
+      await updateDoc(doc(scoresRef, sessionId), { playerThree: initScores() })
     } else if (session.players.length === 4) {
-      await updateDoc(
-        doc(scoresRef, sessionId),
-        { playerFour: initScores() }
-      )
+      await updateDoc(doc(scoresRef, sessionId), { playerFour: initScores() })
     }
     checkScoreboard()
   } finally {
@@ -534,9 +496,7 @@ const leave = async (sessionId: string) => {
         playerFour: deleteField()
       })
     }
-    session.players = session.players.filter(
-      player => player.id !== user.value?.uid
-    )
+    session.players = session.players.filter(player => player.id !== user.value?.uid)
 
     const joinRemainingTurnsDoc = await getDoc(remainingTurnsDoc)
     if (!joinRemainingTurnsDoc.exists()) {

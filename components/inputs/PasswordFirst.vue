@@ -21,7 +21,7 @@
         :append-inner-icon="show2 ? mdiEye : mdiEyeOff"
         :rules="[
           (v: any) => v === password || 'Les mots de passe doivent être similaire',
-          ...rules,
+          ...rules
         ]"
         :type="show2 ? 'text' : 'password'"
         label="Confirmer le mot de passe"

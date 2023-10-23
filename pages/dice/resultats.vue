@@ -43,7 +43,7 @@
                   {{ player.victories }}
                 </td>
                 <td class="text-center">
-                  {{ numberFormatter(player.victories / player.games * 100) || 0 }}%
+                  {{ numberFormatter((player.victories / player.games) * 100) || 0 }}%
                 </td>
                 <td class="text-center">
                   {{ player.maxScore }}
@@ -85,7 +85,13 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(session, i) in sessions" :key="session.id" class="scoreboard" hover @click="getScoreboard(session)">
+              <tr
+                v-for="(session, i) in sessions"
+                :key="session.id"
+                class="scoreboard"
+                hover
+                @click="getScoreboard(session)"
+              >
                 <td class="text-center">
                   {{ sessions.length - i }}
                 </td>
@@ -93,11 +99,17 @@
                   <div class="d-flex flex-column flex-sm-row justify-center">
                     <div class="d-flex flex-column" :class="session.playerThree ? 'pr-sm-2' : ''">
                       <span>{{ session.playerOne.username || 'Joueur 1' }}</span>
-                      <span v-if="session.playerTwo">{{ session.playerTwo.username || 'Joueur 2' }}</span>
+                      <span v-if="session.playerTwo">{{
+                        session.playerTwo.username || 'Joueur 2'
+                      }}</span>
                     </div>
                     <div class="d-flex flex-column">
-                      <span v-if="session.playerThree">{{ session.playerThree.username || 'Joueur 3' }}</span>
-                      <span v-if="session.playerFour">{{ session.playerFour.username || 'Joueur 4' }}</span>
+                      <span v-if="session.playerThree">{{
+                        session.playerThree.username || 'Joueur 3'
+                      }}</span>
+                      <span v-if="session.playerFour">{{
+                        session.playerFour.username || 'Joueur 4'
+                      }}</span>
                     </div>
                   </div>
                 </td>
@@ -110,7 +122,11 @@
         </v-col>
       </v-row>
 
-      <dice-result-scoreboard v-if="scoreboardSession" v-model="openScoreboard" :session="scoreboardSession" />
+      <dice-result-scoreboard
+        v-if="scoreboardSession"
+        v-model="openScoreboard"
+        :session="scoreboardSession"
+      />
     </v-container>
   </div>
 </template>
@@ -118,7 +134,12 @@
 <script lang="ts" setup async>
 import { VContainer, VRow, VCol, VDivider, VTable, VBtn } from 'vuetify/components'
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore'
-import { diceScoreboardConverter, LocalDiceScoreboardType, diceSessionScoreConverter, LocalDiceSessionScoreType } from '~/stores'
+import {
+  diceScoreboardConverter,
+  LocalDiceScoreboardType,
+  diceSessionScoreConverter,
+  LocalDiceSessionScoreType
+} from '~/stores'
 
 // Vuefire
 
@@ -140,10 +161,14 @@ const openScoreboard = ref(false)
 // onMounted
 
 onMounted(async () => {
-  if (!user.value) { return }
+  if (!user.value) {
+    return
+  }
   const playerRef = doc(db, 'diceScoreboard', user.value.uid).withConverter(diceScoreboardConverter)
   const playerDoc = await getDoc(playerRef)
-  if (!playerDoc.exists()) { return }
+  if (!playerDoc.exists()) {
+    return
+  }
   player.value = playerDoc.data()
 })
 
@@ -159,7 +184,9 @@ watch(openScoreboard, (newValue) => {
 
 const getDiceSession = async () => {
   const sessionsDocs = await getDocs(sessionsRef)
-  if (sessionsDocs.empty) { return }
+  if (sessionsDocs.empty) {
+    return
+  }
   const sessionsData = sessionsDocs.docs.map(doc => doc.data())
 
   const sessionsFiltered = sessionsData.filter((session) => {
@@ -178,10 +205,14 @@ const getDiceSession = async () => {
 }
 
 const getScoreboard = async (session: LocalDiceSessionScoreType) => {
-  if (!user.value) { return }
+  if (!user.value) {
+    return
+  }
   const sessionRef = doc(sessionsRef, session.id)
   const sessionDoc = await getDoc(sessionRef)
-  if (!sessionDoc.exists()) { return }
+  if (!sessionDoc.exists()) {
+    return
+  }
 
   scoreboardSession.value = sessionDoc.data()
   openScoreboard.value = true

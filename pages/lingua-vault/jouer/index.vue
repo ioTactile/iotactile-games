@@ -30,12 +30,7 @@
           </v-btn>
         </v-col>
         <v-divider class="mt-4" />
-        <v-col
-          v-if="sessionsNotStarted.length > 0"
-          cols="12"
-          class="text-h4 my-4"
-          align="center"
-        >
+        <v-col v-if="sessionsNotStarted.length > 0" cols="12" class="text-h4 my-4" align="center">
           <span>Rejoindre une session</span>
         </v-col>
         <v-col
@@ -51,33 +46,20 @@
               <span>Session {{ i + 1 }}</span>
             </v-card-title>
             <v-card-text>
-              <div
-                class="d-flex justify-space-between text-h6"
-              >
+              <div class="d-flex justify-space-between text-h6">
                 <span>Joueur 1:</span>
                 <span>{{ session.playerOne.username }}</span>
               </div>
-              <div
-                v-if="session.playerTwo"
-                class="d-flex justify-space-between text-h6"
-              >
+              <div v-if="session.playerTwo" class="d-flex justify-space-between text-h6">
                 <span>Joueur 2:</span>
                 <span>{{ session.playerTwo.username }}</span>
               </div>
             </v-card-text>
             <v-card-actions class="d-flex justify-space-between">
-              <v-btn
-                color="error"
-                :loading="leaving"
-                @click="leave(session.id)"
-              >
+              <v-btn color="error" :loading="leaving" @click="leave(session.id)">
                 Quitter
               </v-btn>
-              <v-btn
-                color="tertiary"
-                :loading="loading"
-                @click="join(session.id)"
-              >
+              <v-btn color="tertiary" :loading="loading" @click="join(session.id)">
                 Rejoindre
               </v-btn>
             </v-card-actions>
@@ -101,26 +83,17 @@
                 <span>Session {{ i + 1 }}</span>
               </v-card-title>
               <v-card-text>
-                <div
-                  class="d-flex justify-space-between text-h6"
-                >
+                <div class="d-flex justify-space-between text-h6">
                   <span>Joueur 1:</span>
                   <span>{{ session.playerOne.username }}</span>
                 </div>
-                <div
-                  v-if="session.playerTwo"
-                  class="d-flex justify-space-between text-h6"
-                >
+                <div v-if="session.playerTwo" class="d-flex justify-space-between text-h6">
                   <span>Joueur 2:</span>
                   <span>{{ session.playerTwo.username }}</span>
                 </div>
               </v-card-text>
               <v-card-actions class="d-flex justify-end">
-                <v-btn
-                  color="tertiary"
-                  :loading="loading"
-                  @click="join(session.id)"
-                >
+                <v-btn color="tertiary" :loading="loading" @click="join(session.id)">
                   Rejoindre
                 </v-btn>
               </v-card-actions>
@@ -176,20 +149,12 @@ const db = useFirestore()
 
 // Firestore
 
-const sessionsRef = collection(db, 'linguaVaultSessions').withConverter(
-  linguaVaultSessionConverter
-)
+const sessionsRef = collection(db, 'linguaVaultSessions').withConverter(linguaVaultSessionConverter)
 
-const sessionsNotStarted = useCollection(
-  query(sessionsRef, where('isStarted', '==', false))
-)
+const sessionsNotStarted = useCollection(query(sessionsRef, where('isStarted', '==', false)))
 
 const sessionStarted = useCollection(
-  query(
-    sessionsRef,
-    where('isStarted', '==', true),
-    where('isFinished', '==', false)
-  )
+  query(sessionsRef, where('isStarted', '==', true), where('isFinished', '==', false))
 )
 
 const scoreboardRef = collection(db, 'linguaVaultScoreboard').withConverter(
@@ -208,7 +173,9 @@ const leaving = ref(false)
 const getRandomWords = async (sessionId: string): Promise<string[]> => {
   const wordsRef = doc(db, 'linguaVaultWords', 'AI8rozWXYEmchhc1pwar')
   const wordsDoc = await getDoc(wordsRef)
-  if (!wordsDoc.exists()) { return [] }
+  if (!wordsDoc.exists()) {
+    return []
+  }
   const words = wordsDoc.data().words
   const sessionRef = doc(db, 'linguaVaultSessions', sessionId)
   const sessionDoc = await getDoc(sessionRef)
@@ -224,23 +191,37 @@ const getRandomWords = async (sessionId: string): Promise<string[]> => {
   const playerTwoScoreboardDoc = await getDoc(playerTwoScoreboardRef)
   const playerTwoScoreboard = playerTwoScoreboardDoc.data()
 
-  const playerOneTotalScore = playerOneScoreboard?.scoreToGuess + playerOneScoreboard?.scoreToPropose
-  const playerTwoTotalScore = playerTwoScoreboard?.scoreToGuess + playerTwoScoreboard?.scoreToPropose
+  const playerOneTotalScore =
+    playerOneScoreboard?.scoreToGuess + playerOneScoreboard?.scoreToPropose
+  const playerTwoTotalScore =
+    playerTwoScoreboard?.scoreToGuess + playerTwoScoreboard?.scoreToPropose
 
-  const playerOneListWords = words.filter((word: Word) => word.difficulty >= playerOneTotalScore - 1000 && word.difficulty <= playerOneTotalScore + 1000)
-  const playerTwoListWords = words.filter((word: Word) => word.difficulty >= playerTwoTotalScore - 1000 && word.difficulty <= playerTwoTotalScore + 1000)
+  const playerOneListWords = words.filter(
+    (word: Word) =>
+      word.difficulty >= playerOneTotalScore - 1000 && word.difficulty <= playerOneTotalScore + 1000
+  )
+  const playerTwoListWords = words.filter(
+    (word: Word) =>
+      word.difficulty >= playerTwoTotalScore - 1000 && word.difficulty <= playerTwoTotalScore + 1000
+  )
 
-  const playerOneRandomWords = playerOneListWords.sort(() => Math.random() - Math.random()).slice(0, 2)
-  const playerTwoRandomWords = playerTwoListWords.sort(() => Math.random() - Math.random()).slice(0, 2)
+  const playerOneRandomWords = playerOneListWords
+    .sort(() => Math.random() - Math.random())
+    .slice(0, 2)
+  const playerTwoRandomWords = playerTwoListWords
+    .sort(() => Math.random() - Math.random())
+    .slice(0, 2)
 
-  return [playerOneRandomWords[0], playerTwoRandomWords[0], playerOneRandomWords[1], playerTwoRandomWords[1]]
+  return [
+    playerOneRandomWords[0],
+    playerTwoRandomWords[0],
+    playerOneRandomWords[1],
+    playerTwoRandomWords[1]
+  ]
 }
 
 const checkScoreboard = async () => {
-  const scoreboardQuery = query(
-    scoreboardRef,
-    where('userId', '==', user.value?.uid)
-  )
+  const scoreboardQuery = query(scoreboardRef, where('userId', '==', user.value?.uid))
   const scoreboardSnapshot = await getDocs(scoreboardQuery)
   const scoreboard = scoreboardSnapshot.docs.map(doc => doc.data())
   if (scoreboard.length === 0) {
@@ -277,12 +258,16 @@ const create = async () => {
   id.value = doc(sessionsRef).id
 
   try {
-    const sessionsQuery = query(sessionsRef, where('isFinished', '==', false), where('isStarted', '==', true))
+    const sessionsQuery = query(
+      sessionsRef,
+      where('isFinished', '==', false),
+      where('isStarted', '==', true)
+    )
     const sessionsSnapshot = await getDocs(sessionsQuery)
     const sessions = sessionsSnapshot.docs.map(doc => doc.data())
-    const userInSession = sessions.find(session =>
-      session.playerOne.id === user.value?.uid ||
-      session.playerTwo?.id === user.value?.uid
+    const userInSession = sessions.find(
+      session =>
+        session.playerOne.id === user.value?.uid || session.playerTwo?.id === user.value?.uid
     )
     if (userInSession) {
       notifier({
@@ -337,9 +322,9 @@ const quickJoin = async () => {
     )
     const sessionsSnapshot = await getDocs(sessionsQuery)
     const sessions = sessionsSnapshot.docs.map(doc => doc.data())
-    const userInSession = sessions.find(session =>
-      session.playerOne.id === user.value?.uid ||
-      session.playerTwo?.id === user.value?.uid
+    const userInSession = sessions.find(
+      session =>
+        session.playerOne.id === user.value?.uid || session.playerTwo?.id === user.value?.uid
     )
     if (userInSession) {
       notifier({
@@ -368,10 +353,13 @@ const quickJoin = async () => {
       id: sessionToJoin.id,
       words
     })
-    await setDoc(doc(db, 'linguaVaultSessions', sessionToJoin.id, 'remainingTurns', sessionToJoin.id), {
-      id: sessionToJoin.id,
-      remainingTurns: 4
-    })
+    await setDoc(
+      doc(db, 'linguaVaultSessions', sessionToJoin.id, 'remainingTurns', sessionToJoin.id),
+      {
+        id: sessionToJoin.id,
+        remainingTurns: 4
+      }
+    )
   } finally {
     loading.value = false
     if (sessionToJoin) {
@@ -395,8 +383,7 @@ const join = async (sessionId: string) => {
     if (!session) {
       return
     }
-    if (session.playerOne.id === user.value?.uid ||
-      session.playerTwo?.id === user.value?.uid) {
+    if (session.playerOne.id === user.value?.uid || session.playerTwo?.id === user.value?.uid) {
       navigateTo(`/lingua-vault/jouer/${sessionId}`)
       return
     }
@@ -447,12 +434,23 @@ const leave = async (sessionId: string) => {
     if (!session) {
       return
     }
-    const wordsRef = doc(db, 'linguaVaultSessions', sessionId, 'words', sessionId)
-      .withConverter(linguaVaultSessionWordsConverter)
-    const remainingTurnsRef = doc(db, 'linguaVaultSessions', sessionId, 'remainingTurns', sessionId)
-      .withConverter(linguaVaultSessionRemainingTurnsConverter)
-    const playerTurnRef = doc(db, 'linguaVaultSessions', sessionId, 'playerTurn', sessionId)
-      .withConverter(linguaVaultSessionPlayerTurnConverter)
+    const wordsRef = doc(db, 'linguaVaultSessions', sessionId, 'words', sessionId).withConverter(
+      linguaVaultSessionWordsConverter
+    )
+    const remainingTurnsRef = doc(
+      db,
+      'linguaVaultSessions',
+      sessionId,
+      'remainingTurns',
+      sessionId
+    ).withConverter(linguaVaultSessionRemainingTurnsConverter)
+    const playerTurnRef = doc(
+      db,
+      'linguaVaultSessions',
+      sessionId,
+      'playerTurn',
+      sessionId
+    ).withConverter(linguaVaultSessionPlayerTurnConverter)
 
     if (session.playerOne.id === user.value?.uid) {
       await deleteDoc(sessionRef)
@@ -497,5 +495,4 @@ watchEffect(() => {
     return () => unsubscribe()
   }
 })
-
 </script>

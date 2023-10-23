@@ -17,6 +17,8 @@ import { VApp, VMain } from 'vuetify/components'
 const user = useCurrentUser()
 
 onBeforeMount(async () => {
-  if (!user.value) { return await navigateTo('/') }
+  if (!user.value) {
+    return await navigateTo('/')
+  }
 })
 </script>

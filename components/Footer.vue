@@ -1,6 +1,7 @@
 <template>
   <div>
-    <v-footer color="secondary" class="py-4">
+    <v-divider />
+    <v-footer class="py-4 bg-background">
       <v-row justify="center" no-gutters>
         <v-btn
           v-for="(link, i) in links"
@@ -13,12 +14,19 @@
         >
           {{ link.title }}
         </v-btn>
+        <v-btn
+          color="buttonBack"
+          variant="outlined"
+          class="mx-2 mb-1"
+          :size="xs ? 'small' : 'default'"
+        >
+          <a href="mailto:jbs.io@protonmail.com" class="text-decoration-none text-buttonBack">
+            Me contacter
+          </a>
+        </v-btn>
         <v-col cols="12" class="text-center mt-4">
           © {{ new Date().getFullYear() }} - Réalisé par
-          <a
-            href="https://github.com/ioTactile"
-            class="text-decoration-none"
-          >
+          <a href="https://github.com/ioTactile" class="text-decoration-none">
             <strong class="text-tertiary">iotactile</strong>
           </a>
         </v-col>
@@ -28,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VFooter, VBtn, VRow, VCol } from 'vuetify/components'
+import { VFooter, VBtn, VRow, VCol, VDivider } from 'vuetify/components'
 import { useDisplay } from 'vuetify'
 
 // Vuetify
@@ -43,10 +51,6 @@ const links = [
   {
     title: 'À propos',
     link: '/a-propos'
-  },
-  {
-    title: 'Me contacter',
-    link: '/me-contacter'
   }
 ]
 </script>

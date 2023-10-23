@@ -5,26 +5,14 @@
         <v-table :density="isFullscreen ? 'default' : 'compact'">
           <thead>
             <tr>
-              <th
-                class="text-center border-darker bg-diceClosePrimary"
-                width="40%"
-              />
-              <th
-                class="text-center border-darker bg-diceClosePrimary"
-                width="15%"
-              >
+              <th class="text-center border-darker bg-diceClosePrimary" width="40%" />
+              <th class="text-center border-darker bg-diceClosePrimary" width="15%">
                 A
               </th>
-              <th
-                class="text-center border-darker bg-diceClosePrimary"
-                width="15%"
-              >
+              <th class="text-center border-darker bg-diceClosePrimary" width="15%">
                 {{ players.length > 1 ? 'B' : '' }}
               </th>
-              <th
-                class="text-center border-darker bg-diceClosePrimary"
-                width="15%"
-              >
+              <th class="text-center border-darker bg-diceClosePrimary" width="15%">
                 {{ players.length > 2 ? 'C' : '' }}
               </th>
               <th class="text-center bg-diceClosePrimary" width="15%">
@@ -39,9 +27,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices && isPlayerTurnOne && scores.playerOne.one === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.one === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -57,9 +43,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices && isPlayerTurnTwo && scores.playerTwo.one === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.one === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -76,11 +60,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.one === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.one === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -96,11 +76,7 @@
               <td class="text-center">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.one === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.one === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -120,9 +96,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices && isPlayerTurnOne && scores.playerOne.two === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.two === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -138,9 +112,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices && isPlayerTurnTwo && scores.playerTwo.two === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.two === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -157,11 +129,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.two === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.two === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -177,11 +145,7 @@
               <td class="text-center">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.two === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.two === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -201,9 +165,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices && isPlayerTurnOne && scores.playerOne.three === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.three === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -219,9 +181,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices && isPlayerTurnTwo && scores.playerTwo.three === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.three === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -238,11 +198,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.three === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.three === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -251,20 +207,14 @@
                   >
                     {{ threeInput }}
                   </v-btn><span v-else class="indie-flower">{{
-                    scores.playerThree.three !== null
-                      ? scores.playerThree.three
-                      : ''
+                    scores.playerThree.three !== null ? scores.playerThree.three : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.three === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.three === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -273,9 +223,7 @@
                   >
                     {{ threeInput }}
                   </v-btn><span v-else class="indie-flower">{{
-                    scores.playerFour.three !== null
-                      ? scores.playerFour.three
-                      : ''
+                    scores.playerFour.three !== null ? scores.playerFour.three : ''
                   }}</span>
                 </div>
               </td>
@@ -286,9 +234,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices && isPlayerTurnOne && scores.playerOne.four === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.four === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -304,9 +250,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices && isPlayerTurnTwo && scores.playerTwo.four === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.four === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -323,11 +267,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.four === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.four === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -336,20 +276,14 @@
                   >
                     {{ fourInput }}
                   </v-btn><span v-else class="indie-flower">{{
-                    scores.playerThree.four !== null
-                      ? scores.playerThree.four
-                      : ''
+                    scores.playerThree.four !== null ? scores.playerThree.four : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.four === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.four === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -369,9 +303,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices && isPlayerTurnOne && scores.playerOne.five === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.five === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -387,9 +319,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices && isPlayerTurnTwo && scores.playerTwo.five === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.five === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -406,11 +336,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.five === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.five === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -419,20 +345,14 @@
                   >
                     {{ fiveInput }}
                   </v-btn><span v-else class="indie-flower">{{
-                    scores.playerThree.five !== null
-                      ? scores.playerThree.five
-                      : ''
+                    scores.playerThree.five !== null ? scores.playerThree.five : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.five === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.five === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -452,9 +372,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices && isPlayerTurnOne && scores.playerOne.six === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.six === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -470,9 +388,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices && isPlayerTurnTwo && scores.playerTwo.six === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.six === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -489,11 +405,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.six === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.six === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -509,11 +421,7 @@
               <td class="text-center">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.six === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.six === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -533,35 +441,27 @@
               </td>
               <td class="text-center bg-diceClosePrimary border-darker">
                 <span class="font-weight-bold">{{
-                  checkUpperSubtotalPlayerOne !== 0
-                    ? checkUpperSubtotalPlayerOne
-                    : ''
+                  checkUpperSubtotalPlayerOne !== 0 ? checkUpperSubtotalPlayerOne : ''
                 }}</span>
               </td>
               <td class="text-center bg-diceClosePrimary border-darker">
                 <div v-if="scores.playerTwo">
                   <span class="font-weight-bold">{{
-                    checkUpperSubtotalPlayerTwo !== 0
-                      ? checkUpperSubtotalPlayerTwo
-                      : ''
+                    checkUpperSubtotalPlayerTwo !== 0 ? checkUpperSubtotalPlayerTwo : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center bg-diceClosePrimary border-darker">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
-                    checkUpperSubtotalPlayerThree !== 0
-                      ? checkUpperSubtotalPlayerThree
-                      : ''
+                    checkUpperSubtotalPlayerThree !== 0 ? checkUpperSubtotalPlayerThree : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center bg-diceClosePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
-                    checkUpperSubtotalPlayerFour !== 0
-                      ? checkUpperSubtotalPlayerFour
-                      : ''
+                    checkUpperSubtotalPlayerFour !== 0 ? checkUpperSubtotalPlayerFour : ''
                   }}</span>
                 </div>
               </td>
@@ -616,18 +516,14 @@
               <td class="text-center bg-diceClosePrimary border-darker">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
-                    checkUpperTotalPlayerThree !== 0
-                      ? checkUpperTotalPlayerThree
-                      : ''
+                    checkUpperTotalPlayerThree !== 0 ? checkUpperTotalPlayerThree : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center bg-diceClosePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
-                    checkUpperTotalPlayerFour !== 0
-                      ? checkUpperTotalPlayerFour
-                      : ''
+                    checkUpperTotalPlayerFour !== 0 ? checkUpperTotalPlayerFour : ''
                   }}</span>
                 </div>
               </td>
@@ -638,11 +534,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices &&
-                      isPlayerTurnOne &&
-                      scores.playerOne.threeOfAKind === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.threeOfAKind === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -653,19 +545,13 @@
                   {{ threeOfAKindInput }}
                 </v-btn>
                 <span v-else class="indie-flower">{{
-                  scores.playerOne.threeOfAKind !== null
-                    ? scores.playerOne.threeOfAKind
-                    : ''
+                  scores.playerOne.threeOfAKind !== null ? scores.playerOne.threeOfAKind : ''
                 }}</span>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnTwo &&
-                        scores.playerTwo.threeOfAKind === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.threeOfAKind === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -676,20 +562,14 @@
                     {{ threeOfAKindInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerTwo.threeOfAKind !== null
-                      ? scores.playerTwo.threeOfAKind
-                      : ''
+                    scores.playerTwo.threeOfAKind !== null ? scores.playerTwo.threeOfAKind : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.threeOfAKind === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.threeOfAKind === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -699,20 +579,14 @@
                     {{ threeOfAKindInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerThree.threeOfAKind !== null
-                      ? scores.playerThree.threeOfAKind
-                      : ''
+                    scores.playerThree.threeOfAKind !== null ? scores.playerThree.threeOfAKind : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.threeOfAKind === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.threeOfAKind === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -722,9 +596,7 @@
                     {{ threeOfAKindInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerFour.threeOfAKind !== null
-                      ? scores.playerFour.threeOfAKind
-                      : ''
+                    scores.playerFour.threeOfAKind !== null ? scores.playerFour.threeOfAKind : ''
                   }}</span>
                 </div>
               </td>
@@ -735,11 +607,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices &&
-                      isPlayerTurnOne &&
-                      scores.playerOne.fourOfAKind === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.fourOfAKind === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -750,19 +618,13 @@
                   {{ fourOfAKindInput }}
                 </v-btn>
                 <span v-else class="indie-flower">{{
-                  scores.playerOne.fourOfAKind !== null
-                    ? scores.playerOne.fourOfAKind
-                    : ''
+                  scores.playerOne.fourOfAKind !== null ? scores.playerOne.fourOfAKind : ''
                 }}</span>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnTwo &&
-                        scores.playerTwo.fourOfAKind === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.fourOfAKind === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -773,20 +635,14 @@
                     {{ fourOfAKindInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerTwo.fourOfAKind !== null
-                      ? scores.playerTwo.fourOfAKind
-                      : ''
+                    scores.playerTwo.fourOfAKind !== null ? scores.playerTwo.fourOfAKind : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.fourOfAKind === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.fourOfAKind === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -796,20 +652,14 @@
                     {{ fourOfAKindInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerThree.fourOfAKind !== null
-                      ? scores.playerThree.fourOfAKind
-                      : ''
+                    scores.playerThree.fourOfAKind !== null ? scores.playerThree.fourOfAKind : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.fourOfAKind === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.fourOfAKind === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -819,9 +669,7 @@
                     {{ fourOfAKindInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerFour.fourOfAKind !== null
-                      ? scores.playerFour.fourOfAKind
-                      : ''
+                    scores.playerFour.fourOfAKind !== null ? scores.playerFour.fourOfAKind : ''
                   }}</span>
                 </div>
               </td>
@@ -832,11 +680,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices &&
-                      isPlayerTurnOne &&
-                      scores.playerOne.fullHouse === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.fullHouse === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -847,19 +691,13 @@
                   {{ fullHouseInput }}
                 </v-btn>
                 <span v-else class="indie-flower">{{
-                  scores.playerOne.fullHouse !== null
-                    ? scores.playerOne.fullHouse
-                    : ''
+                  scores.playerOne.fullHouse !== null ? scores.playerOne.fullHouse : ''
                 }}</span>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnTwo &&
-                        scores.playerTwo.fullHouse === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.fullHouse === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -870,20 +708,14 @@
                     {{ fullHouseInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerTwo.fullHouse !== null
-                      ? scores.playerTwo.fullHouse
-                      : ''
+                    scores.playerTwo.fullHouse !== null ? scores.playerTwo.fullHouse : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.fullHouse === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.fullHouse === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -893,20 +725,14 @@
                     {{ fullHouseInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerThree.fullHouse !== null
-                      ? scores.playerThree.fullHouse
-                      : ''
+                    scores.playerThree.fullHouse !== null ? scores.playerThree.fullHouse : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.fullHouse === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.fullHouse === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -916,9 +742,7 @@
                     {{ fullHouseInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerFour.fullHouse !== null
-                      ? scores.playerFour.fullHouse
-                      : ''
+                    scores.playerFour.fullHouse !== null ? scores.playerFour.fullHouse : ''
                   }}</span>
                 </div>
               </td>
@@ -929,11 +753,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices &&
-                      isPlayerTurnOne &&
-                      scores.playerOne.smallStraight === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.smallStraight === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -944,19 +764,13 @@
                   {{ smallStraightInput }}
                 </v-btn>
                 <span v-else class="indie-flower">{{
-                  scores.playerOne.smallStraight !== null
-                    ? scores.playerOne.smallStraight
-                    : ''
+                  scores.playerOne.smallStraight !== null ? scores.playerOne.smallStraight : ''
                 }}</span>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnTwo &&
-                        scores.playerTwo.smallStraight === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.smallStraight === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -967,20 +781,14 @@
                     {{ smallStraightInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerTwo.smallStraight !== null
-                      ? scores.playerTwo.smallStraight
-                      : ''
+                    scores.playerTwo.smallStraight !== null ? scores.playerTwo.smallStraight : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.smallStraight === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.smallStraight === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -999,11 +807,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.smallStraight === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.smallStraight === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -1013,9 +817,7 @@
                     {{ smallStraightInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerFour.smallStraight !== null
-                      ? scores.playerFour.smallStraight
-                      : ''
+                    scores.playerFour.smallStraight !== null ? scores.playerFour.smallStraight : ''
                   }}</span>
                 </div>
               </td>
@@ -1026,11 +828,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices &&
-                      isPlayerTurnOne &&
-                      scores.playerOne.largeStraight === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.largeStraight === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -1041,19 +839,13 @@
                   {{ largeStraightInput }}
                 </v-btn>
                 <span v-else class="indie-flower">{{
-                  scores.playerOne.largeStraight !== null
-                    ? scores.playerOne.largeStraight
-                    : ''
+                  scores.playerOne.largeStraight !== null ? scores.playerOne.largeStraight : ''
                 }}</span>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnTwo &&
-                        scores.playerTwo.largeStraight === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.largeStraight === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -1064,20 +856,14 @@
                     {{ largeStraightInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerTwo.largeStraight !== null
-                      ? scores.playerTwo.largeStraight
-                      : ''
+                    scores.playerTwo.largeStraight !== null ? scores.playerTwo.largeStraight : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.largeStraight === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.largeStraight === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -1096,11 +882,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.largeStraight === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.largeStraight === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -1110,9 +892,7 @@
                     {{ largeStraightInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerFour.largeStraight !== null
-                      ? scores.playerFour.largeStraight
-                      : ''
+                    scores.playerFour.largeStraight !== null ? scores.playerFour.largeStraight : ''
                   }}</span>
                 </div>
               </td>
@@ -1123,9 +903,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices && isPlayerTurnOne && scores.playerOne.dice === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.dice === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -1142,9 +920,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices && isPlayerTurnTwo && scores.playerTwo.dice === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.dice === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -1162,11 +938,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.dice === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.dice === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -1176,20 +948,14 @@
                     {{ diceInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerThree.dice !== null
-                      ? scores.playerThree.dice
-                      : ''
+                    scores.playerThree.dice !== null ? scores.playerThree.dice : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.dice === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.dice === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -1210,9 +976,7 @@
               </td>
               <td class="text-center border-lighter">
                 <v-btn
-                  v-if="
-                    isDices && isPlayerTurnOne && scores.playerOne.chance === null
-                  "
+                  v-if="isDices && isPlayerTurnOne && scores.playerOne.chance === null"
                   :disabled="playerOne()"
                   variant="plain"
                   height="23"
@@ -1229,9 +993,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerTwo">
                   <v-btn
-                    v-if="
-                      isDices && isPlayerTurnTwo && scores.playerTwo.chance === null
-                    "
+                    v-if="isDices && isPlayerTurnTwo && scores.playerTwo.chance === null"
                     :disabled="playerTwo()"
                     variant="plain"
                     height="23"
@@ -1249,11 +1011,7 @@
               <td class="text-center border-lighter">
                 <div v-if="scores.playerThree">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnThree &&
-                        scores.playerThree.chance === null
-                    "
+                    v-if="isDices && isPlayerTurnThree && scores.playerThree.chance === null"
                     :disabled="playerThree()"
                     variant="plain"
                     height="23"
@@ -1263,20 +1021,14 @@
                     {{ chanceInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerThree.chance !== null
-                      ? scores.playerThree.chance
-                      : ''
+                    scores.playerThree.chance !== null ? scores.playerThree.chance : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center border-lighter">
                 <div v-if="scores.playerFour">
                   <v-btn
-                    v-if="
-                      isDices &&
-                        isPlayerTurnFour &&
-                        scores.playerFour.chance === null
-                    "
+                    v-if="isDices && isPlayerTurnFour && scores.playerFour.chance === null"
                     :disabled="playerFour()"
                     variant="plain"
                     height="23"
@@ -1286,9 +1038,7 @@
                     {{ chanceInput }}
                   </v-btn>
                   <span v-else class="indie-flower">{{
-                    scores.playerFour.chance !== null
-                      ? scores.playerFour.chance
-                      : ''
+                    scores.playerFour.chance !== null ? scores.playerFour.chance : ''
                   }}</span>
                 </div>
               </td>
@@ -1312,18 +1062,14 @@
               <td class="text-center bg-diceClosePrimary border-darker">
                 <div v-if="scores.playerThree">
                   <span class="font-weight-bold">{{
-                    checkLowerTotalPlayerThree !== 0
-                      ? checkLowerTotalPlayerThree
-                      : ''
+                    checkLowerTotalPlayerThree !== 0 ? checkLowerTotalPlayerThree : ''
                   }}</span>
                 </div>
               </td>
               <td class="text-center bg-diceClosePrimary">
                 <div v-if="scores.playerFour">
                   <span class="font-weight-bold">{{
-                    checkLowerTotalPlayerFour !== 0
-                      ? checkLowerTotalPlayerFour
-                      : ''
+                    checkLowerTotalPlayerFour !== 0 ? checkLowerTotalPlayerFour : ''
                   }}</span>
                 </div>
               </td>
@@ -1368,9 +1114,7 @@
 
 <script lang="ts" setup async>
 import { VCard, VRow, VCol, VTable, VBtn } from 'vuetify/components'
-import {
-  doc, collection, updateDoc
-} from 'firebase/firestore'
+import { doc, collection, updateDoc } from 'firebase/firestore'
 import {
   diceSessionPlayerTurnConverter,
   diceSessionRemainingTurnsConverter,
@@ -1383,11 +1127,11 @@ import { Dice, CardUser } from '~/functions/src/types'
 // Props
 
 const props = defineProps<{
- isFullscreen: boolean,
- players: CardUser[],
- playerTurnId: string,
- remainingTurns: number,
- dices: Dice[]
+  isFullscreen: boolean
+  players: CardUser[]
+  playerTurnId: string
+  remainingTurns: number
+  dices: Dice[]
 }>()
 
 // Vuefire
@@ -1404,27 +1148,19 @@ const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(
   diceSessionPlayerTurnConverter
 )
 
-const remainingTurnsRef = doc(
-  db,
-  'diceSessionRemainingTurns',
-  sessionId
-).withConverter(diceSessionRemainingTurnsConverter)
+const remainingTurnsRef = doc(db, 'diceSessionRemainingTurns', sessionId).withConverter(
+  diceSessionRemainingTurnsConverter
+)
 
 const cupsRef = doc(db, 'diceSessionPlayerTries', sessionId).withConverter(
   diceSessionPlayerTriesConverter
 )
 
-const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(
-  diceSessionScoreConverter
-)
+const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(diceSessionScoreConverter)
 
-const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(
-  diceSessionDicesConverter
-)
+const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(diceSessionDicesConverter)
 
-const scores = useDocument(
-  doc(collection(db, 'diceSessionScores'), scoresRef.id)
-)
+const scores = useDocument(doc(collection(db, 'diceSessionScores'), scoresRef.id))
 
 // Computed values
 
@@ -1518,32 +1254,19 @@ const playerFour = () => {
 }
 
 const reduceRemainingTurn = () => {
-  if (
-    !props.remainingTurns ||
-    props.remainingTurns === 0
-  ) {
+  if (!props.remainingTurns || props.remainingTurns === 0) {
     return
   }
   return props.remainingTurns - 1
 }
 
 const switchPlayerTurn = async () => {
-  const playerTurnIndex = props.players.findIndex(
-    (player: any) => player.id === props.playerTurnId)
-  const nextPlayerTurnIndex =
-    playerTurnIndex === props.players.length - 1
-      ? 0
-      : playerTurnIndex + 1
+  const playerTurnIndex = props.players.findIndex((player: any) => player.id === props.playerTurnId)
+  const nextPlayerTurnIndex = playerTurnIndex === props.players.length - 1 ? 0 : playerTurnIndex + 1
 
-  await updateDoc(
-    playerTurnRef,
-    { playerId: props.players[nextPlayerTurnIndex].id }
-  )
+  await updateDoc(playerTurnRef, { playerId: props.players[nextPlayerTurnIndex].id })
   await updateDoc(dicesRef, { dices: [] })
-  await updateDoc(
-    remainingTurnsRef,
-    { remainingTurns: reduceRemainingTurn() }
-  )
+  await updateDoc(remainingTurnsRef, { remainingTurns: reduceRemainingTurn() })
   await updateDoc(cupsRef, { tries: 3 })
 }
 
@@ -1707,8 +1430,12 @@ const fullHouseInput = computed(() => {
   const sortedDices = props.dices.slice().sort((a: Dice, b: Dice) => a.face - b.face)
 
   const isFullHouse =
-    (sortedDices[0].face === sortedDices[1].face && sortedDices[0].face === sortedDices[2].face && sortedDices[3].face === sortedDices[4].face) ||
-    (sortedDices[0].face === sortedDices[1].face && sortedDices[2].face === sortedDices[3].face && sortedDices[2].face === sortedDices[4].face)
+    (sortedDices[0].face === sortedDices[1].face &&
+      sortedDices[0].face === sortedDices[2].face &&
+      sortedDices[3].face === sortedDices[4].face) ||
+    (sortedDices[0].face === sortedDices[1].face &&
+      sortedDices[2].face === sortedDices[3].face &&
+      sortedDices[2].face === sortedDices[4].face)
 
   return isFullHouse ? 25 : 0
 })
@@ -1722,11 +1449,10 @@ const smallStraightInput = computed(() => {
 
   const faces = new Set(sortedDices.map((dice: Dice) => dice.face))
 
-  const isSmallStraight = (
+  const isSmallStraight =
     (faces.has(1) && faces.has(2) && faces.has(3) && faces.has(4)) ||
     (faces.has(2) && faces.has(3) && faces.has(4) && faces.has(5)) ||
     (faces.has(3) && faces.has(4) && faces.has(5) && faces.has(6))
-  )
 
   return isSmallStraight ? 30 : 0
 })
@@ -1739,8 +1465,16 @@ const largeStraightInput = computed(() => {
   const sortedDices = props.dices.slice().sort((a: Dice, b: Dice) => a.face - b.face)
 
   const isLargeStraight =
-    (sortedDices[0].face === 1 && sortedDices[1].face === 2 && sortedDices[2].face === 3 && sortedDices[3].face === 4 && sortedDices[4].face === 5) ||
-    (sortedDices[0].face === 2 && sortedDices[1].face === 3 && sortedDices[2].face === 4 && sortedDices[3].face === 5 && sortedDices[4].face === 6)
+    (sortedDices[0].face === 1 &&
+      sortedDices[1].face === 2 &&
+      sortedDices[2].face === 3 &&
+      sortedDices[3].face === 4 &&
+      sortedDices[4].face === 5) ||
+    (sortedDices[0].face === 2 &&
+      sortedDices[1].face === 3 &&
+      sortedDices[2].face === 4 &&
+      sortedDices[3].face === 5 &&
+      sortedDices[4].face === 6)
 
   return isLargeStraight ? 40 : 0
 })

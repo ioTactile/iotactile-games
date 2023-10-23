@@ -1,17 +1,13 @@
-import {
-  DocumentData,
-  QueryDocumentSnapshot,
-  Timestamp,
-} from "firebase-admin/firestore";
+import { DocumentData, QueryDocumentSnapshot, Timestamp } from 'firebase-admin/firestore'
 
-export {Timestamp};
+export { Timestamp }
 
 export const userConverter = {
   toFirestore: (user: User): DocumentData => user,
   fromFirestore(snapshot: QueryDocumentSnapshot<User>): User {
-    return snapshot.data();
-  },
-};
+    return snapshot.data()
+  }
+}
 
 // Dice
 
@@ -26,78 +22,63 @@ export type Dice = {
   isOnBoard: boolean
 }
 
-
 export const diceSessionConverter = {
   toFirestore: (session: DiceSession): DocumentData => session,
   fromFirestore(snapshot: QueryDocumentSnapshot<DiceSession>): DiceSession {
-    return snapshot.data();
-  },
-};
+    return snapshot.data()
+  }
+}
 
 export const diceScoreboardConverter = {
   toFirestore: (scoreboard: DiceScoreboard): DocumentData => scoreboard,
-  fromFirestore(
-      snapshot: QueryDocumentSnapshot<DiceScoreboard>
-  ): DiceScoreboard {
-    return snapshot.data();
-  },
-};
+  fromFirestore(snapshot: QueryDocumentSnapshot<DiceScoreboard>): DiceScoreboard {
+    return snapshot.data()
+  }
+}
 
 export const diceSessionPlayerTurnConverter = {
   toFirestore: (playerTurn: DiceSessionPlayerTurn): DocumentData => playerTurn,
-  fromFirestore(
-      snapshot: QueryDocumentSnapshot<DiceSessionPlayerTurn>
-  ): DiceSessionPlayerTurn {
-    return snapshot.data();
-  },
-};
+  fromFirestore(snapshot: QueryDocumentSnapshot<DiceSessionPlayerTurn>): DiceSessionPlayerTurn {
+    return snapshot.data()
+  }
+}
 
 export const diceSessionRemainingTurnsConverter = {
-  toFirestore: (remainingTurns: DiceSessionRemainingTurns): DocumentData =>
-    remainingTurns,
+  toFirestore: (remainingTurns: DiceSessionRemainingTurns): DocumentData => remainingTurns,
   fromFirestore(
-      snapshot: QueryDocumentSnapshot<DiceSessionRemainingTurns>
+    snapshot: QueryDocumentSnapshot<DiceSessionRemainingTurns>
   ): DiceSessionRemainingTurns {
-    return snapshot.data();
-  },
-};
+    return snapshot.data()
+  }
+}
 
 export const diceSessionDicesConverter = {
   toFirestore: (dices: DiceSessionDices): DocumentData => dices,
-  fromFirestore(
-      snapshot: QueryDocumentSnapshot<DiceSessionDices>
-  ): DiceSessionDices {
-    return snapshot.data();
-  },
-};
+  fromFirestore(snapshot: QueryDocumentSnapshot<DiceSessionDices>): DiceSessionDices {
+    return snapshot.data()
+  }
+}
 
 export const diceSessionPlayerTriesConverter = {
-  toFirestore: (playerTries: DiceSessionPlayerTries): DocumentData =>
-    playerTries,
-  fromFirestore(
-      snapshot: QueryDocumentSnapshot<DiceSessionPlayerTries>
-  ): DiceSessionPlayerTries {
-    return snapshot.data();
-  },
-};
+  toFirestore: (playerTries: DiceSessionPlayerTries): DocumentData => playerTries,
+  fromFirestore(snapshot: QueryDocumentSnapshot<DiceSessionPlayerTries>): DiceSessionPlayerTries {
+    return snapshot.data()
+  }
+}
 
 export const diceSessionChatConverter = {
   toFirestore: (chat: DiceSessionChat): DocumentData => chat,
-  fromFirestore(
-      snapshot: QueryDocumentSnapshot<DiceSessionChat>
-  ): DiceSessionChat {
-    return snapshot.data();
-  },
-};
+  fromFirestore(snapshot: QueryDocumentSnapshot<DiceSessionChat>): DiceSessionChat {
+    return snapshot.data()
+  }
+}
 
 export const diceSessionScoreConverter = {
   toFirestore: (score: DiceSessionScore): DocumentData => score,
-  fromFirestore(
-      snapshot: QueryDocumentSnapshot<DiceSessionScore>
-  ): DiceSessionScore {
-    return snapshot.data();
-  },
-};
+  fromFirestore(snapshot: QueryDocumentSnapshot<DiceSessionScore>): DiceSessionScore {
+    return snapshot.data()
+  }
+}
 
 export type User = {
   id: string
@@ -157,88 +138,86 @@ export type DiceScoreboard = {
   dice: number
 }
 
-
 export type DiceSessionScore = {
   id: string
   playerOne: {
     id: string
     username: string
-    one: number|null
-    two: number|null
-    three: number|null
-    four: number|null
-    five: number|null
-    six: number|null
+    one: number | null
+    two: number | null
+    three: number | null
+    four: number | null
+    five: number | null
+    six: number | null
     bonus: number
-    threeOfAKind: number|null
-    fourOfAKind: number|null
-    fullHouse: number|null
-    smallStraight: number|null
-    largeStraight: number|null
-    chance: number|null
-    dice: number|null
+    threeOfAKind: number | null
+    fourOfAKind: number | null
+    fullHouse: number | null
+    smallStraight: number | null
+    largeStraight: number | null
+    chance: number | null
+    dice: number | null
     total: number
   }
   playerTwo: {
     id: string
     username: string
-    one: number|null
-    two: number|null
-    three: number|null
-    four: number|null
-    five: number|null
-    six: number|null
+    one: number | null
+    two: number | null
+    three: number | null
+    four: number | null
+    five: number | null
+    six: number | null
     bonus: number
-    threeOfAKind: number|null
-    fourOfAKind: number|null
-    fullHouse: number|null
-    smallStraight: number|null
-    largeStraight: number|null
-    chance: number|null
-    dice: number|null
+    threeOfAKind: number | null
+    fourOfAKind: number | null
+    fullHouse: number | null
+    smallStraight: number | null
+    largeStraight: number | null
+    chance: number | null
+    dice: number | null
     total: number
   }
   playerThree?: {
     id: string
     username: string
-    one: number|null
-    two: number|null
-    three: number|null
-    four: number|null
-    five: number|null
-    six: number|null
+    one: number | null
+    two: number | null
+    three: number | null
+    four: number | null
+    five: number | null
+    six: number | null
     bonus: number
-    threeOfAKind: number|null
-    fourOfAKind: number|null
-    fullHouse: number|null
-    smallStraight: number|null
-    largeStraight: number|null
-    chance: number|null
-    dice: number|null
+    threeOfAKind: number | null
+    fourOfAKind: number | null
+    fullHouse: number | null
+    smallStraight: number | null
+    largeStraight: number | null
+    chance: number | null
+    dice: number | null
     total: number
   }
   playerFour?: {
     id: string
     username: string
-    one: number|null
-    two: number|null
-    three: number|null
-    four: number|null
-    five: number|null
-    six: number|null
+    one: number | null
+    two: number | null
+    three: number | null
+    four: number | null
+    five: number | null
+    six: number | null
     bonus: number
-    threeOfAKind: number|null
-    fourOfAKind: number|null
-    fullHouse: number|null
-    smallStraight: number|null
-    largeStraight: number|null
-    chance: number|null
-    dice: number|null
+    threeOfAKind: number | null
+    fourOfAKind: number | null
+    fullHouse: number | null
+    smallStraight: number | null
+    largeStraight: number | null
+    chance: number | null
+    dice: number | null
     total: number
   }
   creationDate?: Timestamp
 }
-
 
 // Lingua Vault
 
@@ -250,60 +229,49 @@ export type Word = {
 
 export const linguaVaultWordsConverter = {
   toFirestore: (word: Word): DocumentData => word,
-  fromFirestore(
-      snapshot: QueryDocumentSnapshot<Word>): Word {
-    return snapshot.data();
-  },
-};
+  fromFirestore(snapshot: QueryDocumentSnapshot<Word>): Word {
+    return snapshot.data()
+  }
+}
 
 export const linguaVaultSessionConverter = {
   toFirestore: (session: LinguaVaultSession): DocumentData => session,
-  fromFirestore(
-      snapshot: QueryDocumentSnapshot<LinguaVaultSession>): LinguaVaultSession {
-    return snapshot.data();
-  },
-};
+  fromFirestore(snapshot: QueryDocumentSnapshot<LinguaVaultSession>): LinguaVaultSession {
+    return snapshot.data()
+  }
+}
 
 export const linguaVaultSessionWordsConverter = {
-  toFirestore:
-  (sessionWords: LinguaVaultSessionWords): DocumentData => sessionWords,
-  fromFirestore(
-      snapshot: QueryDocumentSnapshot<LinguaVaultSessionWords>
-  ): LinguaVaultSessionWords {
-    return snapshot.data();
-  },
-};
+  toFirestore: (sessionWords: LinguaVaultSessionWords): DocumentData => sessionWords,
+  fromFirestore(snapshot: QueryDocumentSnapshot<LinguaVaultSessionWords>): LinguaVaultSessionWords {
+    return snapshot.data()
+  }
+}
 
 export const linguaVaultSessionRemainingTurnsConverter = {
-  toFirestore:
-  (remainingTurns: LinguaVaultSessionRemainingTurns
-  ): DocumentData => remainingTurns,
+  toFirestore: (remainingTurns: LinguaVaultSessionRemainingTurns): DocumentData => remainingTurns,
   fromFirestore(
-      snapshot: QueryDocumentSnapshot<LinguaVaultSessionRemainingTurns>
+    snapshot: QueryDocumentSnapshot<LinguaVaultSessionRemainingTurns>
   ): LinguaVaultSessionRemainingTurns {
-    return snapshot.data();
-  },
-};
+    return snapshot.data()
+  }
+}
 
 export const linguaVaultSessionPlayerTurnConverter = {
-  toFirestore:
-  (playerTurn: LinguaVaultSessionPlayerTurn): DocumentData => playerTurn,
+  toFirestore: (playerTurn: LinguaVaultSessionPlayerTurn): DocumentData => playerTurn,
   fromFirestore(
-      snapshot: QueryDocumentSnapshot<LinguaVaultSessionPlayerTurn>
+    snapshot: QueryDocumentSnapshot<LinguaVaultSessionPlayerTurn>
   ): LinguaVaultSessionPlayerTurn {
-    return snapshot.data();
-  },
-};
+    return snapshot.data()
+  }
+}
 
 export const linguaVaultScoreboardConverter = {
-  toFirestore:
-  (scoreboard: LinguaVaultScoreboard): DocumentData => scoreboard,
-  fromFirestore(
-      snapshot: QueryDocumentSnapshot<LinguaVaultScoreboard>
-  ): LinguaVaultScoreboard {
-    return snapshot.data();
-  },
-};
+  toFirestore: (scoreboard: LinguaVaultScoreboard): DocumentData => scoreboard,
+  fromFirestore(snapshot: QueryDocumentSnapshot<LinguaVaultScoreboard>): LinguaVaultScoreboard {
+    return snapshot.data()
+  }
+}
 
 export type LinguaVaultSession = {
   id: string
@@ -321,16 +289,16 @@ export type LinguaVaultSession = {
   isStarted: boolean
   isFinished: boolean
   isRoundFinished: boolean
-  isPlayerOneContinue: boolean|null
-  isPlayerTwoContinue: boolean|null
+  isPlayerOneContinue: boolean | null
+  isPlayerTwoContinue: boolean | null
   creationDate: Timestamp
 }
 
 export type LinguaVaultSessionWords = {
   id: string
   words: Word[]
-  testedWords: string[]|null
-  clues: string[]|null
+  testedWords: string[] | null
+  clues: string[] | null
 }
 
 export type LinguaVaultSessionRemainingTurns = {

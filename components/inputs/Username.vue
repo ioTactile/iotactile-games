@@ -4,8 +4,9 @@
     :rules="rules"
     :name="name"
     type="text"
-    :label="label"
     :variant="variant"
+    :rounded="rounded"
+    :density="density"
     :append-inner-icon="icon ? mdiAccount : undefined"
     @update:model-value="$emit('update:model-value', $event)"
   />
@@ -20,16 +21,18 @@ const MIN_LENGTH = 3
 withDefaults(
   defineProps<{
     modelValue?: string
-    label?: string
     name?: string
     icon?: boolean
     variant?: 'filled' | 'outlined' | 'plain' | 'underlined' | 'solo'
+    rounded?: string
+    density?: 'default' | 'comfortable' | 'compact'
   }>(),
   {
     modelValue: undefined,
-    label: "Nom d'utilisateur",
     name: 'username',
-    variant: undefined
+    variant: undefined,
+    rounded: undefined,
+    density: undefined
   }
 )
 

@@ -82,15 +82,23 @@ const sessionRef = doc(db, 'linguaVaultSessions', sessionId).withConverter(
 
 const session = useDocument(sessionRef)
 
-const remainingTurnsRef = doc(db, 'linguaVaultSessions', sessionId, 'remainingTurns', sessionId).withConverter(
-  linguaVaultSessionRemainingTurnsConverter
-)
+const remainingTurnsRef = doc(
+  db,
+  'linguaVaultSessions',
+  sessionId,
+  'remainingTurns',
+  sessionId
+).withConverter(linguaVaultSessionRemainingTurnsConverter)
 
 const remainingTurns = useDocument(remainingTurnsRef)
 
-const playerTurnRef = doc(db, 'linguaVaultSessions', sessionId, 'playerTurn', sessionId).withConverter(
-  linguaVaultSessionPlayerTurnConverter
-)
+const playerTurnRef = doc(
+  db,
+  'linguaVaultSessions',
+  sessionId,
+  'playerTurn',
+  sessionId
+).withConverter(linguaVaultSessionPlayerTurnConverter)
 
 const playerTurn = useDocument(playerTurnRef)
 
@@ -148,15 +156,14 @@ const saveTestedWord = async (testedWord: string) => {
 }
 
 const switchPlayerTurn = async () => {
-  if (!session.value?.playerTwo) { return }
+  if (!session.value?.playerTwo) {
+    return
+  }
 
   const playerOneId = session.value?.playerOne.id
   const playerTwoId = session.value?.playerTwo.id
 
-  const newPlayerId =
-    playerTurn.value?.playerId === playerOneId
-      ? playerTwoId
-      : playerOneId
+  const newPlayerId = playerTurn.value?.playerId === playerOneId ? playerTwoId : playerOneId
 
   await updateDoc(playerTurnRef, {
     playerId: newPlayerId
@@ -216,8 +223,14 @@ const stopGame = async () => {
 }
 
 const isWordMatch = (trueWord: string, testedWord: string) => {
-  const trueWordWithoutAccent = trueWord.normalize('NFD').replace(/[\u0300-\u036F]/g, '').toLocaleLowerCase()
-  const testedWordWithoutAccent = testedWord.normalize('NFD').replace(/[\u0300-\u036F]/g, '').toLocaleLowerCase()
+  const trueWordWithoutAccent = trueWord
+    .normalize('NFD')
+    .replace(/[\u0300-\u036F]/g, '')
+    .toLocaleLowerCase()
+  const testedWordWithoutAccent = testedWord
+    .normalize('NFD')
+    .replace(/[\u0300-\u036F]/g, '')
+    .toLocaleLowerCase()
 
   if (trueWord.length > 5 && testedWord.length > 5) {
     let errorCount = 0
@@ -241,7 +254,9 @@ const isWordMatch = (trueWord: string, testedWord: string) => {
 watch(
   () => words.value?.testedWords,
   async (newValue) => {
-    if (newValue && newValue.length === 0) { return }
+    if (newValue && newValue.length === 0) {
+      return
+    }
     const currentWord = words.value!.words[getTurns.value - 1].word
     const testedWords = words.value?.testedWords || []
 
@@ -258,7 +273,10 @@ watch(
           isFinished: true
         })
       }
-    } else if (!isWordMatch(currentWord, testedWords[testedWords.length - 1]) && testedWords.length === 4) {
+    } else if (
+      !isWordMatch(currentWord, testedWords[testedWords.length - 1]) &&
+      testedWords.length === 4
+    ) {
       notifier({ content: 'Vous avez perdu', color: 'error' })
       save()
       await updateDoc(sessionRef, {
@@ -289,8 +307,12 @@ watch(
 watch(
   () => session.value,
   (newValue) => {
-    if (newValue && newValue.isPlayerOneContinue &&
-    newValue.isPlayerTwoContinue && !newValue.isRoundFinished) {
+    if (
+      newValue &&
+      newValue.isPlayerOneContinue &&
+      newValue.isPlayerTwoContinue &&
+      !newValue.isRoundFinished
+    ) {
       isWin.value = false
 
       //   await updateDoc(sessionRef, {
@@ -306,15 +328,15 @@ watch(
       //     clues: []
       //   })
 
-    //   await updateDoc(remainingTurnsRef, {
-    //     remainingTurns: remainingTurns.value!.remainingTurns - 1
-    //   })
-    // } else if (newValue &&
-    // newValue.isPlayerOneContinue === false &&
-    // newValue.isPlayerTwoContinue === false) {
-    //   await updateDoc(sessionRef, {
-    //     isFinished: true
-    //   })
+      //   await updateDoc(remainingTurnsRef, {
+      //     remainingTurns: remainingTurns.value!.remainingTurns - 1
+      //   })
+      // } else if (newValue &&
+      // newValue.isPlayerOneContinue === false &&
+      // newValue.isPlayerTwoContinue === false) {
+      //   await updateDoc(sessionRef, {
+      //     isFinished: true
+      //   })
     }
   }
 )

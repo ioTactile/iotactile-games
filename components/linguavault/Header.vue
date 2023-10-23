@@ -7,12 +7,7 @@
   <div class="text-center text-h5 text-sm-h4 font-weight-bold my-2">
     {{ getWord }}
   </div>
-  <v-progress-linear
-    v-model="linearProgress"
-    color="green"
-    bg-opacity="0.5"
-    height="40"
-  />
+  <v-progress-linear v-model="linearProgress" color="green" bg-opacity="0.5" height="40" />
 </template>
 
 <script lang="ts" setup>
@@ -24,12 +19,12 @@ import { Word } from '~/functions/src/types'
 // Props
 
 const props = defineProps<{
-    remainingTurns: number
-    playerOne: boolean
-    isPlayerOneFinder: boolean
-    words: Word[]
-    getTurns: number
-    isRoundFinished: boolean
+  remainingTurns: number
+  playerOne: boolean
+  isPlayerOneFinder: boolean
+  words: Word[]
+  getTurns: number
+  isRoundFinished: boolean
 }>()
 
 // Store
@@ -74,5 +69,4 @@ watch(
   },
   { immediate: true }
 )
-
 </script>

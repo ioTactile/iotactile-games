@@ -2,11 +2,20 @@
   <v-container v-if="session && playerTurn && dices && remainingTurns" fluid class="container">
     <v-row>
       <v-col cols="12" md="9">
-        <div ref="fullscreenElement" class="background-image" :class="isFullscreen ? 'fullscreen' : 'notFullscreen'">
+        <div
+          ref="fullscreenElement"
+          class="background-image"
+          :class="isFullscreen ? 'fullscreen' : 'notFullscreen'"
+        >
           <div class="fullscreen-btn">
-            <v-btn :icon="isFullscreen ? mdiFullscreenExit : mdiFullscreen" variant="text" size="x-large" @click="toggleFullscreen" />
+            <v-btn
+              :icon="isFullscreen ? mdiFullscreenExit : mdiFullscreen"
+              variant="text"
+              size="x-large"
+              @click="toggleFullscreen"
+            />
           </div>
-          <v-row class="ma-0" :class="{'h-100' : isFullscreen}">
+          <v-row class="ma-0" :class="{ 'h-100': isFullscreen }">
             <v-col class="d-flex" cols="12">
               <dice-players
                 :players="session.players"
@@ -44,13 +53,7 @@
                       class="dice-container"
                       @click="addDice(dice.id)"
                     >
-                      <v-img
-                        :src="getDiceFace(dice.face)"
-                        alt="dés"
-                        height="70"
-                        width="70"
-                        cover
-                      />
+                      <v-img :src="getDiceFace(dice.face)" alt="dés" height="70" width="70" cover />
                     </v-btn>
                   </div>
                 </v-col>
@@ -73,12 +76,7 @@
                       :style="cups?.tries < 3 ? 'opacity: 0.5' : ''"
                       @click="rollOne"
                     >
-                      <v-img
-                        src="/cup-no-bg.png"
-                        alt="gobelet un"
-                        height="100"
-                        width="60"
-                      />
+                      <v-img src="/cup-no-bg.png" alt="gobelet un" height="100" width="60" />
                     </v-btn>
                   </div>
                   <div class="cup-two-container">
@@ -90,12 +88,7 @@
                       :style="cups?.tries < 2 ? 'opacity: 0.5' : ''"
                       @click="rollTwo"
                     >
-                      <v-img
-                        src="/cup-no-bg.png"
-                        alt="gobelet deux"
-                        height="100"
-                        width="60"
-                      />
+                      <v-img src="/cup-no-bg.png" alt="gobelet deux" height="100" width="60" />
                     </v-btn>
                   </div>
                   <div class="cup-three-container">
@@ -107,12 +100,7 @@
                       :style="cups?.tries < 1 ? 'opacity: 0.5' : ''"
                       @click="rollThree"
                     >
-                      <v-img
-                        src="/cup-no-bg.png"
-                        alt="gobelet trois"
-                        height="100"
-                        width="60"
-                      />
+                      <v-img src="/cup-no-bg.png" alt="gobelet trois" height="100" width="60" />
                     </v-btn>
                   </div>
                 </v-col>
@@ -126,13 +114,7 @@
                       class="dice-container pa-0 mx-2"
                       @click="removeDice(dice.id)"
                     >
-                      <v-img
-                        :src="getDiceFace(dice.face)"
-                        alt="dés"
-                        height="70"
-                        width="70"
-                        cover
-                      />
+                      <v-img :src="getDiceFace(dice.face)" alt="dés" height="70" width="70" cover />
                     </v-btn>
                   </div>
                 </v-col>
@@ -146,9 +128,18 @@
           <h2 class="dice-logo">
             Dice
           </h2>
-          <v-btn :icon="isSoundMuted ? mdiVolumeOff : mdiVolumeHigh" variant="text" @click="toggleVolume" />
+          <v-btn
+            :icon="isSoundMuted ? mdiVolumeOff : mdiVolumeHigh"
+            variant="text"
+            @click="toggleVolume"
+          />
         </div>
-        <v-card v-if="volumeCard" rounded="xl" height="42" class="d-flex justify-center align-center px-2">
+        <v-card
+          v-if="volumeCard"
+          rounded="xl"
+          height="42"
+          class="d-flex justify-center align-center px-2"
+        >
           <v-slider
             v-model="volume"
             density="compact"
@@ -199,11 +190,7 @@
               <span>Chat</span>
             </v-card-title>
             <v-card-text>
-              <div
-                v-for="(messageItem, i) in chat?.messages"
-                :key="i"
-                class="d-flex"
-              >
+              <div v-for="(messageItem, i) in chat?.messages" :key="i" class="d-flex">
                 <span class="mr-1">{{ messageItem.username }}:</span>
                 <span>{{ messageItem.content }}</span>
               </div>
@@ -224,12 +211,7 @@
                 />
               </v-col>
               <v-col cols="12" xl="6" class="pt-0 pt-xl-3 align-self-center">
-                <v-btn
-                  block
-                  color="tertiary"
-                  height="46px"
-                  @click="sendMessage"
-                >
+                <v-btn block color="tertiary" height="46px" @click="sendMessage">
                   Envoyer
                 </v-btn>
               </v-col>
@@ -248,9 +230,7 @@
           <v-card-text class="mt-12">
             <v-row class="podium">
               <v-col :cols="fourthPlace ? 3 : 4" class="text-center">
-                <span class="text-h6">{{
-                  secondPlace ? secondPlace : ''
-                }}</span>
+                <span class="text-h6">{{ secondPlace ? secondPlace : '' }}</span>
                 <div class="second-place">
                   <span class="place">2</span>
                 </div>
@@ -275,11 +255,7 @@
                   <span class="place">3</span>
                 </div>
               </v-col>
-              <v-col
-                v-if="fourthPlace"
-                :cols="fourthPlace ? 3 : 4"
-                class="text-center"
-              >
+              <v-col v-if="fourthPlace" :cols="fourthPlace ? 3 : 4" class="text-center">
                 <span class="text-h6">{{ fourthPlace }}</span>
                 <div class="fourth-place">
                   <span class="fourth-place-text">4</span>
@@ -288,13 +264,7 @@
             </v-row>
           </v-card-text>
           <v-card-actions>
-            <v-btn
-              block
-              variant="flat"
-              elevation="6"
-              color="tertiary"
-              to="/dice/jouer"
-            >
+            <v-btn block variant="flat" elevation="6" color="tertiary" to="/dice/jouer">
               Retourner au menu principal
             </v-btn>
           </v-card-actions>
@@ -321,12 +291,7 @@ import {
   VSlider
 } from 'vuetify/components'
 import { useTheme, useDisplay } from 'vuetify'
-import {
-  mdiVolumeHigh,
-  mdiVolumeOff,
-  mdiFullscreenExit,
-  mdiFullscreen
-} from '@mdi/js'
+import { mdiVolumeHigh, mdiVolumeOff, mdiFullscreenExit, mdiFullscreen } from '@mdi/js'
 import {
   collection,
   doc,
@@ -372,9 +337,7 @@ const route = useRoute()
 
 const sessionId = route.params.id as string
 
-const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(
-  diceSessionConverter
-)
+const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(diceSessionConverter)
 
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
 
@@ -382,15 +345,11 @@ const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(
   diceSessionPlayerTurnConverter
 )
 
-const playerTurn = useDocument(
-  doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id)
-)
+const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id))
 
-const remainingTurnsRef = doc(
-  db,
-  'diceSessionRemainingTurns',
-  sessionId
-).withConverter(diceSessionRemainingTurnsConverter)
+const remainingTurnsRef = doc(db, 'diceSessionRemainingTurns', sessionId).withConverter(
+  diceSessionRemainingTurnsConverter
+)
 
 const remainingTurns = useDocument(
   doc(collection(db, 'diceSessionRemainingTurns'), remainingTurnsRef.id)
@@ -400,25 +359,17 @@ const cupsRef = doc(db, 'diceSessionPlayerTries', sessionId).withConverter(
   diceSessionPlayerTriesConverter
 )
 
-const cups = useDocument(
-  doc(collection(db, 'diceSessionPlayerTries'), cupsRef.id)
-)
+const cups = useDocument(doc(collection(db, 'diceSessionPlayerTries'), cupsRef.id))
 
-const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(
-  diceSessionDicesConverter
-)
+const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(diceSessionDicesConverter)
 
 const dices = useDocument(doc(collection(db, 'diceSessionDices'), dicesRef.id))
 
-const chatRef = doc(db, 'diceSessionChat', sessionId).withConverter(
-  diceSessionChatConverter
-)
+const chatRef = doc(db, 'diceSessionChat', sessionId).withConverter(diceSessionChatConverter)
 
 const chat = useDocument(doc(collection(db, 'diceSessionChat'), chatRef.id))
 
-const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(
-  diceSessionScoreConverter
-)
+const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(diceSessionScoreConverter)
 
 // Refs
 
@@ -507,25 +458,23 @@ watch(isFinishedLocal, async (newValue) => {
   }
 })
 
-watch(remainingTurns,
-  async (newValue) => {
-    if (newValue && newValue.remainingTurns === 0) {
-      await updateDoc(sessionRef, { isFinished: true })
-      isFinishedLocal.value = true
+watch(remainingTurns, async (newValue) => {
+  if (newValue && newValue.remainingTurns === 0) {
+    await updateDoc(sessionRef, { isFinished: true })
+    isFinishedLocal.value = true
 
-      const scoresDoc = await getDoc(scoresRef)
-      if (!scoresDoc.exists()) {
-        return
-      }
-      scores.value = scoresDoc.data()
+    const scoresDoc = await getDoc(scoresRef)
+    if (!scoresDoc.exists()) {
+      return
     }
-  })
+    scores.value = scoresDoc.data()
+  }
+})
 
 watch(
   () => cups.value?.tries,
   async (newValue, oldValue) => {
-    if (newValue !== undefined && oldValue !== undefined &&
-    newValue !== 3) {
+    if (newValue !== undefined && oldValue !== undefined && newValue !== 3) {
       hideDiceOnBoard.value = true
       soundService.playSound('shakeRoll')
       await sleep(500)
@@ -535,19 +484,23 @@ watch(
       await sleep(100)
       hideDiceOnBoard.value = false
     }
-  })
+  }
+)
 
 watch(
   () => playerTurn.value?.playerId,
   (newValue, oldValue) => {
-    if (newValue && oldValue &&
-    newValue === user.value?.uid &&
-    session.value?.isStarted &&
-    !session.value?.isFinished
+    if (
+      newValue &&
+      oldValue &&
+      newValue === user.value?.uid &&
+      session.value?.isStarted &&
+      !session.value?.isFinished
     ) {
       soundService.playSound('notification')
     }
-  })
+  }
+)
 
 watch(volume, (newValue) => {
   if (newValue === 0) {
@@ -560,14 +513,14 @@ watch(volume, (newValue) => {
 watch(
   () => chat.value?.messages,
   (newValue, oldValue) => {
-    if (newValue && oldValue &&
-    newValue.length > 0) {
+    if (newValue && oldValue && newValue.length > 0) {
       const lastMessage = newValue[newValue.length - 1]
       if (lastMessage.userId !== user.value?.uid) {
         soundService.playSound('message')
       }
     }
-  })
+  }
+)
 
 // Computed values
 
@@ -605,7 +558,10 @@ const startGame = async () => {
     return
   }
   if (session.value.players.length < 2) {
-    notifier({ content: 'Vous devez être au moins 2 joueurs pour commencer la partie', color: 'error' })
+    notifier({
+      content: 'Vous devez être au moins 2 joueurs pour commencer la partie',
+      color: 'error'
+    })
     return
   }
 
@@ -674,13 +630,7 @@ const getDiceFace = (dice: number) => {
 }
 
 const rollDice = async (tries: number) => {
-  if (
-    !session.value ||
-    !cups.value ||
-    !dices.value ||
-    !user.value ||
-    !playerTurn.value
-  ) {
+  if (!session.value || !cups.value || !dices.value || !user.value || !playerTurn.value) {
     return
   }
 
@@ -709,7 +659,7 @@ const rollDice = async (tries: number) => {
 
   if ((cups.value.tries === 3 && tries === 2) || (cups.value.tries === 2 && tries === 1)) {
     notifier({
-      content: 'Tu dois d\'abord lancer les dés du gobelet supérieur',
+      content: "Tu dois d'abord lancer les dés du gobelet supérieur",
       color: 'error'
     })
     return
@@ -813,8 +763,11 @@ const getPlaceName = (position: number) => {
   }
 
   const players = session.value.players
-  const sortedPlayers = players.filter((_: number, index: number) => playerScores[index] !== undefined)
-    .sort((a: number, b: number) => playerTotals[players.indexOf(b)] - playerTotals[players.indexOf(a)])
+  const sortedPlayers = players
+    .filter((_: number, index: number) => playerScores[index] !== undefined)
+    .sort(
+      (a: number, b: number) => playerTotals[players.indexOf(b)] - playerTotals[players.indexOf(a)]
+    )
 
   if (position > sortedPlayers.length) {
     return false
@@ -904,9 +857,7 @@ const leaveGame = async () => {
         playerFour: deleteField()
       })
     }
-    session.players = session.players.filter(
-      player => player.id !== user.value?.uid
-    )
+    session.players = session.players.filter(player => player.id !== user.value?.uid)
 
     const joinRemainingTurnsDoc = await getDoc(remainingTurnsRef)
     if (!joinRemainingTurnsDoc.exists()) {

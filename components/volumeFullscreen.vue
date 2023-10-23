@@ -1,14 +1,10 @@
 <template>
   <div v-if="isFullscreen">
     <v-hover v-slot="{ isHovering, props }" open-delay="100">
-      <div
-        v-bind="props"
-        @mouseover="emitHoverEvent(true)"
-        @mouseleave="emitHoverEvent(false)"
-      >
+      <div v-bind="props" @mouseover="emitHoverEvent(true)" @mouseleave="emitHoverEvent(false)">
         <div
           class="volume-icon d-flex align-center justify-center"
-          :class="{ 'volume-icon-hover' : isHovering || isCardHovering }"
+          :class="{ 'volume-icon-hover': isHovering || isCardHovering }"
         >
           <v-icon size="large">
             {{ isSoundMuted ? mdiVolumeOff : mdiVolumeHigh }}
@@ -43,13 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  VCard,
-  VCardText,
-  VHover,
-  VIcon,
-  VSlider
-} from 'vuetify/components'
+import { VCard, VCardText, VHover, VIcon, VSlider } from 'vuetify/components'
 import { mdiVolumeHigh, mdiVolumeOff } from '@mdi/js'
 
 const properties = defineProps<{
@@ -57,7 +47,10 @@ const properties = defineProps<{
   isFullscreen: boolean
 }>()
 
-const emits = defineEmits<{(e: 'update:volume', value: number): void, (e: 'hoverEvent', value: boolean): void }>()
+const emits = defineEmits<{
+  (e: 'update:volume', value: number): void
+  (e: 'hoverEvent', value: boolean): void
+}>()
 
 const isSoundMuted = ref(false)
 const isCardHovering = ref(false)

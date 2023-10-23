@@ -9,5 +9,4 @@
 <script lang="ts" setup>
 import { VCard, VCardTitle } from 'vuetify/components'
 // import { Howl, Howler } from 'howler'
-
 </script>

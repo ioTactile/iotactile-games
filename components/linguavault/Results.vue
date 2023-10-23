@@ -44,9 +44,9 @@ import { useLvTimerStore } from '~/stores/lvTimer'
 // Props
 
 const props = defineProps<{
-    isWin: boolean
-    wordDifficulty: number
-    isRoundFinished: boolean
+  isWin: boolean
+  wordDifficulty: number
+  isRoundFinished: boolean
 }>()
 
 // Store

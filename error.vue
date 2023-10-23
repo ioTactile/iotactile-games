@@ -34,9 +34,6 @@ const btnOutlined = ref(true)
 // eslint-disable-next-line no-console
 console.error(props)
 useHead({
-  title:
-    props.error.statusCode === 404
-      ? 'Page introuvable'
-      : 'Une erreur est survenue'
+  title: props.error.statusCode === 404 ? 'Page introuvable' : 'Une erreur est survenue'
 })
 </script>

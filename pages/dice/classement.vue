@@ -31,13 +31,7 @@
             <tbody>
               <tr v-for="(player, i) in scoreboard" :key="i">
                 <td class="d-flex justify-center align-center">
-                  <v-img
-                    v-if="i < 3"
-                    :src="medal(i)"
-                    alt="medal"
-                    width="40"
-                    height="40"
-                  />
+                  <v-img v-if="i < 3" :src="medal(i)" alt="medal" width="40" height="40" />
                   <span v-else>{{ i + 1 }}</span>
                 </td>
                 <td class="text-center">
@@ -80,9 +74,15 @@ const scoreboard = scoreboardDocs.docs.map(doc => doc.data())
 // Methods
 
 const medal = (i: number) => {
-  if (i === 0) { return '/medals/gold-medal.png' }
-  if (i === 1) { return '/medals/silver-medal.png' }
-  if (i === 2) { return '/medals/bronze-medal.png' }
+  if (i === 0) {
+    return '/medals/gold-medal.png'
+  }
+  if (i === 1) {
+    return '/medals/silver-medal.png'
+  }
+  if (i === 2) {
+    return '/medals/bronze-medal.png'
+  }
   return ''
 }
 </script>

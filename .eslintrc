@@ -19,10 +19,7 @@
   "rules": {
     "prettier/prettier": "off",
     "vue/no-multiple-objects-in-class": "error",
-    "vue/no-potential-component-option-typo": [
-      "error",
-      { "presets": ["nuxt"] }
-    ],
+    "vue/no-potential-component-option-typo": ["error", { "presets": ["nuxt"] }],
     "vue/no-static-inline-styles": ["error", { "allowBinding": true }],
     "vue/no-useless-mustaches": ["error"],
     "vue/multi-word-component-names": "off",

@@ -26,7 +26,7 @@ defineProps<{
   variant?: 'filled' | 'outlined' | 'plain' | 'underlined' | 'solo'
   rounded?: boolean
 }>()
-defineEmits<{(e: 'update:model-value', value?: string): void, (e: 'press-enter'): void}>()
+defineEmits<{(e: 'update:model-value', value?: string): void; (e: 'press-enter'): void }>()
 
 const show = ref(false)
 

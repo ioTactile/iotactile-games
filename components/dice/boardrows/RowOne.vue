@@ -33,7 +33,6 @@ const props = defineProps<{
 const isPlayerTurn = (player: CardUser) => {
   return player.id === props.playerTurnId
 }
-
 </script>
 
 <style scoped>

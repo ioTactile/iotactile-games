@@ -1,8 +1,6 @@
 <template>
   <v-container>
-    <div
-      class="d-flex flex-column flex-sm-row justify-space-between align-center mt-2"
-    >
+    <div class="d-flex flex-column flex-sm-row justify-space-between align-center mt-2">
       <h2 class="mb-2 mb-sm-0">
         Lingua Vault
       </h2>
@@ -49,11 +47,9 @@ definePageMeta({ layout: 'admin' })
 const db = useFirestore()
 const { notifier } = useNotifier()
 
-const wordsRef = doc(
-  db,
-  'linguaVaultWords',
-  'AI8rozWXYEmchhc1pwar' as string
-).withConverter(linguaVaultWordsConverter)
+const wordsRef = doc(db, 'linguaVaultWords', 'AI8rozWXYEmchhc1pwar' as string).withConverter(
+  linguaVaultWordsConverter
+)
 
 const loading = ref(false)
 const form = ref<VForm>()

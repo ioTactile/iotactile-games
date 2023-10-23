@@ -24,10 +24,18 @@ const props = defineProps<{
 }>()
 
 const getLetter = (index: number) => {
-  if (index === 1) { return 'A' }
-  if (index === 2) { return 'B' }
-  if (index === 3) { return 'C' }
-  if (index === 4) { return 'D' }
+  if (index === 1) {
+    return 'A'
+  }
+  if (index === 2) {
+    return 'B'
+  }
+  if (index === 3) {
+    return 'C'
+  }
+  if (index === 4) {
+    return 'D'
+  }
 }
 
 const getPlayer = (index: number) => {

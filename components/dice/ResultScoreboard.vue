@@ -5,36 +5,20 @@
         <h2 class="text-h6 text-sm-h5">
           Résultats
         </h2>
-        <v-btn
-          :icon="mdiClose"
-          variant="text"
-          @click="emits('update:modelValue', false)"
-        />
+        <v-btn :icon="mdiClose" variant="text" @click="emits('update:modelValue', false)" />
       </v-card-title>
       <v-card-text>
         <v-table density="compact" class="card-container">
           <thead>
             <tr>
-              <th
-                class="text-center border-darker bg-diceClosePrimary"
-                width="40%"
-              />
-              <th
-                class="text-center border-darker bg-diceClosePrimary"
-                width="15%"
-              >
+              <th class="text-center border-darker bg-diceClosePrimary" width="40%" />
+              <th class="text-center border-darker bg-diceClosePrimary" width="15%">
                 A
               </th>
-              <th
-                class="text-center border-darker bg-diceClosePrimary"
-                width="15%"
-              >
+              <th class="text-center border-darker bg-diceClosePrimary" width="15%">
                 {{ session.playerTwo ? 'B' : '' }}
               </th>
-              <th
-                class="text-center border-darker bg-diceClosePrimary"
-                width="15%"
-              >
+              <th class="text-center border-darker bg-diceClosePrimary" width="15%">
                 {{ session.playerThree ? 'C' : '' }}
               </th>
               <th class="text-center bg-diceClosePrimary" width="15%">
@@ -83,7 +67,17 @@
 </template>
 
 <script lang="ts" setup>
-import { VRow, VCol, VCard, VBtn, VDivider, VCardTitle, VCardText, VTable, VDialog } from 'vuetify/components'
+import {
+  VRow,
+  VCol,
+  VCard,
+  VBtn,
+  VDivider,
+  VCardTitle,
+  VCardText,
+  VTable,
+  VDialog
+} from 'vuetify/components'
 import { mdiClose } from '@mdi/js'
 import { LocalDiceSessionScoreType } from '~/stores'
 
@@ -96,25 +90,85 @@ const emits = defineEmits<{(e: 'update:modelValue', value: boolean): void }>()
 
 const upperTotal = (player: string) => {
   if (player === 'playerOne') {
-    return props.session.playerOne.one! + props.session.playerOne.two! + props.session.playerOne.three! + props.session.playerOne.four! + props.session.playerOne.five! + props.session.playerOne.six!
+    return (
+      props.session.playerOne.one! +
+      props.session.playerOne.two! +
+      props.session.playerOne.three! +
+      props.session.playerOne.four! +
+      props.session.playerOne.five! +
+      props.session.playerOne.six!
+    )
   } else if (player === 'playerTwo') {
-    return props.session.playerTwo.one! + props.session.playerTwo.two! + props.session.playerTwo.three! + props.session.playerTwo.four! + props.session.playerTwo.five! + props.session.playerTwo.six!
+    return (
+      props.session.playerTwo.one! +
+      props.session.playerTwo.two! +
+      props.session.playerTwo.three! +
+      props.session.playerTwo.four! +
+      props.session.playerTwo.five! +
+      props.session.playerTwo.six!
+    )
   } else if (props.session.playerThree && player === 'playerThree') {
-    return props.session.playerThree.one! + props.session.playerThree.two! + props.session.playerThree.three! + props.session.playerThree.four! + props.session.playerThree.five! + props.session.playerThree.six!
+    return (
+      props.session.playerThree.one! +
+      props.session.playerThree.two! +
+      props.session.playerThree.three! +
+      props.session.playerThree.four! +
+      props.session.playerThree.five! +
+      props.session.playerThree.six!
+    )
   } else if (props.session.playerFour && player === 'playerFour') {
-    return props.session.playerFour.one! + props.session.playerFour.two! + props.session.playerFour.three! + props.session.playerFour.four! + props.session.playerFour.five! + props.session.playerFour.six!
+    return (
+      props.session.playerFour.one! +
+      props.session.playerFour.two! +
+      props.session.playerFour.three! +
+      props.session.playerFour.four! +
+      props.session.playerFour.five! +
+      props.session.playerFour.six!
+    )
   }
 }
 
 const lowerTotal = (player: string) => {
   if (player === 'playerOne') {
-    return props.session.playerOne.threeOfAKind! + props.session.playerOne.fourOfAKind! + props.session.playerOne.fullHouse! + props.session.playerOne.smallStraight! + props.session.playerOne.largeStraight! + props.session.playerOne.dice! + props.session.playerOne.chance!
+    return (
+      props.session.playerOne.threeOfAKind! +
+      props.session.playerOne.fourOfAKind! +
+      props.session.playerOne.fullHouse! +
+      props.session.playerOne.smallStraight! +
+      props.session.playerOne.largeStraight! +
+      props.session.playerOne.dice! +
+      props.session.playerOne.chance!
+    )
   } else if (player === 'playerTwo') {
-    return props.session.playerTwo.threeOfAKind! + props.session.playerTwo.fourOfAKind! + props.session.playerTwo.fullHouse! + props.session.playerTwo.smallStraight! + props.session.playerTwo.largeStraight! + props.session.playerTwo.dice! + props.session.playerTwo.chance!
+    return (
+      props.session.playerTwo.threeOfAKind! +
+      props.session.playerTwo.fourOfAKind! +
+      props.session.playerTwo.fullHouse! +
+      props.session.playerTwo.smallStraight! +
+      props.session.playerTwo.largeStraight! +
+      props.session.playerTwo.dice! +
+      props.session.playerTwo.chance!
+    )
   } else if (props.session.playerThree && player === 'playerThree') {
-    return props.session.playerThree.threeOfAKind! + props.session.playerThree.fourOfAKind! + props.session.playerThree.fullHouse! + props.session.playerThree.smallStraight! + props.session.playerThree.largeStraight! + props.session.playerThree.dice! + props.session.playerThree.chance!
+    return (
+      props.session.playerThree.threeOfAKind! +
+      props.session.playerThree.fourOfAKind! +
+      props.session.playerThree.fullHouse! +
+      props.session.playerThree.smallStraight! +
+      props.session.playerThree.largeStraight! +
+      props.session.playerThree.dice! +
+      props.session.playerThree.chance!
+    )
   } else if (props.session.playerFour && player === 'playerFour') {
-    return props.session.playerFour.threeOfAKind! + props.session.playerFour.fourOfAKind! + props.session.playerFour.fullHouse! + props.session.playerFour.smallStraight! + props.session.playerFour.largeStraight! + props.session.playerFour.dice! + props.session.playerFour.chance!
+    return (
+      props.session.playerFour.threeOfAKind! +
+      props.session.playerFour.fourOfAKind! +
+      props.session.playerFour.fullHouse! +
+      props.session.playerFour.smallStraight! +
+      props.session.playerFour.largeStraight! +
+      props.session.playerFour.dice! +
+      props.session.playerFour.chance!
+    )
   }
 }
 
@@ -264,7 +318,6 @@ const items = [
     ]
   }
 ]
-
 </script>
 
 <style scoped>

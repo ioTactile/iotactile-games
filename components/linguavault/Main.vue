@@ -35,8 +35,7 @@
     <v-col v-if="!isRoundFinished" cols="12" class="d-flex flex-column align-center mt-8">
       <v-text-field
         v-if="
-          ((props.playerOne && isPlayerOneFinder) ||
-            (!props.playerOne && !isPlayerOneFinder)) &&
+          ((props.playerOne && isPlayerOneFinder) || (!props.playerOne && !isPlayerOneFinder)) &&
             playerTurnId === user?.uid &&
             clues.length !== 4
         "
@@ -52,8 +51,7 @@
       />
       <v-text-field
         v-if="
-          ((props.playerOne && !isPlayerOneFinder) ||
-            (!props.playerOne && isPlayerOneFinder)) &&
+          ((props.playerOne && !isPlayerOneFinder) || (!props.playerOne && isPlayerOneFinder)) &&
             playerTurnId === user?.uid &&
             testedWords.length !== 4
         "
@@ -80,15 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  VRow,
-  VCol,
-  VCard,
-  VCardTitle,
-  VCardText,
-  VTextField,
-  VBtn
-} from 'vuetify/components'
+import { VRow, VCol, VCard, VCardTitle, VCardText, VTextField, VBtn } from 'vuetify/components'
 import { Word } from '~/functions/src/types'
 
 // Props
@@ -104,7 +94,10 @@ const props = defineProps<{
   playerTurnId: string
 }>()
 
-const emits = defineEmits<{(e: 'update:newClue', value: string): void, (e: 'update:newTestedWord', value: string): void}>()
+const emits = defineEmits<{
+  (e: 'update:newClue', value: string): void
+  (e: 'update:newTestedWord', value: string): void
+}>()
 
 // Vuefire & Composables
 
@@ -129,12 +122,21 @@ const getWord = computed(() => {
 // Methods
 
 const isWordMatch = (trueWord: string, clueWord: string, options: string) => {
-  const trueWordWithoutAccent = trueWord.normalize('NFD').replace(/[\u0300-\u036F]/g, '').toLocaleLowerCase()
-  const clueWordWithoutAccent = clueWord.normalize('NFD').replace(/[\u0300-\u036F]/g, '').toLocaleLowerCase()
+  const trueWordWithoutAccent = trueWord
+    .normalize('NFD')
+    .replace(/[\u0300-\u036F]/g, '')
+    .toLocaleLowerCase()
+  const clueWordWithoutAccent = clueWord
+    .normalize('NFD')
+    .replace(/[\u0300-\u036F]/g, '')
+    .toLocaleLowerCase()
 
-  if (options === 'threeLetter' && (trueWordWithoutAccent.substring(0, 3) === clueWordWithoutAccent.substring(0, 3))) {
+  if (
+    options === 'threeLetter' &&
+    trueWordWithoutAccent.substring(0, 3) === clueWordWithoutAccent.substring(0, 3)
+  ) {
     return true
-  } else if (options === 'same' && (trueWordWithoutAccent === clueWordWithoutAccent)) {
+  } else if (options === 'same' && trueWordWithoutAccent === clueWordWithoutAccent) {
     return true
   }
 }
@@ -155,7 +157,7 @@ const sendNewWord = () => {
     return
   }
 
-  if ((newClue.value && getWord.value && isWordMatch(getWord.value, newClue.value, 'threeLetter'))) {
+  if (newClue.value && getWord.value && isWordMatch(getWord.value, newClue.value, 'threeLetter')) {
     notifier({
       content: 'Les 3 premières lettres ne peuvent pas être identiques',
       color: 'error'
