@@ -29,9 +29,7 @@
     </section>
     <v-divider class="my-2" />
     <section class="pa-2">
-      <v-btn color="main" block :disabled="loading" @click="logout">
-        Se déconnecter
-      </v-btn>
+      <v-btn color="main" block :disabled="loading" @click="logout"> Se déconnecter </v-btn>
       <v-btn class="my-2" color="error" block :disabled="loading" @click="openDeleteUser = true">
         Supprimer ton compte
       </v-btn>
@@ -51,9 +49,7 @@
           <v-btn color="error" variant="text" :loading="loading" @click="deleteProfile">
             Oui
           </v-btn>
-          <v-btn variant="text" :loading="loading" @click="openDeleteUser = false">
-            Non
-          </v-btn>
+          <v-btn variant="text" :loading="loading" @click="openDeleteUser = false"> Non </v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -70,7 +66,7 @@ import { userConverter } from '~/stores'
 // Props
 
 defineProps<{ theme: { dark: boolean } }>()
-const emits = defineEmits<{(e: 'toggleTheme'): void }>()
+const emits = defineEmits<{ (e: 'toggleTheme'): void }>()
 
 // Vuefire
 
@@ -175,7 +171,7 @@ const logout = async () => {
 </script>
 
 <style scoped>
-.cursor-pointer {
-  cursor: pointer;
+.v-card {
+  left: 50px;
 }
 </style>

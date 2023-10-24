@@ -6,9 +6,7 @@
           <thead>
             <tr>
               <th class="text-center border-darker bg-diceClosePrimary" width="40%" />
-              <th class="text-center border-darker bg-diceClosePrimary" width="15%">
-                A
-              </th>
+              <th class="text-center border-darker bg-diceClosePrimary" width="15%">A</th>
               <th class="text-center border-darker bg-diceClosePrimary" width="15%">
                 {{ players.length > 1 ? 'B' : '' }}
               </th>
@@ -22,9 +20,7 @@
           </thead>
           <tbody>
             <tr>
-              <td class="border-lighter">
-                Un
-              </td>
+              <td class="border-lighter">Un</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.one === null"
@@ -35,8 +31,8 @@
                   class="indie-flower"
                   @click="saveOneInput()"
                 >
-                  {{ oneInput }}
-                </v-btn><span v-else class="indie-flower">{{
+                  {{ oneInput }} </v-btn
+                ><span v-else class="indie-flower">{{
                   scores.playerOne.one !== null ? scores.playerOne.one : ''
                 }}</span>
               </td>
@@ -51,8 +47,8 @@
                     class="indie-flower"
                     @click="saveOneInput()"
                   >
-                    {{ oneInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ oneInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerTwo.one !== null ? scores.playerTwo.one : ''
                   }}</span>
                 </div>
@@ -65,10 +61,11 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveOneInput()"
                   >
-                    {{ oneInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ oneInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerThree.one !== null ? scores.playerThree.one : ''
                   }}</span>
                 </div>
@@ -81,19 +78,18 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveOneInput()"
                   >
-                    {{ oneInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ oneInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerFour.one !== null ? scores.playerFour.one : ''
                   }}</span>
                 </div>
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                Deux
-              </td>
+              <td class="border-lighter">Deux</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.two === null"
@@ -104,8 +100,8 @@
                   class="indie-flower"
                   @click="saveTwoInput()"
                 >
-                  {{ twoInput }}
-                </v-btn><span v-else class="indie-flower">{{
+                  {{ twoInput }} </v-btn
+                ><span v-else class="indie-flower">{{
                   scores.playerOne.two !== null ? scores.playerOne.two : ''
                 }}</span>
               </td>
@@ -120,8 +116,8 @@
                     class="indie-flower"
                     @click="saveTwoInput()"
                   >
-                    {{ twoInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ twoInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerTwo.two !== null ? scores.playerTwo.two : ''
                   }}</span>
                 </div>
@@ -134,10 +130,11 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveTwoInput()"
                   >
-                    {{ twoInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ twoInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerThree.two !== null ? scores.playerThree.two : ''
                   }}</span>
                 </div>
@@ -150,19 +147,18 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveTwoInput()"
                   >
-                    {{ twoInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ twoInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerFour.two !== null ? scores.playerFour.two : ''
                   }}</span>
                 </div>
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                Trois
-              </td>
+              <td class="border-lighter">Trois</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.three === null"
@@ -173,8 +169,8 @@
                   class="indie-flower"
                   @click="saveThreeInput()"
                 >
-                  {{ threeInput }}
-                </v-btn><span v-else class="indie-flower">{{
+                  {{ threeInput }} </v-btn
+                ><span v-else class="indie-flower">{{
                   scores.playerOne.three !== null ? scores.playerOne.three : ''
                 }}</span>
               </td>
@@ -189,8 +185,8 @@
                     class="indie-flower"
                     @click="saveThreeInput()"
                   >
-                    {{ threeInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ threeInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerTwo.three !== null ? scores.playerTwo.three : ''
                   }}</span>
                 </div>
@@ -203,10 +199,11 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveThreeInput()"
                   >
-                    {{ threeInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ threeInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerThree.three !== null ? scores.playerThree.three : ''
                   }}</span>
                 </div>
@@ -219,19 +216,18 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveThreeInput()"
                   >
-                    {{ threeInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ threeInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerFour.three !== null ? scores.playerFour.three : ''
                   }}</span>
                 </div>
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                Quatre
-              </td>
+              <td class="border-lighter">Quatre</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.four === null"
@@ -242,8 +238,8 @@
                   class="indie-flower"
                   @click="saveFourInput()"
                 >
-                  {{ fourInput }}
-                </v-btn><span v-else class="indie-flower">{{
+                  {{ fourInput }} </v-btn
+                ><span v-else class="indie-flower">{{
                   scores.playerOne.four !== null ? scores.playerOne.four : ''
                 }}</span>
               </td>
@@ -258,8 +254,8 @@
                     class="indie-flower"
                     @click="saveFourInput()"
                   >
-                    {{ fourInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ fourInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerTwo.four !== null ? scores.playerTwo.four : ''
                   }}</span>
                 </div>
@@ -272,10 +268,11 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveFourInput()"
                   >
-                    {{ fourInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ fourInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerThree.four !== null ? scores.playerThree.four : ''
                   }}</span>
                 </div>
@@ -288,19 +285,18 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveFourInput()"
                   >
-                    {{ fourInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ fourInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerFour.four !== null ? scores.playerFour.four : ''
                   }}</span>
                 </div>
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                Cinq
-              </td>
+              <td class="border-lighter">Cinq</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.five === null"
@@ -311,8 +307,8 @@
                   class="indie-flower"
                   @click="saveFiveInput()"
                 >
-                  {{ fiveInput }}
-                </v-btn><span v-else class="indie-flower">{{
+                  {{ fiveInput }} </v-btn
+                ><span v-else class="indie-flower">{{
                   scores.playerOne.five !== null ? scores.playerOne.five : ''
                 }}</span>
               </td>
@@ -327,8 +323,8 @@
                     class="indie-flower"
                     @click="saveFiveInput()"
                   >
-                    {{ fiveInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ fiveInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerTwo.five !== null ? scores.playerTwo.five : ''
                   }}</span>
                 </div>
@@ -341,10 +337,11 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveFiveInput()"
                   >
-                    {{ fiveInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ fiveInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerThree.five !== null ? scores.playerThree.five : ''
                   }}</span>
                 </div>
@@ -357,19 +354,18 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveFiveInput()"
                   >
-                    {{ fiveInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ fiveInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerFour.five !== null ? scores.playerFour.five : ''
                   }}</span>
                 </div>
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                Six
-              </td>
+              <td class="border-lighter">Six</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.six === null"
@@ -380,8 +376,8 @@
                   class="indie-flower"
                   @click="saveSixInput()"
                 >
-                  {{ sixInput }}
-                </v-btn><span v-else class="indie-flower">{{
+                  {{ sixInput }} </v-btn
+                ><span v-else class="indie-flower">{{
                   scores.playerOne.six !== null ? scores.playerOne.six : ''
                 }}</span>
               </td>
@@ -396,8 +392,8 @@
                     class="indie-flower"
                     @click="saveSixInput()"
                   >
-                    {{ sixInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ sixInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerTwo.six !== null ? scores.playerTwo.six : ''
                   }}</span>
                 </div>
@@ -410,10 +406,11 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveSixInput()"
                   >
-                    {{ sixInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ sixInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerThree.six !== null ? scores.playerThree.six : ''
                   }}</span>
                 </div>
@@ -426,19 +423,18 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveSixInput()"
                   >
-                    {{ sixInput }}
-                  </v-btn><span v-else class="indie-flower">{{
+                    {{ sixInput }} </v-btn
+                  ><span v-else class="indie-flower">{{
                     scores.playerFour.six !== null ? scores.playerFour.six : ''
                   }}</span>
                 </div>
               </td>
             </tr>
             <tr>
-              <td class="bg-diceClosePrimary border-darker">
-                Sous-total
-              </td>
+              <td class="bg-diceClosePrimary border-darker">Sous-total</td>
               <td class="text-center bg-diceClosePrimary border-darker">
                 <span class="font-weight-bold">{{
                   checkUpperSubtotalPlayerOne !== 0 ? checkUpperSubtotalPlayerOne : ''
@@ -467,9 +463,7 @@
               </td>
             </tr>
             <tr>
-              <td class="bg-diceClosePrimary border-darker">
-                Bonus (à partir de 63)
-              </td>
+              <td class="bg-diceClosePrimary border-darker">Bonus (à partir de 63)</td>
               <td class="text-center bg-diceClosePrimary border-darker">
                 <span class="font-weight-bold">{{
                   checkBonusPlayerOne !== 0 ? checkBonusPlayerOne : ''
@@ -498,9 +492,7 @@
               </td>
             </tr>
             <tr>
-              <td class="bg-diceClosePrimary border-darker">
-                Total de la partie supérieure
-              </td>
+              <td class="bg-diceClosePrimary border-darker">Total de la partie supérieure</td>
               <td class="text-center bg-diceClosePrimary border-darker">
                 <span class="font-weight-bold">{{
                   checkUpperTotalPlayerOne !== 0 ? checkUpperTotalPlayerOne : ''
@@ -529,9 +521,7 @@
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                3 identiques
-              </td>
+              <td class="border-lighter">3 identiques</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.threeOfAKind === null"
@@ -574,6 +564,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveThreeOfAKindInput()"
                   >
                     {{ threeOfAKindInput }}
@@ -591,6 +582,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveThreeOfAKindInput()"
                   >
                     {{ threeOfAKindInput }}
@@ -602,9 +594,7 @@
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                4 identiques
-              </td>
+              <td class="border-lighter">4 identiques</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.fourOfAKind === null"
@@ -647,6 +637,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveFourOfAKindInput()"
                   >
                     {{ fourOfAKindInput }}
@@ -664,6 +655,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveFourOfAKindInput()"
                   >
                     {{ fourOfAKindInput }}
@@ -675,9 +667,7 @@
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                Full house
-              </td>
+              <td class="border-lighter">Full house</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.fullHouse === null"
@@ -720,6 +710,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveFullHouseInput()"
                   >
                     {{ fullHouseInput }}
@@ -737,6 +728,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveFullHouseInput()"
                   >
                     {{ fullHouseInput }}
@@ -748,9 +740,7 @@
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                Petite suite
-              </td>
+              <td class="border-lighter">Petite suite</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.smallStraight === null"
@@ -793,6 +783,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveSmallStraightInput()"
                   >
                     {{ smallStraightInput }}
@@ -812,6 +803,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveSmallStraightInput()"
                   >
                     {{ smallStraightInput }}
@@ -823,9 +815,7 @@
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                Grande suite
-              </td>
+              <td class="border-lighter">Grande suite</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.largeStraight === null"
@@ -868,6 +858,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveLargeStraightInput()"
                   >
                     {{ largeStraightInput }}
@@ -887,6 +878,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveLargeStraightInput()"
                   >
                     {{ largeStraightInput }}
@@ -898,9 +890,7 @@
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                5 identiques
-              </td>
+              <td class="border-lighter">5 identiques</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.dice === null"
@@ -943,6 +933,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveDiceInput()"
                   >
                     {{ diceInput }}
@@ -960,6 +951,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveDiceInput()"
                   >
                     {{ diceInput }}
@@ -971,9 +963,7 @@
               </td>
             </tr>
             <tr>
-              <td class="border-lighter">
-                Chance
-              </td>
+              <td class="border-lighter">Chance</td>
               <td class="text-center border-lighter">
                 <v-btn
                   v-if="isDices && isPlayerTurnOne && scores.playerOne.chance === null"
@@ -1016,6 +1006,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveChanceInput()"
                   >
                     {{ chanceInput }}
@@ -1033,6 +1024,7 @@
                     variant="plain"
                     height="23"
                     rounded="0"
+                    class="indie-flower"
                     @click="saveChanceInput()"
                   >
                     {{ chanceInput }}
@@ -1044,9 +1036,7 @@
               </td>
             </tr>
             <tr>
-              <td class="bg-diceClosePrimary border-darker">
-                Total de la partie inférieure
-              </td>
+              <td class="bg-diceClosePrimary border-darker">Total de la partie inférieure</td>
               <td class="text-center bg-diceClosePrimary border-darker">
                 <span class="font-weight-bold">{{
                   checkLowerTotalPlayerOne !== 0 ? checkLowerTotalPlayerOne : ''
@@ -1075,9 +1065,7 @@
               </td>
             </tr>
             <tr>
-              <td class="bg-diceClosePrimary border-darker">
-                Total de la partie
-              </td>
+              <td class="bg-diceClosePrimary border-darker">Total de la partie</td>
               <td class="text-center bg-diceClosePrimary border-darker">
                 <span class="font-weight-bold">{{
                   checkTotalPlayerOne !== 0 ? checkTotalPlayerOne : ''

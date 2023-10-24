@@ -1,7 +1,7 @@
 <template>
-  <v-app class="overflow-x-hidden">
+  <v-app class="app-wrapper overflow-x-hidden">
     <Header />
-    <v-main class="background">
+    <v-main class="bg-background">
       <slot />
     </v-main>
     <Footer />
@@ -14,3 +14,10 @@
 <script lang="ts" setup>
 import { VApp, VMain } from 'vuetify/components'
 </script>
+
+<style lang="scss" scoped>
+.app-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+</style>

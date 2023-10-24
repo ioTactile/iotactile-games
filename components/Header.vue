@@ -1,33 +1,31 @@
 <template>
-  <div>
-    <v-app-bar color="secondary">
-      <NuxtLink to="/" class="w-100">
-        <v-img
-          :src="theme.current.value.dark ? '/logo-dark.png' : '/logo.png'"
-          alt="logo"
-          height="80"
-          width="200"
-        />
-      </NuxtLink>
-      <v-spacer />
-      <template v-if="admin && adminUser">
-        <v-btn to="/admin/lingua-vault" :icon="mdiFileWordBox" class="mr-1" />
-        <v-btn to="/admin/utilisateurs" :icon="mdiAccountCheck" />
-        <v-divider vertical class="mx-2" />
+  <v-app-bar color="secondary" density="comfortable" class="rounded-b-lg" absolute elevation="0">
+    <NuxtLink to="/">
+      <v-img
+        :src="theme.current.value.dark ? '/logo-dark.png' : '/logo.png'"
+        alt="logo"
+        height="80"
+        width="200"
+      />
+    </NuxtLink>
+    <v-spacer />
+    <template v-if="admin && adminUser">
+      <v-btn to="/admin/lingua-vault" :icon="mdiFileWordBox" class="mr-1" />
+      <v-btn to="/admin/utilisateurs" :icon="mdiAccountCheck" />
+      <v-divider vertical class="mx-2" />
+    </template>
+    <v-btn v-if="!user" :icon="mdiAccount" @click="login = true" />
+    <v-menu v-else :close-on-content-click="false" origin="top right">
+      <template #activator="{ props }">
+        <v-btn :icon="mdiAccount" v-bind="props" />
       </template>
-      <v-btn v-if="!user" :icon="mdiAccount" @click="login = true" />
-      <v-menu v-else :close-on-content-click="false">
-        <template #activator="{ props }">
-          <v-btn :icon="mdiAccount" v-bind="props" />
-        </template>
-        <UserDetails :theme="theme.current.value" @toggle-theme="toggleTheme" />
-      </v-menu>
-    </v-app-bar>
+      <UserDetails :theme="theme.current.value" @toggle-theme="toggleTheme" />
+    </v-menu>
+  </v-app-bar>
 
-    <client-only>
-      <Connexion v-model="login" />
-    </client-only>
-  </div>
+  <client-only>
+    <Connexion v-model="login" />
+  </client-only>
 </template>
 
 <script lang="ts" setup>
@@ -76,3 +74,9 @@ const toggleTheme = () => {
   localStorage.setItem('theme', theme.global.name.value)
 }
 </script>
+
+<style lang="scss" scoped>
+.v-app-bar {
+  width: 1200px !important;
+}
+</style>

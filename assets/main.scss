@@ -12,6 +12,10 @@ $font-family: 'Poppins', sans-serif;
   font-family: $font-family, sans-serif !important;
 }
 
+body {
+  background-color: rgb(var(--v-theme-background));
+}
+
 .indie-flower {
   font-family: 'Indie Flower', cursive !important;
   font-size: 1.5rem !important;

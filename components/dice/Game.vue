@@ -1,7 +1,7 @@
 <template>
   <v-container v-if="session && playerTurn && dices && remainingTurns" fluid class="container">
-    <v-row>
-      <v-col cols="12" md="9">
+    <v-row class="game-wrapper">
+      <v-col cols="12">
         <div
           ref="fullscreenElement"
           class="background-image"
@@ -123,37 +123,43 @@
           </v-row>
         </div>
       </v-col>
-      <v-col cols="12" md="3">
-        <div class="d-flex justify-space-between align-center">
-          <h2 class="dice-logo">
-            Dice
-          </h2>
-          <v-btn
-            :icon="isSoundMuted ? mdiVolumeOff : mdiVolumeHigh"
-            variant="text"
-            @click="toggleVolume"
-          />
-        </div>
-        <v-card
-          v-if="volumeCard"
-          rounded="xl"
-          height="42"
-          class="d-flex justify-center align-center px-2"
-        >
-          <v-slider
-            v-model="volume"
-            density="compact"
-            min="0"
-            max="1"
-            step="0.01"
-            thumb-size="12"
-            track-size="2"
-            hide-details
-            @change="adjustVolume"
-          />
-        </v-card>
+      <v-card
+        v-if="(session.players[0].id === user?.uid && !session.isStarted) || isMenuOpen"
+        :class="session.isStarted ? (isMenuOpen ? 'menu-wrapper' : 'd-none') : 'params-wrapper'"
+        class="pa-2 overflow-y-auto"
+        width="300"
+        max-height="400"
+      >
+        <section>
+          <div class="d-flex justify-space-between align-center">
+            <h2 class="dice-logo">Dice</h2>
+            <v-btn
+              :icon="isSoundMuted ? mdiVolumeOff : mdiVolumeHigh"
+              variant="text"
+              @click="toggleVolume"
+            />
+          </div>
+          <v-card
+            v-if="volumeCard"
+            rounded="xl"
+            height="42"
+            class="d-flex justify-center align-center px-2"
+          >
+            <v-slider
+              v-model="volume"
+              density="compact"
+              min="0"
+              max="1"
+              step="0.01"
+              thumb-size="12"
+              track-size="2"
+              hide-details
+              @change="adjustVolume"
+            />
+          </v-card>
+        </section>
         <v-divider class="my-4" />
-        <div class="text-center">
+        <section class="text-center">
           <v-btn
             v-if="session.players[0].id === user?.uid && !session.isStarted"
             height="50px"
@@ -183,42 +189,29 @@
           >
             Voir le classement
           </v-btn>
-        </div>
-        <div>
-          <v-card class="mt-4 overflow-auto" :max-height="400" rounded="0">
-            <v-card-title class="text-h5 text-center">
-              <span>Chat</span>
-            </v-card-title>
-            <v-card-text>
-              <div v-for="(messageItem, i) in chat?.messages" :key="i" class="d-flex">
-                <span class="mr-1">{{ messageItem.username }}:</span>
-                <span>{{ messageItem.content }}</span>
-              </div>
-            </v-card-text>
-          </v-card>
-          <v-card class="d-flex align-center pa-2" rounded="0">
-            <v-row class="pa-0">
-              <v-col cols="12" xl="6">
-                <v-textarea
-                  v-model="message"
-                  placeholder="Votre message"
-                  variant="outlined"
-                  rows="1"
-                  auto-grow
-                  hide-details
-                  clearable
-                  @keyup.enter="sendMessage"
-                />
-              </v-col>
-              <v-col cols="12" xl="6" class="pt-0 pt-xl-3 align-self-center">
-                <v-btn block color="tertiary" height="46px" @click="sendMessage">
-                  Envoyer
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-card>
-        </div>
-      </v-col>
+        </section>
+        <section class="py-3">
+          <div class="text-h5 text-center">Chat</div>
+          <div v-for="(messageItem, i) in chat?.messages" :key="i" class="d-flex">
+            <span class="mr-1">{{ messageItem.username }}:</span>
+            <span>{{ messageItem.content }}</span>
+          </div>
+        </section>
+        <section class="d-flex flex-column align-center">
+          <v-textarea
+            v-model="message"
+            placeholder="Votre message"
+            variant="outlined"
+            rows="1"
+            auto-grow
+            hide-details
+            clearable
+            class="w-100 mb-2"
+            @keyup.enter="sendMessage"
+          />
+          <v-btn block color="tertiary" @click="sendMessage"> Envoyer </v-btn>
+        </section>
+      </v-card>
     </v-row>
 
     <client-only>
@@ -581,7 +574,7 @@ const trueRandom = () => {
 }
 
 const sleep = (ms: number) => {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 const getFullscreenElement = () => {
@@ -756,9 +749,9 @@ const getPlaceName = (position: number) => {
     scores.value.playerThree,
     scores.value.playerFour
   ]
-  const playerTotals = playerScores.map(player => (player ? player.total : 0))
+  const playerTotals = playerScores.map((player) => (player ? player.total : 0))
 
-  if (playerTotals.every(total => total === 0)) {
+  if (playerTotals.every((total) => total === 0)) {
     return false
   }
 
@@ -822,7 +815,7 @@ const leaveGame = async () => {
     if (!session) {
       return
     }
-    if (!session.players.find(player => player.id === user.value?.uid)) {
+    if (!session.players.find((player) => player.id === user.value?.uid)) {
       notifier({ content: "Tu n'es pas dans cette session", color: 'error' })
       return
     }
@@ -857,7 +850,7 @@ const leaveGame = async () => {
         playerFour: deleteField()
       })
     }
-    session.players = session.players.filter(player => player.id !== user.value?.uid)
+    session.players = session.players.filter((player) => player.id !== user.value?.uid)
 
     const joinRemainingTurnsDoc = await getDoc(remainingTurnsRef)
     if (!joinRemainingTurnsDoc.exists()) {
@@ -883,7 +876,27 @@ const leaveGame = async () => {
 
 <style scoped>
 .container {
-  max-width: 1800px;
+  width: 1200px;
+}
+
+.game-wapper {
+  position: relative;
+}
+
+.params-wrapper {
+  z-index: 9999;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.menu-wrapper {
+  z-index: 9999;
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
 }
 
 .background-image {
@@ -1079,5 +1092,15 @@ const leaveGame = async () => {
     rgb(var(--v-theme-dicePrimary)),
     rgb(var(--v-theme-diceClosePrimary))
   );
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(204, 204, 204);
+  border-radius: 10px;
 }
 </style>
