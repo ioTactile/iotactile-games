@@ -44,7 +44,8 @@ import { VContainer, VTable, VBtn } from 'vuetify/components'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { collection, getDocs } from 'firebase/firestore'
 import { useFirebaseFunctions } from '~/composables/useFirebaseFunctions'
-import { type LocalUserType, userConverter } from '~/stores'
+import { userConverter } from '~/stores'
+import type { LocalUserType } from '~/stores'
 
 definePageMeta({ layout: 'admin' })
 

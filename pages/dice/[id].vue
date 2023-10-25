@@ -4,8 +4,11 @@
       <Title>Session Dice - ioTactile Games</Title>
       <Meta name="description" content="Page d'une session de jeu Dice" />
     </Head>
-    <dice-template>
-      <dice-game-players :players="session!.players" :player-turn-id="playerTurn!.playerId" />
+    <dice-template v-if="session && playerTurn">
+      <dice-game-players
+        :players="session.players"
+        :player-turn-id="playerTurn.playerId"
+      />
     </dice-template>
   </div>
 </template>
@@ -19,11 +22,15 @@ const route = useRoute()
 
 const sessionId = route.params.id as string
 
-const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(diceSessionConverter)
+const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(
+  diceSessionConverter,
+)
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
 
 const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(
-  diceSessionPlayerTurnConverter
+  diceSessionPlayerTurnConverter,
 )
-const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id))
+const playerTurn = useDocument(
+  doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id),
+)
 </script>
