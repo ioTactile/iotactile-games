@@ -1110,7 +1110,7 @@ import {
   diceSessionDicesConverter,
   diceSessionScoreConverter
 } from '~/stores'
-import { Dice, CardUser } from '~/functions/src/types'
+import type { Dice, CardUser } from '~/functions/src/types'
 
 // Props
 

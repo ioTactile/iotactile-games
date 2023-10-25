@@ -2,9 +2,7 @@
   <v-row>
     <v-col cols="6">
       <v-card width="100%" rounded="0" elevation="0">
-        <v-card-title class="bg-grey text-center">
-          Indices
-        </v-card-title>
+        <v-card-title class="bg-grey text-center"> Indices </v-card-title>
         <v-card-text class="pa-0">
           <div
             v-for="(clue, i) in clues"
@@ -18,9 +16,7 @@
     </v-col>
     <v-col cols="6">
       <v-card width="100%" rounded="0" elevation="0">
-        <v-card-title class="bg-grey text-center">
-          Réponses
-        </v-card-title>
+        <v-card-title class="bg-grey text-center"> Réponses </v-card-title>
         <v-card-text class="pa-0">
           <div
             v-for="(testedWord, j) in testedWords"
@@ -36,8 +32,8 @@
       <v-text-field
         v-if="
           ((props.playerOne && isPlayerOneFinder) || (!props.playerOne && !isPlayerOneFinder)) &&
-            playerTurnId === user?.uid &&
-            clues.length !== 4
+          playerTurnId === user?.uid &&
+          clues.length !== 4
         "
         v-model="newClue"
         autofocus
@@ -52,8 +48,8 @@
       <v-text-field
         v-if="
           ((props.playerOne && !isPlayerOneFinder) || (!props.playerOne && isPlayerOneFinder)) &&
-            playerTurnId === user?.uid &&
-            testedWords.length !== 4
+          playerTurnId === user?.uid &&
+          testedWords.length !== 4
         "
         v-model="newTestedWord"
         autofocus
@@ -79,7 +75,7 @@
 
 <script setup lang="ts">
 import { VRow, VCol, VCard, VCardTitle, VCardText, VTextField, VBtn } from 'vuetify/components'
-import { Word } from '~/functions/src/types'
+import type { Word } from '~/functions/src/types'
 
 // Props
 
@@ -152,7 +148,7 @@ const sendNewWord = () => {
     return
   }
 
-  if (newClue.value && props.clues.some(clue => isWordMatch(clue, newClue.value, 'same'))) {
+  if (newClue.value && props.clues.some((clue) => isWordMatch(clue, newClue.value, 'same'))) {
     notifier({ content: 'Tu as déjà donné cet indice', color: 'error' })
     return
   }

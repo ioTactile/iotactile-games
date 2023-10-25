@@ -2,9 +2,7 @@
   <v-dialog :model-value="modelValue" max-width="500px" persistent>
     <v-card :rounded="0">
       <v-card-title class="d-flex justify-space-between align-center">
-        <h2 class="text-h6 text-sm-h5">
-          Résultats
-        </h2>
+        <h2 class="text-h6 text-sm-h5">Résultats</h2>
         <v-btn :icon="mdiClose" variant="text" @click="emits('update:modelValue', false)" />
       </v-card-title>
       <v-card-text>
@@ -12,9 +10,7 @@
           <thead>
             <tr>
               <th class="text-center border-darker bg-diceClosePrimary" width="40%" />
-              <th class="text-center border-darker bg-diceClosePrimary" width="15%">
-                A
-              </th>
+              <th class="text-center border-darker bg-diceClosePrimary" width="15%">A</th>
               <th class="text-center border-darker bg-diceClosePrimary" width="15%">
                 {{ session.playerTwo ? 'B' : '' }}
               </th>
@@ -79,14 +75,14 @@ import {
   VDialog
 } from 'vuetify/components'
 import { mdiClose } from '@mdi/js'
-import { LocalDiceSessionScoreType } from '~/stores'
+import type { LocalDiceSessionScoreType } from '~/stores'
 
 const props = defineProps<{
   modelValue: boolean
   session: LocalDiceSessionScoreType
 }>()
 
-const emits = defineEmits<{(e: 'update:modelValue', value: boolean): void }>()
+const emits = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
 
 const upperTotal = (player: string) => {
   if (player === 'playerOne') {

@@ -303,9 +303,9 @@ import {
   diceSessionPlayerTriesConverter,
   diceSessionDicesConverter,
   diceSessionChatConverter,
-  LocalDiceSessionScoreType
+  type LocalDiceSessionScoreType
 } from '~/stores'
-import { CardUser, Dice } from '~/functions/src/types'
+import type { CardUser, Dice } from '~/functions/src/types'
 import SoundService from '~/utils/soundService'
 
 // Types
@@ -372,6 +372,7 @@ const volume = ref<number>(0.5)
 const isSoundMuted = ref(false)
 const hideDiceOnBoard = ref(false)
 const isFinishedLocal = ref(false)
+const isMenuOpen = ref(false)
 const isFullscreen = ref(false)
 const volumeCard = ref(false)
 const leaving = ref(false)

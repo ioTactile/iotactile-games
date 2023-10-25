@@ -14,7 +14,7 @@
 import { VCard, VCardTitle, VProgressLinear } from 'vuetify/components'
 import { storeToRefs } from 'pinia'
 import { useLvTimerStore } from '~/stores/lvTimer'
-import { Word } from '~/functions/src/types'
+import type { Word } from '~/functions/src/types'
 
 // Props
 

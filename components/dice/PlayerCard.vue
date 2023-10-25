@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { VCard, VImg, VSpacer } from 'vuetify/components'
-import { CardUser } from '~/functions/src/types'
+import type { CardUser } from '~/functions/src/types'
 
 // Props
 
