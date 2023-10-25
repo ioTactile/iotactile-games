@@ -10,14 +10,11 @@
     <v-container class="container">
       <v-row class="d-flex justify-center">
         <v-col cols="6" sm="4" md="3" class="px-1">
-          <GameFramework img="/dice-version-1.png" alt="Dice game" title="Dice" link="/dice" />
-        </v-col>
-        <v-col cols="6" sm="4" md="3" class="px-1">
           <GameFramework
-            img="/lingua-vault.png"
-            alt="Lingua Vault game"
-            title="Lingua Vault"
-            link="/lingua-vault/jouer"
+            img="/dice-version-1.png"
+            alt="Dice game"
+            title="Dice"
+            link="/dice"
           />
         </v-col>
       </v-row>
