@@ -1,9 +1,9 @@
 <template>
   <v-container>
-    <div class="d-flex flex-column flex-sm-row justify-space-between align-center mt-2">
-      <h2 class="mb-2 mb-sm-0">
-        Lingua Vault
-      </h2>
+    <div
+      class="d-flex flex-column flex-sm-row justify-space-between align-center mt-2"
+    >
+      <h2 class="mb-2 mb-sm-0">Lingua Vault</h2>
       <v-form ref="form" class="d-flex align-center">
         <v-text-field
           v-model="newWord"
@@ -39,7 +39,7 @@
 <script lang="ts" setup>
 import { VContainer, VTable, VTextField, VBtn, VForm } from 'vuetify/components'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { Word } from '~/functions/src/types'
+import { type Word } from '~/functions/src/types'
 import { linguaVaultWordsConverter } from '~/stores'
 
 definePageMeta({ layout: 'admin' })
@@ -47,9 +47,11 @@ definePageMeta({ layout: 'admin' })
 const db = useFirestore()
 const { notifier } = useNotifier()
 
-const wordsRef = doc(db, 'linguaVaultWords', 'AI8rozWXYEmchhc1pwar' as string).withConverter(
-  linguaVaultWordsConverter
-)
+const wordsRef = doc(
+  db,
+  'linguaVaultWords',
+  'AI8rozWXYEmchhc1pwar' as string,
+).withConverter(linguaVaultWordsConverter)
 
 const loading = ref(false)
 const form = ref<VForm>()
@@ -68,7 +70,7 @@ const addWord = async () => {
     return
   }
 
-  if (words.value.find(w => w.word === newWord.value)) {
+  if (words.value.find((w) => w.word === newWord.value)) {
     notifier({ content: 'Ce mot existe déjà', color: 'error' })
     return
   }
@@ -81,9 +83,9 @@ const addWord = async () => {
       {
         id: (words.value.length || 0) + 1,
         word: newWord.value,
-        difficulty: 1000
-      }
-    ]
+        difficulty: 1000,
+      },
+    ],
   }
 
   try {

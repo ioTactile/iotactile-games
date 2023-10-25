@@ -33,14 +33,7 @@
         <v-col v-if="sessionsNotStarted.length > 0" cols="12" class="text-h4 my-4" align="center">
           <span>Rejoindre une session</span>
         </v-col>
-        <v-col
-          v-for="(session, i) in sessionsNotStarted"
-          :key="i"
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
-        >
+        <v-col v-for="(session, i) in sessionsNotStarted" :key="i" cols="12" sm="6" md="4" lg="3">
           <v-card v-if="!session.isStarted">
             <v-card-title class="text-h5 text-center">
               <span>Session {{ i + 1 }}</span>
@@ -56,9 +49,7 @@
               </div>
             </v-card-text>
             <v-card-actions class="d-flex justify-space-between">
-              <v-btn color="error" :loading="leaving" @click="leave(session.id)">
-                Quitter
-              </v-btn>
+              <v-btn color="error" :loading="leaving" @click="leave(session.id)"> Quitter </v-btn>
               <v-btn color="tertiary" :loading="loading" @click="join(session.id)">
                 Rejoindre
               </v-btn>
@@ -70,14 +61,7 @@
           <v-col cols="12" class="text-h4 my-4" align="center">
             <span>{{ sessionStarted.length === 1 ? 'Partie' : 'Parties' }} en cours</span>
           </v-col>
-          <v-col
-            v-for="(session, i) in sessionStarted"
-            :key="i"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="3"
-          >
+          <v-col v-for="(session, i) in sessionStarted" :key="i" cols="12" sm="6" md="4" lg="3">
             <v-card v-if="session.isStarted">
               <v-card-title class="text-h5 text-center">
                 <span>Session {{ i + 1 }}</span>
@@ -137,9 +121,9 @@ import {
   linguaVaultScoreboardConverter,
   linguaVaultSessionRemainingTurnsConverter,
   linguaVaultSessionPlayerTurnConverter,
-  LocalLinguaVaultSessionType
+  type LocalLinguaVaultSessionType
 } from '~/stores'
-import { Word } from '~/functions/src/types'
+import { type Word } from '~/functions/src/types'
 
 // Vuefire & Composables
 
@@ -223,7 +207,7 @@ const getRandomWords = async (sessionId: string): Promise<string[]> => {
 const checkScoreboard = async () => {
   const scoreboardQuery = query(scoreboardRef, where('userId', '==', user.value?.uid))
   const scoreboardSnapshot = await getDocs(scoreboardQuery)
-  const scoreboard = scoreboardSnapshot.docs.map(doc => doc.data())
+  const scoreboard = scoreboardSnapshot.docs.map((doc) => doc.data())
   if (scoreboard.length === 0) {
     const username = await getUsername()
     await setDoc(doc(scoreboardRef, user.value?.uid), {
@@ -264,9 +248,9 @@ const create = async () => {
       where('isStarted', '==', true)
     )
     const sessionsSnapshot = await getDocs(sessionsQuery)
-    const sessions = sessionsSnapshot.docs.map(doc => doc.data())
+    const sessions = sessionsSnapshot.docs.map((doc) => doc.data())
     const userInSession = sessions.find(
-      session =>
+      (session) =>
         session.playerOne.id === user.value?.uid || session.playerTwo?.id === user.value?.uid
     )
     if (userInSession) {
@@ -321,9 +305,9 @@ const quickJoin = async () => {
       where('isStarted', '==', false)
     )
     const sessionsSnapshot = await getDocs(sessionsQuery)
-    const sessions = sessionsSnapshot.docs.map(doc => doc.data())
+    const sessions = sessionsSnapshot.docs.map((doc) => doc.data())
     const userInSession = sessions.find(
-      session =>
+      (session) =>
         session.playerOne.id === user.value?.uid || session.playerTwo?.id === user.value?.uid
     )
     if (userInSession) {

@@ -1,5 +1,11 @@
 <template>
-  <v-app-bar color="secondary" density="comfortable" class="rounded-b-lg" absolute elevation="0">
+  <v-app-bar
+    color="secondary"
+    density="comfortable"
+    class="rounded-b-lg"
+    absolute
+    elevation="0"
+  >
     <NuxtLink to="/">
       <v-img
         :src="theme.current.value.dark ? '/logo-dark.png' : '/logo.png'"
@@ -29,7 +35,14 @@
 </template>
 
 <script lang="ts" setup>
-import { VAppBar, VBtn, VDivider, VMenu, VImg, VSpacer } from 'vuetify/components'
+import {
+  VAppBar,
+  VBtn,
+  VDivider,
+  VMenu,
+  VImg,
+  VSpacer,
+} from 'vuetify/components'
 import { useTheme } from 'vuetify'
 import { getIdTokenResult } from 'firebase/auth'
 import { mdiAccount, mdiAccountCheck, mdiFileWordBox } from '@mdi/js'
@@ -70,7 +83,9 @@ onMounted(async () => {
 
 const toggleTheme = () => {
   theme.global.name.value =
-    theme.name.value === 'myCustomLightTheme' ? 'myCustomDarkTheme' : 'myCustomLightTheme'
+    theme.name.value === 'myCustomLightTheme'
+      ? 'myCustomDarkTheme'
+      : 'myCustomLightTheme'
   localStorage.setItem('theme', theme.global.name.value)
 }
 </script>

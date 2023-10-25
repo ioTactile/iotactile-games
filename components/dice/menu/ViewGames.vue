@@ -40,11 +40,11 @@ const sessionsRef = collection(db, 'diceSessions').withConverter(diceSessionConv
 const sessions = useCollection(sessionsRef)
 
 const handleButtonClick = (session: LocalDiceSessionType) => {
-  const diceSession = new DiceSession()
   const host = session.players[0].id === user.value?.uid
   const isPlayerInSession = session.players.some((player) => player.id === user.value?.uid)
 
   if (!session.isStarted) {
+    const diceSession = new DiceSession()
     if (host && session.players.length === 1) {
       return diceSession.delete(session)
     }
@@ -55,8 +55,8 @@ const handleButtonClick = (session: LocalDiceSessionType) => {
       return diceSession.leave(session)
     }
     return diceSession.join(session)
-  } else {
-    return navigateTo('/dice/' + session.id)
+  } else if (session.isStarted && isPlayerInSession) {
+    return navigateTo({ path: `/dice/${session.id}` })
   }
 }
 
@@ -75,8 +75,8 @@ const getButtonLabel = (session: LocalDiceSessionType) => {
       return 'Quitter'
     }
     return 'Rejoindre'
-  } else {
-    return 'Rejoindre'
+  } else if (session.isStarted && isPlayerInSession) {
+    return 'Rejoindre!'
   }
 }
 </script>

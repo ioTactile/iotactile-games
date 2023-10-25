@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import { VRow, VCol } from 'vuetify/components'
-import { CardUser } from '~/functions/src/types'
+import { type CardUser } from '~/functions/src/types'
 
 // Props
 

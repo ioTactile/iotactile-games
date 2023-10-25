@@ -44,7 +44,7 @@ import { VContainer, VTable, VBtn } from 'vuetify/components'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { collection, getDocs } from 'firebase/firestore'
 import { useFirebaseFunctions } from '~/composables/useFirebaseFunctions'
-import { LocalUserType, userConverter } from '~/stores'
+import { type LocalUserType, userConverter } from '~/stores'
 
 definePageMeta({ layout: 'admin' })
 
@@ -60,7 +60,7 @@ onMounted(async () => {
   const usersRef = collection(db, 'users').withConverter(userConverter)
   const usersDocs = await getDocs(usersRef)
   if (!usersDocs.empty) {
-    users.value = usersDocs.docs.map(doc => doc.data())
+    users.value = usersDocs.docs.map((doc) => doc.data())
   }
 })
 
@@ -70,7 +70,7 @@ const addAdmin = async (id: string) => {
   try {
     await functions('addAdmin')({
       id,
-      role: { admin: true }
+      role: { admin: true },
     })
     notifier({ content: 'Admin ajouté', color: 'success' })
   } finally {

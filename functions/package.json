@@ -18,7 +18,7 @@
   "type": "module",
   "dependencies": {
     "@aws-sdk/client-ses": "^3.435.0",
-    "firebase-admin": "^11.11.0",
+    "firebase-admin": "^11.10.1",
     "firebase-functions": "^4.4.1"
   },
   "devDependencies": {
