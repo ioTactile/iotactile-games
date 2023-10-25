@@ -17,21 +17,17 @@
   "main": "lib/index.js",
   "type": "module",
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.395.0",
-    "firebase-admin": "^11.10.1",
-    "firebase-functions": "^4.4.1",
-    "mjml": "^4.14.1",
-    "nodemailer": "^6.9.4"
+    "@aws-sdk/client-ses": "^3.435.0",
+    "firebase-admin": "^11.11.0",
+    "firebase-functions": "^4.4.1"
   },
   "devDependencies": {
-    "@types/mjml": "^4.7.1",
-    "@types/nodemailer": "^6.4.9",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^6.4.1",
-    "eslint": "^8.47.0",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "eslint": "^8.52.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.28.1",
-    "typescript": "^5.1.6",
+    "eslint-plugin-import": "^2.29.0",
+    "typescript": "^5.2.2",
     "yarn-upgrade-all": "^0.7.2"
   },
   "private": true

@@ -2,7 +2,6 @@ import { initializeApp, getApps } from 'firebase-admin/app'
 if (!getApps().length) initializeApp()
 
 // Callable functions
-export { sendContact } from './sendContact.js'
 export { addAdmin } from './addAdmin.js'
 export { removeAdmin } from './removeAdmin.js'
 
