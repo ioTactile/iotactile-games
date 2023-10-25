@@ -1,4 +1,4 @@
-import { createVuetify, ThemeDefinition } from 'vuetify'
+import { createVuetify, type ThemeDefinition } from 'vuetify'
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 
 const myCustomLightTheme: ThemeDefinition = {
@@ -23,7 +23,13 @@ const myCustomLightTheme: ThemeDefinition = {
     dicePrimary: '#fffcb9', // yellow
     diceClosePrimary: '#ffd37f', // yellow
     diceBorder: '#e0e0e0', // grey
-    diceCloseBorder: '#e0e0e0' // grey
+    diceCloseBorder: '#e0e0e0', // grey
+    // Main Dice colors
+    diceMainPrimary: '#005541', // green
+    diceMainSecondary: '#002E23', // dark green
+    diceMainTertiary: '#EB9444', // orange
+    diceMainLightTertiary: '#FFAC49', // light orange
+    diceMainDarkTertiary: '#B77335' // dark orange
   }
 }
 const myCustomDarkTheme: ThemeDefinition = {

@@ -67,8 +67,8 @@
               createAccount
                 ? "M'inscire"
                 : forgotPassword
-                  ? 'Réinitialiser mon mot de passe'
-                  : 'Connexion'
+                ? 'Réinitialiser mon mot de passe'
+                : 'Connexion'
             }}
           </v-btn>
         </v-form>
@@ -96,8 +96,7 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   AuthErrorCodes,
-  getIdTokenResult,
-  ParsedToken
+  getIdTokenResult
 } from 'firebase/auth'
 import { FirebaseError } from '@firebase/util'
 import { Timestamp, doc, setDoc } from 'firebase/firestore'
@@ -119,14 +118,14 @@ defineProps<{
 
 // Emits
 
-const emits = defineEmits<{(e: 'update:modelValue', value: boolean): void }>()
+const emits = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
 
 // Refs
 
 const email = ref('')
 const username = ref('')
 const password = ref('')
-const userClaims = ref<null | ParsedToken>(null)
+const userClaims = ref()
 const date = ref(new Date(Date.now()))
 const createAccount = ref(false)
 const forgotPassword = ref(false)

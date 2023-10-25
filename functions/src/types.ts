@@ -91,6 +91,7 @@ export type User = {
 
 export type DiceSession = {
   id: string
+  name: string
   players: CardUser[]
   isFull: boolean
   isStarted: boolean
@@ -159,7 +160,7 @@ export type DiceSessionScore = {
     dice: number | null
     total: number
   }
-  playerTwo: {
+  playerTwo?: {
     id: string
     username: string
     one: number | null

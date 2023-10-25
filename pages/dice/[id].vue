@@ -4,6 +4,8 @@
       <Title>Session Dice - ioTactile Games</Title>
       <Meta name="description" content="Page d'une session de jeu Dice" />
     </Head>
-    <dice-game />
+    <dice-template>
+      <div />
+    </dice-template>
   </div>
 </template>
