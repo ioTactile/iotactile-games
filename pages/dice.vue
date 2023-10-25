@@ -65,7 +65,7 @@ const { width: windowWidth, height: windowHeight } = useWindowSize()
 
 const handleResize = () => {
   const targetHeight = 1080
-  const targetWidth = (16 / 9) * targetHeight
+  const targetWidth = (3 / 2) * targetHeight
   scale.value = Math.min(windowHeight.value / targetHeight, windowWidth.value / targetWidth)
 }
 
@@ -92,5 +92,6 @@ watch(
   top: 70px;
   transform: translateX(-50%);
   width: 1200px;
+  height: 800px;
 }
 </style>
