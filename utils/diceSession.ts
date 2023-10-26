@@ -9,7 +9,7 @@ import {
   query,
   where,
   deleteField,
-  Timestamp
+  Timestamp,
 } from 'firebase/firestore'
 import {
   diceSessionConverter,
@@ -17,41 +17,51 @@ import {
   diceSessionRemainingTurnsConverter,
   diceSessionDicesConverter,
   diceSessionPlayerTriesConverter,
-  diceSessionScoreConverter,
+  diceSessionScoresConverter,
   diceScoreboardConverter,
-  type LocalDiceSessionType
 } from '~/stores'
+import type { LocalDiceSessionType } from '~/stores'
 
 export default class diceSession {
   private db = useFirestore()
   private user = useCurrentUser()
-  private sessionsRef = collection(this.db, 'diceSessions').withConverter(diceSessionConverter)
-  private playerTurnRef = collection(this.db, 'diceSessionPlayerTurn').withConverter(
-    diceSessionPlayerTurnConverter
+
+  private sessionsRef = collection(this.db, 'diceSessions').withConverter(
+    diceSessionConverter,
   )
 
-  private remainingTurnsRef = collection(this.db, 'diceSessionRemainingTurns').withConverter(
-    diceSessionRemainingTurnsConverter
-  )
+  private playerTurnRef = collection(
+    this.db,
+    'diceSessionPlayerTurn',
+  ).withConverter(diceSessionPlayerTurnConverter)
+
+  private remainingTurnsRef = collection(
+    this.db,
+    'diceSessionRemainingTurns',
+  ).withConverter(diceSessionRemainingTurnsConverter)
 
   private dicesRef = collection(this.db, 'diceSessionDices').withConverter(
-    diceSessionDicesConverter
+    diceSessionDicesConverter,
   )
 
-  private playerTriesRef = collection(this.db, 'diceSessionPlayerTries').withConverter(
-    diceSessionPlayerTriesConverter
-  )
+  private playerTriesRef = collection(
+    this.db,
+    'diceSessionPlayerTries',
+  ).withConverter(diceSessionPlayerTriesConverter)
 
   private scoresRef = collection(this.db, 'diceSessionScores').withConverter(
-    diceSessionScoreConverter
+    diceSessionScoresConverter,
   )
 
   private scoreboardRef = collection(this.db, 'diceScoreboard').withConverter(
-    diceScoreboardConverter
+    diceScoreboardConverter,
   )
 
   private async getUsername() {
-    const userRef = doc(this.db, 'users', this.user.value!.uid)
+    if (!this.user.value) {
+      return
+    }
+    const userRef = doc(this.db, 'users', this.user.value.uid)
     const userDoc = await getDoc(userRef)
     if (!userDoc.exists()) {
       return
@@ -60,12 +70,18 @@ export default class diceSession {
   }
 
   private async checkScoreboard() {
-    const scoreboardQuery = query(this.scoreboardRef, where('userId', '==', this.user.value?.uid))
+    if (!this.user.value) {
+      return
+    }
+    const scoreboardQuery = query(
+      this.scoreboardRef,
+      where('userId', '==', this.user.value.uid),
+    )
     const scoreboardSnapshot = await getDocs(scoreboardQuery)
     const scoreboard = scoreboardSnapshot.docs.map((doc) => doc.data())
     if (scoreboard.length === 0) {
       const username = await this.getUsername()
-      await setDoc(doc(this.scoreboardRef, this.user.value?.uid), {
+      await setDoc(doc(this.scoreboardRef, this.user.value.uid), {
         userId: this.user.value!.uid,
         username,
         games: 0,
@@ -73,14 +89,17 @@ export default class diceSession {
         averageScore: 0,
         totalScore: 0,
         victories: 0,
-        dice: 0
+        dice: 0,
       })
     }
   }
 
   private initScores() {
+    if (!this.user.value) {
+      return
+    }
     const scores = {
-      id: this.user.value?.uid,
+      id: this.user.value.uid,
       one: null,
       two: null,
       three: null,
@@ -95,9 +114,8 @@ export default class diceSession {
       largeStraight: null,
       chance: null,
       dice: null,
-      total: 0
+      total: 0,
     }
-
     return scores
   }
 
@@ -118,39 +136,39 @@ export default class diceSession {
       players: [
         {
           id: this.user.value.uid,
-          username
-        }
+          username,
+        },
       ],
       isFull: false,
       isStarted: false,
       isFinished: false,
-      creationDate: Timestamp.fromDate(new Date(Date.now()))
+      creationDate: Timestamp.fromDate(new Date(Date.now())),
     })
 
     await setDoc(doc(this.playerTurnRef, sessionId), {
       id: sessionId,
-      playerId: this.user.value.uid
+      playerId: this.user.value.uid,
     })
 
     await setDoc(doc(this.remainingTurnsRef, sessionId), {
       id: sessionId,
-      remainingTurns: 13
+      remainingTurns: 13,
     })
 
     await setDoc(doc(this.dicesRef, sessionId), {
       id: sessionId,
-      dices: []
+      dices: [],
     })
 
     await setDoc(doc(this.playerTriesRef, sessionId), {
       id: sessionId,
-      tries: 3
+      tries: 3,
     })
 
     await setDoc(doc(this.scoresRef, sessionId), {
       id: sessionId,
-      playerOne: this.initScores() + username,
-      creationDate: Timestamp.fromDate(new Date(Date.now()))
+      playerOne: this.initScores(),
+      creationDate: Timestamp.fromDate(new Date(Date.now())),
     })
 
     this.checkScoreboard()
@@ -197,21 +215,23 @@ export default class diceSession {
       return
     }
 
-    if (scores?.playerTwo.id === this.user.value.uid) {
+    if (scores?.playerTwo?.id === this.user.value.uid) {
       await updateDoc(scoresDocRef, {
-        playerTwo: deleteField()
+        playerTwo: deleteField(),
       })
     } else if (scores?.playerThree?.id === this.user.value.uid) {
       await updateDoc(scoresDocRef, {
-        playerThree: deleteField()
+        playerThree: deleteField(),
       })
     } else if (scores?.playerFour?.id === this.user.value.uid) {
       await updateDoc(scoresDocRef, {
-        playerFour: deleteField()
+        playerFour: deleteField(),
       })
     }
 
-    const newPlayers = session.players.filter((player) => player.id !== this.user.value?.uid)
+    session.players = session.players.filter(
+      (player) => player.id !== this.user.value?.uid,
+    )
 
     const joinRemainingTurnsDoc = await getDoc(remainingTurnsDoc)
 
@@ -223,10 +243,10 @@ export default class diceSession {
 
     await updateDoc(remainingTurnsDoc, {
       id: sessionId,
-      remainingTurns: joinRemainingTurns - 13
+      remainingTurns: joinRemainingTurns - 13,
     })
 
-    if (newPlayers.length < 4) {
+    if (session.players.length < 4) {
       session.isFull = false
     }
 
@@ -289,7 +309,7 @@ export default class diceSession {
 
     session.players.push({
       id: this.user.value.uid,
-      username
+      username,
     })
 
     if (session.players.length >= 4) {
@@ -307,7 +327,7 @@ export default class diceSession {
 
     await updateDoc(doc(this.remainingTurnsRef, sessionId), {
       id: sessionId,
-      remainingTurns: joinRemainingTurns + 13
+      remainingTurns: joinRemainingTurns + 13,
     })
 
     await updateDoc(sessionRef, session)
@@ -315,11 +335,11 @@ export default class diceSession {
     const scoresDoc = doc(this.scoresRef, sessionId)
 
     if (session.players.length === 2) {
-      await updateDoc(doc(scoresDoc, sessionId), { playerTwo: this.initScores() })
+      await updateDoc(scoresDoc, { playerTwo: this.initScores() })
     } else if (session.players.length === 3) {
-      await updateDoc(doc(scoresDoc, sessionId), { playerThree: this.initScores() })
+      await updateDoc(scoresDoc, { playerThree: this.initScores() })
     } else if (session.players.length === 4) {
-      await updateDoc(doc(scoresDoc, sessionId), { playerFour: this.initScores() })
+      await updateDoc(scoresDoc, { playerFour: this.initScores() })
     }
 
     this.checkScoreboard()
@@ -333,7 +353,7 @@ export default class diceSession {
     const sessionsQuery = query(
       this.sessionsRef,
       where('isFull', '==', false),
-      where('isStarted', '==', false)
+      where('isStarted', '==', false),
     )
     const sessionsSnapshot = await getDocs(sessionsQuery)
     const sessions = sessionsSnapshot.docs.map((doc) => doc.data())
@@ -354,7 +374,7 @@ export default class diceSession {
 
     session.players.push({
       id: this.user.value.uid,
-      username
+      username,
     })
 
     if (session.players.length >= 4) {
@@ -372,18 +392,18 @@ export default class diceSession {
 
     await updateDoc(doc(this.remainingTurnsRef, sessionId), {
       id: sessionId,
-      remainingTurns: joinRemainingTurns + 13
+      remainingTurns: joinRemainingTurns + 13,
     })
 
     await updateDoc(sessionRef, session)
 
     const scoresDoc = doc(this.scoresRef, sessionId)
 
-    if (session.players.length === 1) {
+    if (session.players.length === 2) {
       await updateDoc(scoresDoc, { playerTwo: this.initScores() })
-    } else if (session.players.length === 2) {
-      await updateDoc(scoresDoc, { playerThree: this.initScores() })
     } else if (session.players.length === 3) {
+      await updateDoc(scoresDoc, { playerThree: this.initScores() })
+    } else if (session.players.length === 4) {
       await updateDoc(scoresDoc, { playerFour: this.initScores() })
     }
 
