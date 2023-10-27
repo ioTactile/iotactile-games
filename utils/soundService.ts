@@ -5,11 +5,6 @@ export default class SoundService {
   private globalVolume = 1
   private isMuted = false
 
-  public activateSound(): void {
-    this.isMuted = false
-    this.applyVolume()
-  }
-
   public loadSound(key: string, src: string): void {
     this.sounds[key] = new Howl({
       src: [src],

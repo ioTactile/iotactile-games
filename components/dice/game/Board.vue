@@ -158,14 +158,16 @@ watch(
   () => props.playerTries,
   async (newValue, oldValue) => {
     if (newValue !== undefined && oldValue !== undefined && newValue !== 3) {
-      isDicesOnBoard.value = false
-      props.soundService.playSound('shakeRoll')
-      await sleep(500)
-      shakeClass.value = 'shake'
-      await sleep(1800)
-      shakeClass.value = ''
-      await sleep(100)
-      isDicesOnBoard.value = true
+      if (oldValue !== newValue) {
+        isDicesOnBoard.value = false
+        props.soundService.playSound('shakeRoll')
+        await sleep(500)
+        shakeClass.value = 'shake'
+        await sleep(1800)
+        shakeClass.value = ''
+        await sleep(100)
+        isDicesOnBoard.value = true
+      }
     }
   },
 )
@@ -174,11 +176,13 @@ watch(
   () => props.dices,
   (newValue, oldValue) => {
     if (newValue !== undefined && oldValue !== undefined) {
-      const newDices = newValue.filter((dice: Dice) => !dice.isOnBoard)
-      const oldDices = oldValue.filter((dice: Dice) => !dice.isOnBoard)
+      if (oldValue !== newValue) {
+        const newDices = newValue.filter((dice: Dice) => !dice.isOnBoard)
+        const oldDices = oldValue.filter((dice: Dice) => !dice.isOnBoard)
 
-      if (newDices.length > oldDices.length) {
-        props.soundService.playSound('dice')
+        if (newDices.length > oldDices.length) {
+          props.soundService.playSound('dice')
+        }
       }
     }
   },

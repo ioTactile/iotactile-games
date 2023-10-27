@@ -36,15 +36,13 @@ import type { LocalDiceSessionScoresType } from '~/stores'
 //   [key: string]: number
 // }
 
-const props = defineProps<{
+defineProps<{
   scoreboard: Omit<LocalDiceSessionScoresType, 'id' | 'creationDate'> | null
 }>()
 
 const emit = defineEmits<{
   (e: 'update:isScoreboardActive', value: boolean): void
 }>()
-
-console.log(props.scoreboard)
 
 // const upperScoreboardValue = ['one', 'two', 'three', 'four', 'five', 'six']
 // const lowerScoreboardValue = [
@@ -129,6 +127,7 @@ console.log(props.scoreboard)
   justify-content: space-between;
   width: 455px;
   height: 655px;
+
   .button-playersheet-wrapper {
     display: flex;
     justify-content: center;

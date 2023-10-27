@@ -16,11 +16,32 @@
     >
       <div class="pa-8">
         <div class="left-background" />
+        <dice-game-first-volumes-modal
+          v-if="isFirstVolumesModalOpen"
+          @open-modal="isFirstVolumesModalOpen = $event"
+          @activate-sound="activateSound"
+        />
+        <dice-game-volumes-modal
+          v-if="isVolumesActive"
+          @open-volumes="isVolumesActive = $event"
+        />
+        <dice-game-chat-modal
+          v-if="isChatActive"
+          :session-id="sessionId"
+          :chat-messages="chat?.messages"
+          :players="session.players"
+          @open-chat="isChatActive = $event"
+        />
         <div class="d-flex justify-space-between mb-4">
           <dice-game-players :players="session.players" />
           <div>
-            <dice-game-volumes @activate-sound="activateSound" />
-            <dice-game-chat />
+            <dice-game-volumes @open-volumes="isVolumesActive = $event" />
+            <dice-game-chat
+              :chat-messages="chat?.messages"
+              :is-chat-active="isChatActive"
+              :sound-service="soundS"
+              @open-chat="isChatActive = $event"
+            />
           </div>
         </div>
         <div class="d-flex">
@@ -74,6 +95,7 @@ import {
   diceSessionScoresConverter,
   diceSessionDicesConverter,
   diceSessionRemainingTurnsConverter,
+  diceSessionChatConverter,
 } from '~/stores'
 import type { LocalDiceSessionScoresType } from '~/stores'
 import SoundService from '~/utils/soundService'
@@ -110,6 +132,9 @@ const playerTriesRef = doc(
   'diceSessionPlayerTries',
   sessionId,
 ).withConverter(diceSessionPlayerTriesConverter)
+const chatRef = doc(db, 'diceSessionChat', sessionId).withConverter(
+  diceSessionChatConverter,
+)
 
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
 const playerTurn = useDocument(
@@ -125,19 +150,23 @@ const remainingTurns = useDocument(
 const playerTries = useDocument(
   doc(collection(db, 'diceSessionPlayerTries'), playerTriesRef.id),
 )
+const chat = useDocument(doc(collection(db, 'diceSessionChat'), chatRef.id))
 
 // Refs
 
 const isScoreboardActive = ref<boolean>(false)
+const isVolumesActive = ref<boolean>(false)
+const isChatActive = ref<boolean>(false)
+const isFirstVolumesModalOpen = ref<boolean>(true)
 
 // Services
 
 const soundS = new SoundService()
-soundS.loadSound('shakeRoll', '/shake-and-roll.mp3')
-soundS.loadSound('dice', '/dice.mp3')
 
 const activateSound = () => {
-  soundS.activateSound()
+  soundS.loadSound('dice', '/dice/sounds/dice.mp3')
+  soundS.loadSound('message', '/dice/sounds/message.mp3')
+  soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3')
 }
 
 onBeforeRouteLeave(() => {

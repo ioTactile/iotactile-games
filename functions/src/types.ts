@@ -140,9 +140,9 @@ export type DiceSessionPlayerTries = {
 export type DiceSessionChat = {
   id: string
   messages?: {
-    userId: string
+    index: number
     username: string
-    message: string
+    content: string
   }[]
 }
 

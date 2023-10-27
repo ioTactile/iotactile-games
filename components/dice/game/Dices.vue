@@ -181,11 +181,13 @@ watch(
   () => props.dices,
   (newValue, oldValue) => {
     if (newValue !== undefined && oldValue !== undefined) {
-      const newDices = newValue.filter((dice: Dice) => dice.isOnBoard)
-      const oldDices = oldValue.filter((dice: Dice) => dice.isOnBoard)
+      if (oldValue !== newValue) {
+        const newDices = newValue.filter((dice: Dice) => dice.isOnBoard)
+        const oldDices = oldValue.filter((dice: Dice) => dice.isOnBoard)
 
-      if (newDices.length > oldDices.length) {
-        props.soundService.playSound('dice')
+        if (newDices.length > oldDices.length) {
+          props.soundService.playSound('dice')
+        }
       }
     }
   },
