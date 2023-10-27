@@ -5,7 +5,11 @@
       <div>Joueurs</div>
       <div />
     </div>
-    <div v-for="(session, i) in sessions" :key="i" class="content d-flex justify-space-between">
+    <div
+      v-for="(session, i) in sessions"
+      :key="i"
+      class="content d-flex justify-space-between"
+    >
       <div>{{ session.name }}</div>
       <div>
         <v-icon
@@ -36,12 +40,16 @@ import DiceSession from '~/utils/diceSession'
 const db = useFirestore()
 const user = useCurrentUser()
 
-const sessionsRef = collection(db, 'diceSessions').withConverter(diceSessionConverter)
+const sessionsRef = collection(db, 'diceSessions').withConverter(
+  diceSessionConverter,
+)
 const sessions = useCollection(sessionsRef)
 
 const handleButtonClick = (session: LocalDiceSessionType) => {
   const host = session.players[0].id === user.value?.uid
-  const isPlayerInSession = session.players.some((player) => player.id === user.value?.uid)
+  const isPlayerInSession = session.players.some(
+    (player) => player.id === user.value?.uid,
+  )
 
   if (!session.isStarted) {
     const diceSession = new DiceSession()
@@ -62,7 +70,9 @@ const handleButtonClick = (session: LocalDiceSessionType) => {
 
 const getButtonLabel = (session: LocalDiceSessionType) => {
   const host = session.players[0].id === user.value?.uid
-  const isPlayerInSession = session.players.some((player) => player.id === user.value?.uid)
+  const isPlayerInSession = session.players.some(
+    (player) => player.id === user.value?.uid,
+  )
 
   if (!session.isStarted) {
     if (host && session.players.length === 1) {
@@ -109,7 +119,7 @@ const getButtonLabel = (session: LocalDiceSessionType) => {
     justify-content: center;
 
     button {
-      width: 98px;
+      width: 120px;
       height: 30px;
       background-color: rgb(var(--v-theme-diceMainSecondary));
       font-size: 1rem;

@@ -3,9 +3,6 @@
     <button v-for="player in players" :key="player.id">
       {{ player.username }}
     </button>
-    <button v-for="player in players" :key="player.id">
-      {{ player.username }}
-    </button>
   </div>
 </template>
 
@@ -14,7 +11,6 @@ import type { CardUser } from '~/functions/src/types'
 
 defineProps<{
   players: CardUser[]
-  playerTurnId: string
 }>()
 </script>
 
