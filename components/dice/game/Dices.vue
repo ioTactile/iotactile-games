@@ -1,28 +1,40 @@
 <template>
   <div class="dices-wrapper">
     <div v-for="(_, i) in 5" :key="i" class="dice-content">
-      <button @click="removeDiceFromHand(dicesOnHand[i].id)">
+      <button
+        :style="{
+          cursor: isPlayerTurn ? 'pointer' : 'default',
+        }"
+        @click="removeDiceFromHand(dicesOnHand[i].id)"
+      >
         <v-img
           v-if="dicesOnHand[i]"
           :src="getDiceFace(dicesOnHand[i].face)"
           alt="dé dans ta main"
           height="70"
           width="70"
-          cover
         />
       </button>
     </div>
     <button class="button-roll-cup" @click="rollCup">
-      <v-img class="cup" src="/cup-no-bg.png" height="56" width="46" />
+      <v-img
+        class="cup"
+        src="/dice/ui/cup-no-bg.png"
+        alt="Gobelet"
+        height="56"
+        width="46"
+      />
       <v-img
         class="dice-three"
         src="/dice/colors/dice-white-three.png"
+        alt="Dé trois"
         height="26"
         width="26"
       />
       <v-img
         class="dice-five"
         src="/dice/colors/dice-white-five.png"
+        alt="Dé cinq"
         height="26"
         width="26"
       />
@@ -41,6 +53,7 @@ import {
   diceSessionPlayerTriesConverter,
 } from '~/stores'
 import type { Dice } from '~/functions/src/types'
+import SoundService from '~/utils/soundService'
 
 type diceFaces = {
   [key: number]: { light: string }
@@ -53,6 +66,7 @@ const props = defineProps<{
   playerTries: number
   sessionIsStarted: boolean
   sessionIsFinished: boolean
+  soundService: SoundService
 }>()
 
 const db = useFirestore()
@@ -160,6 +174,22 @@ const rollCup = async () => {
 const trueRandom = () => {
   return Math.floor(Math.random() * 6) + 1
 }
+
+// Watchers
+
+watch(
+  () => props.dices,
+  (newValue, oldValue) => {
+    if (newValue !== undefined && oldValue !== undefined) {
+      const newDices = newValue.filter((dice: Dice) => dice.isOnBoard)
+      const oldDices = oldValue.filter((dice: Dice) => dice.isOnBoard)
+
+      if (newDices.length > oldDices.length) {
+        props.soundService.playSound('dice')
+      }
+    }
+  },
+)
 </script>
 
 <style scoped lang="scss">

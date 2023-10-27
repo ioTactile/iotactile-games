@@ -90,6 +90,23 @@ import {
 import type { LocalDiceSessionScoresType } from '~/stores'
 import type { Dice, CardUser } from '~/functions/src/types'
 
+type InputMappings = {
+  one: number
+  two: number
+  three: number
+  four: number
+  five: number
+  six: number
+  threeOfAKind: number
+  fourOfAKind: number
+  fullHouse: number
+  smallStraight: number
+  largeStraight: number
+  dice: number
+  chance: number
+  [key: string]: number
+}
+
 // Vuefire
 
 const db = useFirestore()
@@ -100,8 +117,8 @@ const props = defineProps<{
   sessionId: string
   dices: Dice[]
   playerData: {
-    playerSheet: LocalDiceSessionScoresType['playerOne'] | null
-    playerLocation: string | null
+    playerSheet: LocalDiceSessionScoresType['playerOne']
+    playerLocation: string
   }
   isPlayerTurn: boolean
   playerTurnId: string
@@ -439,21 +456,23 @@ const chanceInput = computed(() => {
 
 // Mappings
 
-const inputMappings: Record<string, number> = {
-  one: oneInput.value,
-  two: twoInput.value,
-  three: threeInput.value,
-  four: fourInput.value,
-  five: fiveInput.value,
-  six: sixInput.value,
-  threeOfAKind: threeOfAKindInput.value,
-  fourOfAKind: fourOfAKindInput.value,
-  fullHouse: fullHouseInput.value,
-  smallStraight: smallStraightInput.value,
-  largeStraight: largeStraightInput.value,
-  dice: diceInput.value,
-  chance: chanceInput.value,
-}
+const inputMappings = computed<InputMappings>(() => {
+  return {
+    one: oneInput.value,
+    two: twoInput.value,
+    three: threeInput.value,
+    four: fourInput.value,
+    five: fiveInput.value,
+    six: sixInput.value,
+    threeOfAKind: threeOfAKindInput.value,
+    fourOfAKind: fourOfAKindInput.value,
+    fullHouse: fullHouseInput.value,
+    smallStraight: smallStraightInput.value,
+    largeStraight: largeStraightInput.value,
+    dice: diceInput.value,
+    chance: chanceInput.value,
+  }
+})
 
 // Methods
 
@@ -475,7 +494,7 @@ const switchPlayerTurn = async () => {
 }
 
 const getInput = (value: string) => {
-  return inputMappings[value] || 0
+  return inputMappings.value[value]
 }
 
 const saveInput = async (value: string) => {

@@ -19,7 +19,7 @@
         <div class="d-flex justify-space-between mb-4">
           <dice-game-players :players="session.players" />
           <div>
-            <dice-game-volumes />
+            <dice-game-volumes @activate-sound="activateSound" />
             <dice-game-chat />
           </div>
         </div>
@@ -47,6 +47,8 @@
               :session-id="sessionId"
               :is-player-turn="isPlayerTurn"
               :dices="dices.dices"
+              :player-tries="playerTries.tries"
+              :sound-service="soundS"
             />
             <dice-game-dices
               :session-id="sessionId"
@@ -55,6 +57,7 @@
               :player-tries="playerTries.tries"
               :session-is-started="session.isStarted"
               :session-is-finished="session.isFinished"
+              :sound-service="soundS"
             />
           </div>
         </div>
@@ -73,6 +76,7 @@ import {
   diceSessionRemainingTurnsConverter,
 } from '~/stores'
 import type { LocalDiceSessionScoresType } from '~/stores'
+import SoundService from '~/utils/soundService'
 
 // Vuefire
 
@@ -126,6 +130,20 @@ const playerTries = useDocument(
 
 const isScoreboardActive = ref<boolean>(false)
 
+// Services
+
+const soundS = new SoundService()
+soundS.loadSound('shakeRoll', '/shake-and-roll.mp3')
+soundS.loadSound('dice', '/dice.mp3')
+
+const activateSound = () => {
+  soundS.activateSound()
+}
+
+onBeforeRouteLeave(() => {
+  soundS.stopAllSounds()
+})
+
 // Computed
 
 const isPlayerTurn = computed(() => {
@@ -137,8 +155,8 @@ const isPlayerTurn = computed(() => {
 })
 
 const playerData = computed(() => {
-  let playerSheet: LocalDiceSessionScoresType['playerOne'] | null = null
-  let playerLocation: string | null = null
+  let playerSheet: LocalDiceSessionScoresType['playerOne']
+  let playerLocation: string
 
   if (scores.value) {
     if (scores.value.playerOne.id === user.value?.uid) {

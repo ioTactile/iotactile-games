@@ -1,5 +1,5 @@
 <template>
-  <button>
+  <button @click="emit('activateSound')">
     <v-icon :icon="mdiVolumeHigh" size="46" color="white" />
   </button>
 </template>
@@ -7,6 +7,10 @@
 <script setup lang="ts">
 import { VIcon } from 'vuetify/components'
 import { mdiVolumeHigh } from '@mdi/js'
+
+const emit = defineEmits<{
+  (e: 'activateSound'): void
+}>()
 </script>
 
 <style scoped lang="scss">

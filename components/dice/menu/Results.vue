@@ -8,7 +8,11 @@
     <div class="content d-flex justify-space-between">
       <div>{{ playerResults.games }}</div>
       <div>{{ playerResults.victories }}</div>
-      <div>{{ numberFormatter(playerResults.victories / playerResults.games, true) }}</div>
+      <div>
+        {{
+          numberFormatter(playerResults.victories / playerResults.games, true)
+        }}
+      </div>
     </div>
     <div class="header d-flex justify-space-between">
       <div>Score Max</div>
@@ -25,20 +29,18 @@
 
 <script async setup lang="ts">
 import { doc, getDoc } from 'firebase/firestore'
+import { numberFormatter } from '~/utils/formatter'
 
 const db = useFirestore()
 const user = useCurrentUser()
 
-const playerScoreboardRef = doc(db, 'diceScoreboard', user.value!.uid).withConverter(
-  diceScoreboardConverter
-)
+const playerScoreboardRef = doc(
+  db,
+  'diceScoreboard',
+  user.value!.uid,
+).withConverter(diceScoreboardConverter)
 const playerScoreboardDoc = await getDoc(playerScoreboardRef)
 const playerResults = playerScoreboardDoc.data()
-
-const numberFormatter = (value: number, isPourcentage: boolean) => {
-  const fixedValue = isPourcentage ? (value * 100).toFixed(2) + '%' : value.toFixed(2)
-  return fixedValue
-}
 </script>
 
 <style scoped lang="scss">

@@ -5,45 +5,50 @@ export default class SoundService {
   private globalVolume = 1
   private isMuted = false
 
-  public loadSound (key: string, src: string): void {
+  public activateSound(): void {
+    this.isMuted = false
+    this.applyVolume()
+  }
+
+  public loadSound(key: string, src: string): void {
     this.sounds[key] = new Howl({
       src: [src],
-      volume: this.getInitialVolume()
+      volume: this.getInitialVolume(),
     })
   }
 
-  public playSound (key: string): void {
+  public playSound(key: string): void {
     if (this.sounds[key]) {
       this.sounds[key].play()
     }
   }
 
-  public stopSound (key: string): void {
+  public stopSound(key: string): void {
     if (this.sounds[key]) {
       this.sounds[key].stop()
     }
   }
 
-  public setGlobalVolume (volume: number): void {
+  public setGlobalVolume(volume: number): void {
     this.globalVolume = volume
     this.applyVolume()
     localStorage.setItem('soundVolume', volume.toString())
   }
 
-  public stopAllSounds (): void {
+  public stopAllSounds(): void {
     Object.values(this.sounds).forEach((sound) => {
       sound.stop()
     })
   }
 
-  private applyVolume (): void {
+  private applyVolume(): void {
     const volume = this.isMuted ? 0 : this.globalVolume
     Object.values(this.sounds).forEach((sound) => {
       sound.volume(volume)
     })
   }
 
-  private getInitialVolume (): number {
+  private getInitialVolume(): number {
     const storedValue = localStorage.getItem('soundVolume')
     if (storedValue !== null) {
       const volume = parseFloat(storedValue)

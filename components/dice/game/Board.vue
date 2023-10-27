@@ -1,6 +1,15 @@
 <template>
   <div class="board-wrapper">
-    <div v-if="dicesOnBoard">
+    <div v-if="shakeClass" class="shake-wrapper">
+      <v-img
+        src="/dice/ui/cup-animation.png"
+        alt="Animation gobelet secoué"
+        height="250"
+        width="250"
+        :class="shakeClass"
+      />
+    </div>
+    <div v-if="dicesOnBoard && isDicesOnBoard">
       <button
         v-for="dice in dicesOnBoard"
         :key="dice.id"
@@ -8,6 +17,7 @@
           position: 'absolute',
           top: calculateTop(dice.id),
           left: calculateLeft(dice.id),
+          cursor: isPlayerTurn ? 'pointer' : 'default',
         }"
         @click="removeDiceFromBoard(dice.id)"
       >
@@ -25,23 +35,42 @@
 <script setup lang="ts">
 import { VImg } from 'vuetify/components'
 import { doc, updateDoc } from 'firebase/firestore'
+import { sleep } from '~/utils/sleep'
 import type { Dice } from '~/functions/src/types'
+import SoundService from '~/utils/soundService'
+
+// Types
 
 type diceFaces = {
   [key: number]: { light: string }
 }
 
+// Vuefire
+
+const db = useFirestore()
+
+// Props & Emits
+
 const props = defineProps<{
   isPlayerTurn: boolean
   sessionId: string
   dices: Dice[]
+  playerTries: number
+  soundService: SoundService
 }>()
 
-const db = useFirestore()
+// Refs
+
+const shakeClass = ref<string>('')
+const isDicesOnBoard = ref<boolean>(true)
+
+// Firebase refs
 
 const dicesRef = doc(db, 'diceSessionDices', props.sessionId).withConverter(
   diceSessionDicesConverter,
 )
+
+// Computed
 
 const dicesOnBoard = computed(() => {
   if (props.dices) {
@@ -50,6 +79,8 @@ const dicesOnBoard = computed(() => {
     return []
   }
 })
+
+// Methods
 
 const getDiceFace = (dice: number) => {
   const diceFaces: diceFaces = {
@@ -120,11 +151,71 @@ const calculateLeft = (id: number) => {
       return '0px'
   }
 }
+
+// Watchers
+
+watch(
+  () => props.playerTries,
+  async (newValue, oldValue) => {
+    if (newValue !== undefined && oldValue !== undefined && newValue !== 3) {
+      isDicesOnBoard.value = false
+      props.soundService.playSound('shakeRoll')
+      await sleep(500)
+      shakeClass.value = 'shake'
+      await sleep(1800)
+      shakeClass.value = ''
+      await sleep(100)
+      isDicesOnBoard.value = true
+    }
+  },
+)
+
+watch(
+  () => props.dices,
+  (newValue, oldValue) => {
+    if (newValue !== undefined && oldValue !== undefined) {
+      const newDices = newValue.filter((dice: Dice) => !dice.isOnBoard)
+      const oldDices = oldValue.filter((dice: Dice) => !dice.isOnBoard)
+
+      if (newDices.length > oldDices.length) {
+        props.soundService.playSound('dice')
+      }
+    }
+  },
+)
 </script>
 
 <style scoped lang="scss">
 .board-wrapper {
   width: 665px;
   height: 555px;
+
+  .shake-wrapper {
+    z-index: 9999;
+    position: absolute;
+    top: 250px;
+    left: 700px;
+  }
+  .shake {
+    animation: shake 0.5s ease-in-out 0s 3;
+  }
+
+  @keyframes shake {
+    0% {
+      transform: translateY(0);
+    }
+    25% {
+      transform: translateY(20px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    75% {
+      transform: translateY(20px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
 }
 </style>
