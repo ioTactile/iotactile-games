@@ -22,25 +22,26 @@
           @activate-sound="activateSound"
         />
         <dice-game-volumes-modal
-          v-if="isVolumesActive"
-          @open-volumes="isVolumesActive = $event"
+          v-if="isVolumesModalActive"
+          :sound-service="soundS"
+          @open-volumes="isVolumesModalActive = $event"
         />
         <dice-game-chat-modal
-          v-if="isChatActive"
+          v-if="isChatModalActive"
           :session-id="sessionId"
           :chat-messages="chat?.messages"
           :players="session.players"
-          @open-chat="isChatActive = $event"
+          @open-chat="isChatModalActive = $event"
         />
         <div class="d-flex justify-space-between mb-4">
           <dice-game-players :players="session.players" />
           <div>
-            <dice-game-volumes @open-volumes="isVolumesActive = $event" />
+            <dice-game-volumes @open-volumes="isVolumesModalActive = $event" />
             <dice-game-chat
               :chat-messages="chat?.messages"
-              :is-chat-active="isChatActive"
+              :is-chat-active="isChatModalActive"
               :sound-service="soundS"
-              @open-chat="isChatActive = $event"
+              @open-chat="isChatModalActive = $event"
             />
           </div>
         </div>
@@ -155,8 +156,8 @@ const chat = useDocument(doc(collection(db, 'diceSessionChat'), chatRef.id))
 // Refs
 
 const isScoreboardActive = ref<boolean>(false)
-const isVolumesActive = ref<boolean>(false)
-const isChatActive = ref<boolean>(false)
+const isVolumesModalActive = ref<boolean>(false)
+const isChatModalActive = ref<boolean>(false)
 const isFirstVolumesModalOpen = ref<boolean>(true)
 
 // Services

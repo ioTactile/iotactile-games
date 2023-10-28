@@ -12,6 +12,13 @@ export default class SoundService {
     })
   }
 
+  public unLoadSound(key: string): void {
+    if (this.sounds[key]) {
+      this.sounds[key].unload()
+      delete this.sounds[key]
+    }
+  }
+
   public playSound(key: string): void {
     if (this.sounds[key]) {
       this.sounds[key].play()
