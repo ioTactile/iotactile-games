@@ -1,5 +1,5 @@
 <template>
-  <button @click="emit('open-volumes', true)">
+  <button @click="clickButton">
     <div class="svg-container">
       <svg
         width="46px"
@@ -31,9 +31,20 @@
 </template>
 
 <script setup lang="ts">
+import SoundService from '~/utils/soundService'
+
+const props = defineProps<{
+  soundService: SoundService
+}>()
+
 const emit = defineEmits<{
   (e: 'open-volumes', value: boolean): void
 }>()
+
+const clickButton = () => {
+  props.soundService.playSound('click')
+  emit('open-volumes', true)
+}
 </script>
 
 <style scoped lang="scss">

@@ -5,14 +5,18 @@ export default class SoundService {
   private globalVolume = 1
   private isMuted = false
 
-  public loadSound(key: string, src: string): void {
+  public isSoundLoaded(key: string): boolean {
+    return !!this.sounds[key]
+  }
+
+  public loadSound(key: string, src: string, volume?: number): void {
     this.sounds[key] = new Howl({
       src: [src],
-      volume: this.getInitialVolume(),
+      volume: volume || this.globalVolume,
     })
   }
 
-  public unLoadSound(key: string): void {
+  public unloadSound(key: string): void {
     if (this.sounds[key]) {
       this.sounds[key].unload()
       delete this.sounds[key]
@@ -28,6 +32,12 @@ export default class SoundService {
   public stopSound(key: string): void {
     if (this.sounds[key]) {
       this.sounds[key].stop()
+    }
+  }
+
+  public setSoundVolume(key: string, volume: number): void {
+    if (this.sounds[key]) {
+      this.sounds[key].volume(volume)
     }
   }
 

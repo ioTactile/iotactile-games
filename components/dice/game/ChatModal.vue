@@ -3,7 +3,7 @@
     <section class="header">
       <div />
       <h3>SALON DE DISCUSSION</h3>
-      <button @click="emit('openChat', false)">
+      <button @click="closeChat">
         <div class="svg-container">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
             <path
@@ -42,11 +42,13 @@ import { doc, arrayUnion, setDoc } from 'firebase/firestore'
 import { diceSessionChatConverter } from '~/stores'
 import type { LocalDiceSessionChatType } from '~/stores'
 import type { CardUser } from '~/functions/src/types'
+import SoundService from '~/utils/soundService'
 
 const props = defineProps<{
   sessionId: string
   chatMessages: LocalDiceSessionChatType['messages'] | undefined
   players: CardUser[]
+  soundService: SoundService
 }>()
 
 const emit = defineEmits<{
@@ -61,6 +63,11 @@ const chatRef = doc(db, 'diceSessionChat', props.sessionId).withConverter(
 )
 
 const text = ref<string>('')
+
+const closeChat = () => {
+  props.soundService.playSound('click')
+  emit('openChat', false)
+}
 
 const sendMessage = async () => {
   if (!user.value) {
@@ -180,7 +187,7 @@ const getPlayerClass = (index: number) => {
   .footer {
     display: flex;
     justify-content: space-between;
-    align-items: end;
+    align-items: flex-end;
 
     div {
       display: flex;

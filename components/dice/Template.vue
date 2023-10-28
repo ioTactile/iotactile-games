@@ -15,7 +15,15 @@ const { width: windowWidth, height: windowHeight } = useWindowSize()
 const handleResize = () => {
   const targetHeight = 1080
   const targetWidth = 1200
-  scale.value = Math.min(windowHeight.value / targetHeight, windowWidth.value / targetWidth)
+
+  if (windowHeight.value > targetHeight) {
+    windowHeight.value = targetHeight
+  }
+
+  scale.value = Math.min(
+    windowHeight.value / targetHeight,
+    windowWidth.value / targetWidth,
+  )
 }
 
 watch(
@@ -23,7 +31,7 @@ watch(
   () => {
     handleResize()
   },
-  { immediate: true }
+  { immediate: true },
 )
 </script>
 

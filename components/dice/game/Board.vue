@@ -160,7 +160,9 @@ watch(
     if (newValue !== undefined && oldValue !== undefined && newValue !== 3) {
       if (oldValue !== newValue) {
         isDicesOnBoard.value = false
-        props.soundService.playSound('shakeRoll')
+        if (props.soundService.isSoundLoaded('shakeRoll')) {
+          props.soundService.playSound('shakeRoll')
+        }
         await sleep(500)
         shakeClass.value = 'shake'
         await sleep(1800)
@@ -181,7 +183,9 @@ watch(
         const oldDices = oldValue.filter((dice: Dice) => !dice.isOnBoard)
 
         if (newDices.length > oldDices.length) {
-          props.soundService.playSound('dice')
+          if (props.soundService.isSoundLoaded('dice')) {
+            props.soundService.playSound('dice')
+          }
         }
       }
     }

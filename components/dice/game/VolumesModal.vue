@@ -1,7 +1,7 @@
 <template>
   <div class="volume-modal-wrapper">
     <section class="header">
-      <button @click="emit('openVolumes', false)">
+      <button @click="closeVolume">
         <div class="svg-container">
           <svg
             :style="{ transform: 'rotate(180deg)' }"
@@ -40,7 +40,7 @@
       <div v-for="(sound, i) in sounds" :key="i" class="sound-wrapper">
         <inputs-toggle
           :is-active="sound.isActive"
-          @update="changeValue($event, sound.name)"
+          @toggle:is-active="changeValue(sound.name, $event)"
         />
         <h4>{{ sound.name }}</h4>
       </div>
@@ -49,7 +49,9 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import SoundService from '~/utils/soundService'
+import { useDiceSoundsStore } from '~/stores/diceSounds'
 
 const props = defineProps<{
   soundService: SoundService
@@ -59,47 +61,56 @@ const emit = defineEmits<{
   (e: 'openVolumes', value: boolean): void
 }>()
 
-const isSoundEffectsActive = ref<boolean>(false)
-const isNotificationsActive = ref<boolean>(false)
-const isMusicActive = ref<boolean>(false)
+const diceSoundsStore = useDiceSoundsStore()
+const { isSoundEffectsActive, isNotificationsActive, isMusicActive } =
+  storeToRefs(diceSoundsStore)
 
 const sounds = ref([
   {
     name: 'EFFETS SONORES',
-    isActive: isSoundEffectsActive,
+    isActive: isSoundEffectsActive.value,
   },
   {
     name: 'NOTIFICATIONS',
-    isActive: isNotificationsActive,
+    isActive: isNotificationsActive.value,
   },
   {
     name: 'MUSIQUE',
-    isActive: isMusicActive,
+    isActive: isMusicActive.value,
   },
 ])
 
-const changeValue = (isActive: boolean, soundName: string) => {
+const closeVolume = () => {
+  props.soundService.playSound('click')
+  emit('openVolumes', false)
+}
+
+const changeValue = (soundName: string, value: boolean) => {
   if (soundName === 'EFFETS SONORES') {
-    isSoundEffectsActive.value = isActive
-    if (isActive) {
+    isSoundEffectsActive.value = value
+
+    if (isSoundEffectsActive.value) {
       props.soundService.loadSound('dice', '/dice/sounds/dice.mp3')
       props.soundService.loadSound(
         'shakeRoll',
         '/dice/sounds/shake-and-roll.mp3',
       )
+      props.soundService.loadSound('click', '/dice/sounds/click.mp3', 0.1)
     } else {
-      props.soundService.unLoadSound('dice')
-      props.soundService.unLoadSound('shakeRoll')
+      props.soundService.unloadSound('dice')
+      props.soundService.unloadSound('shakeRoll')
+      props.soundService.unloadSound('click')
     }
   } else if (soundName === 'NOTIFICATIONS') {
-    isNotificationsActive.value = isActive
-    if (isActive) {
+    isNotificationsActive.value = value
+
+    if (isNotificationsActive.value) {
       props.soundService.loadSound('message', '/dice/sounds/message.mp3')
     } else {
-      props.soundService.unLoadSound('message')
+      props.soundService.unloadSound('message')
     }
   } else if (soundName === 'MUSIQUE') {
-    isMusicActive.value = isActive
+    isMusicActive.value = value
   }
 }
 </script>

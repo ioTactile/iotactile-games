@@ -58,10 +58,7 @@ export default class diceSession {
   )
 
   private async getUsername() {
-    if (!this.user.value) {
-      return
-    }
-    const userRef = doc(this.db, 'users', this.user.value.uid)
+    const userRef = doc(this.db, 'users', this.user.value!.uid)
     const userDoc = await getDoc(userRef)
     if (!userDoc.exists()) {
       return
@@ -70,18 +67,15 @@ export default class diceSession {
   }
 
   private async checkScoreboard() {
-    if (!this.user.value) {
-      return
-    }
     const scoreboardQuery = query(
       this.scoreboardRef,
-      where('userId', '==', this.user.value.uid),
+      where('userId', '==', this.user.value!.uid),
     )
     const scoreboardSnapshot = await getDocs(scoreboardQuery)
     const scoreboard = scoreboardSnapshot.docs.map((doc) => doc.data())
     if (scoreboard.length === 0) {
       const username = await this.getUsername()
-      await setDoc(doc(this.scoreboardRef, this.user.value.uid), {
+      await setDoc(doc(this.scoreboardRef, this.user.value!.uid), {
         userId: this.user.value!.uid,
         username,
         games: 0,
@@ -95,11 +89,8 @@ export default class diceSession {
   }
 
   private initScores() {
-    if (!this.user.value) {
-      return
-    }
     const scores = {
-      id: this.user.value.uid,
+      id: this.user.value!.uid,
       one: null,
       two: null,
       three: null,

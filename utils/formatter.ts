@@ -4,3 +4,7 @@ export const numberFormatter = (value: number, isPourcentage: boolean) => {
     : value.toFixed(2)
   return fixedValue
 }
+
+export const sum = (object: Record<string, number | null>) => {
+  return Object.values(object).reduce((a, b) => (a || 0) + (b || 0), 0)
+}

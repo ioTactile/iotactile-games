@@ -20,6 +20,7 @@
           v-if="isFirstVolumesModalOpen"
           @open-modal="isFirstVolumesModalOpen = $event"
           @activate-sound="activateSound"
+          @desactivate-sound="desactivateSound"
         />
         <dice-game-volumes-modal
           v-if="isVolumesModalActive"
@@ -31,12 +32,16 @@
           :session-id="sessionId"
           :chat-messages="chat?.messages"
           :players="session.players"
+          :sound-service="soundS"
           @open-chat="isChatModalActive = $event"
         />
         <div class="d-flex justify-space-between mb-4">
           <dice-game-players :players="session.players" />
           <div>
-            <dice-game-volumes @open-volumes="isVolumesModalActive = $event" />
+            <dice-game-volumes
+              :sound-service="soundS"
+              @open-volumes="isVolumesModalActive = $event"
+            />
             <dice-game-chat
               :chat-messages="chat?.messages"
               :is-chat-active="isChatModalActive"
@@ -50,6 +55,9 @@
             <dice-game-scoreboard
               v-if="isScoreboardActive"
               :scoreboard="scoreboard"
+              :dices="dices.dices"
+              :player-turn="playerTurn.playerId"
+              :sound-service="soundS"
               @update:is-scoreboard-active="isScoreboardActive = $event"
             />
             <dice-game-playersheet
@@ -61,6 +69,7 @@
               :player-turn-id="playerTurn.playerId"
               :players="session.players"
               :remaining-turns="remainingTurns.remainingTurns"
+              :sound-service="soundS"
               @update:is-scoreboard-active="isScoreboardActive = $event"
             />
           </div>
@@ -90,6 +99,8 @@
 
 <script setup lang="ts">
 import { collection, doc } from 'firebase/firestore'
+import { storeToRefs } from 'pinia'
+import { useDiceSoundsStore } from '~/stores/diceSounds'
 import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
@@ -100,6 +111,13 @@ import {
 } from '~/stores'
 import type { LocalDiceSessionScoresType } from '~/stores'
 import SoundService from '~/utils/soundService'
+
+// Types
+
+interface PlayerData {
+  playerSheet: LocalDiceSessionScoresType['playerOne']
+  playerLocation: string
+}
 
 // Vuefire
 
@@ -160,6 +178,10 @@ const isVolumesModalActive = ref<boolean>(false)
 const isChatModalActive = ref<boolean>(false)
 const isFirstVolumesModalOpen = ref<boolean>(true)
 
+const diceSoundsStore = useDiceSoundsStore()
+const { isSoundEffectsActive, isNotificationsActive, isMusicActive } =
+  storeToRefs(diceSoundsStore)
+
 // Services
 
 const soundS = new SoundService()
@@ -168,6 +190,17 @@ const activateSound = () => {
   soundS.loadSound('dice', '/dice/sounds/dice.mp3')
   soundS.loadSound('message', '/dice/sounds/message.mp3')
   soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3')
+  soundS.loadSound('click', '/dice/sounds/click.mp3', 0.1)
+}
+
+const desactivateSound = () => {
+  soundS.unloadSound('dice')
+  soundS.unloadSound('message')
+  soundS.unloadSound('shakeRoll')
+  soundS.unloadSound('click')
+  isSoundEffectsActive.value = false
+  isNotificationsActive.value = false
+  isMusicActive.value = false
 }
 
 onBeforeRouteLeave(() => {
@@ -185,8 +218,8 @@ const isPlayerTurn = computed(() => {
 })
 
 const playerData = computed(() => {
-  let playerSheet: LocalDiceSessionScoresType['playerOne']
-  let playerLocation: string
+  let playerSheet: PlayerData['playerSheet']
+  let playerLocation: PlayerData['playerLocation']
 
   if (scores.value) {
     if (scores.value.playerOne.id === user.value?.uid) {
@@ -212,11 +245,8 @@ const playerData = computed(() => {
 
 const scoreboard = computed(() => {
   const scoreboard = scores.value
-  if (!scoreboard) {
-    return null
-  }
-  delete scoreboard.id
-  delete scoreboard.creationDate
+  delete scoreboard!.id
+  delete scoreboard!.creationDate
   return scoreboard as Omit<LocalDiceSessionScoresType, 'id' | 'creationDate'>
 })
 

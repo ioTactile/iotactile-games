@@ -3,7 +3,7 @@
     <div class="sound-modal">
       <h3>ACTIVER LES SONS</h3>
       <div>
-        <button @click="emit('openModal', false)">Non</button>
+        <button @click="clickNoButton">Non</button>
         <button @click="clickYesButton">Oui</button>
       </div>
     </div>
@@ -14,11 +14,17 @@
 const emit = defineEmits<{
   (e: 'openModal', value: boolean): void
   (e: 'activateSound'): void
+  (e: 'desactivateSound'): void
 }>()
 
 const clickYesButton = () => {
   emit('activateSound')
   emit('openModal', false)
+}
+
+const clickNoButton = () => {
+  emit('openModal', false)
+  emit('desactivateSound')
 }
 </script>
 

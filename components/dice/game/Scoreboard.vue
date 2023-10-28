@@ -1,10 +1,7 @@
 <template>
   <div class="scoreboard-wrapper">
     <div class="button-playersheet-wrapper">
-      <button
-        class="button-playersheet"
-        @click="emit('update:isScoreboardActive', false)"
-      >
+      <button class="button-playersheet" @click="ClickPlayerSheetButton">
         <div class="svg-container">
           <svg
             height="46px"
@@ -36,115 +33,264 @@
         </div>
       </button>
     </div>
-    <div class="scoreboard-content">
-      <div class="scoreboard-value" />
+    <div class="scoreboard-content-wrapper">
+      <div class="scoreboard-upper">
+        <div class="scoreboard-header-wrapper">
+          <div v-for="(score, i) in scoreboardHeaderIcons" :key="i">
+            <v-icon :icon="score" color="white" size="40" />
+          </div>
+          <div class="text">BONUS</div>
+          <div class="text">TOTAL</div>
+        </div>
+        <div class="scoreboard-values-wrapper">
+          <div
+            v-for="(player, k) in scoreboard"
+            :key="k"
+            class="scoreboard-values-upper"
+          >
+            <div v-for="(value, l) in upperPlayerSheet(k)" :key="l">
+              <button
+                v-if="getPlayerTurn(player!.id) && value === null"
+                class="button-dynamic"
+              >
+                {{ getInput(l) }}
+              </button>
+              <button v-else>
+                {{ value === null ? '-' : value }}
+              </button>
+            </div>
+            <div>
+              {{ upperPlayerSheetBonus(k) }}
+            </div>
+            <div>
+              {{ upperPlayerSheetTotal(k) }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="scoreboard-lower">
+        <div class="scoreboard-header-wrapper">
+          <div v-for="(src, j) in scoreboardHeaderImages" :key="j" class="img">
+            <v-img :src="src" width="30" height="30" />
+          </div>
+          <div class="text">TOTAL</div>
+        </div>
+        <div class="scoreboard-values-wrapper">
+          <div
+            v-for="(player, k) in scoreboard"
+            :key="k"
+            class="scoreboard-values-lower"
+          >
+            <div v-for="(value, m) in lowerPlayerSheet(k)" :key="m">
+              <button
+                v-if="getPlayerTurn(player!.id) && value === null"
+                class="button-dynamic"
+              >
+                {{ getInput(m) }}
+              </button>
+              <button v-else>
+                {{ value === null ? '-' : value }}
+              </button>
+            </div>
+            <div>
+              {{ lowerPlayerSheetTotal(k) }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="scoreboard-total">
+        <div class="scoreboard-header-wrapper">
+          <div class="text">TOTAL</div>
+        </div>
+        <div class="scoreboard-values-wrapper">
+          <div
+            v-for="(player, k) in scoreboard"
+            :key="k"
+            class="scoreboard-values-lower"
+          >
+            <div>
+              {{ playerSheetTotal(k) }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { VIcon, VImg } from 'vuetify/components'
+import {
+  mdiDice1,
+  mdiDice2,
+  mdiDice3,
+  mdiDice4,
+  mdiDice5,
+  mdiDice6,
+} from '@mdi/js'
 import type { LocalDiceSessionScoresType } from '~/stores'
+import type { Dice } from '~/functions/src/types'
+import { sum } from '~/utils/formatter'
+import {
+  oneInput,
+  twoInput,
+  threeInput,
+  fourInput,
+  fiveInput,
+  sixInput,
+  threeOfAKindInput,
+  fourOfAKindInput,
+  fullHouseInput,
+  smallStraightInput,
+  largeStraightInput,
+  diceInput,
+  chanceInput,
+} from '~/utils/diceInputs'
+import SoundService from '~/utils/soundService'
 
-// interface PlayerType {
-//   one: number
-//   two: number
-//   three: number
-//   four: number
-//   five: number
-//   six: number
-//   threeOfAKind: number
-//   fourOfAKind: number
-//   fullHouse: number
-//   smallStraight: number
-//   largeStraight: number
-//   dice: number
-//   chance: number
-//   [key: string]: number
-// }
+type InputMappings = {
+  one: number
+  two: number
+  three: number
+  four: number
+  five: number
+  six: number
+  threeOfAKind: number
+  fourOfAKind: number
+  fullHouse: number
+  smallStraight: number
+  largeStraight: number
+  dice: number
+  chance: number
+  [key: string]: number
+}
 
-defineProps<{
-  scoreboard: Omit<LocalDiceSessionScoresType, 'id' | 'creationDate'> | null
+const props = defineProps<{
+  scoreboard: Omit<LocalDiceSessionScoresType, 'id' | 'creationDate'>
+  dices: Dice[]
+  playerTurn: string
+  soundService: SoundService
 }>()
 
 const emit = defineEmits<{
   (e: 'update:isScoreboardActive', value: boolean): void
 }>()
 
-// const upperScoreboardValue = ['one', 'two', 'three', 'four', 'five', 'six']
-// const lowerScoreboardValue = [
-//   'threeOfAKind',
-//   'fourOfAKind',
-//   'fullHouse',
-//   'smallStraight',
-//   'largeStraight',
-//   'dice',
-//   'chance',
-// ]
+const scoreboardHeaderIcons: Record<number, string> = {
+  1: mdiDice1,
+  2: mdiDice2,
+  3: mdiDice3,
+  4: mdiDice4,
+  5: mdiDice5,
+  6: mdiDice6,
+}
 
-// const getPlayerValues = (player: PlayerType) => {
-//   const upperValues = upperScoreboardValue.map((key) => player[key])
-//   const lowerValues = lowerScoreboardValue.map((key) => player[key])
-//   return { upperValues, lowerValues }
-// }
+const scoreboardHeaderImages: Record<number, string> = {
+  1: '/dice/inputs/three-of-a-kind.png',
+  2: '/dice/inputs/four-of-a-kind.png',
+  3: '/dice/inputs/full-house.png',
+  4: '/dice/inputs/small-straight.png',
+  5: '/dice/inputs/large-straight.png',
+  6: '/dice/inputs/dice.png',
+  7: '/dice/inputs/chance.png',
+}
 
-// const getUpperTotal = (values: number[]) => {
-//   let result = 0
-//   values.forEach((value) => {
-//     if (value !== null) {
-//       result += value
-//     }
-//   })
-//   if (result >= 63) {
-//     result += 35
-//   }
-//   return result
-// }
+const ClickPlayerSheetButton = () => {
+  props.soundService.playSound('click')
+  emit('update:isScoreboardActive', false)
+}
 
-// const getLowerTotal = (values: number[]) => {
-//   let result = 0
-//   values.forEach((value) => {
-//     if (value !== null) {
-//       result += value
-//     }
-//   })
-//   return result
-// }
+const upperPlayerSheet = (key: string): Record<string, number> | {} => {
+  const playerData = props.scoreboard[key]
 
-// const getPlayerBonus = (upperTotal: number) => {
-//   return upperTotal >= 63 ? 35 : 0
-// }
+  if (!playerData) {
+    return {}
+  }
 
-// const getPlayerTotal = (player: PlayerType) => {
-//   const { upperValues, lowerValues } = getPlayerValues(player)
-//   const upperTotal = getUpperTotal(upperValues)
-//   const lowerTotal = getLowerTotal(lowerValues)
-//   return upperTotal + lowerTotal
-// }
+  return {
+    one: playerData.one,
+    two: playerData.two,
+    three: playerData.three,
+    four: playerData.four,
+    five: playerData.five,
+    six: playerData.six,
+  }
+}
 
-// const playerOne = computed(() => {
-//   const { id, ...playerWithoutId } = scoreboard.value.playerOne
-//   return playerWithoutId
-// })
+const lowerPlayerSheet = (key: string): Record<string, number> | {} => {
+  const playerData = props.scoreboard[key]
 
-// const playerTwo = computed(() => {
-//   const { id, ...playerWithoutId } = scoreboard.value.playerTwo
-//   return playerWithoutId
-// })
+  if (!playerData) {
+    return {}
+  }
 
-// const playerThree = computed(() => {
-//   const { id, ...playerWithoutId } = scoreboard.value.playerThree
-//   return playerWithoutId
-// })
+  return {
+    threeOfAKind: playerData.threeOfAKind,
+    fourOfAKind: playerData.fourOfAKind,
+    fullHouse: playerData.fullHouse,
+    smallStraight: playerData.smallStraight,
+    largeStraight: playerData.largeStraight,
+    dice: playerData.dice,
+    chance: playerData.chance,
+  }
+}
 
-// const playerFour = computed(() => {
-//   const { id, ...playerWithoutId } = scoreboard.value.playerFour
-//   return playerWithoutId
-// })
+const upperPlayerSheetBonus = (key: string): number => {
+  const upperTotal = sum(upperPlayerSheet(key))
+  if (upperTotal! >= 63) {
+    return 35
+  }
+  return 0
+}
 
-// const playerOneTotal = computed(() => getPlayerTotal(playerOne))
-// const playerTwoTotal = computed(() => getPlayerTotal(playerTwo))
-// const playerThreeTotal = computed(() => getPlayerTotal(playerThree))
-// const playerFourTotal = computed(() => getPlayerTotal(playerFour))
+const upperPlayerSheetTotal = (key: string): number => {
+  const result = sum(upperPlayerSheet(key))
+  return result! + upperPlayerSheetBonus(key)
+}
+
+const lowerPlayerSheetTotal = (key: string): number => {
+  const result = sum(lowerPlayerSheet(key))
+  return result!
+}
+
+const playerSheetTotal = (key: string): number => {
+  const upperTotal = upperPlayerSheetTotal(key)
+  const lowerTotal = lowerPlayerSheetTotal(key)
+  if (upperTotal >= 63) {
+    return upperTotal + lowerTotal + 35
+  }
+  return upperTotal + lowerTotal
+}
+
+// Mappings
+
+const inputMappings = computed<InputMappings>(() => {
+  const dices = props.dices
+
+  return {
+    one: oneInput(dices),
+    two: twoInput(dices),
+    three: threeInput(dices),
+    four: fourInput(dices),
+    five: fiveInput(dices),
+    six: sixInput(dices),
+    threeOfAKind: threeOfAKindInput(dices),
+    fourOfAKind: fourOfAKindInput(dices),
+    fullHouse: fullHouseInput(dices),
+    smallStraight: smallStraightInput(dices),
+    largeStraight: largeStraightInput(dices),
+    dice: diceInput(dices),
+    chance: chanceInput(dices),
+  }
+})
+
+const getInput = (value: string) => {
+  return inputMappings.value[value]
+}
+
+const getPlayerTurn = (playerId: string) => {
+  return props.playerTurn === playerId
+}
 </script>
 
 <style scoped lang="scss">
@@ -167,12 +313,106 @@ const emit = defineEmits<{
     }
   }
 
-  .scoreboard-content {
+  .scoreboard-content-wrapper {
     width: 376px;
     height: 655px;
-    border: 3px solid rgb(var(--v-theme-diceMainPrimary));
-    border-radius: 8px;
-    padding: 5px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+
+    .scoreboard-upper,
+    .scoreboard-lower {
+      display: flex;
+      align-items: center;
+      height: 47%;
+      width: 376px;
+      border: 3px solid rgb(var(--v-theme-diceMainPrimary));
+      padding: 5px 20px;
+    }
+
+    .scoreboard-upper {
+      border-radius: 8px 8px 0 0;
+    }
+
+    .scoreboard-lower {
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .scoreboard-total {
+      display: flex;
+      align-items: center;
+      width: 376px;
+      border: 3px solid transparent;
+      padding: 5px 20px;
+      margin-top: 5px;
+      font-weight: 600;
+      background-color: rgba(#cfcfcf, 0.3);
+      border-radius: 8px;
+    }
+
+    .scoreboard-header-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      width: 67.2px;
+      height: 100%;
+    }
+
+    .scoreboard-values-wrapper {
+      display: flex;
+      align-items: center;
+      width: 80%;
+      height: 100%;
+      font-size: 1.125rem;
+    }
+
+    .scoreboard-values-upper {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      width: 67.2px;
+      height: 100%;
+
+      button {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    .scoreboard-values-lower {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      width: 67.2px;
+      height: 100%;
+
+      button {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    .button-dynamic {
+      cursor: default;
+      color: rgb(var(--v-theme-diceMainTertiary));
+      font-weight: bold;
+    }
+
+    .img {
+      height: 30px;
+      width: 30px;
+      background-color: white;
+      border-radius: 3px;
+    }
+
+    .text {
+      font-size: 1.125rem;
+    }
   }
 }
 </style>

@@ -16,7 +16,17 @@
         />
       </button>
     </div>
-    <button class="button-roll-cup" @click="rollCup">
+    <button
+      class="button-roll-cup"
+      :class="{
+        highlight:
+          isPlayerTurn &&
+          playerTries > 0 &&
+          sessionIsStarted &&
+          !sessionIsFinished,
+      }"
+      @click="rollCup"
+    >
       <v-img
         class="cup"
         src="/dice/ui/cup-no-bg.png"
@@ -138,6 +148,8 @@ const rollCup = async () => {
     return
   }
 
+  props.soundService.playSound('click')
+
   let rollDices = props.dices
   const diceOnBoard = rollDices
     ? rollDices.filter((dice: Dice) => dice.isOnBoard)
@@ -186,7 +198,9 @@ watch(
         const oldDices = oldValue.filter((dice: Dice) => dice.isOnBoard)
 
         if (newDices.length > oldDices.length) {
-          props.soundService.playSound('dice')
+          if (props.soundService.isSoundLoaded('dice')) {
+            props.soundService.playSound('dice')
+          }
         }
       }
     }
@@ -218,6 +232,9 @@ watch(
     background-color: rgb(var(--v-theme-diceMainTertiary));
     border-radius: 8px;
     margin-left: auto;
+    &.highlight {
+      animation: borderAnimation 3s linear infinite;
+    }
 
     .cup {
       position: absolute;
@@ -255,6 +272,24 @@ watch(
     font-size: 2rem;
     color: white;
     box-shadow: 0px 0px 10px 0px rgba(#000000, 0.2);
+  }
+}
+
+@keyframes borderAnimation {
+  0% {
+    border: 4px solid transparent;
+  }
+  25% {
+    border: 4px solid white;
+  }
+  50% {
+    border: 4px solid transparent;
+  }
+  75% {
+    border: 4px solid white;
+  }
+  100% {
+    border: 4px solid transparent;
   }
 }
 </style>

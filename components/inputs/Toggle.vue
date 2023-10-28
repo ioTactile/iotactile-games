@@ -1,6 +1,6 @@
 <template>
-  <div class="button" @click="emit('update', !isActive)">
-    <input v-model="isActive" type="checkbox" class="checkbox" />
+  <div class="button" @click="clickToggle">
+    <input :checked="isActive" type="checkbox" class="checkbox" />
     <div class="knobs">
       <span />
     </div>
@@ -9,16 +9,16 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: 'update', value: boolean): void
+  (e: 'toggle:isActive', value: boolean): void
 }>()
 
 const props = defineProps<{
   isActive: boolean
 }>()
 
-const { isActive } = toRefs(props)
-
-console.log(isActive.value)
+const clickToggle = () => {
+  emit('toggle:isActive', !props.isActive)
+}
 </script>
 
 <style scoped lang="scss">
@@ -80,13 +80,13 @@ console.log(isActive.value)
 }
 
 .knobs span {
-  left: 75px;
-  background-color: #03a9f4;
+  left: 5px;
+  background-color: #f44336;
   z-index: 2;
 }
 
 .checkbox:checked + .knobs span {
-  left: 5px;
-  background-color: #f44336;
+  left: 75px;
+  background-color: #03a9f4;
 }
 </style>

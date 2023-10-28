@@ -63,6 +63,7 @@ const isNewMessage = ref<boolean>(false)
 
 const clickButton = () => {
   isNewMessage.value = false
+  props.soundService.playSound('click')
   emit('openChat', true)
 }
 
@@ -76,7 +77,9 @@ watch(
     ) {
       if (oldValue !== newValue) {
         if (!props.isChatActive) {
-          props.soundService.playSound('message')
+          if (props.soundService.isSoundLoaded('message')) {
+            props.soundService.playSound('message')
+          }
           isNewMessage.value = true
         }
       }

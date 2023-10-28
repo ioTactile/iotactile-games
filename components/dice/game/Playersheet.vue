@@ -30,10 +30,7 @@
           </div>
         </div>
       </div>
-      <button
-        class="button-scoreboard"
-        @click="emit('update:isScoreboardActive', true)"
-      >
+      <button class="button-scoreboard" @click="clickScoreboardButton">
         <div class="svg-container">
           <svg
             id="Layer_1"
@@ -102,7 +99,6 @@
 import { updateDoc, doc } from 'firebase/firestore'
 import { VIcon, VImg } from 'vuetify/components'
 import {
-  mdiArrowRightBold,
   mdiDice1,
   mdiDice2,
   mdiDice3,
@@ -119,6 +115,24 @@ import {
 } from '~/stores'
 import type { LocalDiceSessionScoresType } from '~/stores'
 import type { Dice, CardUser } from '~/functions/src/types'
+import {
+  oneInput,
+  twoInput,
+  threeInput,
+  fourInput,
+  fiveInput,
+  sixInput,
+  threeOfAKindInput,
+  fourOfAKindInput,
+  fullHouseInput,
+  smallStraightInput,
+  largeStraightInput,
+  diceInput,
+  chanceInput,
+  getUpperSectionTotal,
+  getLowerSectionTotal,
+} from '~/utils/diceInputs'
+import SoundService from '~/utils/soundService'
 
 type InputMappings = {
   one: number
@@ -135,6 +149,13 @@ type InputMappings = {
   dice: number
   chance: number
   [key: string]: number
+}
+
+type PlayerSheetRow = {
+  value: string
+  icon?: string
+  src?: string
+  input: number | null
 }
 
 // Vuefire
@@ -154,6 +175,7 @@ const props = defineProps<{
   playerTurnId: string
   remainingTurns: number
   players: CardUser[]
+  soundService: SoundService
 }>()
 
 const emit = defineEmits<{
@@ -162,7 +184,7 @@ const emit = defineEmits<{
 
 // Refs
 
-const upperPlayerSheet = ref([
+const upperPlayerSheet = ref<PlayerSheetRow[]>([
   {
     value: 'one',
     icon: mdiDice1,
@@ -195,7 +217,7 @@ const upperPlayerSheet = ref([
   },
 ])
 
-const lowerPlayerSheet = ref([
+const lowerPlayerSheet = ref<PlayerSheetRow[]>([
   {
     value: 'threeOfAKind',
     src: '/dice/inputs/three-of-a-kind.png',
@@ -259,252 +281,50 @@ const playerTriesRef = doc(
 
 // Computed
 
-const upperPlayerSheetTotal = computed(() => {
-  let result = 0
-  upperPlayerSheet.value.forEach((row) => {
-    if (row.input !== null) {
-      result += row.input
-    }
-  })
-  if (result >= 63) {
-    result += 35
-  }
-  return result
-})
+const upperPlayerSheetTotal = computed(() =>
+  getUpperSectionTotal(upperPlayerSheet.value),
+)
+
+const lowerPlayerSheetTotal = computed(() =>
+  getLowerSectionTotal(lowerPlayerSheet.value),
+)
 
 const upperPlayerSheetBonus = computed(() => {
-  if (upperPlayerSheetTotal.value >= 63) {
-    return 35
-  } else {
-    return 0
-  }
-})
-
-const lowerPlayerSheetTotal = computed(() => {
-  let result = 0
-  lowerPlayerSheet.value.forEach((row) => {
-    if (row.input !== null) {
-      result += row.input
-    }
-  })
-  return result
+  return upperPlayerSheetTotal.value >= 63 ? 35 : 0
 })
 
 const playerSheetTotal = computed(() => {
   return upperPlayerSheetTotal.value + lowerPlayerSheetTotal.value
 })
 
-const oneInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const faceLength = props.dices.filter((dice: Dice) => dice.face === 1).length
-  return faceLength * 1
-})
-
-const twoInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const faceLength = props.dices.filter((dice: Dice) => dice.face === 2).length
-  return faceLength * 2
-})
-
-const threeInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const faceLength = props.dices.filter((dice: Dice) => dice.face === 3).length
-  return faceLength * 3
-})
-
-const fourInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const faceLength = props.dices.filter((dice: Dice) => dice.face === 4).length
-  return faceLength * 4
-})
-
-const fiveInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const faceLength = props.dices.filter((dice: Dice) => dice.face === 5).length
-  return faceLength * 5
-})
-
-const sixInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const faceLength = props.dices.filter((dice: Dice) => dice.face === 6).length
-  return faceLength * 6
-})
-
-const threeOfAKindInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const faceCounts: { [key: number]: number } = {}
-
-  for (const dice of props.dices) {
-    if (faceCounts[dice.face]) {
-      faceCounts[dice.face]++
-    } else {
-      faceCounts[dice.face] = 1
-    }
-  }
-
-  const hasThreeOfAKind = Object.values(faceCounts).some(
-    (count: number) => count >= 3,
-  )
-
-  if (hasThreeOfAKind) {
-    return props.dices.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
-  } else {
-    return 0
-  }
-})
-
-const fourOfAKindInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const faceCounts: { [key: number]: number } = {}
-
-  for (const dice of props.dices) {
-    if (faceCounts[dice.face]) {
-      faceCounts[dice.face]++
-    } else {
-      faceCounts[dice.face] = 1
-    }
-  }
-
-  const hasFourOfAKind = Object.values(faceCounts).some(
-    (count: number) => count >= 4,
-  )
-
-  if (hasFourOfAKind) {
-    return props.dices.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
-  } else {
-    return 0
-  }
-})
-
-const fullHouseInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const sortedDices = props.dices
-    .slice()
-    .sort((a: Dice, b: Dice) => a.face - b.face)
-
-  const isFullHouse =
-    (sortedDices[0].face === sortedDices[1].face &&
-      sortedDices[0].face === sortedDices[2].face &&
-      sortedDices[3].face === sortedDices[4].face) ||
-    (sortedDices[0].face === sortedDices[1].face &&
-      sortedDices[2].face === sortedDices[3].face &&
-      sortedDices[2].face === sortedDices[4].face)
-
-  return isFullHouse ? 25 : 0
-})
-
-const smallStraightInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const sortedDices = props.dices
-    .slice()
-    .sort((a: Dice, b: Dice) => a.face - b.face)
-
-  const faces = new Set(sortedDices.map((dice: Dice) => dice.face))
-
-  const isSmallStraight =
-    (faces.has(1) && faces.has(2) && faces.has(3) && faces.has(4)) ||
-    (faces.has(2) && faces.has(3) && faces.has(4) && faces.has(5)) ||
-    (faces.has(3) && faces.has(4) && faces.has(5) && faces.has(6))
-
-  return isSmallStraight ? 30 : 0
-})
-
-const largeStraightInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const sortedDices = props.dices
-    .slice()
-    .sort((a: Dice, b: Dice) => a.face - b.face)
-
-  const isLargeStraight =
-    (sortedDices[0].face === 1 &&
-      sortedDices[1].face === 2 &&
-      sortedDices[2].face === 3 &&
-      sortedDices[3].face === 4 &&
-      sortedDices[4].face === 5) ||
-    (sortedDices[0].face === 2 &&
-      sortedDices[1].face === 3 &&
-      sortedDices[2].face === 4 &&
-      sortedDices[3].face === 5 &&
-      sortedDices[4].face === 6)
-
-  return isLargeStraight ? 40 : 0
-})
-
-const diceInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const firstFace = props.dices[0].face
-
-  const isDice = props.dices.every((dice: Dice) => dice.face === firstFace)
-
-  return isDice ? 50 : 0
-})
-
-const chanceInput = computed(() => {
-  if (!props.dices || props.dices.length !== 5) {
-    return 0
-  }
-
-  const chance = props.dices
-  return chance.reduce((acc: number, dice: Dice) => acc + dice.face, 0)
-})
-
 // Mappings
 
 const inputMappings = computed<InputMappings>(() => {
+  const dices = props.dices
+
   return {
-    one: oneInput.value,
-    two: twoInput.value,
-    three: threeInput.value,
-    four: fourInput.value,
-    five: fiveInput.value,
-    six: sixInput.value,
-    threeOfAKind: threeOfAKindInput.value,
-    fourOfAKind: fourOfAKindInput.value,
-    fullHouse: fullHouseInput.value,
-    smallStraight: smallStraightInput.value,
-    largeStraight: largeStraightInput.value,
-    dice: diceInput.value,
-    chance: chanceInput.value,
+    one: oneInput(dices),
+    two: twoInput(dices),
+    three: threeInput(dices),
+    four: fourInput(dices),
+    five: fiveInput(dices),
+    six: sixInput(dices),
+    threeOfAKind: threeOfAKindInput(dices),
+    fourOfAKind: fourOfAKindInput(dices),
+    fullHouse: fullHouseInput(dices),
+    smallStraight: smallStraightInput(dices),
+    largeStraight: largeStraightInput(dices),
+    dice: diceInput(dices),
+    chance: chanceInput(dices),
   }
 })
 
 // Methods
+
+const clickScoreboardButton = () => {
+  props.soundService.playSound('click')
+  emit('update:isScoreboardActive', true)
+}
 
 const switchPlayerTurn = async () => {
   const playerTurnIndex = props.players.findIndex(
@@ -529,6 +349,8 @@ const getInput = (value: string) => {
 
 const saveInput = async (value: string) => {
   if (props.isPlayerTurn) {
+    props.soundService.playSound('click')
+
     const input = getInput(value)
 
     if (input !== undefined) {
@@ -627,7 +449,7 @@ const saveInput = async (value: string) => {
           height: 50px;
           width: 50px;
           background-color: white;
-          border-radius: 8px;
+          border-radius: 6px;
         }
       }
 
