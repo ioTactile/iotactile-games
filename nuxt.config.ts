@@ -10,11 +10,18 @@
 export default defineNuxtConfig({
   ssr: false,
   css: ['vuetify/styles', '~/assets/main.scss'],
-  modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', 'nuxt-vuefire', '@vueuse/nuxt'],
-  build: { transpile: ['vuetify'] },
-  vite: { define: { 'process.env.DEBUG': false } },
-  typescript: { shim: false },
-  runtimeConfig: { APP_CHECK_DEBUG_TOKEN_FROM_CI: process.env.APP_CHECK_DEBUG_TOKEN_FROM_CI },
+  modules: [
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
+    'nuxt-vuefire',
+    '@vueuse/nuxt'
+  ],
+  build: {transpile: ['vuetify']},
+  vite: {define: {'process.env.DEBUG': false}},
+  typescript: {shim: false},
+  runtimeConfig: {
+    APP_CHECK_DEBUG_TOKEN_FROM_CI: process.env.APP_CHECK_DEBUG_TOKEN_FROM_CI
+  },
   vuefire: {
     auth: {
       enabled: true
@@ -28,7 +35,8 @@ export default defineNuxtConfig({
     config: {
       apiKey: 'AIzaSyDROkpZDuHw2KvV3OgPu9P-WJbk4_4-KJc',
       authDomain: 'iotactile-games.firebaseapp.com',
-      databaseURL: 'https://iotactile-games-default-rtdb.europe-west1.firebasedatabase.app',
+      databaseURL:
+        'https://iotactile-games-default-rtdb.europe-west1.firebasedatabase.app',
       projectId: 'iotactile-games',
       storageBucket: 'iotactile-games.appspot.com',
       messagingSenderId: '863733555330',

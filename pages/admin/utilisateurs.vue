@@ -40,18 +40,18 @@
 </template>
 
 <script lang="ts" async setup>
-import { VContainer, VTable, VBtn } from 'vuetify/components'
-import { mdiCheck, mdiClose } from '@mdi/js'
-import { collection, getDocs } from 'firebase/firestore'
-import { useFirebaseFunctions } from '~/composables/useFirebaseFunctions'
-import { userConverter } from '~/stores'
-import type { LocalUserType } from '~/stores'
+import {VContainer, VTable, VBtn} from 'vuetify/components'
+import {mdiCheck, mdiClose} from '@mdi/js'
+import {collection, getDocs} from 'firebase/firestore'
+import {useFirebaseFunctions} from '~/composables/useFirebaseFunctions'
+import {userConverter} from '~/stores'
+import type {LocalUserType} from '~/stores'
 
-definePageMeta({ layout: 'admin' })
+definePageMeta({layout: 'admin'})
 
 const db = useFirestore()
 const functions = useFirebaseFunctions()
-const { notifier } = useNotifier()
+const {notifier} = useNotifier()
 
 const removing = ref<string | null>(null)
 const adding = ref<string | null>(null)
@@ -71,9 +71,9 @@ const addAdmin = async (id: string) => {
   try {
     await functions('addAdmin')({
       id,
-      role: { admin: true },
+      role: {admin: true}
     })
-    notifier({ content: 'Admin ajouté', color: 'success' })
+    notifier({content: 'Admin ajouté', color: 'success'})
   } finally {
     adding.value = null
   }
@@ -83,8 +83,8 @@ const removeAdmin = async (id: string) => {
   removing.value = id
 
   try {
-    await functions('removeAdmin')({ id })
-    notifier({ content: 'Admin retiré', color: 'success' })
+    await functions('removeAdmin')({id})
+    notifier({content: 'Admin retiré', color: 'success'})
   } finally {
     removing.value = null
   }

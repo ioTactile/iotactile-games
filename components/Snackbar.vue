@@ -4,16 +4,20 @@
       {{ notification.content }}
     </div>
     <template #actions>
-      <v-btn color="stroke" :icon="mdiClose" @click="notification.show = false" />
+      <v-btn
+        color="stroke"
+        :icon="mdiClose"
+        @click="notification.show = false"
+      />
     </template>
   </v-snackbar>
 </template>
 
 <script lang="ts" setup>
-import { VSnackbar, VBtn } from 'vuetify/components'
-import { mdiClose } from '@mdi/js'
+import {VSnackbar, VBtn} from 'vuetify/components'
+import {mdiClose} from '@mdi/js'
 
 // Composable
 
-const { notification } = useNotifier()
+const {notification} = useNotifier()
 </script>

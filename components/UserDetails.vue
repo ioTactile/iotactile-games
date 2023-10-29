@@ -12,7 +12,13 @@
             density="compact"
             placeholder="Choisissez votre pseudo"
           />
-          <v-btn type="submit" class="mt-1" block color="buttonBack" :loadind="loading">
+          <v-btn
+            type="submit"
+            class="mt-1"
+            block
+            color="buttonBack"
+            :loadind="loading"
+          >
             Changer de pseudo
           </v-btn>
         </form>
@@ -23,14 +29,26 @@
       <v-btn color="headline" block @click="emits('toggleTheme')">
         <v-icon :icon="mdiThemeLightDark" />
         <span class="pl-2">
-          {{ theme.dark === true ? 'Passer en mode clair' : 'Passer en mode sombre' }}
+          {{
+            theme.dark === true
+              ? 'Passer en mode clair'
+              : 'Passer en mode sombre'
+          }}
         </span>
       </v-btn>
     </section>
     <v-divider class="my-2" />
     <section class="pa-2">
-      <v-btn color="main" block :disabled="loading" @click="logout"> Se déconnecter </v-btn>
-      <v-btn class="my-2" color="error" block :disabled="loading" @click="openDeleteUser = true">
+      <v-btn color="main" block :disabled="loading" @click="logout">
+        Se déconnecter
+      </v-btn>
+      <v-btn
+        class="my-2"
+        color="error"
+        block
+        :disabled="loading"
+        @click="openDeleteUser = true"
+      >
         Supprimer ton compte
       </v-btn>
       <v-btn v-if="userClaims?.admin" block color="headline" to="/admin">
@@ -46,10 +64,21 @@
           Es tu sûr de vouloir supprimer ton compte ?
         </v-card-title>
         <div class="d-flex justify-center">
-          <v-btn color="error" variant="text" :loading="loading" @click="deleteProfile">
+          <v-btn
+            color="error"
+            variant="text"
+            :loading="loading"
+            @click="deleteProfile"
+          >
             Oui
           </v-btn>
-          <v-btn variant="text" :loading="loading" @click="openDeleteUser = false"> Non </v-btn>
+          <v-btn
+            variant="text"
+            :loading="loading"
+            @click="openDeleteUser = false"
+          >
+            Non
+          </v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -57,11 +86,19 @@
 </template>
 
 <script setup lang="ts">
-import { VForm, VCard, VCardTitle, VBtn, VDivider, VIcon, VDialog } from 'vuetify/components'
-import { doc, updateDoc, getDoc, deleteDoc } from 'firebase/firestore'
-import { deleteUser, getIdTokenResult, signOut } from '@firebase/auth'
-import { mdiThemeLightDark } from '@mdi/js'
-import { userConverter } from '~/stores'
+import {
+  VForm,
+  VCard,
+  VCardTitle,
+  VBtn,
+  VDivider,
+  VIcon,
+  VDialog
+} from 'vuetify/components'
+import {doc, updateDoc, getDoc, deleteDoc} from 'firebase/firestore'
+import {deleteUser, getIdTokenResult, signOut} from '@firebase/auth'
+import {mdiThemeLightDark} from '@mdi/js'
+import {userConverter} from '~/stores'
 
 // Props
 
@@ -70,7 +107,7 @@ const emits = defineEmits<{ (e: 'toggleTheme'): void }>()
 
 // Vuefire
 
-const { notifier } = useNotifier()
+const {notifier} = useNotifier()
 const auth = useFirebaseAuth()
 const user = useCurrentUser()
 const db = useFirestore()
@@ -96,7 +133,7 @@ onMounted(async () => {
     username.value = userFetched.username
   }
 
-  const { claims } = await getIdTokenResult(user.value, true)
+  const {claims} = await getIdTokenResult(user.value, true)
   userClaims.value = claims
 })
 
@@ -110,7 +147,7 @@ const changeUsername = async () => {
     if (user.value) {
       const userId = user.value.uid
       const userRef = doc(db, 'users', userId).withConverter(userConverter)
-      await updateDoc(userRef, { username: username.value })
+      await updateDoc(userRef, {username: username.value})
       notifier({
         content: 'Ton pseudo a bien été mis à jour',
         color: 'main'
@@ -118,7 +155,8 @@ const changeUsername = async () => {
     }
   } catch (error) {
     notifier({
-      content: 'Une erreur est survenue lors de la mise à jour de tes informations',
+      content:
+        'Une erreur est survenue lors de la mise à jour de tes informations',
       color: 'error',
       error
     })

@@ -3,7 +3,7 @@
     <div v-for="(_, i) in 5" :key="i" class="dice-content">
       <button
         :style="{
-          cursor: isPlayerTurn ? 'pointer' : 'default',
+          cursor: isPlayerTurn ? 'pointer' : 'default'
         }"
         @click="removeDiceFromHand(dicesOnHand[i].id)"
       >
@@ -23,7 +23,7 @@
           isPlayerTurn &&
           playerTries > 0 &&
           sessionIsStarted &&
-          !sessionIsFinished,
+          !sessionIsFinished
       }"
       @click="rollCup"
     >
@@ -56,13 +56,13 @@
 </template>
 
 <script setup lang="ts">
-import { VImg } from 'vuetify/components'
-import { doc, updateDoc } from 'firebase/firestore'
+import {VImg} from 'vuetify/components'
+import {doc, updateDoc} from 'firebase/firestore'
 import {
   diceSessionDicesConverter,
-  diceSessionPlayerTriesConverter,
+  diceSessionPlayerTriesConverter
 } from '~/stores'
-import type { Dice } from '~/functions/src/types'
+import type {Dice} from '~/functions/src/types'
 import SoundService from '~/utils/soundService'
 
 type diceFaces = {
@@ -82,12 +82,12 @@ const props = defineProps<{
 const db = useFirestore()
 
 const dicesRef = doc(db, 'diceSessionDices', props.sessionId).withConverter(
-  diceSessionDicesConverter,
+  diceSessionDicesConverter
 )
 const playerTriesRef = doc(
   db,
   'diceSessionPlayerTries',
-  props.sessionId,
+  props.sessionId
 ).withConverter(diceSessionPlayerTriesConverter)
 
 const dicesOnHand = computed(() => {
@@ -100,12 +100,12 @@ const dicesOnHand = computed(() => {
 
 const getDiceFace = (dice: number) => {
   const diceFaces: diceFaces = {
-    1: { light: '/dice/colors/dice-white-one.png' },
-    2: { light: '/dice/colors/dice-white-two.png' },
-    3: { light: '/dice/colors/dice-white-three.png' },
-    4: { light: '/dice/colors/dice-white-four.png' },
-    5: { light: '/dice/colors/dice-white-five.png' },
-    6: { light: '/dice/colors/dice-white-six.png' },
+    1: {light: '/dice/colors/dice-white-one.png'},
+    2: {light: '/dice/colors/dice-white-two.png'},
+    3: {light: '/dice/colors/dice-white-three.png'},
+    4: {light: '/dice/colors/dice-white-four.png'},
+    5: {light: '/dice/colors/dice-white-five.png'},
+    6: {light: '/dice/colors/dice-white-six.png'}
   }
 
   return diceFaces[dice].light
@@ -128,9 +128,9 @@ const removeDiceFromHand = async (diceId: number) => {
       ...otherDices,
       {
         ...currentDice,
-        isOnBoard: true,
-      },
-    ],
+        isOnBoard: true
+      }
+    ]
   })
 }
 
@@ -148,14 +148,12 @@ const rollCup = async () => {
     return
   }
 
-  props.soundService.playSound('click')
-
   let rollDices = props.dices
   const diceOnBoard = rollDices
     ? rollDices.filter((dice: Dice) => dice.isOnBoard)
     : []
 
-  await updateDoc(playerTriesRef, { tries: props.playerTries - 1 })
+  await updateDoc(playerTriesRef, {tries: props.playerTries - 1})
 
   await new Promise<void>((resolve) => {
     setTimeout(() => {
@@ -166,7 +164,7 @@ const rollCup = async () => {
           rollDices.push({
             id: i,
             face: dice,
-            isOnBoard: true,
+            isOnBoard: true
           })
         }
       } else {
@@ -179,7 +177,7 @@ const rollCup = async () => {
   })
 
   await updateDoc(dicesRef, {
-    dices: rollDices,
+    dices: rollDices
   })
 }
 
@@ -204,7 +202,7 @@ watch(
         }
       }
     }
-  },
+  }
 )
 </script>
 
@@ -271,7 +269,7 @@ watch(
     border-radius: 8px;
     font-size: 2rem;
     color: white;
-    box-shadow: 0px 0px 10px 0px rgba(#000000, 0.2);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
   }
 }
 

@@ -31,24 +31,24 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon } from 'vuetify/components'
-import { collection } from 'firebase/firestore'
-import { mdiAccount } from '@mdi/js'
-import { diceSessionConverter } from '~/stores'
+import {VIcon} from 'vuetify/components'
+import {collection} from 'firebase/firestore'
+import {mdiAccount} from '@mdi/js'
+import {diceSessionConverter} from '~/stores'
 import DiceSession from '~/utils/diceSession'
 
 const db = useFirestore()
 const user = useCurrentUser()
 
 const sessionsRef = collection(db, 'diceSessions').withConverter(
-  diceSessionConverter,
+  diceSessionConverter
 )
 const sessions = useCollection(sessionsRef)
 
 const handleButtonClick = (session: LocalDiceSessionType) => {
   const host = session.players[0].id === user.value?.uid
   const isPlayerInSession = session.players.some(
-    (player) => player.id === user.value?.uid,
+    (player) => player.id === user.value?.uid
   )
 
   if (!session.isStarted) {
@@ -64,14 +64,14 @@ const handleButtonClick = (session: LocalDiceSessionType) => {
     }
     return diceSession.join(session)
   } else if (session.isStarted && isPlayerInSession) {
-    return navigateTo({ path: `/dice/${session.id}` })
+    return navigateTo({path: `/dice/${session.id}`})
   }
 }
 
 const getButtonLabel = (session: LocalDiceSessionType) => {
   const host = session.players[0].id === user.value?.uid
   const isPlayerInSession = session.players.some(
-    (player) => player.id === user.value?.uid,
+    (player) => player.id === user.value?.uid
   )
 
   if (!session.isStarted) {

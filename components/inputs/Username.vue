@@ -13,8 +13,8 @@
 </template>
 
 <script lang="ts" setup>
-import { VTextField } from 'vuetify/components'
-import { mdiAccount } from '@mdi/js'
+import {VTextField} from 'vuetify/components'
+import {mdiAccount} from '@mdi/js'
 
 const MIN_LENGTH = 3
 
@@ -36,7 +36,7 @@ withDefaults(
   }
 )
 
-defineEmits<{(e: 'update:model-value', value: string): void }>()
+defineEmits<{ (e: 'update:model-value', value: string): void }>()
 
 const rules = [
   (v?: string) => !!v || "Nom d'utilisateur requis",

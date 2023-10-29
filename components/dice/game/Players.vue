@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import type { CardUser } from '~/functions/src/types'
+import type {CardUser} from '~/functions/src/types'
 
 defineProps<{
   players: CardUser[]
@@ -22,7 +22,7 @@ button {
   color: white;
   font-size: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
   cursor: default;
 }
 

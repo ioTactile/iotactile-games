@@ -36,14 +36,19 @@ export const deleteExpiredSessions = functions
       const deletePromisesPerSession = [
         firestore.collection('diceSessions').doc(sessionId).delete(),
         firestore.collection('diceSessionPlayerTurn').doc(sessionId).delete(),
-        firestore.collection('diceSessionRemainingTurns').doc(sessionId).delete(),
+        firestore
+          .collection('diceSessionRemainingTurns')
+          .doc(sessionId)
+          .delete(),
         firestore.collection('diceSessionPlayerTries').doc(sessionId).delete(),
         firestore.collection('diceSessionDices').doc(sessionId).delete(),
         firestore.collection('diceSessionChat').doc(sessionId).delete()
       ]
       deletePromises.push(...deletePromisesPerSession)
       if (doc.data().players.length === 1) {
-        deletePromises.push(firestore.collection('diceSessionScore').doc(sessionId).delete())
+        deletePromises.push(
+          firestore.collection('diceSessionScore').doc(sessionId).delete()
+        )
       }
     })
 

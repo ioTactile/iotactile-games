@@ -3,8 +3,12 @@
     <div class="sound-modal">
       <h3>ACTIVER LES SONS</h3>
       <div>
-        <button @click="clickNoButton">Non</button>
-        <button @click="clickYesButton">Oui</button>
+        <button @click="clickNoButton">
+          Non
+        </button>
+        <button @click="clickYesButton">
+          Oui
+        </button>
       </div>
     </div>
   </div>

@@ -20,7 +20,8 @@
         v-model="passwordConfirm"
         :append-inner-icon="show2 ? mdiEye : mdiEyeOff"
         :rules="[
-          (v: any) => v === password || 'Les mots de passe doivent être similaire',
+          (v: any) =>
+            v === password || 'Les mots de passe doivent être similaire',
           ...rules
         ]"
         :type="show2 ? 'text' : 'password'"
@@ -36,8 +37,8 @@
 </template>
 
 <script lang="ts" setup>
-import { VRow, VCol, VTextField } from 'vuetify/components'
-import { mdiEye, mdiEyeOff } from '@mdi/js'
+import {VRow, VCol, VTextField} from 'vuetify/components'
+import {mdiEye, mdiEyeOff} from '@mdi/js'
 
 const MIN_LENGTH = 6
 
@@ -47,7 +48,7 @@ defineProps<{
   notInLine?: boolean
   inputClass?: string
 }>()
-const emits = defineEmits<{(e: 'update:model-value', value?: string): void }>()
+const emits = defineEmits<{ (e: 'update:model-value', value?: string): void }>()
 
 const password = ref('')
 const passwordConfirm = ref('')

@@ -1,4 +1,4 @@
-import { Howl } from 'howler'
+import {Howl} from 'howler'
 
 export default class SoundService {
   private sounds: Record<string, Howl> = {}
@@ -12,7 +12,7 @@ export default class SoundService {
   public loadSound(key: string, src: string, volume?: number): void {
     this.sounds[key] = new Howl({
       src: [src],
-      volume: volume || this.globalVolume,
+      volume: volume || this.globalVolume
     })
   }
 

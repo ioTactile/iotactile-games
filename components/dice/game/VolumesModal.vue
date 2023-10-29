@@ -49,9 +49,9 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
+import {storeToRefs} from 'pinia'
 import SoundService from '~/utils/soundService'
-import { useDiceSoundsStore } from '~/stores/diceSounds'
+import {useDiceSoundsStore} from '~/stores/diceSounds'
 
 const props = defineProps<{
   soundService: SoundService
@@ -62,22 +62,22 @@ const emit = defineEmits<{
 }>()
 
 const diceSoundsStore = useDiceSoundsStore()
-const { isSoundEffectsActive, isNotificationsActive, isMusicActive } =
+const {isSoundEffectsActive, isNotificationsActive, isMusicActive} =
   storeToRefs(diceSoundsStore)
 
 const sounds = ref([
   {
     name: 'EFFETS SONORES',
-    isActive: isSoundEffectsActive.value,
+    isActive: isSoundEffectsActive.value
   },
   {
     name: 'NOTIFICATIONS',
-    isActive: isNotificationsActive.value,
+    isActive: isNotificationsActive.value
   },
   {
     name: 'MUSIQUE',
-    isActive: isMusicActive.value,
-  },
+    isActive: isMusicActive.value
+  }
 ])
 
 const closeVolume = () => {
@@ -93,13 +93,11 @@ const changeValue = (soundName: string, value: boolean) => {
       props.soundService.loadSound('dice', '/dice/sounds/dice.mp3')
       props.soundService.loadSound(
         'shakeRoll',
-        '/dice/sounds/shake-and-roll.mp3',
+        '/dice/sounds/shake-and-roll.mp3'
       )
-      props.soundService.loadSound('click', '/dice/sounds/click.mp3', 0.1)
     } else {
       props.soundService.unloadSound('dice')
       props.soundService.unloadSound('shakeRoll')
-      props.soundService.unloadSound('click')
     }
   } else if (soundName === 'NOTIFICATIONS') {
     isNotificationsActive.value = value
@@ -147,6 +145,7 @@ const changeValue = (soundName: string, value: boolean) => {
       height: 70px;
       background-color: rgb(var(--v-theme-diceMainTertiary));
       border-radius: 8px;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     }
   }
 

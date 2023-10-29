@@ -1,7 +1,7 @@
 <template>
   <div class="scoreboard-wrapper">
     <div class="button-playersheet-wrapper">
-      <button class="button-playersheet" @click="ClickPlayerSheetButton">
+      <button class="button-playersheet" @click="OpenPlayerSheet">
         <div class="svg-container">
           <svg
             height="46px"
@@ -39,8 +39,12 @@
           <div v-for="(score, i) in scoreboardHeaderIcons" :key="i">
             <v-icon :icon="score" color="white" size="40" />
           </div>
-          <div class="text">BONUS</div>
-          <div class="text">TOTAL</div>
+          <div class="text">
+            BONUS
+          </div>
+          <div class="text">
+            TOTAL
+          </div>
         </div>
         <div class="scoreboard-values-wrapper">
           <div
@@ -73,7 +77,9 @@
           <div v-for="(src, j) in scoreboardHeaderImages" :key="j" class="img">
             <v-img :src="src" width="30" height="30" />
           </div>
-          <div class="text">TOTAL</div>
+          <div class="text">
+            TOTAL
+          </div>
         </div>
         <div class="scoreboard-values-wrapper">
           <div
@@ -100,7 +106,9 @@
       </div>
       <div class="scoreboard-total">
         <div class="scoreboard-header-wrapper">
-          <div class="text">TOTAL</div>
+          <div class="text">
+            TOTAL
+          </div>
         </div>
         <div class="scoreboard-values-wrapper">
           <div
@@ -119,18 +127,18 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon, VImg } from 'vuetify/components'
+import {VIcon, VImg} from 'vuetify/components'
 import {
   mdiDice1,
   mdiDice2,
   mdiDice3,
   mdiDice4,
   mdiDice5,
-  mdiDice6,
+  mdiDice6
 } from '@mdi/js'
-import type { LocalDiceSessionScoresType } from '~/stores'
-import type { Dice } from '~/functions/src/types'
-import { sum } from '~/utils/formatter'
+import type {LocalDiceSessionScoresType} from '~/stores'
+import type {Dice} from '~/functions/src/types'
+import {sum} from '~/utils'
 import {
   oneInput,
   twoInput,
@@ -144,9 +152,8 @@ import {
   smallStraightInput,
   largeStraightInput,
   diceInput,
-  chanceInput,
+  chanceInput
 } from '~/utils/diceInputs'
-import SoundService from '~/utils/soundService'
 
 type InputMappings = {
   one: number
@@ -169,7 +176,6 @@ const props = defineProps<{
   scoreboard: Omit<LocalDiceSessionScoresType, 'id' | 'creationDate'>
   dices: Dice[]
   playerTurn: string
-  soundService: SoundService
 }>()
 
 const emit = defineEmits<{
@@ -182,7 +188,7 @@ const scoreboardHeaderIcons: Record<number, string> = {
   3: mdiDice3,
   4: mdiDice4,
   5: mdiDice5,
-  6: mdiDice6,
+  6: mdiDice6
 }
 
 const scoreboardHeaderImages: Record<number, string> = {
@@ -192,11 +198,10 @@ const scoreboardHeaderImages: Record<number, string> = {
   4: '/dice/inputs/small-straight.png',
   5: '/dice/inputs/large-straight.png',
   6: '/dice/inputs/dice.png',
-  7: '/dice/inputs/chance.png',
+  7: '/dice/inputs/chance.png'
 }
 
-const ClickPlayerSheetButton = () => {
-  props.soundService.playSound('click')
+const OpenPlayerSheet = () => {
   emit('update:isScoreboardActive', false)
 }
 
@@ -213,7 +218,7 @@ const upperPlayerSheet = (key: string): Record<string, number> | {} => {
     three: playerData.three,
     four: playerData.four,
     five: playerData.five,
-    six: playerData.six,
+    six: playerData.six
   }
 }
 
@@ -231,7 +236,7 @@ const lowerPlayerSheet = (key: string): Record<string, number> | {} => {
     smallStraight: playerData.smallStraight,
     largeStraight: playerData.largeStraight,
     dice: playerData.dice,
-    chance: playerData.chance,
+    chance: playerData.chance
   }
 }
 
@@ -280,7 +285,7 @@ const inputMappings = computed<InputMappings>(() => {
     smallStraight: smallStraightInput(dices),
     largeStraight: largeStraightInput(dices),
     dice: diceInput(dices),
-    chance: chanceInput(dices),
+    chance: chanceInput(dices)
   }
 })
 
@@ -310,6 +315,7 @@ const getPlayerTurn = (playerId: string) => {
       height: 64px;
       background-color: rgb(var(--v-theme-diceMainTertiary));
       border-radius: 8px;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     }
   }
 
@@ -408,6 +414,17 @@ const getPlayerTurn = (playerId: string) => {
       width: 30px;
       background-color: white;
       border-radius: 3px;
+
+      &.img:nth-child(4) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .v-img {
+          width: 24px !important;
+          height: 24px !important;
+        }
+      }
     }
 
     .text {

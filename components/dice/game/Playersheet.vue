@@ -30,10 +30,9 @@
           </div>
         </div>
       </div>
-      <button class="button-scoreboard" @click="clickScoreboardButton">
+      <button class="button-scoreboard" @click="openScoreboard">
         <div class="svg-container">
           <svg
-            id="Layer_1"
             fill="#ffffff"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
@@ -96,25 +95,25 @@
 </template>
 
 <script setup lang="ts">
-import { updateDoc, doc } from 'firebase/firestore'
-import { VIcon, VImg } from 'vuetify/components'
+import {updateDoc, doc} from 'firebase/firestore'
+import {VIcon, VImg} from 'vuetify/components'
 import {
   mdiDice1,
   mdiDice2,
   mdiDice3,
   mdiDice4,
   mdiDice5,
-  mdiDice6,
+  mdiDice6
 } from '@mdi/js'
 import {
   diceSessionScoresConverter,
   diceSessionRemainingTurnsConverter,
   diceSessionPlayerTurnConverter,
   diceSessionDicesConverter,
-  diceSessionPlayerTriesConverter,
+  diceSessionPlayerTriesConverter
 } from '~/stores'
-import type { LocalDiceSessionScoresType } from '~/stores'
-import type { Dice, CardUser } from '~/functions/src/types'
+import type {LocalDiceSessionScoresType} from '~/stores'
+import type {Dice, CardUser} from '~/functions/src/types'
 import {
   oneInput,
   twoInput,
@@ -130,9 +129,8 @@ import {
   diceInput,
   chanceInput,
   getUpperSectionTotal,
-  getLowerSectionTotal,
+  getLowerSectionTotal
 } from '~/utils/diceInputs'
-import SoundService from '~/utils/soundService'
 
 type InputMappings = {
   one: number
@@ -175,7 +173,6 @@ const props = defineProps<{
   playerTurnId: string
   remainingTurns: number
   players: CardUser[]
-  soundService: SoundService
 }>()
 
 const emit = defineEmits<{
@@ -188,105 +185,105 @@ const upperPlayerSheet = ref<PlayerSheetRow[]>([
   {
     value: 'one',
     icon: mdiDice1,
-    input: props.playerData.playerSheet.one,
+    input: props.playerData.playerSheet.one
   },
   {
     value: 'two',
     icon: mdiDice2,
-    input: props.playerData.playerSheet.two,
+    input: props.playerData.playerSheet.two
   },
   {
     value: 'three',
     icon: mdiDice3,
-    input: props.playerData.playerSheet.three,
+    input: props.playerData.playerSheet.three
   },
   {
     value: 'four',
     icon: mdiDice4,
-    input: props.playerData.playerSheet.four,
+    input: props.playerData.playerSheet.four
   },
   {
     value: 'five',
     icon: mdiDice5,
-    input: props.playerData.playerSheet.five,
+    input: props.playerData.playerSheet.five
   },
   {
     value: 'six',
     icon: mdiDice6,
-    input: props.playerData.playerSheet.six,
-  },
+    input: props.playerData.playerSheet.six
+  }
 ])
 
 const lowerPlayerSheet = ref<PlayerSheetRow[]>([
   {
     value: 'threeOfAKind',
     src: '/dice/inputs/three-of-a-kind.png',
-    input: props.playerData.playerSheet.threeOfAKind,
+    input: props.playerData.playerSheet.threeOfAKind
   },
   {
     value: 'fourOfAKind',
     src: '/dice/inputs/four-of-a-kind.png',
-    input: props.playerData.playerSheet.fourOfAKind,
+    input: props.playerData.playerSheet.fourOfAKind
   },
   {
     value: 'fullHouse',
     src: '/dice/inputs/full-house.png',
-    input: props.playerData.playerSheet.fullHouse,
+    input: props.playerData.playerSheet.fullHouse
   },
   {
     value: 'smallStraight',
     src: '/dice/inputs/small-straight.png',
-    input: props.playerData.playerSheet.smallStraight,
+    input: props.playerData.playerSheet.smallStraight
   },
   {
     value: 'largeStraight',
     src: '/dice/inputs/large-straight.png',
-    input: props.playerData.playerSheet.largeStraight,
+    input: props.playerData.playerSheet.largeStraight
   },
   {
     value: 'dice',
     src: '/dice/inputs/dice.png',
-    input: props.playerData.playerSheet.dice,
+    input: props.playerData.playerSheet.dice
   },
   {
     value: 'chance',
     src: '/dice/inputs/chance.png',
-    input: props.playerData.playerSheet.chance,
-  },
+    input: props.playerData.playerSheet.chance
+  }
 ])
 
 // Firebase refs
 
 const scoresRef = doc(db, 'diceSessionScores', props.sessionId).withConverter(
-  diceSessionScoresConverter,
+  diceSessionScoresConverter
 )
 const remainingTurnsRef = doc(
   db,
   'diceSessionRemainingTurns',
-  props.sessionId,
+  props.sessionId
 ).withConverter(diceSessionRemainingTurnsConverter)
 const playerTurnRef = doc(
   db,
   'diceSessionPlayerTurn',
-  props.sessionId,
+  props.sessionId
 ).withConverter(diceSessionPlayerTurnConverter)
 const dicesRef = doc(db, 'diceSessionDices', props.sessionId).withConverter(
-  diceSessionDicesConverter,
+  diceSessionDicesConverter
 )
 const playerTriesRef = doc(
   db,
   'diceSessionPlayerTries',
-  props.sessionId,
+  props.sessionId
 ).withConverter(diceSessionPlayerTriesConverter)
 
 // Computed
 
 const upperPlayerSheetTotal = computed(() =>
-  getUpperSectionTotal(upperPlayerSheet.value),
+  getUpperSectionTotal(upperPlayerSheet.value)
 )
 
 const lowerPlayerSheetTotal = computed(() =>
-  getLowerSectionTotal(lowerPlayerSheet.value),
+  getLowerSectionTotal(lowerPlayerSheet.value)
 )
 
 const upperPlayerSheetBonus = computed(() => {
@@ -294,7 +291,11 @@ const upperPlayerSheetBonus = computed(() => {
 })
 
 const playerSheetTotal = computed(() => {
-  return upperPlayerSheetTotal.value + lowerPlayerSheetTotal.value
+  return (
+    upperPlayerSheetTotal.value +
+    lowerPlayerSheetTotal.value +
+    upperPlayerSheetBonus.value
+  )
 })
 
 // Mappings
@@ -315,32 +316,31 @@ const inputMappings = computed<InputMappings>(() => {
     smallStraight: smallStraightInput(dices),
     largeStraight: largeStraightInput(dices),
     dice: diceInput(dices),
-    chance: chanceInput(dices),
+    chance: chanceInput(dices)
   }
 })
 
 // Methods
 
-const clickScoreboardButton = () => {
-  props.soundService.playSound('click')
+const openScoreboard = () => {
   emit('update:isScoreboardActive', true)
 }
 
 const switchPlayerTurn = async () => {
   const playerTurnIndex = props.players.findIndex(
-    (player: CardUser) => player.id === props.playerTurnId,
+    (player: CardUser) => player.id === props.playerTurnId
   )
   const nextPlayerTurnIndex =
     playerTurnIndex === props.players.length - 1 ? 0 : playerTurnIndex + 1
 
   await updateDoc(playerTurnRef, {
-    playerId: props.players[nextPlayerTurnIndex].id,
+    playerId: props.players[nextPlayerTurnIndex].id
   })
-  await updateDoc(dicesRef, { dices: [] })
+  await updateDoc(dicesRef, {dices: []})
   await updateDoc(remainingTurnsRef, {
-    remainingTurns: props.remainingTurns - 1,
+    remainingTurns: props.remainingTurns - 1
   })
-  await updateDoc(playerTriesRef, { tries: 3 })
+  await updateDoc(playerTriesRef, {tries: 3})
 }
 
 const getInput = (value: string) => {
@@ -349,8 +349,6 @@ const getInput = (value: string) => {
 
 const saveInput = async (value: string) => {
   if (props.isPlayerTurn) {
-    props.soundService.playSound('click')
-
     const input = getInput(value)
 
     if (input !== undefined) {
@@ -358,7 +356,8 @@ const saveInput = async (value: string) => {
         [props.playerData.playerLocation]: {
           ...props.playerData.playerSheet,
           [value]: input,
-        },
+          total: playerSheetTotal.value
+        }
       })
 
       await switchPlayerTurn()
@@ -420,6 +419,7 @@ const saveInput = async (value: string) => {
       font-size: 1.25rem;
       border-radius: 8px;
       padding-right: 10px;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     }
   }
 
@@ -451,6 +451,17 @@ const saveInput = async (value: string) => {
           background-color: white;
           border-radius: 6px;
         }
+
+        &.right-row:nth-child(4) > div {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          .v-img {
+            width: 40px !important;
+            height: 40px !important;
+          }
+        }
       }
 
       .right-row-bottom-wrapper {
@@ -477,7 +488,7 @@ const saveInput = async (value: string) => {
     width: 50px;
     height: 50px;
     background-color: rgb(var(--v-theme-diceMainTertiary));
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     color: white;
     border-radius: 8px;
     cursor: pointer;

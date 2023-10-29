@@ -7,7 +7,9 @@
       minlength="4"
       maxlength="12"
     />
-    <button class="button-dice" @click="createSession">Créer la session</button>
+    <button class="button-dice" @click="createSession">
+      Créer la session
+    </button>
   </div>
 </template>
 

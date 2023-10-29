@@ -16,10 +16,18 @@
         />
       </v-card-title>
       <v-tabs v-model="tab" grow color="buttonBack">
-        <v-tab value="one" class="text-capitalize" @click="createAccount = false">
+        <v-tab
+          value="one"
+          class="text-capitalize"
+          @click="createAccount = false"
+        >
           Connexion
         </v-tab>
-        <v-tab value="two" class="text-capitalize" @click="createAccount = true">
+        <v-tab
+          value="two"
+          class="text-capitalize"
+          @click="createAccount = true"
+        >
           Inscription
         </v-tab>
       </v-tabs>
@@ -28,8 +36,18 @@
           <v-window v-model="tab">
             <v-window-item value="one">
               <template v-if="!createAccount">
-                <InputsEmail v-model="email" variant="outlined" icon class="mt-2" name="email" />
-                <InputsPassword v-if="!forgotPassword" v-model="password" variant="outlined" />
+                <InputsEmail
+                  v-model="email"
+                  variant="outlined"
+                  icon
+                  class="mt-2"
+                  name="email"
+                />
+                <InputsPassword
+                  v-if="!forgotPassword"
+                  v-model="password"
+                  variant="outlined"
+                />
               </template>
               <div class="d-flex justify-center mb-10">
                 <v-btn
@@ -51,7 +69,12 @@
                   class="mt-2"
                   name="username"
                 />
-                <InputsEmail v-model="email" variant="outlined" icon name="createEmail" />
+                <InputsEmail
+                  v-model="email"
+                  variant="outlined"
+                  icon
+                  name="createEmail"
+                />
                 <InputsPasswordFirst v-model="password" variant="outlined" />
               </template>
             </v-window-item>
@@ -67,8 +90,8 @@
               createAccount
                 ? "M'inscire"
                 : forgotPassword
-                ? 'Réinitialiser mon mot de passe'
-                : 'Connexion'
+                  ? 'Réinitialiser mon mot de passe'
+                  : 'Connexion'
             }}
           </v-btn>
         </v-form>
@@ -90,7 +113,7 @@ import {
   VTabs,
   VTab
 } from 'vuetify/components'
-import { mdiClose } from '@mdi/js'
+import {mdiClose} from '@mdi/js'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -98,14 +121,14 @@ import {
   AuthErrorCodes,
   getIdTokenResult
 } from 'firebase/auth'
-import { FirebaseError } from '@firebase/util'
-import { Timestamp, doc, setDoc } from 'firebase/firestore'
-import { useFirestore, useCurrentUser, useFirebaseAuth } from 'vuefire'
-import { userConverter } from '~/stores'
+import {FirebaseError} from '@firebase/util'
+import {Timestamp, doc, setDoc} from 'firebase/firestore'
+import {useFirestore, useCurrentUser, useFirebaseAuth} from 'vuefire'
+import {userConverter} from '~/stores'
 
 // Composable & Vuefire
 
-const { notifier } = useNotifier()
+const {notifier} = useNotifier()
 const db = useFirestore()
 const user = useCurrentUser()
 const auth = useFirebaseAuth()
@@ -137,7 +160,7 @@ const tab = ref(null)
 
 onBeforeMount(async () => {
   if (user.value) {
-    const { claims } = await getIdTokenResult(user.value, true)
+    const {claims} = await getIdTokenResult(user.value, true)
     userClaims.value = claims
   }
 })
@@ -152,21 +175,25 @@ const login = async () => {
 
   try {
     if (createAccount.value) {
-      createUserWithEmailAndPassword(auth, email.value, password.value).then((credentials) => {
-        const userRef = doc(db, 'users', credentials.user.uid).withConverter(userConverter)
-        setDoc(
-          userRef,
-          {
-            id: credentials.user.uid,
-            email: email.value,
-            username: username.value,
-            creationDate: Timestamp.fromDate(date.value),
-            updateDate: Timestamp.now()
-          },
-          { merge: true }
-        )
-      })
-      notifier({ content: 'Inscription réussie', color: 'success' })
+      createUserWithEmailAndPassword(auth, email.value, password.value).then(
+        (credentials) => {
+          const userRef = doc(db, 'users', credentials.user.uid).withConverter(
+            userConverter
+          )
+          setDoc(
+            userRef,
+            {
+              id: credentials.user.uid,
+              email: email.value,
+              username: username.value,
+              creationDate: Timestamp.fromDate(date.value),
+              updateDate: Timestamp.now()
+            },
+            {merge: true}
+          )
+        }
+      )
+      notifier({content: 'Inscription réussie', color: 'success'})
     } else if (forgotPassword.value) {
       await sendPasswordResetEmail(auth, email.value)
       notifier({
@@ -175,8 +202,12 @@ const login = async () => {
       })
       forgotPassword.value = false
     } else {
-      const userCredentials = await signInWithEmailAndPassword(auth, email.value, password.value)
-      const { claims } = await getIdTokenResult(userCredentials.user, true)
+      const userCredentials = await signInWithEmailAndPassword(
+        auth,
+        email.value,
+        password.value
+      )
+      const {claims} = await getIdTokenResult(userCredentials.user, true)
       if (claims.admin) {
         navigateTo('/admin')
       }
@@ -201,7 +232,7 @@ const login = async () => {
         errMessage = 'Une erreur est survenue'
         break
     }
-    notifier({ content: errMessage, color: 'error', error })
+    notifier({content: errMessage, color: 'error', error})
   } finally {
     loading.value = null
   }

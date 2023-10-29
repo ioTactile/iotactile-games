@@ -21,7 +21,10 @@ export const onLinguaVaultSessionRematch = functions
       return
     }
 
-    if (after.isPlayerOneContinue === null || after.isPlayerTwoContinue === null) {
+    if (
+      after.isPlayerOneContinue === null ||
+      after.isPlayerTwoContinue === null
+    ) {
       return
     }
 
@@ -56,7 +59,10 @@ export const onLinguaVaultSessionRematch = functions
 
     functions.logger.log(after.isPlayerOneContinue, after.isPlayerTwoContinue)
 
-    if (after.isPlayerOneContinue === true && after.isPlayerTwoContinue === true) {
+    if (
+      after.isPlayerOneContinue === true &&
+      after.isPlayerTwoContinue === true
+    ) {
       const remainingTurnsDoc = await remainingTurnsRef.get()
       const remainingTurns = remainingTurnsDoc.data()
 
@@ -89,14 +95,19 @@ export const onLinguaVaultSessionRematch = functions
       })
 
       await playerTurnRef.update({
-        playerId: session!.playerOne.isFinder ? session!.playerTwo!.id : session!.playerOne.id
+        playerId: session!.playerOne.isFinder
+          ? session!.playerTwo!.id
+          : session!.playerOne.id
       })
 
       await wordsRef.update({
         testedWords: [],
         clues: []
       })
-    } else if (after.isPlayerOneContinue === false && after.isPlayerTwoContinue === false) {
+    } else if (
+      after.isPlayerOneContinue === false &&
+      after.isPlayerTwoContinue === false
+    ) {
       await sessionRef.update({
         isFinished: true
       })

@@ -1,10 +1,10 @@
 import {
-  FirestoreDataConverter,
   QueryDocumentSnapshot,
-  Timestamp as FirestoreTimestamp,
+  Timestamp as FirestoreTimestamp
 } from '@firebase/firestore'
-import {
-  Timestamp,
+import type {FirestoreDataConverter} from '@firebase/firestore'
+import {Timestamp} from '~/functions/src/types'
+import type {
   User,
   DiceSession,
   DiceScoreboard,
@@ -19,7 +19,7 @@ import {
   LinguaVaultScoreboard,
   LinguaVaultSessionRemainingTurns,
   LinguaVaultSessionPlayerTurn,
-  LinguaVaultSessionWords,
+  LinguaVaultSessionWords
 } from '~/functions/src/types'
 
 type NestedTypeMapper<T, I, O> = T extends I
@@ -41,16 +41,16 @@ export const userConverter: FirestoreDataConverter<LocalUserType> = {
   toFirestore: (item) => item,
   fromFirestore: (
     snapshot: QueryDocumentSnapshot<DatabaseUserType>,
-    options,
+    options
   ) => {
     const data = snapshot.data(options)
     return {
       ...data,
       id: snapshot.id,
       creationDate: data.creationDate.toDate(),
-      updateDate: data.updateDate.toDate(),
+      updateDate: data.updateDate.toDate()
     }
-  },
+  }
 }
 
 // Dice
@@ -70,15 +70,15 @@ export const diceSessionConverter: FirestoreDataConverter<LocalDiceSessionType> 
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseDiceSessionType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
         id: snapshot.id,
-        creationDate: data.creationDate.toDate(),
+        creationDate: data.creationDate.toDate()
       }
-    },
+    }
   }
 
 type DatabaseDiceScoreboardType = NestedTypeMapper<
@@ -96,14 +96,14 @@ export const diceScoreboardConverter: FirestoreDataConverter<LocalDiceScoreboard
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseDiceScoreboardType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        userId: snapshot.id,
+        userId: snapshot.id
       }
-    },
+    }
   }
 
 type DatabaseDiceSessionPlayerTurnType = NestedTypeMapper<
@@ -121,14 +121,14 @@ export const diceSessionPlayerTurnConverter: FirestoreDataConverter<LocalDiceSes
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseDiceSessionPlayerTurnType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        id: snapshot.id,
+        id: snapshot.id
       }
-    },
+    }
   }
 
 type DatabaseDiceSessionRemainingTurnsType = NestedTypeMapper<
@@ -146,14 +146,14 @@ export const diceSessionRemainingTurnsConverter: FirestoreDataConverter<LocalDic
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseDiceSessionRemainingTurnsType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        id: snapshot.id,
+        id: snapshot.id
       }
-    },
+    }
   }
 
 type DatabaseDiceSessionDicesType = NestedTypeMapper<
@@ -171,14 +171,14 @@ export const diceSessionDicesConverter: FirestoreDataConverter<LocalDiceSessionD
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseDiceSessionDicesType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        id: snapshot.id,
+        id: snapshot.id
       }
-    },
+    }
   }
 
 type DatabaseDiceSessionPlayerTriesType = NestedTypeMapper<
@@ -196,14 +196,14 @@ export const diceSessionPlayerTriesConverter: FirestoreDataConverter<LocalDiceSe
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseDiceSessionPlayerTriesType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        id: snapshot.id,
+        id: snapshot.id
       }
-    },
+    }
   }
 
 type DatabaseDiceSessionChatType = NestedTypeMapper<
@@ -221,14 +221,14 @@ export const diceSessionChatConverter: FirestoreDataConverter<LocalDiceSessionCh
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseDiceSessionChatType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        id: snapshot.id,
+        id: snapshot.id
       }
-    },
+    }
   }
 
 type DatabaseDiceSessionScoresType = NestedTypeMapper<
@@ -246,17 +246,15 @@ export const diceSessionScoresConverter: FirestoreDataConverter<LocalDiceSession
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseDiceSessionScoresType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
         id: snapshot.id,
-        creationDate: data.creationDate
-          ? data.creationDate.toDate()
-          : undefined,
+        creationDate: data.creationDate ? data.creationDate.toDate() : undefined
       }
-    },
+    }
   }
 
 // Lingua Vault
@@ -276,14 +274,14 @@ export const linguaVaultWordsConverter: FirestoreDataConverter<LocalLinguaVaultW
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultWordsType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        id: snapshot.id,
+        id: snapshot.id
       }
-    },
+    }
   }
 
 type DatabaseLinguaVaultSessionType = NestedTypeMapper<
@@ -301,15 +299,15 @@ export const linguaVaultSessionConverter: FirestoreDataConverter<LocalLinguaVaul
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultSessionType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
         id: snapshot.id,
-        creationDate: data.creationDate.toDate(),
+        creationDate: data.creationDate.toDate()
       }
-    },
+    }
   }
 
 type DatabaseLinguaVaultScoreboardType = NestedTypeMapper<
@@ -327,14 +325,14 @@ export const linguaVaultScoreboardConverter: FirestoreDataConverter<LocalLinguaV
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultScoreboardType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        id: snapshot.id,
+        id: snapshot.id
       }
-    },
+    }
   }
 
 type DatabaseLinguaVaultSessionRemainingTurnsType = NestedTypeMapper<
@@ -352,14 +350,14 @@ export const linguaVaultSessionRemainingTurnsConverter: FirestoreDataConverter<L
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultSessionRemainingTurnsType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        id: snapshot.id,
+        id: snapshot.id
       }
-    },
+    }
   }
 
 type DatabaseLinguaVaultSessionPlayerTurnType = NestedTypeMapper<
@@ -377,14 +375,14 @@ export const linguaVaultSessionPlayerTurnConverter: FirestoreDataConverter<Local
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultSessionPlayerTurnType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        id: snapshot.id,
+        id: snapshot.id
       }
-    },
+    }
   }
 
 type DatabaseLinguaVaultSessionWordsType = NestedTypeMapper<
@@ -402,12 +400,12 @@ export const linguaVaultSessionWordsConverter: FirestoreDataConverter<LocalLingu
     toFirestore: (item) => item,
     fromFirestore: (
       snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultSessionWordsType>,
-      options,
+      options
     ) => {
       const data = snapshot.data(options)
       return {
         ...data,
-        id: snapshot.id,
+        id: snapshot.id
       }
-    },
+    }
   }

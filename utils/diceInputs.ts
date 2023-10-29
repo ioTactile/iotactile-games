@@ -1,5 +1,4 @@
-import { get } from 'firebase/database'
-import type { Dice } from '~/functions/src/types'
+import type {Dice} from '~/functions/src/types'
 
 type PlayerSheetRow = {
   value: string
@@ -9,9 +8,7 @@ type PlayerSheetRow = {
 }
 
 export const oneInput = (dices: Dice[]) => {
-  if (!dices || dices.length !== 5) {
-    return 0
-  }
+  if (!dices || dices.length !== 5) return 0
 
   const faceLength = dices.filter((dice: Dice) => dice.face === 1).length
   return faceLength * 1
@@ -78,7 +75,7 @@ export const threeOfAKindInput = (dices: Dice[]) => {
   }
 
   const hasThreeOfAKind = Object.values(faceCounts).some(
-    (count: number) => count >= 3,
+    (count: number) => count >= 3
   )
 
   if (hasThreeOfAKind) {
@@ -104,7 +101,7 @@ export const fourOfAKindInput = (dices: Dice[]) => {
   }
 
   const hasFourOfAKind = Object.values(faceCounts).some(
-    (count: number) => count >= 4,
+    (count: number) => count >= 4
   )
 
   if (hasFourOfAKind) {
@@ -196,7 +193,7 @@ export const getUpperSectionTotal = (playerSheet: PlayerSheetRow[]) => {
   const upperSectionRows = playerSheet.slice(0, 6)
   const upperSectionTotal = upperSectionRows.reduce(
     (acc: number, row: PlayerSheetRow) => acc + (row.input || 0),
-    0,
+    0
   )
 
   return upperSectionTotal
@@ -206,7 +203,7 @@ export const getLowerSectionTotal = (playerSheet: PlayerSheetRow[]) => {
   const lowerSectionRows = playerSheet.slice(0, 7)
   const lowerSectionTotal = lowerSectionRows.reduce(
     (acc: number, row: PlayerSheetRow) => acc + (row.input || 0),
-    0,
+    0
   )
 
   return lowerSectionTotal

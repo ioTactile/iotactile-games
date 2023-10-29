@@ -8,3 +8,7 @@ export const numberFormatter = (value: number, isPourcentage: boolean) => {
 export const sum = (object: Record<string, number | null>) => {
   return Object.values(object).reduce((a, b) => (a || 0) + (b || 0), 0)
 }
+
+export const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}

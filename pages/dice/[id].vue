@@ -7,11 +7,11 @@
     <dice-template
       v-if="
         session &&
-        playerTurn &&
-        scores &&
-        dices &&
-        remainingTurns &&
-        playerTries
+          playerTurn &&
+          scores &&
+          dices &&
+          remainingTurns &&
+          playerTries
       "
     >
       <div class="pa-8">
@@ -32,16 +32,19 @@
           :session-id="sessionId"
           :chat-messages="chat?.messages"
           :players="session.players"
-          :sound-service="soundS"
           @open-chat="isChatModalActive = $event"
+        />
+        <dice-game-endgame-modal
+          v-if="isEndgameModalActive"
+          :session-id="sessionId"
+          :players="session.players"
+          :scores="scores.value"
+          @open-endgame="isEndgameModalActive = $event"
         />
         <div class="d-flex justify-space-between mb-4">
           <dice-game-players :players="session.players" />
           <div>
-            <dice-game-volumes
-              :sound-service="soundS"
-              @open-volumes="isVolumesModalActive = $event"
-            />
+            <dice-game-volumes @open-volumes="isVolumesModalActive = $event" />
             <dice-game-chat
               :chat-messages="chat?.messages"
               :is-chat-active="isChatModalActive"
@@ -57,7 +60,6 @@
               :scoreboard="scoreboard"
               :dices="dices.dices"
               :player-turn="playerTurn.playerId"
-              :sound-service="soundS"
               @update:is-scoreboard-active="isScoreboardActive = $event"
             />
             <dice-game-playersheet
@@ -69,7 +71,6 @@
               :player-turn-id="playerTurn.playerId"
               :players="session.players"
               :remaining-turns="remainingTurns.remainingTurns"
-              :sound-service="soundS"
               @update:is-scoreboard-active="isScoreboardActive = $event"
             />
           </div>
@@ -98,18 +99,18 @@
 </template>
 
 <script setup lang="ts">
-import { collection, doc } from 'firebase/firestore'
-import { storeToRefs } from 'pinia'
-import { useDiceSoundsStore } from '~/stores/diceSounds'
+import {collection, doc} from 'firebase/firestore'
+import {storeToRefs} from 'pinia'
+import {useDiceSoundsStore} from '~/stores/diceSounds'
 import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
   diceSessionScoresConverter,
   diceSessionDicesConverter,
   diceSessionRemainingTurnsConverter,
-  diceSessionChatConverter,
+  diceSessionChatConverter
 } from '~/stores'
-import type { LocalDiceSessionScoresType } from '~/stores'
+import type {LocalDiceSessionScoresType} from '~/stores'
 import SoundService from '~/utils/soundService'
 
 // Types
@@ -130,44 +131,44 @@ const sessionId = route.params.id as string
 // Firebase refs and reactive data
 
 const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(
-  diceSessionConverter,
+  diceSessionConverter
 )
 const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(
-  diceSessionPlayerTurnConverter,
+  diceSessionPlayerTurnConverter
 )
 const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(
-  diceSessionScoresConverter,
+  diceSessionScoresConverter
 )
 const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(
-  diceSessionDicesConverter,
+  diceSessionDicesConverter
 )
 const remainingTurnsRef = doc(
   db,
   'diceSessionRemainingTurns',
-  sessionId,
+  sessionId
 ).withConverter(diceSessionRemainingTurnsConverter)
 const playerTriesRef = doc(
   db,
   'diceSessionPlayerTries',
-  sessionId,
+  sessionId
 ).withConverter(diceSessionPlayerTriesConverter)
 const chatRef = doc(db, 'diceSessionChat', sessionId).withConverter(
-  diceSessionChatConverter,
+  diceSessionChatConverter
 )
 
 const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
 const playerTurn = useDocument(
-  doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id),
+  doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id)
 )
 const scores = useDocument(
-  doc(collection(db, 'diceSessionScores'), scoresRef.id),
+  doc(collection(db, 'diceSessionScores'), scoresRef.id)
 )
 const dices = useDocument(doc(collection(db, 'diceSessionDices'), dicesRef.id))
 const remainingTurns = useDocument(
-  doc(collection(db, 'diceSessionRemainingTurns'), remainingTurnsRef.id),
+  doc(collection(db, 'diceSessionRemainingTurns'), remainingTurnsRef.id)
 )
 const playerTries = useDocument(
-  doc(collection(db, 'diceSessionPlayerTries'), playerTriesRef.id),
+  doc(collection(db, 'diceSessionPlayerTries'), playerTriesRef.id)
 )
 const chat = useDocument(doc(collection(db, 'diceSessionChat'), chatRef.id))
 
@@ -177,9 +178,10 @@ const isScoreboardActive = ref<boolean>(false)
 const isVolumesModalActive = ref<boolean>(false)
 const isChatModalActive = ref<boolean>(false)
 const isFirstVolumesModalOpen = ref<boolean>(true)
+const isEndgameModalActive = ref<boolean>(false)
 
 const diceSoundsStore = useDiceSoundsStore()
-const { isSoundEffectsActive, isNotificationsActive, isMusicActive } =
+const {isSoundEffectsActive, isNotificationsActive, isMusicActive} =
   storeToRefs(diceSoundsStore)
 
 // Services
@@ -190,14 +192,12 @@ const activateSound = () => {
   soundS.loadSound('dice', '/dice/sounds/dice.mp3')
   soundS.loadSound('message', '/dice/sounds/message.mp3')
   soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3')
-  soundS.loadSound('click', '/dice/sounds/click.mp3', 0.1)
 }
 
 const desactivateSound = () => {
   soundS.unloadSound('dice')
   soundS.unloadSound('message')
   soundS.unloadSound('shakeRoll')
-  soundS.unloadSound('click')
   isSoundEffectsActive.value = false
   isNotificationsActive.value = false
   isMusicActive.value = false
@@ -239,7 +239,7 @@ const playerData = computed(() => {
 
   return {
     playerSheet,
-    playerLocation,
+    playerLocation
   }
 })
 
@@ -261,7 +261,17 @@ watch(
       isScoreboardActive.value = true
     }
   },
-  { immediate: true },
+  {immediate: true}
+)
+
+watch(
+  () => session.value?.isFinished,
+  (isFinished) => {
+    if (isFinished) {
+      isEndgameModalActive.value = true
+    }
+  },
+  {immediate: true}
 )
 </script>
 

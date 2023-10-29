@@ -14,19 +14,19 @@ export const addAdmin = functions
     if (context.app == undefined) {
       throw new functions.https.HttpsError(
         'failed-precondition',
-        'The function must be called from an App Check verified app.',
+        'The function must be called from an App Check verified app.'
       )
     }
     if (!context.auth) {
       throw new functions.https.HttpsError(
         'unauthenticated',
-        'Une authentification est nécessaire',
+        'Une authentification est nécessaire'
       )
     }
     if (!data.role) {
       throw new functions.https.HttpsError(
         'invalid-argument',
-        'Paramètres incorrect',
+        'Paramètres incorrect'
       )
     }
 
@@ -37,7 +37,7 @@ export const addAdmin = functions
 
     const updateUserData = {
       role: data.role,
-      updateDate: Timestamp.now(),
+      updateDate: Timestamp.now()
     }
 
     await firestore.collection('users').doc(data.id).update(updateUserData)

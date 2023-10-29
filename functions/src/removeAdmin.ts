@@ -17,10 +17,16 @@ export const removeAdmin = functions
       )
     }
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Une authentification est nécessaire')
+      throw new functions.https.HttpsError(
+        'unauthenticated',
+        'Une authentification est nécessaire'
+      )
     }
     if (!data.id) {
-      throw new functions.https.HttpsError('invalid-argument', 'Paramètres incorrect')
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Paramètres incorrect'
+      )
     }
 
     const auth = getAuth()

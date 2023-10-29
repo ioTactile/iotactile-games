@@ -1,6 +1,10 @@
 import * as functions from 'firebase-functions'
 import { getFirestore } from 'firebase-admin/firestore'
-import { diceScoreboardConverter, diceSessionScoreConverter, userConverter } from './types.js'
+import {
+  diceScoreboardConverter,
+  diceSessionScoresConverter,
+  userConverter
+} from './types.js'
 
 export const onDiceSessionEnd = functions
   .region('europe-west3')
@@ -21,7 +25,7 @@ export const onDiceSessionEnd = functions
 
     const playersScoresRef = firestore
       .collection('diceSessionScores')
-      .withConverter(diceSessionScoreConverter)
+      .withConverter(diceSessionScoresConverter)
       .doc(sessionId)
     const diceScoreboardRef = firestore
       .collection('diceScoreboard')
@@ -57,7 +61,10 @@ export const onDiceSessionEnd = functions
         const { id, total = 0, dice } = player
         const isDicePlayer = dice === 50
         const playerRef = diceScoreboardRef.doc(id)
-        const [playerDoc, userDoc] = await Promise.all([playerRef.get(), usersRef.doc(id).get()])
+        const [playerDoc, userDoc] = await Promise.all([
+          playerRef.get(),
+          usersRef.doc(id).get()
+        ])
         const playerData = playerDoc.data()
         const userData = userDoc.data()
 
@@ -74,7 +81,8 @@ export const onDiceSessionEnd = functions
             maxScore: Math.max(playerData.maxScore, total),
             averageScore,
             totalScore: playerData.totalScore + total,
-            victories: winner === id ? playerData.victories + 1 : playerData.victories,
+            victories:
+              winner === id ? playerData.victories + 1 : playerData.victories,
             dice: isDicePlayer ? playerData.dice + 1 : playerData.dice
           }
 

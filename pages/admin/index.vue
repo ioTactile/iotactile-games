@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VContainer } from 'vuetify/components'
+import {VContainer} from 'vuetify/components'
 
-definePageMeta({ layout: 'admin' })
+definePageMeta({layout: 'admin'})
 </script>

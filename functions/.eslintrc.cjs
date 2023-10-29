@@ -19,12 +19,15 @@ module.exports = {
     sourceType: 'module',
     extraFileExtensions: ['.cjs']
   },
-  ignorePatterns: [
-    '/lib/**/*' // Ignore built files.
-  ],
+  ignorePatterns: ['/lib/**/*'],
   plugins: ['@typescript-eslint', 'import'],
   rules: {
-    quotes: ['error', 'double'],
+    'comma-dangle': ['error', 'never'],
+    'quote-props': ['error', 'as-needed'],
+    semi: 'off',
+    indent: 'off',
+    'object-curly-spacing': ['error', 'always'],
+    'operator-linebreak': 'off',
     'import/no-unresolved': 0
   }
 }

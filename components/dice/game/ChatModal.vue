@@ -15,9 +15,7 @@
     </section>
     <section class="content">
       <div v-for="(message, i) in chatMessages" :key="i">
-        <span :class="getPlayerClass(message.index)"
-          >{{ message.username }} :</span
-        >
+        <span :class="getPlayerClass(message.index)">{{ message.username }} :</span>
         <p>{{ message.content }}</p>
       </div>
     </section>
@@ -32,23 +30,23 @@
           @keyup.enter="sendMessage"
         />
       </div>
-      <button @click="sendMessage">ENVOYER</button>
+      <button @click="sendMessage">
+        ENVOYER
+      </button>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { doc, arrayUnion, setDoc } from 'firebase/firestore'
-import { diceSessionChatConverter } from '~/stores'
-import type { LocalDiceSessionChatType } from '~/stores'
-import type { CardUser } from '~/functions/src/types'
-import SoundService from '~/utils/soundService'
+import {doc, arrayUnion, setDoc} from 'firebase/firestore'
+import {diceSessionChatConverter} from '~/stores'
+import type {LocalDiceSessionChatType} from '~/stores'
+import type {CardUser} from '~/functions/src/types'
 
 const props = defineProps<{
   sessionId: string
   chatMessages: LocalDiceSessionChatType['messages'] | undefined
   players: CardUser[]
-  soundService: SoundService
 }>()
 
 const emit = defineEmits<{
@@ -59,13 +57,12 @@ const user = useCurrentUser()
 const db = useFirestore()
 
 const chatRef = doc(db, 'diceSessionChat', props.sessionId).withConverter(
-  diceSessionChatConverter,
+  diceSessionChatConverter
 )
 
 const text = ref<string>('')
 
 const closeChat = () => {
-  props.soundService.playSound('click')
   emit('openChat', false)
 }
 
@@ -81,14 +78,14 @@ const sendMessage = async () => {
     const uid = user.value.uid
 
     const currentUser = props.players.find(
-      (player: CardUser) => player.id === uid,
+      (player: CardUser) => player.id === uid
     )
 
     if (!currentUser) {
       return
     }
 
-    const { username } = currentUser
+    const {username} = currentUser
 
     const index =
       props.players.findIndex((player: CardUser) => player.id === uid) + 1
@@ -100,10 +97,10 @@ const sendMessage = async () => {
         messages: arrayUnion({
           index,
           username,
-          content: text.value,
-        }),
+          content: text.value
+        })
       },
-      { merge: true },
+      {merge: true}
     )
   } finally {
     text.value = ''
@@ -157,6 +154,7 @@ const getPlayerClass = (index: number) => {
       height: 70px;
       background-color: rgb(var(--v-theme-diceMainTertiary));
       border-radius: 8px;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     }
   }
 
@@ -219,6 +217,7 @@ const getPlayerClass = (index: number) => {
       border-radius: 8px;
       font-size: 2.5rem;
       color: white;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     }
   }
 }

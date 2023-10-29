@@ -2,7 +2,7 @@
   <button
     class="ml-6"
     :class="isNewMessage ? 'highlight' : ''"
-    @click="clickButton"
+    @click="openChat"
   >
     <div class="svg-container">
       <svg
@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import type { LocalDiceSessionChatType } from '~/stores'
+import type {LocalDiceSessionChatType} from '~/stores'
 import SoundService from '~/utils/soundService'
 
 const props = defineProps<{
@@ -61,9 +61,8 @@ const emit = defineEmits<{
 
 const isNewMessage = ref<boolean>(false)
 
-const clickButton = () => {
+const openChat = () => {
   isNewMessage.value = false
-  props.soundService.playSound('click')
   emit('openChat', true)
 }
 
@@ -84,7 +83,7 @@ watch(
         }
       }
     }
-  },
+  }
 )
 </script>
 
@@ -94,7 +93,7 @@ button {
   height: 64px;
   background-color: rgb(var(--v-theme-diceMainTertiary));
   border-radius: 8px;
-  box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
   &.highlight {
     animation: borderAnimation 3s linear infinite;
   }

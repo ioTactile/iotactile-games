@@ -17,7 +17,7 @@
           position: 'absolute',
           top: calculateTop(dice.id),
           left: calculateLeft(dice.id),
-          cursor: isPlayerTurn ? 'pointer' : 'default',
+          cursor: isPlayerTurn ? 'pointer' : 'default'
         }"
         @click="removeDiceFromBoard(dice.id)"
       >
@@ -33,10 +33,10 @@
 </template>
 
 <script setup lang="ts">
-import { VImg } from 'vuetify/components'
-import { doc, updateDoc } from 'firebase/firestore'
-import { sleep } from '~/utils/sleep'
-import type { Dice } from '~/functions/src/types'
+import {VImg} from 'vuetify/components'
+import {doc, updateDoc} from 'firebase/firestore'
+import {sleep} from '~/utils'
+import type {Dice} from '~/functions/src/types'
 import SoundService from '~/utils/soundService'
 
 // Types
@@ -67,7 +67,7 @@ const isDicesOnBoard = ref<boolean>(true)
 // Firebase refs
 
 const dicesRef = doc(db, 'diceSessionDices', props.sessionId).withConverter(
-  diceSessionDicesConverter,
+  diceSessionDicesConverter
 )
 
 // Computed
@@ -84,12 +84,12 @@ const dicesOnBoard = computed(() => {
 
 const getDiceFace = (dice: number) => {
   const diceFaces: diceFaces = {
-    1: { light: '/dice/colors/dice-white-one.png' },
-    2: { light: '/dice/colors/dice-white-two.png' },
-    3: { light: '/dice/colors/dice-white-three.png' },
-    4: { light: '/dice/colors/dice-white-four.png' },
-    5: { light: '/dice/colors/dice-white-five.png' },
-    6: { light: '/dice/colors/dice-white-six.png' },
+    1: {light: '/dice/colors/dice-white-one.png'},
+    2: {light: '/dice/colors/dice-white-two.png'},
+    3: {light: '/dice/colors/dice-white-three.png'},
+    4: {light: '/dice/colors/dice-white-four.png'},
+    5: {light: '/dice/colors/dice-white-five.png'},
+    6: {light: '/dice/colors/dice-white-six.png'}
   }
 
   return diceFaces[dice].light
@@ -112,9 +112,9 @@ const removeDiceFromBoard = async (diceId: number) => {
       ...otherDices,
       {
         ...currentDice,
-        isOnBoard: false,
-      },
-    ],
+        isOnBoard: false
+      }
+    ]
   })
 }
 
@@ -171,7 +171,7 @@ watch(
         isDicesOnBoard.value = true
       }
     }
-  },
+  }
 )
 
 watch(
@@ -189,7 +189,7 @@ watch(
         }
       }
     }
-  },
+  }
 )
 </script>
 

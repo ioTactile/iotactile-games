@@ -19,7 +19,10 @@
   "rules": {
     "prettier/prettier": "off",
     "vue/no-multiple-objects-in-class": "error",
-    "vue/no-potential-component-option-typo": ["error", { "presets": ["nuxt"] }],
+    "vue/no-potential-component-option-typo": [
+      "error",
+      { "presets": ["nuxt"] }
+    ],
     "vue/no-static-inline-styles": ["error", { "allowBinding": true }],
     "vue/no-useless-mustaches": ["error"],
     "vue/multi-word-component-names": "off",
@@ -27,5 +30,23 @@
     "vue/block-lang": ["error", { "script": { "lang": "ts" } }],
     "vue/component-api-style": ["error", ["script-setup"]],
     "vue/no-v-for-template-key": "off",
+    "comma-dangle": ["error", "never"],
+    "func-call-spacing": "off",
+    "curly": "off",
+    "object-curly-spacing": ["error", "never"],
+    "space-before-function-paren": "off",
+    "arrow-parens": ["error", "always"],
+    "vue/html-self-closing": [
+      "error",
+      {
+        "html": {
+          "void": "always",
+          "normal": "always",
+          "component": "always"
+        },
+        "svg": "always",
+        "math": "always"
+      }
+    ]
   }
 }
