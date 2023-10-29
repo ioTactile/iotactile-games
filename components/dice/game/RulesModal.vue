@@ -203,14 +203,6 @@ const closeRules = () => {
                 margin-left: 5px;
               }
             }
-
-            .icon-wrapper {
-              color: white;
-
-              .v-icon__svg {
-                color: black;
-              }
-            }
           }
         }
 
