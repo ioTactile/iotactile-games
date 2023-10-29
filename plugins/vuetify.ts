@@ -4,57 +4,41 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 const myCustomLightTheme: ThemeDefinition = {
   dark: false,
   colors: {
-    // Illustration
-    main: '#eff0f3', // light grey
-    secondary: '#fffffe', // white
-    tertiary: '#d9376e', // pink
-    stroke: '#0d0d0d', // black
-    highlight: '#ff8e3c', // orange
-    // Elements
-    background: '#eff0f3', // light grey
-    headline: '#0d0d0d', // black
-    paragraph: '2a2a2a', // dark grey
-    buttonBack: '#ff8e3c', // orange
-    buttonText: '#0d0d0d', // black
-    // Events
-    error: '#ed4337', // red
-    success: '#4caf50', // green
-    // Dice
-    dicePrimary: '#fffcb9', // yellow
-    diceClosePrimary: '#ffd37f', // yellow
-    diceBorder: '#e0e0e0', // grey
-    diceCloseBorder: '#e0e0e0', // grey
+    background: '#ffffff', // white
+    surface: '#ececec', // light grey
+    primary: '#bb86fc', // purple
+    secondary: '#03dac6', // green
+    onBackground: '#000000', // black
+    onSurface: '#000000', // dark grey
+    onPrimary: '#000000', // black
+    onSecondary: '#000000', // black
     // Main Dice colors
     diceMainPrimary: '#005541', // green
     diceMainSecondary: '#002E23', // dark green
     diceMainTertiary: '#EB9444', // orange
     diceMainLightTertiary: '#FFAC49', // light orange
-    diceMainDarkTertiary: '#B77335' // dark orange
+    diceMainDarkTertiary: '#B77335', // dark orange
+    diceMainModalBackground: '#d9d9d9' // light grey
   }
 }
 const myCustomDarkTheme: ThemeDefinition = {
   dark: true,
   colors: {
-    // Illustration
-    main: '#000000', // dark
-    secondary: '#202327', // dark grey
-    tertiary: '#d9376e', // pink
-    stroke: '#0d0d0d', // black
-    highlight: '#ff8e3c', // orange
-    // Elements
-    background: '#000000', // dark
-    headline: '#fffffe', // white
-    paragraph: '2a2a2a', // dark grey
-    buttonBack: '#ff8e3c', // orange
-    buttonText: '#0d0d0d', // black
-    // Events
-    error: '#ed4337', // red
-    success: '#4caf50', // green
-    // Dice
-    dicePrimary: '#1a8cd8', // blue
-    diceClosePrimary: '#0f4e78', // blue
-    diceBorder: '#3c3c3c', // light grey
-    diceCloseBorder: '#3c3c3c' // light grey
+    background: '#121212', // dark grey
+    surface: '#1d1d1d', // dark grey
+    primary: '#bb86fc', // purple
+    secondary: '#03dac6', // green
+    onBackground: '#d9d9d9', // light grey
+    onSurface: '#dfdfdf', // light grey
+    onPrimary: '#000000', // black
+    onSecondary: '#000000', // black
+    // Main Dice colors
+    diceMainPrimary: '#005541', // green
+    diceMainSecondary: '#002E23', // dark green
+    diceMainTertiary: '#EB9444', // orange
+    diceMainLightTertiary: '#FFAC49', // light orange
+    diceMainDarkTertiary: '#B77335', // dark orange
+    diceMainModalBackground: '#2a2a2a' // dark grey
   }
 }
 

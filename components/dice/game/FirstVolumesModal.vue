@@ -40,7 +40,7 @@ const clickNoButton = () => {
   transform: translate(-50%, -50%);
   width: 1200px;
   height: 800px;
-  background-color: rgba(#d9d9d9, 0.7);
+  background-color: rgba(var(--v-theme-diceMainModalBackground), 0.7);
 
   .sound-modal {
     display: flex;
@@ -49,14 +49,15 @@ const clickNoButton = () => {
     align-items: center;
     width: 300px;
     height: 200px;
-    background-color: #eff0f3;
-    border: 2px solid white;
+    background-color: rgb(var(--v-theme-surface));
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     border-radius: 8px;
     padding: 10px 20px;
 
     h3 {
       text-align: center;
       font-size: 2rem;
+      color: rgb(var(--v-theme-onSurface));
     }
 
     div {

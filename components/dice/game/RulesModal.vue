@@ -6,7 +6,9 @@
         <div class="dices-wrapper">
           <div class="left-column">
             <div v-for="(number, i) in leftColumn" :key="i">
-              <v-icon :icon="number.icon" size="60" class="icon-wrapper" />
+              <div class="icon-wrapper">
+                <v-icon :icon="number.icon" size="60" />
+              </div>
               <div class="values">
                 <div>
                   <v-icon
@@ -71,32 +73,32 @@ const emit = defineEmits<{ (e: 'openRules', value: boolean): void }>()
 const leftColumn = [
   {
     icon: mdiDice1,
-    icons: [mdiDice1, mdiDice1, mdiDice1, mdiDice1, mdiDice1, mdiDice1],
+    icons: [mdiDice1, mdiDice1, mdiDice1, mdiDice1, mdiDice1],
     text: 'NOMBRE DE 1'
   },
   {
     icon: mdiDice2,
-    icons: [mdiDice2, mdiDice2, mdiDice2, mdiDice2, mdiDice2, mdiDice2],
+    icons: [mdiDice2, mdiDice2, mdiDice2, mdiDice2, mdiDice2],
     text: 'NOMBRE DE 2'
   },
   {
     icon: mdiDice3,
-    icons: [mdiDice3, mdiDice3, mdiDice3, mdiDice3, mdiDice3, mdiDice3],
+    icons: [mdiDice3, mdiDice3, mdiDice3, mdiDice3, mdiDice3],
     text: 'NOMBRE DE 3'
   },
   {
     icon: mdiDice4,
-    icons: [mdiDice4, mdiDice4, mdiDice4, mdiDice4, mdiDice4, mdiDice4],
+    icons: [mdiDice4, mdiDice4, mdiDice4, mdiDice4, mdiDice4],
     text: 'NOMBRE DE 4'
   },
   {
     icon: mdiDice5,
-    icons: [mdiDice5, mdiDice5, mdiDice5, mdiDice5, mdiDice5, mdiDice5],
+    icons: [mdiDice5, mdiDice5, mdiDice5, mdiDice5, mdiDice5],
     text: 'NOMBRE DE 5'
   },
   {
     icon: mdiDice6,
-    icons: [mdiDice6, mdiDice6, mdiDice6, mdiDice6, mdiDice6, mdiDice6],
+    icons: [mdiDice6, mdiDice6, mdiDice6, mdiDice6, mdiDice6],
     text: 'NOMBRE DE 6'
   }
 ]
@@ -155,7 +157,7 @@ const closeRules = () => {
   left: 30px;
   width: 1140px;
   height: 660px;
-  background-color: #d9d9d9;
+  background-color: rgb(var(--v-theme-diceMainModalBackground));
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25);
@@ -204,6 +206,10 @@ const closeRules = () => {
 
             .icon-wrapper {
               color: white;
+
+              .v-icon__svg {
+                color: black;
+              }
             }
           }
         }

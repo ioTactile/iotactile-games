@@ -1,6 +1,6 @@
 <template>
   <v-app-bar
-    color="secondary"
+    color="surface"
     density="comfortable"
     class="rounded-b-lg"
     absolute
@@ -16,14 +16,22 @@
     </NuxtLink>
     <v-spacer />
     <template v-if="admin && adminUser">
-      <v-btn to="/admin/lingua-vault" :icon="mdiFileWordBox" class="mr-1" />
-      <v-btn to="/admin/utilisateurs" :icon="mdiAccountCheck" />
+      <v-btn
+        color="onSurface"
+        to="/admin/utilisateurs"
+        :icon="mdiAccountCheck"
+      />
       <v-divider vertical class="mx-2" />
     </template>
-    <v-btn v-if="!user" :icon="mdiAccount" @click="login = true" />
+    <v-btn
+      v-if="!user"
+      color="onSurface"
+      :icon="mdiAccount"
+      @click="login = true"
+    />
     <v-menu v-else :close-on-content-click="false" origin="top right">
       <template #activator="{ props }">
-        <v-btn :icon="mdiAccount" v-bind="props" />
+        <v-btn color="onSurface" :icon="mdiAccount" v-bind="props" />
       </template>
       <UserDetails :theme="theme.current.value" @toggle-theme="toggleTheme" />
     </v-menu>
@@ -45,7 +53,7 @@ import {
 } from 'vuetify/components'
 import { useTheme } from 'vuetify'
 import { getIdTokenResult } from 'firebase/auth'
-import { mdiAccount, mdiAccountCheck, mdiFileWordBox } from '@mdi/js'
+import { mdiAccount, mdiAccountCheck } from '@mdi/js'
 
 // Vuetify
 

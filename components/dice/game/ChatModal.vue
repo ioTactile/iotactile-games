@@ -29,6 +29,7 @@
           type="text"
           placeholder="Ton message"
           maxlength="45"
+          class="text-black"
           @keyup.enter="sendMessage"
         />
       </div>
@@ -132,7 +133,7 @@ const getPlayerClass = (index: number) => {
   left: 30px;
   width: 1140px;
   height: 740px;
-  background-color: rgba(#d9d9d9, 0.9);
+  background-color: rgba(var(--v-theme-diceMainModalBackground), 0.9);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25);

@@ -2,13 +2,13 @@
   <v-app>
     <v-main>
       <v-container>
-        <div class="text-center text-buttonBack">
+        <div class="text-center text-surface">
           <h1 v-if="props.error.statusCode === 404">
             Erreur {{ props.error.statusCode }}
           </h1>
           <h2>Une erreur est survenue lors du chargement de la page</h2>
           <v-btn
-            color="buttonBack"
+            color="text-primary"
             to="/"
             class="mt-4"
             @mouseover="btnOutlined = false"

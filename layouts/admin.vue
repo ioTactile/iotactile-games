@@ -1,7 +1,7 @@
 <template>
   <v-app class="app-wrapper overflow-x-hidden">
     <Header admin />
-    <v-main class="bg-background">
+    <v-main>
       <slot />
     </v-main>
     <Footer />

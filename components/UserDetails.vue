@@ -1,5 +1,5 @@
 <template>
-  <v-card class="bg-secondary mt-1" rounded="lg" width="260">
+  <v-card class="bg-surface mt-1" rounded="lg" width="260">
     <section class="pa-2">
       <div class="text-center">
         <form @submit.prevent="changeUsername">
@@ -14,9 +14,9 @@
           />
           <v-btn
             type="submit"
-            class="mt-1"
+            class="mt-1 text-onPrimary"
             block
-            color="buttonBack"
+            color="primary"
             :loadind="loading"
           >
             Changer de pseudo
@@ -26,7 +26,12 @@
     </section>
     <v-divider class="my-2" />
     <section class="pa-2">
-      <v-btn color="headline" block @click="emits('toggleTheme')">
+      <v-btn
+        color="secondary"
+        class="text-onSecondary"
+        block
+        @click="emits('toggleTheme')"
+      >
         <v-icon :icon="mdiThemeLightDark" />
         <span class="pl-2">
           {{
@@ -39,11 +44,20 @@
     </section>
     <v-divider class="my-2" />
     <section class="pa-2">
-      <v-btn color="main" block :disabled="loading" @click="logout">
+      <v-btn
+        v-if="userClaims?.admin"
+        color="white"
+        block
+        to="/admin"
+        class="mb-2"
+      >
+        Espace d'administration
+      </v-btn>
+      <v-btn color="white" block :disabled="loading" @click="logout">
         Se déconnecter
       </v-btn>
       <v-btn
-        class="my-2"
+        class="mt-2"
         color="error"
         block
         :disabled="loading"
@@ -51,15 +65,12 @@
       >
         Supprimer ton compte
       </v-btn>
-      <v-btn v-if="userClaims?.admin" block color="headline" to="/admin">
-        Espace d'administration
-      </v-btn>
     </section>
   </v-card>
 
   <client-only>
     <v-dialog v-model="openDeleteUser" width="500">
-      <v-card color="main" class="pa-2">
+      <v-card class="pa-2">
         <v-card-title class="text-center">
           Es tu sûr de vouloir supprimer ton compte ?
         </v-card-title>

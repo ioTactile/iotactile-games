@@ -7,16 +7,17 @@
       elevation="3"
       height="100%"
     >
-      <v-img :src="img" :alt="alt" class="rounded-t-lg" height="136" />
-      <div class="text-center">
+      <v-img :src="img" :alt="alt" class="rounded-t-lg" />
+      <h2 class="text-center mt-1">
         {{ title }}
-      </div>
+      </h2>
     </v-card>
   </v-responsive>
 </template>
 
 <script setup lang="ts">
 import { VCard, VImg, VResponsive } from 'vuetify/components'
+
 defineProps<{
   img: string
   alt: string
@@ -24,3 +25,13 @@ defineProps<{
   link: string
 }>()
 </script>
+
+<style scoped>
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.1rem;
+  color: rgb(var(--v-theme-onSurface));
+  font-family: 'Indie Flower', cursive;
+}
+</style>
