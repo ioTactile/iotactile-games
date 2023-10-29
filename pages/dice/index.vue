@@ -40,9 +40,7 @@
               </g>
             </svg>
           </button>
-          <div class="dice-logo text-center mt-10 mb-6">
-            Dice
-          </div>
+          <div class="dice-logo text-center mt-10 mb-6">Dice</div>
           <div class="d-flex justify-center">
             <dice-menu-main v-if="menuPage === 0" @action="handleActions" />
             <dice-menu-play v-if="menuPage === 1" @action="handleActions" />

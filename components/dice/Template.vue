@@ -7,10 +7,10 @@
 </template>
 
 <script setup lang="ts">
-import {useWindowSize} from '@vueuse/core'
+import { useWindowSize } from '@vueuse/core'
 
 const scale = ref<number>(1)
-const {width: windowWidth, height: windowHeight} = useWindowSize()
+const { width: windowWidth, height: windowHeight } = useWindowSize()
 
 const handleResize = () => {
   const targetHeight = 1080
@@ -31,7 +31,7 @@ watch(
   () => {
     handleResize()
   },
-  {immediate: true}
+  { immediate: true }
 )
 </script>
 

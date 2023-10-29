@@ -39,12 +39,8 @@
           <div v-for="(score, i) in scoreboardHeaderIcons" :key="i">
             <v-icon :icon="score" color="white" size="40" />
           </div>
-          <div class="text">
-            BONUS
-          </div>
-          <div class="text">
-            TOTAL
-          </div>
+          <div class="text">BONUS</div>
+          <div class="text">TOTAL</div>
         </div>
         <div class="scoreboard-values-wrapper">
           <div
@@ -77,9 +73,7 @@
           <div v-for="(src, j) in scoreboardHeaderImages" :key="j" class="img">
             <v-img :src="src" width="30" height="30" />
           </div>
-          <div class="text">
-            TOTAL
-          </div>
+          <div class="text">TOTAL</div>
         </div>
         <div class="scoreboard-values-wrapper">
           <div
@@ -106,9 +100,7 @@
       </div>
       <div class="scoreboard-total">
         <div class="scoreboard-header-wrapper">
-          <div class="text">
-            TOTAL
-          </div>
+          <div class="text">TOTAL</div>
         </div>
         <div class="scoreboard-values-wrapper">
           <div
@@ -127,7 +119,7 @@
 </template>
 
 <script setup lang="ts">
-import {VIcon, VImg} from 'vuetify/components'
+import { VIcon, VImg } from 'vuetify/components'
 import {
   mdiDice1,
   mdiDice2,
@@ -136,9 +128,9 @@ import {
   mdiDice5,
   mdiDice6
 } from '@mdi/js'
-import type {LocalDiceSessionScoresType} from '~/stores'
-import type {Dice} from '~/functions/src/types'
-import {sum} from '~/utils'
+import type { LocalDiceSessionScoresType } from '~/stores'
+import type { Dice } from '~/functions/src/types'
+import { sum } from '~/utils'
 import {
   oneInput,
   twoInput,
@@ -173,7 +165,7 @@ type InputMappings = {
 }
 
 const props = defineProps<{
-  scoreboard: Omit<LocalDiceSessionScoresType, 'id' | 'creationDate'>
+  scoreboard: LocalDiceSessionScoresType['playerOne'][]
   dices: Dice[]
   playerTurn: string
 }>()
@@ -205,7 +197,7 @@ const OpenPlayerSheet = () => {
   emit('update:isScoreboardActive', false)
 }
 
-const upperPlayerSheet = (key: string): Record<string, number> | {} => {
+const upperPlayerSheet = (key: number): Record<string, number> | {} => {
   const playerData = props.scoreboard[key]
 
   if (!playerData) {
@@ -222,7 +214,7 @@ const upperPlayerSheet = (key: string): Record<string, number> | {} => {
   }
 }
 
-const lowerPlayerSheet = (key: string): Record<string, number> | {} => {
+const lowerPlayerSheet = (key: number): Record<string, number> | {} => {
   const playerData = props.scoreboard[key]
 
   if (!playerData) {
@@ -240,7 +232,7 @@ const lowerPlayerSheet = (key: string): Record<string, number> | {} => {
   }
 }
 
-const upperPlayerSheetBonus = (key: string): number => {
+const upperPlayerSheetBonus = (key: number): number => {
   const upperTotal = sum(upperPlayerSheet(key))
   if (upperTotal! >= 63) {
     return 35
@@ -248,17 +240,17 @@ const upperPlayerSheetBonus = (key: string): number => {
   return 0
 }
 
-const upperPlayerSheetTotal = (key: string): number => {
+const upperPlayerSheetTotal = (key: number): number => {
   const result = sum(upperPlayerSheet(key))
   return result! + upperPlayerSheetBonus(key)
 }
 
-const lowerPlayerSheetTotal = (key: string): number => {
+const lowerPlayerSheetTotal = (key: number): number => {
   const result = sum(lowerPlayerSheet(key))
   return result!
 }
 
-const playerSheetTotal = (key: string): number => {
+const playerSheetTotal = (key: number): number => {
   const upperTotal = upperPlayerSheetTotal(key)
   const lowerTotal = lowerPlayerSheetTotal(key)
   if (upperTotal >= 63) {

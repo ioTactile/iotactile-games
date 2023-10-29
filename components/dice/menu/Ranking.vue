@@ -20,8 +20,8 @@
 </template>
 
 <script async setup lang="ts">
-import {collection, getDocs, query, orderBy} from 'firebase/firestore'
-import {diceScoreboardConverter} from '~/stores'
+import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { diceScoreboardConverter } from '~/stores'
 
 const db = useFirestore()
 

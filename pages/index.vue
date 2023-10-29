@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import {VContainer, VRow, VCol} from 'vuetify/components'
+import { VContainer, VRow, VCol } from 'vuetify/components'
 </script>
 
 <style scoped>

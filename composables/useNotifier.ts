@@ -25,5 +25,5 @@ export const useNotifier = () => {
     }
   }
 
-  return {notification, notifier}
+  return { notification, notifier }
 }

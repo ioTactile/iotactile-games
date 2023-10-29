@@ -1,0 +1,19 @@
+{
+  "Init vue": {
+    "prefix": ["init"],
+    "body": [
+      "<template>",
+      "  <div>",
+      "   $1",
+      "  </div>",
+      "</template>",
+      "",
+      "<script setup lang='ts'>",
+      "</script>",
+      "",
+      "<style scoped lang='scss'>",
+      "</style>"
+    ],
+    "description": "Init vue component"
+  }
+}

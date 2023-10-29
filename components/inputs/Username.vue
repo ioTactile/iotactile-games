@@ -13,8 +13,8 @@
 </template>
 
 <script lang="ts" setup>
-import {VTextField} from 'vuetify/components'
-import {mdiAccount} from '@mdi/js'
+import { VTextField } from 'vuetify/components'
+import { mdiAccount } from '@mdi/js'
 
 const MIN_LENGTH = 3
 

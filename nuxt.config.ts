@@ -16,9 +16,9 @@ export default defineNuxtConfig({
     'nuxt-vuefire',
     '@vueuse/nuxt'
   ],
-  build: {transpile: ['vuetify']},
-  vite: {define: {'process.env.DEBUG': false}},
-  typescript: {shim: false},
+  build: { transpile: ['vuetify'] },
+  vite: { define: { 'process.env.DEBUG': false } },
+  typescript: { shim: false },
   runtimeConfig: {
     APP_CHECK_DEBUG_TOKEN_FROM_CI: process.env.APP_CHECK_DEBUG_TOKEN_FROM_CI
   },

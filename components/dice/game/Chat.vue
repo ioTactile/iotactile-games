@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import type {LocalDiceSessionChatType} from '~/stores'
+import type { LocalDiceSessionChatType } from '~/stores'
 import SoundService from '~/utils/soundService'
 
 const props = defineProps<{

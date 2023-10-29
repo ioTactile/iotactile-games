@@ -37,8 +37,8 @@
 </template>
 
 <script lang="ts" setup>
-import {VRow, VCol, VTextField} from 'vuetify/components'
-import {mdiEye, mdiEyeOff} from '@mdi/js'
+import { VRow, VCol, VTextField } from 'vuetify/components'
+import { mdiEye, mdiEyeOff } from '@mdi/js'
 
 const MIN_LENGTH = 6
 

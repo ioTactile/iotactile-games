@@ -90,8 +90,8 @@
               createAccount
                 ? "M'inscire"
                 : forgotPassword
-                  ? 'Réinitialiser mon mot de passe'
-                  : 'Connexion'
+                ? 'Réinitialiser mon mot de passe'
+                : 'Connexion'
             }}
           </v-btn>
         </v-form>
@@ -113,7 +113,7 @@ import {
   VTabs,
   VTab
 } from 'vuetify/components'
-import {mdiClose} from '@mdi/js'
+import { mdiClose } from '@mdi/js'
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -121,14 +121,14 @@ import {
   AuthErrorCodes,
   getIdTokenResult
 } from 'firebase/auth'
-import {FirebaseError} from '@firebase/util'
-import {Timestamp, doc, setDoc} from 'firebase/firestore'
-import {useFirestore, useCurrentUser, useFirebaseAuth} from 'vuefire'
-import {userConverter} from '~/stores'
+import { FirebaseError } from '@firebase/util'
+import { Timestamp, doc, setDoc } from 'firebase/firestore'
+import { useFirestore, useCurrentUser, useFirebaseAuth } from 'vuefire'
+import { userConverter } from '~/stores'
 
 // Composable & Vuefire
 
-const {notifier} = useNotifier()
+const { notifier } = useNotifier()
 const db = useFirestore()
 const user = useCurrentUser()
 const auth = useFirebaseAuth()
@@ -160,7 +160,7 @@ const tab = ref(null)
 
 onBeforeMount(async () => {
   if (user.value) {
-    const {claims} = await getIdTokenResult(user.value, true)
+    const { claims } = await getIdTokenResult(user.value, true)
     userClaims.value = claims
   }
 })
@@ -189,11 +189,11 @@ const login = async () => {
               creationDate: Timestamp.fromDate(date.value),
               updateDate: Timestamp.now()
             },
-            {merge: true}
+            { merge: true }
           )
         }
       )
-      notifier({content: 'Inscription réussie', color: 'success'})
+      notifier({ content: 'Inscription réussie', color: 'success' })
     } else if (forgotPassword.value) {
       await sendPasswordResetEmail(auth, email.value)
       notifier({
@@ -207,7 +207,7 @@ const login = async () => {
         email.value,
         password.value
       )
-      const {claims} = await getIdTokenResult(userCredentials.user, true)
+      const { claims } = await getIdTokenResult(userCredentials.user, true)
       if (claims.admin) {
         navigateTo('/admin')
       }
@@ -232,7 +232,7 @@ const login = async () => {
         errMessage = 'Une erreur est survenue'
         break
     }
-    notifier({content: errMessage, color: 'error', error})
+    notifier({ content: errMessage, color: 'error', error })
   } finally {
     loading.value = null
   }

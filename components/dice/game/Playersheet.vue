@@ -95,8 +95,8 @@
 </template>
 
 <script setup lang="ts">
-import {updateDoc, doc} from 'firebase/firestore'
-import {VIcon, VImg} from 'vuetify/components'
+import { updateDoc, doc } from 'firebase/firestore'
+import { VIcon, VImg } from 'vuetify/components'
 import {
   mdiDice1,
   mdiDice2,
@@ -112,8 +112,8 @@ import {
   diceSessionDicesConverter,
   diceSessionPlayerTriesConverter
 } from '~/stores'
-import type {LocalDiceSessionScoresType} from '~/stores'
-import type {Dice, CardUser} from '~/functions/src/types'
+import type { LocalDiceSessionScoresType } from '~/stores'
+import type { Dice, CardUser } from '~/functions/src/types'
 import {
   oneInput,
   twoInput,
@@ -336,11 +336,11 @@ const switchPlayerTurn = async () => {
   await updateDoc(playerTurnRef, {
     playerId: props.players[nextPlayerTurnIndex].id
   })
-  await updateDoc(dicesRef, {dices: []})
+  await updateDoc(dicesRef, { dices: [] })
   await updateDoc(remainingTurnsRef, {
     remainingTurns: props.remainingTurns - 1
   })
-  await updateDoc(playerTriesRef, {tries: 3})
+  await updateDoc(playerTriesRef, { tries: 3 })
 }
 
 const getInput = (value: string) => {

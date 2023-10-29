@@ -1,0 +1,62 @@
+<template>
+  <button @click="openRules">
+    <div class="svg-container">
+      <svg
+        width="46px"
+        height="46px"
+        viewBox="0 0 48.00 48.00"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="#ffffff"
+        stroke="#ffffff"
+        stroke-width="0.00048000000000000007"
+      >
+        <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+        <g
+          id="SVGRepo_tracerCarrier"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+
+        <g id="SVGRepo_iconCarrier">
+          <g id="Layer_2" data-name="Layer 2">
+            <g id="invisible_box" data-name="invisible box">
+              <rect width="48" height="48" fill="none" />
+            </g>
+            <g id="Layer_7" data-name="Layer 7">
+              <g>
+                <path
+                  d="M24.3,6A11.2,11.2,0,0,0,16,9.3a11,11,0,0,0-3.5,8.2,2.5,2.5,0,0,0,5,0,6.5,6.5,0,0,1,2-4.7A6.2,6.2,0,0,1,24.2,11a6.5,6.5,0,0,1,1,12.9,4.4,4.4,0,0,0-3.7,4.4v3.2a2.5,2.5,0,0,0,5,0V28.7a11.6,11.6,0,0,0,9-11.5A11.7,11.7,0,0,0,24.3,6Z"
+                />
+                <circle cx="24" cy="39.5" r="2.5" />
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </button>
+</template>
+
+<script setup lang="ts">
+const emit = defineEmits<{
+  (e: 'openRules', value: boolean): void
+}>()
+
+const openRules = () => {
+  emit('openRules', true)
+}
+</script>
+
+<style scoped lang="scss">
+button {
+  position: absolute;
+  top: 112px;
+  left: 510px;
+  width: 50px;
+  height: 50px;
+  background-color: rgb(var(--v-theme-diceMainTertiary));
+  border-radius: 8px;
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+</style>

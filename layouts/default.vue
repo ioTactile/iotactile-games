@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import {VApp, VMain} from 'vuetify/components'
+import { VApp, VMain } from 'vuetify/components'
 </script>
 
 <style lang="scss" scoped>

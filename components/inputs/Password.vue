@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts" setup>
-import {VTextField} from 'vuetify/components'
-import {mdiEye, mdiEyeOff} from '@mdi/js'
+import { VTextField } from 'vuetify/components'
+import { mdiEye, mdiEyeOff } from '@mdi/js'
 
 const MIN_LENGTH = 6
 

@@ -47,16 +47,14 @@
       </div>
     </section>
     <section class="footer">
-      <button @click="goToMenu">
-        Menu
-      </button>
+      <button @click="goToMenu">Menu</button>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import type {LocalDiceSessionScoresType} from '~/stores'
-import type {CardUser} from '~/functions/src/types'
+import type { LocalDiceSessionScoresType } from '~/stores'
+import type { CardUser } from '~/functions/src/types'
 
 const props = defineProps<{
   sessionId: string

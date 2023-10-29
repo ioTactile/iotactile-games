@@ -1,4 +1,4 @@
-import {Howl} from 'howler'
+import { Howl } from 'howler'
 
 export default class SoundService {
   private sounds: Record<string, Howl> = {}

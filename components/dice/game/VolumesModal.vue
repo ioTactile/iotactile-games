@@ -49,9 +49,10 @@
 </template>
 
 <script setup lang="ts">
-import {storeToRefs} from 'pinia'
+import { storeToRefs } from 'pinia'
 import SoundService from '~/utils/soundService'
-import {useDiceSoundsStore} from '~/stores/diceSounds'
+import { useDiceSoundsStore } from '~/stores/diceSounds'
+import { diceAudioTracks as audioTracks } from '~/utils'
 
 const props = defineProps<{
   soundService: SoundService
@@ -62,7 +63,7 @@ const emit = defineEmits<{
 }>()
 
 const diceSoundsStore = useDiceSoundsStore()
-const {isSoundEffectsActive, isNotificationsActive, isMusicActive} =
+const { isSoundEffectsActive, isNotificationsActive, isMusicActive } =
   storeToRefs(diceSoundsStore)
 
 const sounds = ref([
@@ -109,7 +110,30 @@ const changeValue = (soundName: string, value: boolean) => {
     }
   } else if (soundName === 'MUSIQUE') {
     isMusicActive.value = value
+
+    if (isMusicActive.value) {
+      audioTracks.forEach((track, index) => {
+        props.soundService.loadSound(`track-${index}`, `/dice/music/${track}`)
+      })
+
+      playRandomTrack()
+    } else {
+      audioTracks.forEach((_, index) => {
+        props.soundService.unloadSound(`track-${index}`)
+      })
+
+      props.soundService.stopAllSounds()
+    }
   }
+}
+
+const playRandomTrack = () => {
+  const randomIndex = Math.floor(Math.random() * audioTracks.length)
+  const randTrack = `track-${randomIndex}`
+  props.soundService.playSound(randTrack)
+  props.soundService.sounds[randTrack].on('end', () => {
+    playRandomTrack()
+  })
 }
 </script>
 

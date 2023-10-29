@@ -2,8 +2,8 @@ import {
   QueryDocumentSnapshot,
   Timestamp as FirestoreTimestamp
 } from '@firebase/firestore'
-import type {FirestoreDataConverter} from '@firebase/firestore'
-import {Timestamp} from '~/functions/src/types'
+import type { FirestoreDataConverter } from '@firebase/firestore'
+import { Timestamp } from '~/functions/src/types'
 import type {
   User,
   DiceSession,

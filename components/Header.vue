@@ -43,9 +43,9 @@ import {
   VImg,
   VSpacer
 } from 'vuetify/components'
-import {useTheme} from 'vuetify'
-import {getIdTokenResult} from 'firebase/auth'
-import {mdiAccount, mdiAccountCheck, mdiFileWordBox} from '@mdi/js'
+import { useTheme } from 'vuetify'
+import { getIdTokenResult } from 'firebase/auth'
+import { mdiAccount, mdiAccountCheck, mdiFileWordBox } from '@mdi/js'
 
 // Vuetify
 
@@ -75,7 +75,7 @@ onMounted(async () => {
     return
   }
 
-  const {claims} = await getIdTokenResult(user.value, true)
+  const { claims } = await getIdTokenResult(user.value, true)
   adminUser.value = claims.admin
 })
 

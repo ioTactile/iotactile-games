@@ -20,7 +20,7 @@ import {
   diceSessionScoresConverter,
   diceScoreboardConverter
 } from '~/stores'
-import type {LocalDiceSessionType} from '~/stores'
+import type { LocalDiceSessionType } from '~/stores'
 
 export default class diceSession {
   private db = useFirestore()
@@ -176,7 +176,7 @@ export default class diceSession {
 
     const sessionRef = doc(this.sessionsRef, sessionId)
 
-    await updateDoc(sessionRef, {isStarted: true})
+    await updateDoc(sessionRef, { isStarted: true })
   }
 
   public async leave(session: LocalDiceSessionType) {
@@ -324,11 +324,11 @@ export default class diceSession {
     const scoresDoc = doc(this.scoresRef, sessionId)
 
     if (session.players.length === 2) {
-      await updateDoc(scoresDoc, {playerTwo: this.initScores()})
+      await updateDoc(scoresDoc, { playerTwo: this.initScores() })
     } else if (session.players.length === 3) {
-      await updateDoc(scoresDoc, {playerThree: this.initScores()})
+      await updateDoc(scoresDoc, { playerThree: this.initScores() })
     } else if (session.players.length === 4) {
-      await updateDoc(scoresDoc, {playerFour: this.initScores()})
+      await updateDoc(scoresDoc, { playerFour: this.initScores() })
     }
 
     this.checkScoreboard()
@@ -389,11 +389,11 @@ export default class diceSession {
     const scoresDoc = doc(this.scoresRef, sessionId)
 
     if (session.players.length === 2) {
-      await updateDoc(scoresDoc, {playerTwo: this.initScores()})
+      await updateDoc(scoresDoc, { playerTwo: this.initScores() })
     } else if (session.players.length === 3) {
-      await updateDoc(scoresDoc, {playerThree: this.initScores()})
+      await updateDoc(scoresDoc, { playerThree: this.initScores() })
     } else if (session.players.length === 4) {
-      await updateDoc(scoresDoc, {playerFour: this.initScores()})
+      await updateDoc(scoresDoc, { playerFour: this.initScores() })
     }
 
     this.checkScoreboard()

@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import {VCard, VImg, VResponsive} from 'vuetify/components'
+import { VCard, VImg, VResponsive } from 'vuetify/components'
 defineProps<{
   img: string
   alt: string

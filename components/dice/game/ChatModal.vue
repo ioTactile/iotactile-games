@@ -15,7 +15,9 @@
     </section>
     <section class="content">
       <div v-for="(message, i) in chatMessages" :key="i">
-        <span :class="getPlayerClass(message.index)">{{ message.username }} :</span>
+        <span :class="getPlayerClass(message.index)">
+          {{ message.username }} :
+        </span>
         <p>{{ message.content }}</p>
       </div>
     </section>
@@ -30,18 +32,16 @@
           @keyup.enter="sendMessage"
         />
       </div>
-      <button @click="sendMessage">
-        ENVOYER
-      </button>
+      <button @click="sendMessage">ENVOYER</button>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import {doc, arrayUnion, setDoc} from 'firebase/firestore'
-import {diceSessionChatConverter} from '~/stores'
-import type {LocalDiceSessionChatType} from '~/stores'
-import type {CardUser} from '~/functions/src/types'
+import { doc, arrayUnion, setDoc } from 'firebase/firestore'
+import { diceSessionChatConverter } from '~/stores'
+import type { LocalDiceSessionChatType } from '~/stores'
+import type { CardUser } from '~/functions/src/types'
 
 const props = defineProps<{
   sessionId: string
@@ -85,7 +85,7 @@ const sendMessage = async () => {
       return
     }
 
-    const {username} = currentUser
+    const { username } = currentUser
 
     const index =
       props.players.findIndex((player: CardUser) => player.id === uid) + 1
@@ -100,7 +100,7 @@ const sendMessage = async () => {
           content: text.value
         })
       },
-      {merge: true}
+      { merge: true }
     )
   } finally {
     text.value = ''
@@ -135,6 +135,7 @@ const getPlayerClass = (index: number) => {
   background-color: rgba(#d9d9d9, 0.9);
   border-radius: 8px;
   padding: 20px;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25);
 
   .header {
     display: flex;

@@ -95,10 +95,10 @@ import {
   VIcon,
   VDialog
 } from 'vuetify/components'
-import {doc, updateDoc, getDoc, deleteDoc} from 'firebase/firestore'
-import {deleteUser, getIdTokenResult, signOut} from '@firebase/auth'
-import {mdiThemeLightDark} from '@mdi/js'
-import {userConverter} from '~/stores'
+import { doc, updateDoc, getDoc, deleteDoc } from 'firebase/firestore'
+import { deleteUser, getIdTokenResult, signOut } from '@firebase/auth'
+import { mdiThemeLightDark } from '@mdi/js'
+import { userConverter } from '~/stores'
 
 // Props
 
@@ -107,7 +107,7 @@ const emits = defineEmits<{ (e: 'toggleTheme'): void }>()
 
 // Vuefire
 
-const {notifier} = useNotifier()
+const { notifier } = useNotifier()
 const auth = useFirebaseAuth()
 const user = useCurrentUser()
 const db = useFirestore()
@@ -133,7 +133,7 @@ onMounted(async () => {
     username.value = userFetched.username
   }
 
-  const {claims} = await getIdTokenResult(user.value, true)
+  const { claims } = await getIdTokenResult(user.value, true)
   userClaims.value = claims
 })
 
@@ -147,7 +147,7 @@ const changeUsername = async () => {
     if (user.value) {
       const userId = user.value.uid
       const userRef = doc(db, 'users', userId).withConverter(userConverter)
-      await updateDoc(userRef, {username: username.value})
+      await updateDoc(userRef, { username: username.value })
       notifier({
         content: 'Ton pseudo a bien été mis à jour',
         color: 'main'

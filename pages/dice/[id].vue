@@ -7,11 +7,11 @@
     <dice-template
       v-if="
         session &&
-          playerTurn &&
-          scores &&
-          dices &&
-          remainingTurns &&
-          playerTries
+        playerTurn &&
+        scores &&
+        dices &&
+        remainingTurns &&
+        playerTries
       "
     >
       <div class="pa-8">
@@ -41,6 +41,11 @@
           :scores="scores.value"
           @open-endgame="isEndgameModalActive = $event"
         />
+        <dice-game-rules-modal
+          v-if="isRulesModalActive"
+          @open-rules="isRulesModalActive = $event"
+        />
+        <dice-game-rules @open-rules="isRulesModalActive = $event" />
         <div class="d-flex justify-space-between mb-4">
           <dice-game-players :players="session.players" />
           <div>
@@ -99,9 +104,9 @@
 </template>
 
 <script setup lang="ts">
-import {collection, doc} from 'firebase/firestore'
-import {storeToRefs} from 'pinia'
-import {useDiceSoundsStore} from '~/stores/diceSounds'
+import { collection, doc } from 'firebase/firestore'
+import { storeToRefs } from 'pinia'
+import { useDiceSoundsStore } from '~/stores/diceSounds'
 import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
@@ -110,8 +115,9 @@ import {
   diceSessionRemainingTurnsConverter,
   diceSessionChatConverter
 } from '~/stores'
-import type {LocalDiceSessionScoresType} from '~/stores'
+import type { LocalDiceSessionScoresType } from '~/stores'
 import SoundService from '~/utils/soundService'
+import { diceAudioTracks as audioTracks } from '~/utils'
 
 // Types
 
@@ -179,9 +185,10 @@ const isVolumesModalActive = ref<boolean>(false)
 const isChatModalActive = ref<boolean>(false)
 const isFirstVolumesModalOpen = ref<boolean>(true)
 const isEndgameModalActive = ref<boolean>(false)
+const isRulesModalActive = ref<boolean>(false)
 
 const diceSoundsStore = useDiceSoundsStore()
-const {isSoundEffectsActive, isNotificationsActive, isMusicActive} =
+const { isSoundEffectsActive, isNotificationsActive, isMusicActive } =
   storeToRefs(diceSoundsStore)
 
 // Services
@@ -192,15 +199,27 @@ const activateSound = () => {
   soundS.loadSound('dice', '/dice/sounds/dice.mp3')
   soundS.loadSound('message', '/dice/sounds/message.mp3')
   soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3')
+
+  audioTracks.forEach((track, index) => {
+    soundS.loadSound(`track-${index}`, `/dice/music/${track}`)
+  })
+
+  playRandomTrack()
 }
 
 const desactivateSound = () => {
-  soundS.unloadSound('dice')
-  soundS.unloadSound('message')
-  soundS.unloadSound('shakeRoll')
   isSoundEffectsActive.value = false
   isNotificationsActive.value = false
   isMusicActive.value = false
+}
+
+const playRandomTrack = () => {
+  const randomIndex = Math.floor(Math.random() * audioTracks.length)
+  const randTrack = `track-${randomIndex}`
+  soundS.playSound(randTrack)
+  soundS.sounds[randTrack].on('end', () => {
+    playRandomTrack()
+  })
 }
 
 onBeforeRouteLeave(() => {
@@ -217,9 +236,9 @@ const isPlayerTurn = computed(() => {
   }
 })
 
-const playerData = computed(() => {
-  let playerSheet: PlayerData['playerSheet']
-  let playerLocation: PlayerData['playerLocation']
+const playerData = computed((): PlayerData => {
+  let playerSheet
+  let playerLocation = ''
 
   if (scores.value) {
     if (scores.value.playerOne.id === user.value?.uid) {
@@ -245,9 +264,12 @@ const playerData = computed(() => {
 
 const scoreboard = computed(() => {
   const scoreboard = scores.value
-  delete scoreboard!.id
-  delete scoreboard!.creationDate
-  return scoreboard as Omit<LocalDiceSessionScoresType, 'id' | 'creationDate'>
+  const newScoreboard: LocalDiceSessionScoresType['playerOne'][] = []
+  if (scoreboard!.playerOne) newScoreboard.push(scoreboard!.playerOne)
+  if (scoreboard?.playerTwo) newScoreboard.push(scoreboard!.playerTwo)
+  if (scoreboard?.playerThree) newScoreboard.push(scoreboard!.playerThree)
+  if (scoreboard?.playerFour) newScoreboard.push(scoreboard!.playerFour)
+  return newScoreboard
 })
 
 // Watchers
@@ -261,7 +283,7 @@ watch(
       isScoreboardActive.value = true
     }
   },
-  {immediate: true}
+  { immediate: true }
 )
 
 watch(
@@ -271,7 +293,7 @@ watch(
       isEndgameModalActive.value = true
     }
   },
-  {immediate: true}
+  { immediate: true }
 )
 </script>
 

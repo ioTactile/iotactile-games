@@ -8,9 +8,7 @@
       />
     </Head>
     <v-container class="container">
-      <h3 class="text-h3">
-        À propos
-      </h3>
+      <h3 class="text-h3">À propos</h3>
       <section class="mt-10">
         <p>
           Salut moi c'est <strong>Jordan</strong> et je suis développeur web. Je
@@ -29,7 +27,7 @@
             <NuxtLink
               to="/dice/jouer"
               class="text-decoration-none text-headline"
-            >Dice</NuxtLink>
+              >Dice</NuxtLink>
           </strong>
           qui est un jeu de dés qui se joue jusqu'à 4 joueurs. Le second sera
           problablement
@@ -37,7 +35,7 @@
             <NuxtLink
               to="/lingua-vault/jouer"
               class="text-decoration-none text-headline"
-            >Lingua Vault</NuxtLink>
+              >Lingua Vault</NuxtLink>
           </strong>
           qui est un jeu similaire au jeu du mot de passe se jouant en un contre
           un.<br />
@@ -52,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import {VContainer} from 'vuetify/components'
+import { VContainer } from 'vuetify/components'
 </script>
 
 <style scoped>

@@ -31,10 +31,10 @@
 </template>
 
 <script setup lang="ts">
-import {VIcon} from 'vuetify/components'
-import {collection} from 'firebase/firestore'
-import {mdiAccount} from '@mdi/js'
-import {diceSessionConverter} from '~/stores'
+import { VIcon } from 'vuetify/components'
+import { collection } from 'firebase/firestore'
+import { mdiAccount } from '@mdi/js'
+import { diceSessionConverter } from '~/stores'
 import DiceSession from '~/utils/diceSession'
 
 const db = useFirestore()
@@ -64,7 +64,7 @@ const handleButtonClick = (session: LocalDiceSessionType) => {
     }
     return diceSession.join(session)
   } else if (session.isStarted && isPlayerInSession) {
-    return navigateTo({path: `/dice/${session.id}`})
+    return navigateTo({ path: `/dice/${session.id}` })
   }
 }
 

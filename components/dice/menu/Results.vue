@@ -28,8 +28,8 @@
 </template>
 
 <script async setup lang="ts">
-import {doc, getDoc} from 'firebase/firestore'
-import {numberFormatter} from '~/utils'
+import { doc, getDoc } from 'firebase/firestore'
+import { numberFormatter } from '~/utils'
 
 const db = useFirestore()
 const user = useCurrentUser()

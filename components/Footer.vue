@@ -29,10 +29,10 @@
 </template>
 
 <script lang="ts" setup>
-import {VFooter} from 'vuetify/components'
-import {useDisplay} from 'vuetify'
+import { VFooter } from 'vuetify/components'
+import { useDisplay } from 'vuetify'
 
-const {xs} = useDisplay()
+const { xs } = useDisplay()
 </script>
 
 <style lang="scss" scoped>
