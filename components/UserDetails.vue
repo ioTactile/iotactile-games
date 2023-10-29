@@ -3,7 +3,7 @@
     <section class="pa-2">
       <div class="text-center">
         <form @submit.prevent="changeUsername">
-          <label class="d-block" for="username-input">Pseudo</label>
+          <label class="d-block mt-2" for="username-input">Pseudo</label>
           <InputsUsername
             id="username-input"
             v-model="username"
@@ -16,7 +16,7 @@
             type="submit"
             class="mt-1 text-onPrimary"
             block
-            color="primary"
+            color="white"
             :loadind="loading"
           >
             Changer de pseudo
@@ -27,8 +27,8 @@
     <v-divider class="my-2" />
     <section class="pa-2">
       <v-btn
-        color="secondary"
-        class="text-onSecondary"
+        color="primary"
+        class="text-onPrimary"
         block
         @click="emits('toggleTheme')"
       >
