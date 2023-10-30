@@ -1,106 +1,95 @@
 <template>
-  <div>
-    <Head>
-      <Title>Session Dice - ioTactile Games</Title>
-      <Meta name="description" content="Page d'une session de jeu Dice" />
-    </Head>
-    <dice-template
-      v-if="
-        session &&
-        playerTurn &&
-        scores &&
-        dices &&
-        remainingTurns &&
-        playerTries
-      "
-    >
-      <div class="pa-8">
-        <div class="left-background" />
-        <dice-game-first-volumes-modal
-          v-if="isFirstVolumesModalOpen"
-          @open-modal="isFirstVolumesModalOpen = $event"
-          @activate-sound="activateSound"
-          @desactivate-sound="desactivateSound"
-        />
-        <dice-game-volumes-modal
-          v-if="isVolumesModalActive"
-          :sound-service="soundS"
-          @open-volumes="isVolumesModalActive = $event"
-        />
-        <dice-game-chat-modal
-          v-if="isChatModalActive"
-          :session-id="sessionId"
-          :chat-messages="chat?.messages"
-          :players="session.players"
-          @open-chat="isChatModalActive = $event"
-        />
-        <dice-game-endgame-modal
-          v-if="isEndgameModalActive"
-          :session-id="sessionId"
-          :players="session.players"
-          :scores="scores.value"
-          @open-endgame="isEndgameModalActive = $event"
-        />
-        <dice-game-rules-modal
-          v-if="isRulesModalActive"
-          @open-rules="isRulesModalActive = $event"
-        />
-        <dice-game-rules @open-rules="isRulesModalActive = $event" />
-        <div class="d-flex justify-space-between mb-4">
-          <dice-game-players :players="session.players" />
-          <div>
-            <dice-game-volumes @open-volumes="isVolumesModalActive = $event" />
-            <dice-game-chat
-              :chat-messages="chat?.messages"
-              :is-chat-active="isChatModalActive"
-              :sound-service="soundS"
-              @open-chat="isChatModalActive = $event"
-            />
-          </div>
-        </div>
-        <div class="d-flex">
-          <div class="left-side-wrapper">
-            <dice-game-scoreboard
-              v-if="isScoreboardActive"
-              :scoreboard="scoreboard"
-              :dices="dices.dices"
-              :player-turn="playerTurn.playerId"
-              @update:is-scoreboard-active="isScoreboardActive = $event"
-            />
-            <dice-game-playersheet
-              v-else
-              :session-id="sessionId"
-              :is-player-turn="isPlayerTurn"
-              :dices="dices.dices"
-              :player-data="playerData"
-              :player-turn-id="playerTurn.playerId"
-              :players="session.players"
-              :remaining-turns="remainingTurns.remainingTurns"
-              @update:is-scoreboard-active="isScoreboardActive = $event"
-            />
-          </div>
-          <div class="right-side-wrapper">
-            <dice-game-board
-              :session-id="sessionId"
-              :is-player-turn="isPlayerTurn"
-              :dices="dices.dices"
-              :player-tries="playerTries.tries"
-              :sound-service="soundS"
-            />
-            <dice-game-dices
-              :session-id="sessionId"
-              :is-player-turn="isPlayerTurn"
-              :dices="dices.dices"
-              :player-tries="playerTries.tries"
-              :session-is-started="session.isStarted"
-              :session-is-finished="session.isFinished"
-              :sound-service="soundS"
-            />
-          </div>
+  <dice-template
+    v-if="
+      session && playerTurn && scores && dices && remainingTurns && playerTries
+    "
+  >
+    <div class="pa-8">
+      <div class="left-background" />
+      <dice-game-first-volumes-modal
+        v-if="isFirstVolumesModalOpen"
+        @open-modal="isFirstVolumesModalOpen = $event"
+        @activate-sound="activateSound"
+        @desactivate-sound="desactivateSound"
+      />
+      <dice-game-volumes-modal
+        v-if="isVolumesModalActive"
+        :sound-service="soundS"
+        @open-volumes="isVolumesModalActive = $event"
+      />
+      <dice-game-chat-modal
+        v-if="isChatModalActive"
+        :session-id="sessionId"
+        :chat-messages="chat?.messages"
+        :players="session.players"
+        @open-chat="isChatModalActive = $event"
+      />
+      <dice-game-endgame-modal
+        v-if="isEndgameModalActive"
+        :session-id="sessionId"
+        :players="session.players"
+        :scores="scores.value"
+        @open-endgame="isEndgameModalActive = $event"
+      />
+      <dice-game-rules-modal
+        v-if="isRulesModalActive"
+        @open-rules="isRulesModalActive = $event"
+      />
+      <dice-game-rules @open-rules="isRulesModalActive = $event" />
+      <div class="d-flex justify-space-between mb-4">
+        <dice-game-players :players="session.players" />
+        <div>
+          <dice-game-volumes @open-volumes="isVolumesModalActive = $event" />
+          <dice-game-chat
+            :chat-messages="chat?.messages"
+            :is-chat-active="isChatModalActive"
+            :sound-service="soundS"
+            @open-chat="isChatModalActive = $event"
+          />
         </div>
       </div>
-    </dice-template>
-  </div>
+      <div class="d-flex">
+        <div class="left-side-wrapper">
+          <dice-game-scoreboard
+            v-if="isScoreboardActive"
+            :scoreboard="scoreboard"
+            :dices="dices.dices"
+            :player-turn="playerTurn.playerId"
+            @update:is-scoreboard-active="isScoreboardActive = $event"
+          />
+          <dice-game-playersheet
+            v-else
+            :session-id="sessionId"
+            :is-player-turn="isPlayerTurn"
+            :dices="dices.dices"
+            :player-data="playerData"
+            :player-turn-id="playerTurn.playerId"
+            :players="session.players"
+            :remaining-turns="remainingTurns.remainingTurns"
+            @update:is-scoreboard-active="isScoreboardActive = $event"
+          />
+        </div>
+        <div class="right-side-wrapper">
+          <dice-game-board
+            :session-id="sessionId"
+            :is-player-turn="isPlayerTurn"
+            :dices="dices.dices"
+            :player-tries="playerTries.tries"
+            :sound-service="soundS"
+          />
+          <dice-game-dices
+            :session-id="sessionId"
+            :is-player-turn="isPlayerTurn"
+            :dices="dices.dices"
+            :player-tries="playerTries.tries"
+            :session-is-started="session.isStarted"
+            :session-is-finished="session.isFinished"
+            :sound-service="soundS"
+          />
+        </div>
+      </div>
+    </div>
+  </dice-template>
 </template>
 
 <script setup lang="ts">
@@ -119,22 +108,28 @@ import type { LocalDiceSessionScoresType } from '~/stores'
 import SoundService from '~/utils/soundService'
 import { diceAudioTracks as audioTracks } from '~/utils'
 
-// Types
-
 interface PlayerData {
   playerSheet: LocalDiceSessionScoresType['playerOne']
   playerLocation: string
 }
 
-// Vuefire
+useSeoMeta({
+  title: 'Session Dice - ioTactile Games',
+  ogTitle: 'Session Dice - ioTactile Games',
+  description: 'Session de jeu Dice',
+  ogDescription: 'Session de jeu Dice',
+  ogImage: '/dice.png'
+})
+
+definePageMeta({
+  middleware: ['auth']
+})
 
 const db = useFirestore()
 const user = useCurrentUser()
 const route = useRoute()
 
 const sessionId = route.params.id as string
-
-// Firebase refs and reactive data
 
 const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(
   diceSessionConverter
@@ -178,8 +173,6 @@ const playerTries = useDocument(
 )
 const chat = useDocument(doc(collection(db, 'diceSessionChat'), chatRef.id))
 
-// Refs
-
 const isScoreboardActive = ref<boolean>(false)
 const isVolumesModalActive = ref<boolean>(false)
 const isChatModalActive = ref<boolean>(false)
@@ -191,8 +184,6 @@ const diceSoundsStore = useDiceSoundsStore()
 const { isSoundEffectsActive, isNotificationsActive, isMusicActive } =
   storeToRefs(diceSoundsStore)
 
-// Services
-
 const soundS = new SoundService()
 
 const activateSound = () => {
@@ -200,11 +191,8 @@ const activateSound = () => {
   soundS.loadSound('message', '/dice/sounds/message.mp3')
   soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3')
 
-  audioTracks.forEach((track, index) => {
-    soundS.loadSound(`track-${index}`, `/dice/music/${track}`)
-  })
-
-  playRandomTrack()
+  soundS.loadAudioTracks('dice', audioTracks)
+  soundS.playAudioTracks('dice', audioTracks.length)
 }
 
 const desactivateSound = () => {
@@ -213,20 +201,10 @@ const desactivateSound = () => {
   isMusicActive.value = false
 }
 
-const playRandomTrack = () => {
-  const randomIndex = Math.floor(Math.random() * audioTracks.length)
-  const randTrack = `track-${randomIndex}`
-  soundS.playSound(randTrack)
-  soundS.sounds[randTrack].on('end', () => {
-    playRandomTrack()
-  })
-}
-
 onBeforeRouteLeave(() => {
   soundS.stopAllSounds()
+  soundS.unloadAllSounds()
 })
-
-// Computed
 
 const isPlayerTurn = computed(() => {
   if (playerTurn.value?.playerId === user.value?.uid) {
@@ -271,8 +249,6 @@ const scoreboard = computed(() => {
   if (scoreboard?.playerFour) newScoreboard.push(scoreboard!.playerFour)
   return newScoreboard
 })
-
-// Watchers
 
 watch(
   () => playerTurn.value?.playerId,

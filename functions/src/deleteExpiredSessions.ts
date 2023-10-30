@@ -9,7 +9,8 @@ export const deleteExpiredSessions = functions
   .onRun(async () => {
     const firestore = getFirestore()
     const now = Timestamp.now()
-    const expirationDate = new Date(now.toMillis() - 24 * 60 * 60 * 1000)
+    const twentyFourHours = 24 * 60 * 60 * 1000
+    const expirationDate = new Date(now.toMillis() - twentyFourHours)
 
     const diceSessionsQuery = firestore
       .collection('diceSessions')
@@ -45,9 +46,9 @@ export const deleteExpiredSessions = functions
         firestore.collection('diceSessionChat').doc(sessionId).delete()
       ]
       deletePromises.push(...deletePromisesPerSession)
-      if (doc.data().players.length === 1) {
+      if (!doc.data().isFinished) {
         deletePromises.push(
-          firestore.collection('diceSessionScore').doc(sessionId).delete()
+          firestore.collection('diceSessionScores').doc(sessionId).delete()
         )
       }
     })

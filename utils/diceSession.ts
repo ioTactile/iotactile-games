@@ -18,13 +18,15 @@ import {
   diceSessionDicesConverter,
   diceSessionPlayerTriesConverter,
   diceSessionScoresConverter,
-  diceScoreboardConverter
+  diceScoreboardConverter,
+  diceSessionChatConverter
 } from '~/stores'
 import type { LocalDiceSessionType } from '~/stores'
 
 export default class diceSession {
   private db = useFirestore()
   private user = useCurrentUser()
+  private notifier = useNotifier()
 
   private sessionsRef = collection(this.db, 'diceSessions').withConverter(
     diceSessionConverter
@@ -55,6 +57,10 @@ export default class diceSession {
 
   private scoreboardRef = collection(this.db, 'diceScoreboard').withConverter(
     diceScoreboardConverter
+  )
+
+  private chatRef = collection(this.db, 'diceSessionChat').withConverter(
+    diceSessionChatConverter
   )
 
   private async getUsername() {
@@ -255,6 +261,7 @@ export default class diceSession {
     const remainingTurnsDoc = doc(this.remainingTurnsRef, sessionId)
     const dicesDoc = doc(this.dicesRef, sessionId)
     const playerTriesDoc = doc(this.playerTriesRef, sessionId)
+    const chatDoc = doc(this.chatRef, sessionId)
 
     if (!session) {
       return
@@ -273,6 +280,9 @@ export default class diceSession {
       await deleteDoc(remainingTurnsDoc)
       await deleteDoc(dicesDoc)
       await deleteDoc(playerTriesDoc)
+      if (chatDoc) {
+        await deleteDoc(chatDoc)
+      }
     }
   }
 
@@ -293,6 +303,9 @@ export default class diceSession {
       return
     }
     if (session.players.length >= 4) {
+      return
+    }
+    if (session.players.find((player) => player.id === this.user.value?.uid)) {
       return
     }
 
@@ -348,6 +361,10 @@ export default class diceSession {
     const sessions = sessionsSnapshot.docs.map((doc) => doc.data())
 
     if (sessions.length === 0) {
+      this.notifier.notifier({
+        content: 'Aucune session disponible',
+        color: 'primary'
+      })
       return
     }
 

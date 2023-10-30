@@ -64,6 +64,7 @@ import {
 } from '~/stores'
 import type { Dice } from '~/functions/src/types'
 import SoundService from '~/utils/soundService'
+import { random } from '~/utils'
 
 type diceFaces = {
   [key: number]: { light: string }
@@ -160,7 +161,7 @@ const rollCup = async () => {
       if (diceOnBoard.length === 0) {
         rollDices = []
         for (let i = 0; i < 5; i++) {
-          const dice = trueRandom()
+          const dice = random(6, 1)
           rollDices.push({
             id: i,
             face: dice,
@@ -169,7 +170,7 @@ const rollCup = async () => {
         }
       } else {
         for (const dice of diceOnBoard) {
-          dice.face = trueRandom()
+          dice.face = random(6, 1)
         }
       }
       resolve()
@@ -179,10 +180,6 @@ const rollCup = async () => {
   await updateDoc(dicesRef, {
     dices: rollDices
   })
-}
-
-const trueRandom = () => {
-  return Math.floor(Math.random() * 6) + 1
 }
 
 // Watchers
@@ -196,7 +193,7 @@ watch(
         const oldDices = oldValue.filter((dice: Dice) => dice.isOnBoard)
 
         if (newDices.length > oldDices.length) {
-          if (props.soundService.isSoundLoaded('dice')) {
+          if (!props.soundService.isSoundMuted('dice')) {
             props.soundService.playSound('dice')
           }
         }

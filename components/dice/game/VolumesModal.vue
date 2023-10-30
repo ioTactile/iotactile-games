@@ -82,7 +82,6 @@ const sounds = ref([
 ])
 
 const closeVolume = () => {
-  props.soundService.playSound('click')
   emit('openVolumes', false)
 }
 
@@ -91,49 +90,29 @@ const changeValue = (soundName: string, value: boolean) => {
     isSoundEffectsActive.value = value
 
     if (isSoundEffectsActive.value) {
-      props.soundService.loadSound('dice', '/dice/sounds/dice.mp3')
-      props.soundService.loadSound(
-        'shakeRoll',
-        '/dice/sounds/shake-and-roll.mp3'
-      )
+      props.soundService.unmuteSound('dice')
+      props.soundService.unmuteSound('shakeRoll')
     } else {
-      props.soundService.unloadSound('dice')
-      props.soundService.unloadSound('shakeRoll')
+      props.soundService.muteSound('dice')
+      props.soundService.muteSound('shakeRoll')
     }
   } else if (soundName === 'NOTIFICATIONS') {
     isNotificationsActive.value = value
 
     if (isNotificationsActive.value) {
-      props.soundService.loadSound('message', '/dice/sounds/message.mp3')
+      props.soundService.unmuteSound('message')
     } else {
-      props.soundService.unloadSound('message')
+      props.soundService.muteSound('message')
     }
   } else if (soundName === 'MUSIQUE') {
     isMusicActive.value = value
 
     if (isMusicActive.value) {
-      audioTracks.forEach((track, index) => {
-        props.soundService.loadSound(`track-${index}`, `/dice/music/${track}`)
-      })
-
-      playRandomTrack()
+      props.soundService.unmuteAudioTracks('dice', audioTracks.length)
     } else {
-      audioTracks.forEach((_, index) => {
-        props.soundService.unloadSound(`track-${index}`)
-      })
-
-      props.soundService.stopAllSounds()
+      props.soundService.muteAudioTracks('dice', audioTracks.length)
     }
   }
-}
-
-const playRandomTrack = () => {
-  const randomIndex = Math.floor(Math.random() * audioTracks.length)
-  const randTrack = `track-${randomIndex}`
-  props.soundService.playSound(randTrack)
-  props.soundService.sounds[randTrack].on('end', () => {
-    playRandomTrack()
-  })
 }
 </script>
 

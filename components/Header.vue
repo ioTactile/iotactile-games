@@ -2,7 +2,7 @@
   <v-app-bar
     color="surface"
     density="comfortable"
-    class="rounded-b-lg"
+    :class="{ 'rounded-b-lg': width > 1200 }"
     absolute
     elevation="0"
   >
@@ -51,13 +51,14 @@ import {
   VImg,
   VSpacer
 } from 'vuetify/components'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 import { getIdTokenResult } from 'firebase/auth'
 import { mdiAccount, mdiAccountCheck } from '@mdi/js'
 
 // Vuetify
 
 const theme = useTheme()
+const { width } = useDisplay()
 
 // Props
 

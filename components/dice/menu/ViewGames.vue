@@ -11,7 +11,10 @@
       class="content d-flex justify-space-between"
     >
       <div>{{ session.name }}</div>
-      <div>
+      <div class="players-wrapper">
+        <div class="players-name">
+          {{ session.players.map((player) => player.username).join(', ') }}
+        </div>
         <v-icon
           v-for="(player, j) in 4"
           :key="j"
@@ -63,7 +66,7 @@ const handleButtonClick = (session: LocalDiceSessionType) => {
       return diceSession.leave(session)
     }
     return diceSession.join(session)
-  } else if (session.isStarted && isPlayerInSession) {
+  } else if (session.isStarted) {
     return navigateTo({ path: `/dice/${session.id}` })
   }
 }
@@ -87,6 +90,8 @@ const getButtonLabel = (session: LocalDiceSessionType) => {
     return 'Rejoindre'
   } else if (session.isStarted && isPlayerInSession) {
     return 'Rejoindre!'
+  } else {
+    return 'Regarder!'
   }
 }
 </script>
@@ -126,6 +131,42 @@ const getButtonLabel = (session: LocalDiceSessionType) => {
       border-radius: 8px;
       box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.3);
     }
+  }
+
+  .players-wrapper {
+    position: relative;
+    cursor: pointer;
+
+    .players-name {
+      display: none;
+      z-index: 9999;
+      position: absolute;
+      top: -30px;
+      left: 0;
+      width: 100%;
+      background-color: rgba(var(--v-theme-surface), 0.9);
+      color: rgb(var(--v-theme-onSurface));
+      font-size: 1rem;
+      text-align: justify;
+      padding: 5px;
+      border-radius: 8px;
+    }
+
+    &:hover {
+      .players-name {
+        display: block;
+        animation: fade-in 0.5s;
+      }
+    }
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 </style>

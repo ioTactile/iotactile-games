@@ -76,7 +76,7 @@ watch(
     ) {
       if (oldValue !== newValue) {
         if (!props.isChatActive) {
-          if (props.soundService.isSoundLoaded('message')) {
+          if (!props.soundService.isSoundMuted('message')) {
             props.soundService.playSound('message')
           }
           isNewMessage.value = true

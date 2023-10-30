@@ -4,6 +4,7 @@
     :rules="rules"
     :name="name"
     type="text"
+    label="Nom d'utilisateur"
     :variant="variant"
     :rounded="rounded"
     :density="density"

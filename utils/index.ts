@@ -9,6 +9,10 @@ export const sum = (object: Record<string, number | null>) => {
   return Object.values(object).reduce((a, b) => (a || 0) + (b || 0), 0)
 }
 
+export const random = (length: number, extra?: number) => {
+  return Math.floor(Math.random() * length) + (extra || 0)
+}
+
 export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -32,5 +36,6 @@ export const diceAudioTracks = [
   '16.m4a',
   '17.m4a',
   '18.m4a',
-  '19.m4a'
+  '19.m4a',
+  '20.m4a'
 ]

@@ -15,7 +15,7 @@
         @update:model-value="$emit('update:model-value', $event)"
       />
     </v-col>
-    <v-col cols="12">
+    <v-col cols="12" class="mt-2">
       <v-text-field
         v-model="passwordConfirm"
         :append-inner-icon="show2 ? mdiEye : mdiEyeOff"

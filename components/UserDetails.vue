@@ -3,7 +3,7 @@
     <section class="pa-2">
       <div class="text-center">
         <form @submit.prevent="changeUsername">
-          <label class="d-block mt-2" for="username-input">Pseudo</label>
+          <label class="d-block my-2" for="username-input">Pseudo</label>
           <InputsUsername
             id="username-input"
             v-model="username"
@@ -137,9 +137,11 @@ onMounted(async () => {
   if (!user.value) {
     return
   }
+
   const userRef = doc(db, 'users', user.value.uid).withConverter(userConverter)
   const userDoc = await getDoc(userRef)
   const userFetched = userDoc.data()
+
   if (userFetched) {
     username.value = userFetched.username
   }

@@ -1,65 +1,68 @@
 <template>
-  <div>
-    <Head>
-      <Title>Dice - ioTactile Games</Title>
-      <Meta name="description" content="Menu du jeu dice" />
-    </Head>
-    <dice-template>
-      <div class="d-flex justify-center align-center h-100">
-        <div class="menu-wrapper">
-          <button
-            v-if="menuPage"
-            class="arrow-back"
-            @click="returnToPreviousPage(menuPage)"
+  <dice-template>
+    <div class="d-flex justify-center align-center h-100">
+      <div class="menu-wrapper">
+        <button
+          v-if="menuPage"
+          class="arrow-back"
+          @click="returnToPreviousPage(menuPage)"
+        >
+          <svg
+            height="56px"
+            width="56px"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 0 512 512"
+            xml:space="preserve"
+            fill="#ffffff"
           >
-            <svg
-              height="56px"
-              width="56px"
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              viewBox="0 0 512 512"
-              xml:space="preserve"
-              fill="#ffffff"
-            >
-              <g id="SVGRepo_bgCarrier" stroke-width="0" />
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-              <g
-                id="SVGRepo_tracerCarrier"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-
-              <g id="SVGRepo_iconCarrier">
-                <g>
-                  <path
-                    class="st0"
-                    d="M479.568,159.192H294.751l22.54-96.459c2.094-8.92-1.451-18.198-8.937-23.475 c-7.488-5.268-17.419-5.463-25.111-0.496L10.34,235.768C3.846,240.461,0,247.987,0,256.001c0,8.013,3.846,15.539,10.34,20.232 L283.243,473.24c7.692,4.965,17.623,4.771,25.111-0.506c7.486-5.267,11.021-14.546,8.937-23.465l-22.54-96.459h184.817 c17.905,0,32.432-14.518,32.432-32.433V191.623C512,173.708,497.474,159.192,479.568,159.192z"
-                  />
-                </g>
-              </g>
-            </svg>
-          </button>
-          <div class="dice-logo text-center mt-10 mb-6">Dice</div>
-          <div class="d-flex justify-center">
-            <dice-menu-main v-if="menuPage === 0" @action="handleActions" />
-            <dice-menu-play v-if="menuPage === 1" @action="handleActions" />
-            <dice-menu-view-games v-if="menuPage === 1.1" />
-            <dice-menu-new-game
-              v-if="menuPage === 1.2"
-              @action="handleActions"
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             />
-            <dice-menu-ranking v-if="menuPage === 2" />
-            <dice-menu-results v-if="menuPage === 3" />
-            <dice-menu-rules v-if="menuPage === 4" @action="handleActions" />
-          </div>
+
+            <g id="SVGRepo_iconCarrier">
+              <g>
+                <path
+                  class="st0"
+                  d="M479.568,159.192H294.751l22.54-96.459c2.094-8.92-1.451-18.198-8.937-23.475 c-7.488-5.268-17.419-5.463-25.111-0.496L10.34,235.768C3.846,240.461,0,247.987,0,256.001c0,8.013,3.846,15.539,10.34,20.232 L283.243,473.24c7.692,4.965,17.623,4.771,25.111-0.506c7.486-5.267,11.021-14.546,8.937-23.465l-22.54-96.459h184.817 c17.905,0,32.432-14.518,32.432-32.433V191.623C512,173.708,497.474,159.192,479.568,159.192z"
+                />
+              </g>
+            </g>
+          </svg>
+        </button>
+        <h1 class="dice-logo text-center mt-10 mb-6">Dice</h1>
+        <div class="d-flex justify-center">
+          <dice-menu-main v-if="menuPage === 0" @action="handleActions" />
+          <dice-menu-play v-if="menuPage === 1" @action="handleActions" />
+          <dice-menu-view-games v-if="menuPage === 1.1" />
+          <dice-menu-new-game v-if="menuPage === 1.2" @action="handleActions" />
+          <dice-menu-ranking v-if="menuPage === 2" />
+          <dice-menu-results v-if="menuPage === 3" />
+          <dice-menu-rules v-if="menuPage === 4" @action="handleActions" />
         </div>
       </div>
-    </dice-template>
-  </div>
+    </div>
+  </dice-template>
 </template>
 
 <script setup lang="ts">
+useSeoMeta({
+  title: 'Dice - ioTactile Games',
+  ogTitle: 'Dice - ioTactile Games',
+  description: 'Menu du jeu Dice',
+  ogDescription: 'Menu du jeu Dice',
+  ogImage: '/dice.png'
+})
+
+definePageMeta({
+  middleware: ['auth']
+})
+
 const menuPage = ref<number>(0)
 
 const actionMap: Record<string, number> = {

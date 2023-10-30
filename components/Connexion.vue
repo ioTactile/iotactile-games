@@ -5,9 +5,9 @@
     :persistent="loading !== null"
     @update:model-value="emits('update:modelValue', $event)"
   >
-    <v-card color="main">
+    <v-card color="surface">
       <v-card-title class="d-flex align-center">
-        <span class="text-h5 mr-auto"> Viens t'amuser! </span>
+        <span class="mr-auto"> Viens t'amuser! </span>
         <v-btn
           :icon="mdiClose"
           variant="text"
@@ -15,7 +15,7 @@
           @click="emits('update:modelValue', false)"
         />
       </v-card-title>
-      <v-tabs v-model="tab" grow color="buttonBack">
+      <v-tabs v-model="tab" grow>
         <v-tab
           value="one"
           class="text-capitalize"
@@ -40,7 +40,7 @@
                   v-model="email"
                   variant="outlined"
                   icon
-                  class="mt-2"
+                  class="my-2"
                   name="email"
                 />
                 <InputsPassword
@@ -50,11 +50,7 @@
                 />
               </template>
               <div class="d-flex justify-center mb-10">
-                <v-btn
-                  class="text-lowercase"
-                  variant="text"
-                  @click="forgotPassword = !forgotPassword"
-                >
+                <v-btn variant="text" @click="forgotPassword = !forgotPassword">
                   {{ forgotPassword ? 'Retour' : 'Mot de passe oublié' }}
                 </v-btn>
               </div>
@@ -66,14 +62,15 @@
                   v-model="username"
                   variant="outlined"
                   icon
-                  class="mt-2"
                   name="username"
+                  class="mt-2"
                 />
                 <InputsEmail
                   v-model="email"
                   variant="outlined"
                   icon
                   name="createEmail"
+                  class="my-2"
                 />
                 <InputsPasswordFirst v-model="password" variant="outlined" />
               </template>
@@ -81,7 +78,8 @@
           </v-window>
           <v-btn
             block
-            color="buttonBack"
+            color="primary"
+            class="text-onPrimary"
             type="submit"
             :disabled="loading !== null && loading !== 'email'"
             :loading="loading === 'email'"
@@ -238,3 +236,10 @@ const login = async () => {
   }
 }
 </script>
+
+<style scoped>
+.v-card-title {
+  font-size: 1.5rem;
+  color: rgb(var(--v-theme-text-onSurface));
+}
+</style>

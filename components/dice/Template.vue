@@ -7,27 +7,24 @@
 </template>
 
 <script setup lang="ts">
-import { useWindowSize } from '@vueuse/core'
+import { useDisplay } from 'vuetify'
 
 const scale = ref<number>(1)
-const { width: windowWidth, height: windowHeight } = useWindowSize()
+const { width, height } = useDisplay()
 
 const handleResize = () => {
   const targetHeight = 1080
   const targetWidth = 1200
 
-  if (windowHeight.value > targetHeight) {
-    windowHeight.value = targetHeight
+  if (height.value > targetHeight) {
+    height.value = targetHeight
   }
 
-  scale.value = Math.min(
-    windowHeight.value / targetHeight,
-    windowWidth.value / targetWidth
-  )
+  scale.value = Math.min(height.value / targetHeight, width.value / targetWidth)
 }
 
 watch(
-  [windowHeight, windowWidth],
+  [height, width],
   () => {
     handleResize()
   },

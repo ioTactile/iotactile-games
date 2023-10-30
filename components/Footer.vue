@@ -1,18 +1,19 @@
 <template>
   <v-footer
-    class="rounded-t-lg"
+    :class="{ 'rounded-t-lg': width > 1200 }"
     color="surface"
     absolute
     min-height="55.99"
     app
   >
-    <div
-      class="d-flex flex-wrap flex-sm-row justify-space-evenly align-center w-100 py-sm-2"
-    >
-      <NuxtLink to="/a-propos" class="text-decoration-none text-onSurface">
+    <div class="d-flex flex-wrap justify-space-evenly align-center w-100">
+      <NuxtLink
+        to="/a-propos"
+        class="text-decoration-none text-onSurface pt-2 px-6"
+      >
         À propos
       </NuxtLink>
-      <div :class="xs ? 'order-3 pt-2' : ''">
+      <div :class="{ 'order-3': xs }" class="pt-2 px-6">
         © {{ new Date().getFullYear() }} - Réalisé par
         <a href="https://github.com/ioTactile" class="text-decoration-none">
           <strong class="text-onSurface">iotactile</strong>
@@ -20,7 +21,7 @@
       </div>
       <a
         href="mailto:jbs.io@protonmail.com"
-        class="text-decoration-none text-onSurface"
+        class="text-decoration-none text-onSurface pt-2 px-6"
       >
         Me contacter
       </a>
@@ -32,7 +33,7 @@
 import { VFooter } from 'vuetify/components'
 import { useDisplay } from 'vuetify'
 
-const { xs } = useDisplay()
+const { width, xs } = useDisplay()
 </script>
 
 <style lang="scss" scoped>
