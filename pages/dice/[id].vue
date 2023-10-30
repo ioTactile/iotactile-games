@@ -28,7 +28,7 @@
         v-if="isEndgameModalActive"
         :session-id="sessionId"
         :players="session.players"
-        :scores="scores.value"
+        :scoreboard="scoreboard"
         @open-endgame="isEndgameModalActive = $event"
       />
       <dice-game-rules-modal
@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { collection, doc } from 'firebase/firestore'
+import { collection, doc, updateDoc } from 'firebase/firestore'
 import { storeToRefs } from 'pinia'
 import { useDiceSoundsStore } from '~/stores/diceSounds'
 import {
@@ -187,6 +187,10 @@ const { isSoundEffectsActive, isNotificationsActive, isMusicActive } =
 const soundS = new SoundService()
 
 const activateSound = () => {
+  isSoundEffectsActive.value = true
+  isNotificationsActive.value = true
+  isMusicActive.value = true
+
   soundS.loadSound('dice', '/dice/sounds/dice.mp3')
   soundS.loadSound('message', '/dice/sounds/message.mp3')
   soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3')
@@ -253,10 +257,12 @@ const scoreboard = computed(() => {
 watch(
   () => playerTurn.value?.playerId,
   (playerId) => {
-    if (playerId === user.value?.uid) {
-      isScoreboardActive.value = false
-    } else {
-      isScoreboardActive.value = true
+    if (!session.value?.isFinished) {
+      if (playerId === user.value?.uid) {
+        isScoreboardActive.value = false
+      } else {
+        isScoreboardActive.value = true
+      }
     }
   },
   { immediate: true }
@@ -267,6 +273,20 @@ watch(
   (isFinished) => {
     if (isFinished) {
       isEndgameModalActive.value = true
+    }
+  },
+  { immediate: true }
+)
+
+watch(
+  () => remainingTurns.value?.remainingTurns,
+  async (newValue, oldValue) => {
+    if (oldValue !== undefined && newValue !== undefined && newValue === 0) {
+      if (oldValue !== newValue) {
+        await updateDoc(sessionRef, {
+          isFinished: true
+        })
+      }
     }
   },
   { immediate: true }

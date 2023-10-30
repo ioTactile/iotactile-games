@@ -59,7 +59,7 @@ import type { CardUser } from '~/functions/src/types'
 const props = defineProps<{
   sessionId: string
   players: CardUser[]
-  scores: LocalDiceSessionScoresType
+  scoreboard: LocalDiceSessionScoresType['playerOne'][]
 }>()
 
 const emit = defineEmits<{ (e: 'openEndgame', value: boolean): void }>()
@@ -73,17 +73,10 @@ const goToMenu = () => {
 }
 
 const orderedPlayers = computed(() => {
-  const playersScores = [
-    props.scores.playerOne,
-    props.scores.playerTwo,
-    props.scores.playerThree,
-    props.scores.playerFour
-  ]
-
   const players = props.players.map((player, i) => {
     return {
       ...player,
-      total: playersScores[i]!.total
+      total: props.scoreboard[i]!.total
     }
   })
 
@@ -95,7 +88,7 @@ const orderedPlayers = computed(() => {
 .endgame-modal-wrapper {
   display: flex;
   flex-direction: column;
-  z-index: 9999;
+  z-index: 3;
   position: absolute;
   top: 0;
   left: 0;

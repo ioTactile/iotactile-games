@@ -127,7 +127,7 @@ const getPlayerClass = (index: number) => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  z-index: 9999;
+  z-index: 3;
   position: absolute;
   top: 30px;
   left: 30px;

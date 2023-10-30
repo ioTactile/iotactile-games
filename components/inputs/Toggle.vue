@@ -1,6 +1,6 @@
 <template>
   <div class="button" @click="clickToggle">
-    <input :checked="isActive" type="checkbox" class="checkbox" />
+    <input :checked="localIsActive" type="checkbox" class="checkbox" />
     <div class="knobs">
       <span />
     </div>
@@ -16,8 +16,11 @@ const props = defineProps<{
   isActive: boolean
 }>()
 
+const localIsActive = ref(props.isActive)
+
 const clickToggle = () => {
-  emit('toggle:isActive', !props.isActive)
+  localIsActive.value = !localIsActive.value
+  emit('toggle:isActive', localIsActive.value)
 }
 </script>
 

@@ -199,7 +199,7 @@ watch(
   height: 555px;
 
   .shake-wrapper {
-    z-index: 9999;
+    z-index: 2;
     position: absolute;
     top: 250px;
     left: 700px;

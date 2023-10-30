@@ -104,7 +104,7 @@
         </div>
         <div class="scoreboard-values-wrapper">
           <div
-            v-for="(player, k) in scoreboard"
+            v-for="(_, k) in scoreboard"
             :key="k"
             class="scoreboard-values-lower"
           >
@@ -253,9 +253,6 @@ const lowerPlayerSheetTotal = (key: number): number => {
 const playerSheetTotal = (key: number): number => {
   const upperTotal = upperPlayerSheetTotal(key)
   const lowerTotal = lowerPlayerSheetTotal(key)
-  if (upperTotal >= 63) {
-    return upperTotal + lowerTotal + 35
-  }
   return upperTotal + lowerTotal
 }
 

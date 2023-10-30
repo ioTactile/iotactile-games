@@ -120,7 +120,7 @@ const changeValue = (soundName: string, value: boolean) => {
 .volume-modal-wrapper {
   display: flex;
   flex-direction: column;
-  z-index: 9999;
+  z-index: 3;
   position: absolute;
   top: 0;
   left: 0;
@@ -175,46 +175,6 @@ const changeValue = (soundName: string, value: boolean) => {
         width: 60%;
         font-size: 2rem;
         color: white;
-      }
-
-      button {
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 160px;
-        height: 70px;
-        background-color: #eff0f3;
-        border-radius: 8px;
-        padding: 5px 10px;
-
-        .button-scare {
-          z-index: 1;
-          position: absolute;
-          top: 5px;
-          right: 10px;
-          width: 60px;
-          height: 60px;
-          background-color: rgb(var(--v-theme-diceMainTertiary));
-          border-radius: 8px;
-
-          &.scare-animation {
-            animation: scare 0.5s ease-in-out;
-          }
-
-          &.move {
-            animation: move 0.5s ease-in-out;
-          }
-
-          @keyframes move {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(-80px);
-            }
-          }
-        }
       }
     }
   }
