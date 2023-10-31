@@ -25,6 +25,7 @@
           sessionIsStarted &&
           !sessionIsFinished
       }"
+      :disabled="isRolling"
       @click="rollCup"
     >
       <v-img
@@ -91,6 +92,8 @@ const playerTriesRef = doc(
   props.sessionId
 ).withConverter(diceSessionPlayerTriesConverter)
 
+const isRolling = ref<boolean>(false)
+
 const dicesOnHand = computed(() => {
   if (props.dices) {
     return props.dices.filter((dice: Dice) => !dice.isOnBoard)
@@ -149,37 +152,43 @@ const rollCup = async () => {
     return
   }
 
-  let rollDices = props.dices
-  const diceOnBoard = rollDices
-    ? rollDices.filter((dice: Dice) => dice.isOnBoard)
-    : []
+  try {
+    isRolling.value = true
 
-  await updateDoc(playerTriesRef, { tries: props.playerTries - 1 })
+    let rollDices = props.dices
+    const diceOnBoard = rollDices
+      ? rollDices.filter((dice: Dice) => dice.isOnBoard)
+      : []
 
-  await new Promise<void>((resolve) => {
-    setTimeout(() => {
-      if (diceOnBoard.length === 0) {
-        rollDices = []
-        for (let i = 0; i < 5; i++) {
-          const dice = random(6, 1)
-          rollDices.push({
-            id: i,
-            face: dice,
-            isOnBoard: true
-          })
+    await updateDoc(playerTriesRef, { tries: props.playerTries - 1 })
+
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        if (diceOnBoard.length === 0) {
+          rollDices = []
+          for (let i = 0; i < 5; i++) {
+            const dice = random(6, 1)
+            rollDices.push({
+              id: i,
+              face: dice,
+              isOnBoard: true
+            })
+          }
+        } else {
+          for (const dice of diceOnBoard) {
+            dice.face = random(6, 1)
+          }
         }
-      } else {
-        for (const dice of diceOnBoard) {
-          dice.face = random(6, 1)
-        }
-      }
-      resolve()
-    }, 2300)
-  })
+        resolve()
+      }, 2300)
+    })
 
-  await updateDoc(dicesRef, {
-    dices: rollDices
-  })
+    await updateDoc(dicesRef, {
+      dices: rollDices
+    })
+  } finally {
+    isRolling.value = false
+  }
 }
 
 // Watchers

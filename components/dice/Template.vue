@@ -44,6 +44,13 @@ watch(
   transform: translateX(-50%);
   width: 1200px;
   height: 800px;
+  border-radius: 8px;
   background-color: rgb(var(--v-theme-diceMainPrimary));
+}
+
+@media screen and (max-width: 1200px) {
+  #gamescene {
+    border-radius: 0;
+  }
 }
 </style>

@@ -109,8 +109,10 @@ const changeValue = (soundName: string, value: boolean) => {
 
     if (isMusicActive.value) {
       props.soundService.unmuteAudioTracks('dice', audioTracks.length)
+      props.soundService.playAudioTracks('dice', audioTracks.length)
     } else {
       props.soundService.muteAudioTracks('dice', audioTracks.length)
+      props.soundService.stopAudioTracks('dice', audioTracks.length)
     }
   }
 }

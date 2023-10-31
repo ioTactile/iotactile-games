@@ -190,19 +190,21 @@ const activateSound = () => {
   isSoundEffectsActive.value = true
   isNotificationsActive.value = true
   isMusicActive.value = true
-
-  soundS.loadSound('dice', '/dice/sounds/dice.mp3')
-  soundS.loadSound('message', '/dice/sounds/message.mp3')
-  soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3')
-
-  soundS.loadAudioTracks('dice', audioTracks)
-  soundS.playAudioTracks('dice', audioTracks.length)
+  loadSounds(1)
 }
 
 const desactivateSound = () => {
   isSoundEffectsActive.value = false
   isNotificationsActive.value = false
   isMusicActive.value = false
+  loadSounds(0)
+}
+
+const loadSounds = (volume: number) => {
+  soundS.loadSound('dice', '/dice/sounds/dice.mp3', volume)
+  soundS.loadSound('message', '/dice/sounds/message.mp3', volume)
+  soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3', volume)
+  soundS.loadAudioTracks('dice', audioTracks, volume)
 }
 
 onBeforeRouteLeave(() => {
@@ -302,7 +304,7 @@ watch(
   width: 500px;
   height: 800px;
   background-color: rgb(var(--v-theme-diceMainSecondary));
-  border-radius: 8px;
+  border-radius: 8px 0 0 8px;
 }
 
 .left-side-wrapper {

@@ -147,7 +147,6 @@ const getButtonLabel = (session: LocalDiceSessionType) => {
       background-color: rgba(var(--v-theme-surface), 0.9);
       color: rgb(var(--v-theme-onSurface));
       font-size: 1rem;
-      text-align: justify;
       padding: 5px;
       border-radius: 8px;
     }
