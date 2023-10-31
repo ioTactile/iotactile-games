@@ -1,16 +1,8 @@
-// import { type ServiceAccount } from 'firebase-admin/app'
-
-// const serviceAccount: ServiceAccount = {
-//   projectId: process.env.FIREBASE_PROJECT_ID,
-//   clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-//   privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-// }
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   ssr: false,
-  css: ['vuetify/styles', '~/assets/main.scss'],
   modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', 'nuxt-vuefire'],
+  css: ['vuetify/styles', '~/assets/main.scss'],
   build: { transpile: ['vuetify'] },
   vite: { define: { 'process.env.DEBUG': false } },
   typescript: { shim: false },
@@ -18,9 +10,7 @@ export default defineNuxtConfig({
     APP_CHECK_DEBUG_TOKEN_FROM_CI: process.env.APP_CHECK_DEBUG_TOKEN_FROM_CI
   },
   vuefire: {
-    auth: {
-      enabled: true
-    },
+    auth: true,
     appCheck: {
       debug: process.env.NODE_ENV !== 'production',
       isTokenAutoRefreshEnabled: true,
@@ -38,6 +28,5 @@ export default defineNuxtConfig({
       appId: '1:863733555330:web:5f68e24010403d7d6b949b',
       measurementId: 'G-7F7CDGDN3F'
     }
-    // admin: { serviceAccount }
   }
 })
