@@ -1,6 +1,5 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  ssr: false,
+  ssr: true,
   modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', 'nuxt-vuefire'],
   css: ['vuetify/styles', '~/assets/main.scss'],
   build: { transpile: ['vuetify'] },
@@ -28,5 +27,8 @@ export default defineNuxtConfig({
       appId: '1:863733555330:web:5f68e24010403d7d6b949b',
       measurementId: 'G-7F7CDGDN3F'
     }
+  },
+  routeRules: {
+    '/admin/*': { ssr: false }
   }
 })

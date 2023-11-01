@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /diceSessions/{diceSession} {
+      allow read, write: if request.auth.uid != null;
+    }
+
+    match /diceSessionScores/{diceSessionScores} {
+     allow read, write: if request.auth.uid != null;
+    }
+
+    match /diceSessionDices/{diceSessionDices} {
+     allow read, write: if request.auth.uid != null;
+    }
+
+    match /diceSessionPlayerTries/{diceSessionPlayerTries} {
+     allow read, write: if request.auth.uid != null;
+    }
+
+    match /diceSessionPlayerTurn/{diceSessionPlayerTurn} {
+    allow read, write: if request.auth.uid != null;
+    }
+
+    match /diceSessionRemainingTurns/{diceSessionRemainingTurns} {
+     allow read, write: if request.auth.uid != null;
+    }
+
+    match /diceScoreboard/{diceScoreboard} {
+     allow read, write: if request.auth.uid != null;
+    }
+
+    match /users/{userId} {
+      allow read: if request.auth.uid != null;
+      allow write: if request.auth.uid == userId;
+    }
+  }
+}

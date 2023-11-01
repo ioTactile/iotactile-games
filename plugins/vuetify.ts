@@ -44,7 +44,7 @@ const myCustomDarkTheme: ThemeDefinition = {
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
-    ssr: false,
+    ssr: true,
     icons: {
       defaultSet: 'mdi',
       aliases,
