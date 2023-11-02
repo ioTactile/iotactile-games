@@ -9,7 +9,9 @@ export default defineNuxtConfig({
     APP_CHECK_DEBUG_TOKEN_FROM_CI: process.env.APP_CHECK_DEBUG_TOKEN_FROM_CI
   },
   vuefire: {
-    auth: true,
+    auth: {
+      enabled: true
+    },
     appCheck: {
       debug: process.env.NODE_ENV !== 'production',
       isTokenAutoRefreshEnabled: true,
