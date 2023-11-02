@@ -26,6 +26,10 @@ service cloud.firestore {
      allow read, write: if request.auth.uid != null;
     }
 
+    match /diceSessionChat/{diceSessionChat} {
+     allow read, write: if request.auth.uid != null;
+    }
+
     match /diceScoreboard/{diceScoreboard} {
      allow read, write: if request.auth.uid != null;
     }
