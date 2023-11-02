@@ -130,6 +130,7 @@ const changeValue = (soundName: string, value: boolean) => {
   height: 800px;
   background-color: rgb(var(--v-theme-diceMainPrimary));
   padding: 20px;
+  border-radius: 8px;
 
   .header {
     display: flex;
