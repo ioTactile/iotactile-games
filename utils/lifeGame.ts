@@ -23,15 +23,6 @@ export class LifeGame {
     return this.board
   }
 
-  public resizeBoard(numRows: number, numCols: number): void {
-    this.numRows = numRows
-    this.numCols = numCols
-
-    this.board = new Array(numRows)
-      .fill(null)
-      .map(() => new Array(numCols).fill(false))
-  }
-
   public toggleCell(row: number, col: number): void {
     this.board[row][col] = !this.board[row][col]
   }
@@ -63,14 +54,6 @@ export class LifeGame {
     this.board = new Array(this.numRows)
       .fill(null)
       .map(() => new Array(this.numCols).fill(false))
-  }
-
-  public generateRandomPattern(): void {
-    for (let row = 0; row < this.numRows; row++) {
-      for (let col = 0; col < this.numCols; col++) {
-        this.board[row][col] = Math.random() > 0.5
-      }
-    }
   }
 
   public loadPattern(pattern: number[][]): void {
