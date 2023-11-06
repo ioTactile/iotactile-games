@@ -30,8 +30,7 @@
     "eslint-plugin-vue": "^9.18.1",
     "prettier": "^3.0.3",
     "sass": "^1.69.5",
-    "typescript": "^5.2.2",
-    "yarn-upgrade-all": "^0.7.2"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "@firebase/app-types": "^0.9.0",

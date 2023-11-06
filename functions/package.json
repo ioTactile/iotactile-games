@@ -26,8 +26,7 @@
     "eslint": "^8.52.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.29.0",
-    "typescript": "^5.2.2",
-    "yarn-upgrade-all": "^0.7.2"
+    "typescript": "^5.2.2"
   },
   "private": true
 }
