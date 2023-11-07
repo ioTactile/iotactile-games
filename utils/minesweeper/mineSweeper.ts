@@ -26,6 +26,7 @@ export class MineSweeper {
         this.board[row].push(new Cell(false))
       }
     }
+    this.generateBoard(this.numMines)
   }
 
   public getBoard(): Cell[][] {
@@ -46,6 +47,10 @@ export class MineSweeper {
 
   public getDifficulty(): Difficulty {
     return this.difficulty
+  }
+
+  public getGameStatus(): GameStatus {
+    return this.gameStatus
   }
 
   public setup(difficulty: Difficulty): void {
@@ -79,6 +84,7 @@ export class MineSweeper {
         this.board[row].push(new Cell(false))
       }
     }
+    this.generateBoard(this.numMines)
   }
 
   public setupCustom(numRows: number, numCols: number, numMines: number): void {
@@ -96,6 +102,7 @@ export class MineSweeper {
         this.board[row].push(new Cell(false))
       }
     }
+    this.generateBoard(this.numMines)
   }
 
   public clickCell(row: number, col: number): void {
@@ -140,6 +147,9 @@ export class MineSweeper {
   }
 
   public getNumAdjacentMines(row: number, col: number): number {
+    if (this.board[row][col].getIsMine()) {
+      return -1
+    }
     let numAdjacentMines = 0
     for (let i = row - 1; i <= row + 1; i++) {
       for (let j = col - 1; j <= col + 1; j++) {

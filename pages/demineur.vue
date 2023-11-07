@@ -63,7 +63,7 @@
       <div class="header-screen">
         <div class="hd_wrapper-border-vert wrapper-border-vert" />
         <div id="top_area" class="top-area">
-          <div />
+          <div>{{ gameStatus }}</div>
         </div>
         <div class="hd_wrapper-border-vert wrapper-border-vert" />
       </div>
@@ -88,7 +88,7 @@
               :key="colIndex"
               class="cell size24"
               :class="cellType(row[colIndex])"
-              @click="mineSwepper?.clickCell(rowIndex, colIndex)"
+              @click="mineSwepper.clickCell(rowIndex, colIndex)"
             />
           </div>
         </div>
@@ -140,6 +140,18 @@ const gridStyle = computed(() => {
   return {
     gridTemplateRows: `repeat(${numCols.value}, 24px)`,
     gridTemplateColumns: `repeat(${numRows.value}, 24px)`
+  }
+})
+
+const gameStatus = computed(() => {
+  if (mineSwepper.value?.getGameStatus() === 0) {
+    return 'En attente'
+  } else if (mineSwepper.value?.getGameStatus() === 1) {
+    return 'En cours'
+  } else if (mineSwepper.value?.getGameStatus() === 2) {
+    return 'Gagné'
+  } else if (mineSwepper.value?.getGameStatus() === 3) {
+    return 'Perdu'
   }
 })
 
@@ -356,14 +368,17 @@ const cellType = (cell: Cell) => {
     }
 
     .top-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: calc(100% - 36px);
       height: 48px;
       float: left;
       background-color: #c0c0c0;
 
       div {
-        width: 100%;
-        height: 4.5px;
+        font-size: 1.25rem;
+        font-weight: 700;
       }
     }
   }

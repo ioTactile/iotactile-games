@@ -42,8 +42,4 @@ export class Cell {
   public setNumAdjacentMines(numAdjacentMines: number): void {
     this.numAdjacentMines = numAdjacentMines
   }
-
-  public incrementNumAdjacentMines(): void {
-    this.numAdjacentMines++
-  }
 }
