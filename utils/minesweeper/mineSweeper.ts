@@ -23,7 +23,7 @@ export class MineSweeper {
     for (let row = 0; row < this.numRows; row++) {
       this.board.push([])
       for (let col = 0; col < this.numCols; col++) {
-        this.board[row].push(new Cell(false))
+        this.board[row].push(new Cell())
       }
     }
     this.generateBoard(this.numMines)
@@ -51,6 +51,14 @@ export class MineSweeper {
 
   public getGameStatus(): GameStatus {
     return this.gameStatus
+  }
+
+  public getNumMines(): number {
+    return this.numMines
+  }
+
+  public getNumFlags(): number {
+    return this.numFlags
   }
 
   public setup(difficulty: Difficulty): void {
@@ -81,7 +89,7 @@ export class MineSweeper {
     for (let row = 0; row < this.numRows; row++) {
       this.board.push([])
       for (let col = 0; col < this.numCols; col++) {
-        this.board[row].push(new Cell(false))
+        this.board[row].push(new Cell())
       }
     }
     this.generateBoard(this.numMines)
@@ -99,10 +107,18 @@ export class MineSweeper {
     for (let row = 0; row < this.numRows; row++) {
       this.board.push([])
       for (let col = 0; col < this.numCols; col++) {
-        this.board[row].push(new Cell(false))
+        this.board[row].push(new Cell())
       }
     }
     this.generateBoard(this.numMines)
+  }
+
+  public restart(): void {
+    if (this.difficulty === Difficulty.CUSTOM) {
+      this.setupCustom(this.numRows, this.numCols, this.numMines)
+    } else {
+      this.setup(this.difficulty)
+    }
   }
 
   public clickCell(row: number, col: number): void {
@@ -116,6 +132,7 @@ export class MineSweeper {
     cell.setIsRevealed(true)
     this.numRevealed++
     if (cell.getIsMine()) {
+      cell.setIsMineClicked(true)
       this.gameStatus = GameStatus.LOST
       this.gameOver()
     } else if (
@@ -130,6 +147,14 @@ export class MineSweeper {
 
   public flagCell(row: number, col: number): void {
     const cell = this.board[row][col]
+    if (cell.getIsRevealed()) {
+      return
+    }
+    if (cell.getIsFlagged()) {
+      this.numFlags--
+    } else {
+      this.numFlags++
+    }
     cell.setIsFlagged(!cell.getIsFlagged())
   }
 

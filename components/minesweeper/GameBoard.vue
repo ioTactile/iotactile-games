@@ -1,0 +1,405 @@
+<template>
+  <div id="game" class="wrapper noselect" :style="gameSize">
+    <div class="header-border-top">
+      <div class="hd_wrapper-border-left-top wrapper-border-left-top" />
+      <div class="hd_wrapper-border-hor wrapper-border-hor" />
+      <div class="hd_wrapper-border-right-top wrapper-border-right-top" />
+    </div>
+    <div class="header-screen">
+      <div class="hd_wrapper-border-vert wrapper-border-vert" />
+      <div class="top-area">
+        <div class="num-flags">{{ numFlags }}</div>
+        <div
+          class="restart"
+          :class="{ rotate: isRotating }"
+          @click="restartGame"
+        />
+        <div class="timer">{{ timer }}</div>
+      </div>
+      <div class="hd_wrapper-border-vert wrapper-border-vert" />
+    </div>
+    <div class="header-border-t">
+      <div class="hd_wrapper-border-t-left wrapper-border-t-left" />
+      <div class="hd_wrapper-border-hor wrapper-border-hor" />
+      <div class="hd_wrapper-border-t-right wrapper-border-t-right" />
+    </div>
+    <div class="content">
+      <div
+        class="hd_wrapper-border-vert wrapper-border-vert"
+        :style="contentWrapperBorderHeight"
+      />
+      <div class="grid" :style="gridStyle">
+        <div
+          v-for="(row, rowIndex) in gameBoard"
+          :key="rowIndex"
+          :style="gridStyle"
+        >
+          <div
+            v-for="(_, colIndex) in row"
+            :key="colIndex"
+            class="cell size24"
+            :class="cellType(row[colIndex])"
+            @click.right="rightClick(rowIndex, colIndex)"
+            @click.left="leftClick(rowIndex, colIndex)"
+            @contextmenu.prevent
+          />
+        </div>
+      </div>
+      <div
+        class="hd_wrapper-border-vert wrapper-border-vert"
+        :style="contentWrapperBorderHeight"
+      />
+    </div>
+    <div class="footer-border">
+      <div class="hd_wrapper-border-left-bottom wrapper-border-left-bottom" />
+      <div class="hd_wrapper-border-hor wrapper-border-hor" />
+      <div class="hd_wrapper-border-right-bottom wrapper-border-right-bottom" />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { Cell } from '~/utils/minesweeper/cell'
+import { MineSweeper } from '~/utils/minesweeper/mineSweeper'
+import { sleep } from '~/utils'
+
+const props = defineProps<{
+  gameBoard: Cell[][]
+  gameStatus: string
+  numRows: number
+  numCols: number
+  mineSweeper: MineSweeper
+  timer: number
+}>()
+
+const emit = defineEmits<{
+  (e: 'restartGame'): void
+  (e: 'rightClick', { rowIndex: number, colIndex: number }): void
+  (e: 'leftClick', { rowIndex: number, colIndex: number }): void
+}>()
+
+const isRotating = ref<boolean>(false)
+const cellSize = ref<number>(24)
+
+const numFlags = computed(() => {
+  return props.mineSweeper.getNumMines() - props.mineSweeper.getNumFlags()
+})
+
+const gridStyle = computed(() => {
+  return {
+    gridTemplateRows: `repeat(${props.numCols}, ${cellSize.value}px)`,
+    gridTemplateColumns: `repeat(${props.numRows}, ${cellSize.value}px)`
+  }
+})
+
+const gameSize = computed(() => {
+  return {
+    width: `${props.numRows * cellSize.value + 36}px`,
+    height: `${props.numCols * cellSize.value + 96}px`
+  }
+})
+
+const contentWrapperBorderHeight = computed(() => {
+  return {
+    height: `${props.numCols * cellSize.value}px`
+  }
+})
+
+const cellType = (cell: Cell) => {
+  if (cell.getIsFlagged() && !cell.getIsRevealed()) {
+    return 'flag'
+  } else if (!cell.getIsRevealed()) {
+    return 'cell_closed'
+  } else if (cell.getIsMine()) {
+    if (cell.getIsRevealed() && cell.getIsMineClicked()) {
+      return 'cell_type11'
+    } else {
+      return 'cell_type10'
+    }
+  } else if (cell.getNumAdjacentMines() === 0) {
+    return 'cell_type0'
+  } else if (cell.getNumAdjacentMines() === 1) {
+    return 'cell_type1'
+  } else if (cell.getNumAdjacentMines() === 2) {
+    return 'cell_type2'
+  } else if (cell.getNumAdjacentMines() === 3) {
+    return 'cell_type3'
+  } else if (cell.getNumAdjacentMines() === 4) {
+    return 'cell_type4'
+  } else if (cell.getNumAdjacentMines() === 5) {
+    return 'cell_type5'
+  } else if (cell.getNumAdjacentMines() === 6) {
+    return 'cell_type6'
+  } else if (cell.getNumAdjacentMines() === 7) {
+    return 'cell_type7'
+  } else if (cell.getNumAdjacentMines() === 8) {
+    return 'cell_type8'
+  }
+}
+
+const restartGame = async () => {
+  isRotating.value = true
+  await sleep(1000)
+  isRotating.value = false
+  emit('restartGame')
+}
+
+const rightClick = (rowIndex: number, colIndex: number) => {
+  emit('rightClick', { rowIndex, colIndex })
+}
+
+const leftClick = (rowIndex: number, colIndex: number) => {
+  emit('leftClick', { rowIndex, colIndex })
+}
+</script>
+
+<style scoped lang="scss">
+#game {
+  margin: 10px;
+  filter: brightness(100%);
+
+  .header-border-top {
+    .hd_wrapper-border-left-top {
+      width: 18px;
+      height: 16px;
+      background-image: url('/minesweeper/corner_up_left_2x.png');
+    }
+
+    .hd_wrapper-border-hor {
+      width: calc(100% - 36px);
+      height: 16px;
+      background-image: url('/minesweeper/border_hor_2x.png');
+    }
+    .hd_wrapper-border-right-top {
+      width: 18px;
+      height: 16px;
+      background-image: url('/minesweeper/corner_up_right_2x.png');
+    }
+
+    .wrapper-border-right-top {
+      float: left;
+      background-size: 100% 100%;
+    }
+  }
+
+  .header-screen {
+    .hd_wrapper-border-vert {
+      width: 18px;
+      height: 48px;
+      background-image: url('/minesweeper/border_vert_2x.png');
+    }
+
+    .top-area {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: calc(100% - 36px);
+      height: 48px;
+      float: left;
+      background-color: #c0c0c0;
+
+      div {
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+
+      .restart {
+        width: 30px;
+        height: 30px;
+        background-image: url('/minesweeper/restart.svg');
+        background-size: 100% 100%;
+        cursor: pointer;
+      }
+
+      .rotate {
+        animation: rotate 1s forwards;
+      }
+
+      @keyframes rotate {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .num-flags,
+      .timer {
+        width: 30px;
+      }
+
+      .num-flags {
+        text-align: start;
+      }
+
+      .timer {
+        text-align: end;
+      }
+    }
+  }
+
+  .header-border-t {
+    .hd_wrapper-border-t-left {
+      width: 18px;
+      height: 16px;
+      background-image: url('/minesweeper/t_left_2x.png');
+    }
+
+    .hd_wrapper-border-hor {
+      width: calc(100% - 36px);
+      height: 16px;
+      background-image: url('/minesweeper/border_hor_2x.png');
+    }
+
+    .hd_wrapper-border-t-right {
+      width: 18px;
+      height: 16px;
+      background-image: url('/minesweeper/t_right_2x.png');
+    }
+  }
+
+  .content {
+    .hd_wrapper-border-vert {
+      width: 18px;
+      background-image: url('/minesweeper/border_vert_2x.png');
+    }
+
+    .grid {
+      display: grid;
+      float: left;
+
+      .cell_closed {
+        background-image: url('/minesweeper/closed.svg');
+      }
+
+      .flag {
+        background-image: url('/minesweeper/flag.svg');
+      }
+
+      .cell_type0 {
+        background-image: url('/minesweeper/type0.svg');
+      }
+
+      .cell_type1 {
+        background-image: url('/minesweeper/type1.svg');
+      }
+
+      .cell_type2 {
+        background-image: url('/minesweeper/type2.svg');
+      }
+
+      .cell_type3 {
+        background-image: url('/minesweeper/type3.svg');
+      }
+
+      .cell_type4 {
+        background-image: url('/minesweeper/type4.svg');
+      }
+
+      .cell_type5 {
+        background-image: url('/minesweeper/type5.svg');
+      }
+
+      .cell_type6 {
+        background-image: url('/minesweeper/type6.svg');
+      }
+
+      .cell_type7 {
+        background-image: url('/minesweeper/type7.svg');
+      }
+
+      .cell_type8 {
+        background-image: url('/minesweeper/type8.svg');
+      }
+
+      .cell_type10 {
+        background-image: url('/minesweeper/mine.svg');
+      }
+
+      .cell_type11 {
+        background-image: url('/minesweeper/mine_red.svg');
+      }
+
+      .cell {
+        float: left;
+        background-size: 100% 100%;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .size24 {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+        line-height: 23px;
+      }
+    }
+  }
+
+  .footer-border {
+    .hd_wrapper-border-left-bottom {
+      width: 18px;
+      height: 16px;
+      background-image: url('/minesweeper/corner_bottom_left_2x.png');
+    }
+
+    .hd_wrapper-border-hor {
+      width: calc(100% - 36px);
+      height: 16px;
+      background-image: url('/minesweeper/border_hor_2x.png');
+    }
+
+    .hd_wrapper-border-right-bottom {
+      width: 18px;
+      height: 16px;
+      background-image: url('/minesweeper/corner_bottom_right_2x.png');
+    }
+  }
+
+  .wrapper-border-left-top {
+    float: left;
+    background-size: 100% 100%;
+  }
+
+  .wrapper-border-hor {
+    float: left;
+    background-size: 100% 100%;
+  }
+
+  .wrapper-border-vert {
+    float: left;
+    background-size: 100% 100%;
+  }
+
+  .wrapper-border-t-left {
+    float: left;
+    background-size: 100% 100%;
+  }
+
+  .wrapper-border-t-right {
+    float: left;
+    background-size: 100% 100%;
+  }
+
+  .wrapper-border-left-bottom {
+    float: left;
+    background-size: 100% 100%;
+  }
+
+  .wrapper-border-right-bottom {
+    float: left;
+    background-size: 100% 100%;
+  }
+}
+
+.wrapper {
+  border-collapse: separate;
+}
+
+.noselect {
+  --webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+</style>
