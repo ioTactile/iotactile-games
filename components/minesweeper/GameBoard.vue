@@ -65,7 +65,6 @@ import { sleep } from '~/utils'
 
 const props = defineProps<{
   gameBoard: Cell[][]
-  gameStatus: string
   numRows: number
   numCols: number
   mineSweeper: MineSweeper
@@ -74,8 +73,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'restartGame'): void
-  (e: 'rightClick', { rowIndex: number, colIndex: number }): void
-  (e: 'leftClick', { rowIndex: number, colIndex: number }): void
+  (e: 'rightClick', args: { rowIndex: number; colIndex: number }): void
+  (e: 'leftClick', args: { rowIndex: number; colIndex: number }): void
 }>()
 
 const isRotating = ref<boolean>(false)
@@ -155,7 +154,7 @@ const leftClick = (rowIndex: number, colIndex: number) => {
 
 <style scoped lang="scss">
 #game {
-  margin: 10px;
+  margin-left: 10px;
   filter: brightness(100%);
 
   .header-border-top {

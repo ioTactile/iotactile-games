@@ -4,7 +4,7 @@
       v-for="(difficulty, i) in difficulties"
       :key="i"
       class="btn-difficulty"
-      @click="selectDifficulty(difficulty.value)"
+      @click="startGame(difficulty.difficulty)"
     >
       {{ difficulty.name }}
     </button>
@@ -15,22 +15,41 @@
 </template>
 
 <script setup lang="ts">
-import { Difficulty } from '~/utils/minesweeper/enum'
-import type { Difficulties } from '~/utils/minesweeper/types'
+import { Difficulty } from '~/utils/minesweeper/mineSweeper'
+import type { GameOptions } from '~/utils/minesweeper/mineSweeper'
 
-defineProps<{
+type Difficulties = {
+  name: string
+} & GameOptions
+
+const props = defineProps<{
   difficulties: Difficulties[]
 }>()
 
 const emit = defineEmits<{
   (e: 'toggleCustomGame'): void
-  (e: 'selectDifficulty', difficulty: Difficulty): void
+  (
+    e: 'startGame',
+    args: {
+      numRows: number
+      numCols: number
+      numMines: number
+      difficulty: Difficulty
+    }
+  ): void
 }>()
 
 const toggleCustomGame = () => emit('toggleCustomGame')
 
-const selectDifficulty = (difficulty: Difficulty) =>
-  emit('selectDifficulty', difficulty)
+const startGame = (value: Difficulty) => {
+  const { numRows, numCols, numMines, difficulty } = props.difficulties[value]
+  emit('startGame', {
+    numRows,
+    numCols,
+    numMines,
+    difficulty
+  })
+}
 </script>
 
 <style scoped lang="scss">

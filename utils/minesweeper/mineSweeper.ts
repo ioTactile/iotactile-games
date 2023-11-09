@@ -1,5 +1,26 @@
 import { Cell } from './cell'
-import { GameStatus, Difficulty } from './enum'
+import { Timer } from './Timer'
+
+export enum GameStatus {
+  WAITING,
+  IN_PROGRESS,
+  WON,
+  LOST
+}
+
+export enum Difficulty {
+  BEGINNER,
+  INTERMEDIATE,
+  EXPERT,
+  CUSTOM
+}
+
+export interface GameOptions {
+  numRows: number
+  numCols: number
+  numMines: number
+  difficulty: Difficulty
+}
 
 export class MineSweeper {
   private board: Cell[][]
@@ -8,6 +29,7 @@ export class MineSweeper {
   private numMines: number
   private numFlags: number
   private numRevealed: number
+  private timer: Timer
   private gameStatus: GameStatus
   private difficulty: Difficulty
 
@@ -16,25 +38,23 @@ export class MineSweeper {
     this.numRows = 9
     this.numCols = 9
     this.numMines = 10
+    this.difficulty = Difficulty.BEGINNER
     this.numFlags = 0
     this.numRevealed = 0
+    this.timer = new Timer()
     this.gameStatus = GameStatus.WAITING
-    this.difficulty = Difficulty.BEGINNER
-    for (let row = 0; row < this.numRows; row++) {
+    for (let col = 0; col < this.numCols; col++) {
       this.board.push([])
-      for (let col = 0; col < this.numCols; col++) {
-        this.board[row].push(new Cell())
+      for (let row = 0; row < this.numRows; row++) {
+        this.board[col].push(new Cell())
       }
     }
+
     this.generateBoard(this.numMines)
   }
 
   public getBoard(): Cell[][] {
     return this.board
-  }
-
-  public setBoard(board: Cell[][]): void {
-    this.board = board
   }
 
   public getNumRows(): number {
@@ -45,14 +65,6 @@ export class MineSweeper {
     return this.numCols
   }
 
-  public getDifficulty(): Difficulty {
-    return this.difficulty
-  }
-
-  public getGameStatus(): GameStatus {
-    return this.gameStatus
-  }
-
   public getNumMines(): number {
     return this.numMines
   }
@@ -61,84 +73,78 @@ export class MineSweeper {
     return this.numFlags
   }
 
-  public setup(difficulty: Difficulty): void {
-    this.difficulty = difficulty
-    switch (difficulty) {
-      case Difficulty.BEGINNER:
-        this.numRows = 9
-        this.numCols = 9
-        this.numMines = 10
-        break
-      case Difficulty.INTERMEDIATE:
-        this.numRows = 16
-        this.numCols = 16
-        this.numMines = 40
-        break
-      case Difficulty.EXPERT:
-        this.numRows = 30
-        this.numCols = 16
-        this.numMines = 99
-        break
-      case Difficulty.CUSTOM:
-        break
+  public getTimer(): Timer {
+    return this.timer
+  }
+
+  public getGameStatusString(): string {
+    switch (this.gameStatus) {
+      case GameStatus.WAITING:
+        return 'En attente'
+      case GameStatus.IN_PROGRESS:
+        return 'En cours'
+      case GameStatus.WON:
+        return 'Gagné'
+      case GameStatus.LOST:
+        return 'Perdu'
     }
+  }
+
+  public getDifficulty(): Difficulty {
+    return this.difficulty
+  }
+
+  public setup(options: GameOptions): void {
+    this.board = []
+    this.numRows = options.numRows
+    this.numCols = options.numCols
+    this.numMines = options.numMines
+    this.difficulty = options.difficulty
     this.numFlags = 0
     this.numRevealed = 0
+    this.timer = new Timer()
     this.gameStatus = GameStatus.WAITING
-    this.board = []
-    for (let row = 0; row < this.numRows; row++) {
+    for (let col = 0; col < this.numCols; col++) {
       this.board.push([])
-      for (let col = 0; col < this.numCols; col++) {
-        this.board[row].push(new Cell())
+      for (let row = 0; row < this.numRows; row++) {
+        this.board[col].push(new Cell())
       }
     }
+
     this.generateBoard(this.numMines)
   }
 
-  public setupCustom(numRows: number, numCols: number, numMines: number): void {
-    this.difficulty = Difficulty.CUSTOM
-    this.numRows = numRows
-    this.numCols = numCols
-    this.numMines = numMines
-    this.numFlags = 0
-    this.numRevealed = 0
-    this.gameStatus = GameStatus.WAITING
-    this.board = []
-    for (let row = 0; row < this.numRows; row++) {
-      this.board.push([])
-      for (let col = 0; col < this.numCols; col++) {
-        this.board[row].push(new Cell())
-      }
-    }
-    this.generateBoard(this.numMines)
-  }
-
-  public restart(): void {
-    if (this.difficulty === Difficulty.CUSTOM) {
-      this.setupCustom(this.numRows, this.numCols, this.numMines)
-    } else {
-      this.setup(this.difficulty)
-    }
+  public restart(options: GameOptions): void {
+    this.timer.reset()
+    this.setup(options)
   }
 
   public clickCell(row: number, col: number): void {
+    this.startTimer()
     const cell = this.board[row][col]
+
     if (this.gameStatus === GameStatus.WAITING) {
       this.gameStatus = GameStatus.IN_PROGRESS
     }
+
+    if (cell.getIsFlagged()) {
+      return
+    }
+
     if (cell.getIsRevealed()) {
       return
     }
+
     cell.setIsRevealed(true)
     this.numRevealed++
+
     if (cell.getIsMine()) {
-      cell.setIsMineClicked(true)
-      this.gameStatus = GameStatus.LOST
-      this.gameOver()
+      this.handleLoss(cell)
     } else if (
       this.numRevealed ===
       this.numRows * this.numCols - this.numMines
     ) {
+      this.handleWin()
       this.gameStatus = GameStatus.WON
     } else if (cell.getNumAdjacentMines() === 0) {
       this.clickAdjacentCells(row, col)
@@ -146,19 +152,27 @@ export class MineSweeper {
   }
 
   public flagCell(row: number, col: number): void {
+    this.startTimer()
     const cell = this.board[row][col]
+
+    if (this.numFlags === this.numMines && !cell.getIsFlagged()) {
+      return
+    }
+
     if (cell.getIsRevealed()) {
       return
     }
+
     if (cell.getIsFlagged()) {
       this.numFlags--
     } else {
       this.numFlags++
     }
+
     cell.setIsFlagged(!cell.getIsFlagged())
   }
 
-  public clickAdjacentCells(row: number, col: number): void {
+  private clickAdjacentCells(row: number, col: number): void {
     for (let i = row - 1; i <= row + 1; i++) {
       for (let j = col - 1; j <= col + 1; j++) {
         if (i < 0 || i >= this.numRows || j < 0 || j >= this.numCols) {
@@ -171,10 +185,11 @@ export class MineSweeper {
     }
   }
 
-  public getNumAdjacentMines(row: number, col: number): number {
+  private getNumAdjacentMines(row: number, col: number): number {
     if (this.board[row][col].getIsMine()) {
       return -1
     }
+
     let numAdjacentMines = 0
     for (let i = row - 1; i <= row + 1; i++) {
       for (let j = col - 1; j <= col + 1; j++) {
@@ -186,10 +201,11 @@ export class MineSweeper {
         }
       }
     }
+
     return numAdjacentMines
   }
 
-  public generateMines(numMines: number): void {
+  private generateMines(numMines: number): void {
     let numMinesGenerated = 0
     while (numMinesGenerated < numMines) {
       const row = Math.floor(Math.random() * this.numRows)
@@ -201,7 +217,7 @@ export class MineSweeper {
     }
   }
 
-  public generateNumAdjacentMines(): void {
+  private generateNumAdjacentMines(): void {
     for (let row = 0; row < this.numRows; row++) {
       for (let col = 0; col < this.numCols; col++) {
         const numAdjacentMines = this.getNumAdjacentMines(row, col)
@@ -210,18 +226,36 @@ export class MineSweeper {
     }
   }
 
-  public generateBoard(numMines: number): void {
+  private generateBoard(numMines: number): void {
     this.generateMines(numMines)
     this.generateNumAdjacentMines()
   }
 
-  public gameOver(): void {
+  private handleLoss(cell: Cell): void {
+    cell.setIsMineClicked(true)
+    this.gameOver()
+    this.timer.stop()
+    this.gameStatus = GameStatus.LOST
+  }
+
+  private handleWin(): void {
+    this.timer.stop()
+    this.gameStatus = GameStatus.WON
+  }
+
+  private gameOver(): void {
     for (let row = 0; row < this.numRows; row++) {
       for (let col = 0; col < this.numCols; col++) {
         if (this.board[row][col].getIsMine()) {
           this.board[row][col].setIsRevealed(true)
         }
       }
+    }
+  }
+
+  private startTimer(): void {
+    if (this.gameStatus === GameStatus.WAITING) {
+      this.timer.start()
     }
   }
 }
