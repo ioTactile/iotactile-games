@@ -1,13 +1,16 @@
 <template>
   <div>
     <h1 class="d-none">iotactile games</h1>
-    <v-row class="d-flex justify-center">
+    <v-row class="d-flex">
+      <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
+        <GameFramework img="/dice.png" alt="Dice" title="Dice" link="/dice" />
+      </v-col>
       <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
         <GameFramework
-          img="/dice.png"
-          alt="Dice game"
-          title="Dice"
-          link="/dice"
+          img="/minesweeper_blue.jpg"
+          alt="Démineur"
+          title="Démineur"
+          link="/demineur"
         />
       </v-col>
     </v-row>

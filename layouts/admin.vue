@@ -28,4 +28,14 @@ onBeforeMount(async () => {
   max-width: 1200px;
   margin: 0 auto;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(204, 204, 204);
+  width: 8px;
+  border-radius: 8px;
+}
 </style>
