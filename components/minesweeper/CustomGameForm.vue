@@ -8,7 +8,6 @@
         type="number"
         min="1"
         max="100"
-        class="form-control custom-input"
       />
     </div>
     <div class="form-group">
@@ -19,7 +18,6 @@
         type="number"
         min="1"
         max="100"
-        class="form-control custom-input"
       />
     </div>
     <div class="form-group">
@@ -30,26 +28,18 @@
         type="number"
         min="1"
         max="10000"
-        class="form-control custom-input"
       />
     </div>
-    <button type="submit" class="btn">Valider</button>
+    <button type="submit" class="btn">VALIDER</button>
   </form>
 </template>
 
 <script setup lang="ts">
 import { Difficulty } from '~/utils/minesweeper/mineSweeper'
+import type { GameOptions } from '~/utils/minesweeper/mineSweeper'
 
 const emit = defineEmits<{
-  (
-    e: 'startCustomGame',
-    args: {
-      numRows: number
-      numCols: number
-      numMines: number
-      difficulty: Difficulty
-    }
-  ): void
+  (e: 'startCustomGame', args: GameOptions): void
 }>()
 
 const numRows = ref<number>(30)
@@ -68,26 +58,24 @@ const startCustomGame = () => {
 
 <style scoped lang="scss">
 form {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  height: 210px;
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
 
   .form-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 5px;
-    width: 100%;
+    display: inline-block;
+    color: rgb(var(--v-theme-onBackground));
 
     label {
-      margin-bottom: 5px;
+      text-transform: uppercase;
+      margin-left: 10px;
     }
 
     input {
-      width: 100%;
+      border: 1px solid #ccc;
       text-align: center;
+      width: 50px;
+      height: 25px;
     }
 
     input:focus {
@@ -99,6 +87,25 @@ form {
       -webkit-appearance: none;
       margin: 0;
     }
+  }
+
+  @media screen and (max-width: 600px) {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+
+    .form-group {
+      margin: 5px;
+    }
+  }
+
+  button {
+    border: 1px solid #ccc;
+    margin-left: 10px;
+    padding: 0 5px;
+    width: 60px;
+    height: 25px;
   }
 }
 </style>

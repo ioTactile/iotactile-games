@@ -28,15 +28,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'toggleCustomGame'): void
-  (
-    e: 'startGame',
-    args: {
-      numRows: number
-      numCols: number
-      numMines: number
-      difficulty: Difficulty
-    }
-  ): void
+  (e: 'startGame', args: GameOptions): void
 }>()
 
 const toggleCustomGame = () => emit('toggleCustomGame')
@@ -53,8 +45,21 @@ const startGame = (value: Difficulty) => {
 </script>
 
 <style scoped lang="scss">
-.btn-difficulty {
-  margin: 10px;
-  color: rgb(var(--v-theme-secondary));
+div {
+  display: flex;
+  align-items: center;
+
+  .btn-difficulty {
+    margin: 10px;
+    color: #1479d5;
+  }
+}
+
+@media (max-width: 600px) {
+  div {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+  }
 }
 </style>

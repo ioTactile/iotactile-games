@@ -8,9 +8,10 @@
     <div class="header-screen">
       <div class="hd_wrapper-border-vert wrapper-border-vert" />
       <div class="top-area">
-        <div class="num-flags">{{ numFlags }}</div>
-        <div
-          class="restart"
+        <div class="num-flags">{{ numNotDetectedMines }}</div>
+        <v-icon
+          :icon="mdiReload"
+          size="30"
           :class="{ rotate: isRotating }"
           @click="restartGame"
         />
@@ -29,11 +30,7 @@
         :style="contentWrapperBorderHeight"
       />
       <div class="grid" :style="gridStyle">
-        <div
-          v-for="(row, rowIndex) in gameBoard"
-          :key="rowIndex"
-          :style="gridStyle"
-        >
+        <div v-for="(row, rowIndex) in gameBoard" :key="rowIndex">
           <div
             v-for="(_, colIndex) in row"
             :key="colIndex"
@@ -59,15 +56,17 @@
 </template>
 
 <script setup lang="ts">
+import { VIcon } from 'vuetify/components'
+import { mdiReload } from '@mdi/js'
 import { Cell } from '~/utils/minesweeper/cell'
-import { MineSweeper } from '~/utils/minesweeper/mineSweeper'
+import type { IMineSweeper } from '~/utils/minesweeper/mineSweeper'
 import { sleep } from '~/utils'
 
 const props = defineProps<{
   gameBoard: Cell[][]
   numRows: number
   numCols: number
-  mineSweeper: MineSweeper
+  mineSweeper: IMineSweeper
   timer: number
 }>()
 
@@ -80,14 +79,14 @@ const emit = defineEmits<{
 const isRotating = ref<boolean>(false)
 const cellSize = ref<number>(24)
 
-const numFlags = computed(() => {
+const numNotDetectedMines = computed(() => {
   return props.mineSweeper.getNumMines() - props.mineSweeper.getNumFlags()
 })
 
 const gridStyle = computed(() => {
   return {
-    gridTemplateRows: `repeat(${props.numCols}, ${cellSize.value}px)`,
-    gridTemplateColumns: `repeat(${props.numRows}, ${cellSize.value}px)`
+    gridTemplateColumns: `repeat(${props.numRows}, ${cellSize.value}px)`,
+    gridTemplateRows: `repeat(${props.numCols}, ${cellSize.value}px)`
   }
 })
 
@@ -154,25 +153,26 @@ const leftClick = (rowIndex: number, colIndex: number) => {
 
 <style scoped lang="scss">
 #game {
-  margin-left: 10px;
+  margin: 10px;
   filter: brightness(100%);
+  box-shadow: 0 4px 4px 0 rgba(19, 99, 172, 0.25);
 
   .header-border-top {
     .hd_wrapper-border-left-top {
       width: 18px;
       height: 16px;
-      background-image: url('/minesweeper/corner_up_left_2x.png');
+      background-image: url('/minesweeper/borders/corner_up_left_blue_2x.png');
     }
 
     .hd_wrapper-border-hor {
       width: calc(100% - 36px);
       height: 16px;
-      background-image: url('/minesweeper/border_hor_2x.png');
+      background-image: url('/minesweeper/borders/border_hor_blue_2x.png');
     }
     .hd_wrapper-border-right-top {
       width: 18px;
       height: 16px;
-      background-image: url('/minesweeper/corner_up_right_2x.png');
+      background-image: url('/minesweeper/borders/corner_up_right_blue_2x.png');
     }
 
     .wrapper-border-right-top {
@@ -185,7 +185,7 @@ const leftClick = (rowIndex: number, colIndex: number) => {
     .hd_wrapper-border-vert {
       width: 18px;
       height: 48px;
-      background-image: url('/minesweeper/border_vert_2x.png');
+      background-image: url('/minesweeper/borders/border_vert_blue_2x.png');
     }
 
     .top-area {
@@ -195,19 +195,12 @@ const leftClick = (rowIndex: number, colIndex: number) => {
       width: calc(100% - 36px);
       height: 48px;
       float: left;
-      background-color: #c0c0c0;
+      background-color: #fff;
+      color: #000000;
 
       div {
         font-size: 1.25rem;
         font-weight: 700;
-      }
-
-      .restart {
-        width: 30px;
-        height: 30px;
-        background-image: url('/minesweeper/restart.svg');
-        background-size: 100% 100%;
-        cursor: pointer;
       }
 
       .rotate {
@@ -239,26 +232,26 @@ const leftClick = (rowIndex: number, colIndex: number) => {
     .hd_wrapper-border-t-left {
       width: 18px;
       height: 16px;
-      background-image: url('/minesweeper/t_left_2x.png');
+      background-image: url('/minesweeper/borders/t_left_blue_2x.png');
     }
 
     .hd_wrapper-border-hor {
       width: calc(100% - 36px);
       height: 16px;
-      background-image: url('/minesweeper/border_hor_2x.png');
+      background-image: url('/minesweeper/borders/border_hor_blue_2x.png');
     }
 
     .hd_wrapper-border-t-right {
       width: 18px;
       height: 16px;
-      background-image: url('/minesweeper/t_right_2x.png');
+      background-image: url('/minesweeper/borders/t_right_blue_2x.png');
     }
   }
 
   .content {
     .hd_wrapper-border-vert {
       width: 18px;
-      background-image: url('/minesweeper/border_vert_2x.png');
+      background-image: url('/minesweeper/borders/border_vert_blue_2x.png');
     }
 
     .grid {
@@ -337,19 +330,19 @@ const leftClick = (rowIndex: number, colIndex: number) => {
     .hd_wrapper-border-left-bottom {
       width: 18px;
       height: 16px;
-      background-image: url('/minesweeper/corner_bottom_left_2x.png');
+      background-image: url('/minesweeper/borders/corner_bottom_left_blue_2x.png');
     }
 
     .hd_wrapper-border-hor {
       width: calc(100% - 36px);
       height: 16px;
-      background-image: url('/minesweeper/border_hor_2x.png');
+      background-image: url('/minesweeper/borders/border_hor_blue_2x.png');
     }
 
     .hd_wrapper-border-right-bottom {
       width: 18px;
       height: 16px;
-      background-image: url('/minesweeper/corner_bottom_right_2x.png');
+      background-image: url('/minesweeper/borders/corner_bottom_right_blue_2x.png');
     }
   }
 

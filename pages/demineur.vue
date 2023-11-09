@@ -7,17 +7,9 @@
         @toggle-custom-game="isCustom = !isCustom"
         @start-game="startGame"
       />
-    </div>
-    <div class="game">
-      <MinesweeperGameBoard
-        :game-board="gameBoard"
-        :num-rows="numRows"
-        :num-cols="numCols"
-        :mine-sweeper="mineSweeper"
-        :timer="timer.getNum()"
-        @restart-game="restartGame"
-        @left-click="handleLeftClick"
-        @right-click="handleRightClick"
+      <MinesweeperCustomGameForm
+        v-if="isCustom"
+        @start-custom-game="startGame"
       />
       <MinesweeperGameStatus
         :game-status="gameStatus"
@@ -26,12 +18,22 @@
         @start-custom-game="startGame"
       />
     </div>
+    <MinesweeperGameBoard
+      :game-board="gameBoard"
+      :num-rows="numRows"
+      :num-cols="numCols"
+      :mine-sweeper="mineSweeper"
+      :timer="timer.getNum()"
+      @restart-game="restartGame"
+      @left-click="handleLeftClick"
+      @right-click="handleRightClick"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { MineSweeper, Difficulty } from '~/utils/minesweeper/mineSweeper'
-import type { GameOptions } from '~/utils/minesweeper/mineSweeper'
+import type { GameOptions, IMineSweeper } from '~/utils/minesweeper/mineSweeper'
 
 useSeoMeta({
   title: 'Démineur - ioTactile Games',
@@ -39,6 +41,10 @@ useSeoMeta({
   description: 'Page du jeu Démineur',
   ogDescription: 'Page du jeu Démineur',
   ogImage: '/minesweeper.jpg'
+})
+
+definePageMeta({
+  middleware: ['auth']
 })
 
 const difficulties = [
@@ -58,14 +64,14 @@ const difficulties = [
   },
   {
     name: 'Expert',
-    numRows: 16,
-    numCols: 30,
+    numRows: 30,
+    numCols: 16,
     numMines: 99,
     difficulty: Difficulty.EXPERT
   }
 ]
 
-const mineSweeper = ref<MineSweeper>(new MineSweeper())
+const mineSweeper = ref<IMineSweeper>(new MineSweeper())
 const numRows = ref<number>(9)
 const numCols = ref<number>(9)
 const numMines = ref<number>(10)
@@ -79,6 +85,10 @@ const timer = computed(() => mineSweeper.value.getTimer())
 const gameStatus = computed(() => mineSweeper.value.getGameStatusString())
 
 const startGame = (options: GameOptions) => {
+  if (options.numMines > options.numRows * options.numCols) {
+    return
+  }
+
   mineSweeper.value.setup(options)
   numRows.value = options.numRows
   numCols.value = options.numCols
@@ -131,13 +141,6 @@ onUnmounted(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  }
-
-  .game {
-    position: relative;
-    display: flex;
-    margin-top: 50px;
-    margin-right: 140px;
   }
 }
 </style>

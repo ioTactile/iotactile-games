@@ -7,11 +7,11 @@ viewBox="0 0 1.19309 1.19309"
  <defs>
   <style type="text/css">
    <![CDATA[
-    .str0 {stroke:black;stroke-width:0.00363653}
-    .fil2 {fill:black}
+    .str0 {stroke:#161614;stroke-width:0.00363653}
+    .fil2 {fill:#161614}
     .fil4 {fill:white}
-    .fil0 {fill:gray}
-    .fil1 {fill:red}
+    .fil0 {fill:#1363ac}
+    .fil1 {fill:#FF6F61}
     .fil3 {fill:url(#id0)}
    ]]>
   </style>
@@ -21,7 +21,7 @@ viewBox="0 0 1.19309 1.19309"
    <stop offset="0.290196" style="stop-color:#CCC8C8"/>
    <stop offset="0.439216" style="stop-color:#B2B4B4"/>
    <stop offset="0.74902" style="stop-color:#464D43"/>
-   <stop offset="1" style="stop-color:black"/>
+   <stop offset="1" style="stop-color:#161614"/>
   </radialGradient>
  </defs>
  <g id="Layer_x0020_1">
