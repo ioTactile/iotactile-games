@@ -130,7 +130,7 @@ import {
   chanceInput,
   getUpperSectionTotal,
   getLowerSectionTotal
-} from '~/utils/diceInputs'
+} from '~/utils/dice/diceInputs'
 
 type InputMappings = {
   one: number
@@ -502,3 +502,4 @@ const saveInput = async (value: string) => {
   }
 }
 </style>
+~/utils/dice/diceInputs

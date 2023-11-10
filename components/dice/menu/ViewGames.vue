@@ -38,7 +38,7 @@ import { VIcon } from 'vuetify/components'
 import { collection } from 'firebase/firestore'
 import { mdiAccount } from '@mdi/js'
 import { diceSessionConverter } from '~/stores'
-import DiceSession from '~/utils/diceSession'
+import DiceSession from '~/utils/dice/diceSession'
 
 const db = useFirestore()
 const user = useCurrentUser()
@@ -169,3 +169,4 @@ const getButtonLabel = (session: LocalDiceSessionType) => {
   }
 }
 </style>
+~/utils/dice/diceSession

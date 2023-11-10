@@ -145,7 +145,7 @@ import {
   largeStraightInput,
   diceInput,
   chanceInput
-} from '~/utils/diceInputs'
+} from '~/utils/dice/diceInputs'
 
 type InputMappings = {
   one: number
@@ -422,3 +422,4 @@ const getPlayerTurn = (playerId: string) => {
   }
 }
 </style>
+~/utils/dice/diceInputs

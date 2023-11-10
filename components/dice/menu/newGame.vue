@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import DiceSession from '~/utils/diceSession'
+import DiceSession from '~/utils/dice/diceSession'
 
 const emit = defineEmits<{
   (e: 'action', value: string): void
@@ -49,3 +49,4 @@ input {
   margin: 3rem 0;
 }
 </style>
+~/utils/dice/diceSession

@@ -103,8 +103,8 @@
 </template>
 
 <script lang="ts" setup>
-import { LifeGame } from '~/utils/lifeGame'
-import * as patterns from '~/utils/lifeGamePatterns'
+import { LifeGame } from '~/utils/lifegame/lifeGame'
+import * as patterns from '~/utils/lifegame/lifeGamePatterns'
 
 const numRows = ref<number>(100)
 const numCols = ref<number>(80)
