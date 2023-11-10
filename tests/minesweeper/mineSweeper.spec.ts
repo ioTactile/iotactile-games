@@ -98,7 +98,7 @@ describe('MineSweeper', () => {
     expect(cellWithAdjacentMines).toBe(true)
 
     mineSweeper.handleCellAction(1, 1, 'flag')
-    expect(mineSweeper.getCell(1, 1).getIsRevealed()).toBe(true)
+    expect(mineSweeper.getCell(1, 1).getIsFlagged()).toBe(true)
   })
 
   test('restart', () => {
@@ -120,22 +120,22 @@ describe('MineSweeper', () => {
     await sleep(1000)
     expect(mineSweeper.getTimer().getNum()).toBeGreaterThan(0)
 
-    // const timer = mineSweeper.getTimer().getNum()
-    // mineSweeper.getTimer().togglePause()
-    // expect(mineSweeper.getTimer().getNum()).toBe(timer)
-    // expect(mineSweeper.getTimer().getIsPaused()).toBe(true)
+    const timer = mineSweeper.getTimer().getNum()
+    mineSweeper.getTimer().togglePause()
+    expect(mineSweeper.getTimer().getNum()).toBe(timer)
+    expect(mineSweeper.getTimer().getIsPaused()).toBe(true)
+    mineSweeper.getTimer().togglePause()
 
-    // mineSweeper.getTimer().togglePause()
-
+    const intervalId = mineSweeper.getTimer().getReturnType()
     mineSweeper.getTimer().stop()
-    expect(mineSweeper.getTimer().getReturnType()).toBe(undefined)
+    expect(mineSweeper.getTimer().getReturnType()).toBe(intervalId)
 
     mineSweeper.getTimer().start()
-    expect(mineSweeper.getTimer().getReturnType()).not.toBe(undefined)
+    expect(mineSweeper.getTimer().getReturnType()).not.toBe(intervalId)
 
-    // mineSweeper.getTimer().reset()
-    // expect(mineSweeper.getTimer().getReturnType()).toBe(undefined)
-    // expect(mineSweeper.getTimer().getNum()).toBe(0)
+    mineSweeper.getTimer().reset()
+    expect(mineSweeper.getTimer().getReturnType()).toBe(undefined)
+    expect(mineSweeper.getTimer().getNum()).toBe(0)
 
     mineSweeper.restart(options)
     expect(mineSweeper.getTimer().getNum()).toBe(0)

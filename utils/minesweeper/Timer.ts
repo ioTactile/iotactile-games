@@ -36,7 +36,7 @@ export class Timer {
   }
 
   public reset(): void {
-    clearInterval(this.returnType)
+    this.returnType = undefined
     this.num = 0
   }
 
