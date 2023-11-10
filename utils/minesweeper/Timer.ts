@@ -1,12 +1,16 @@
 export class Timer {
-  private returnType: ReturnType<typeof setInterval>
+  private returnType: ReturnType<typeof setInterval> | undefined
   private num: number
   private isPaused: boolean
 
   constructor() {
-    this.returnType = setInterval(() => {}, 1000)
+    this.returnType = undefined
     this.num = 0
     this.isPaused = false
+  }
+
+  public getReturnType(): ReturnType<typeof setInterval> | undefined {
+    return this.returnType
   }
 
   public getNum(): number {
@@ -21,6 +25,10 @@ export class Timer {
     this.returnType = setInterval(() => {
       this.num++
     }, 1000)
+  }
+
+  public isStarted(): boolean {
+    return this.returnType !== undefined
   }
 
   public stop(): void {

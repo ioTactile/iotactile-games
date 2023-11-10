@@ -33,8 +33,7 @@ export interface IMineSweeper {
   getDifficulty(): Difficulty
   setup(options: GameOptions): void
   restart(options: GameOptions): void
-  clickCell(row: number, col: number): void
-  flagCell(row: number, col: number): void
+  handleCellAction(row: number, col: number, action: 'click' | 'flag'): void
 }
 
 export class MineSweeper implements IMineSweeper {
@@ -49,7 +48,6 @@ export class MineSweeper implements IMineSweeper {
   private difficulty: Difficulty
 
   constructor() {
-    this.board = []
     this.numRows = 9
     this.numCols = 9
     this.numMines = 10
@@ -58,12 +56,9 @@ export class MineSweeper implements IMineSweeper {
     this.numRevealed = 0
     this.timer = new Timer()
     this.gameStatus = GameStatus.WAITING
-    for (let row = 0; row < this.numRows; row++) {
-      this.board.push([])
-      for (let col = 0; col < this.numCols; col++) {
-        this.board[row].push(new Cell())
-      }
-    }
+    this.board = Array.from({ length: this.numRows }, () =>
+      Array.from({ length: this.numCols }, () => new Cell())
+    )
 
     this.generateBoard(this.numMines)
   }
@@ -88,8 +83,20 @@ export class MineSweeper implements IMineSweeper {
     return this.numFlags
   }
 
+  public getNumRevealed(): number {
+    return this.numRevealed
+  }
+
   public getTimer(): Timer {
     return this.timer
+  }
+
+  public getCell(row: number, col: number): Cell {
+    return this.board[row][col]
+  }
+
+  public getGameStatus(): GameStatus {
+    return this.gameStatus
   }
 
   public getGameStatusString(): string {
@@ -110,7 +117,6 @@ export class MineSweeper implements IMineSweeper {
   }
 
   public setup(options: GameOptions): void {
-    this.board = []
     this.numRows = options.numRows
     this.numCols = options.numCols
     this.numMines = options.numMines
@@ -119,12 +125,9 @@ export class MineSweeper implements IMineSweeper {
     this.numRevealed = 0
     this.timer = new Timer()
     this.gameStatus = GameStatus.WAITING
-    for (let row = 0; row < this.numRows; row++) {
-      this.board.push([])
-      for (let col = 0; col < this.numCols; col++) {
-        this.board[row].push(new Cell())
-      }
-    }
+    this.board = this.board = Array.from({ length: this.numRows }, () =>
+      Array.from({ length: this.numCols }, () => new Cell())
+    )
 
     this.generateBoard(this.numMines)
   }
@@ -134,7 +137,11 @@ export class MineSweeper implements IMineSweeper {
     this.setup(options)
   }
 
-  public clickCell(row: number, col: number): void {
+  public handleCellAction(
+    row: number,
+    col: number,
+    action: 'click' | 'flag'
+  ): void {
     if (
       this.gameStatus === GameStatus.LOST ||
       this.gameStatus === GameStatus.WON
@@ -149,14 +156,23 @@ export class MineSweeper implements IMineSweeper {
       this.gameStatus = GameStatus.IN_PROGRESS
     }
 
-    if (cell.getIsFlagged()) {
+    if (
+      (action === 'flag' &&
+        this.numFlags === this.numMines &&
+        !cell.getIsFlagged()) ||
+      (action === 'click' && (cell.getIsFlagged() || cell.getIsRevealed()))
+    ) {
       return
     }
 
-    if (cell.getIsRevealed()) {
-      return
+    if (action === 'flag') {
+      this.handleFlagAction(cell)
+    } else {
+      this.handleClickAction(cell, row, col)
     }
+  }
 
+  private handleClickAction(cell: Cell, row: number, col: number): void {
     cell.setIsRevealed(true)
     this.numRevealed++
 
@@ -169,46 +185,36 @@ export class MineSweeper implements IMineSweeper {
       this.handleWin()
       this.gameStatus = GameStatus.WON
     } else if (cell.getNumAdjacentMines() === 0) {
-      this.clickAdjacentCells(row, col)
+      this.forEachAdjacentCell(row, col, (cell, row, col) => {
+        if (!cell.getIsMine() && !cell.getIsRevealed()) {
+          this.handleClickAction(cell, row, col)
+        }
+      })
     }
   }
 
-  public flagCell(row: number, col: number): void {
-    if (
-      this.gameStatus === GameStatus.LOST ||
-      this.gameStatus === GameStatus.WON
-    ) {
-      return
-    }
-
-    this.startTimer()
-    const cell = this.board[row][col]
-
-    if (this.numFlags === this.numMines && !cell.getIsFlagged()) {
-      return
-    }
-
-    if (cell.getIsRevealed()) {
-      return
-    }
-
+  private handleFlagAction(cell: Cell): void {
     if (cell.getIsFlagged()) {
       this.numFlags--
     } else {
       this.numFlags++
     }
-
     cell.setIsFlagged(!cell.getIsFlagged())
   }
 
-  private clickAdjacentCells(row: number, col: number): void {
+  private isValidCell(row: number, col: number): boolean {
+    return row >= 0 && row < this.numRows && col >= 0 && col < this.numCols
+  }
+
+  private forEachAdjacentCell(
+    row: number,
+    col: number,
+    callback: (cell: Cell, row: number, col: number) => void
+  ): void {
     for (let i = row - 1; i <= row + 1; i++) {
       for (let j = col - 1; j <= col + 1; j++) {
-        if (i < 0 || i >= this.numRows || j < 0 || j >= this.numCols) {
-          continue
-        }
-        if (!this.board[i][j].getIsRevealed()) {
-          this.clickCell(i, j)
+        if (this.isValidCell(i, j)) {
+          callback(this.board[i][j], i, j)
         }
       }
     }
@@ -262,7 +268,7 @@ export class MineSweeper implements IMineSweeper {
 
   private handleLoss(cell: Cell): void {
     cell.setIsMineClicked(true)
-    this.gameOver()
+    this.handleGameOver()
     this.timer.stop()
     this.gameStatus = GameStatus.LOST
   }
@@ -272,21 +278,19 @@ export class MineSweeper implements IMineSweeper {
     this.gameStatus = GameStatus.WON
   }
 
-  private gameOver(): void {
+  private handleGameOver(): void {
     for (let row = 0; row < this.numRows; row++) {
       for (let col = 0; col < this.numCols; col++) {
-        if (
-          this.board[row][col].getIsMine() &&
-          !this.board[row][col].getIsFlagged()
-        ) {
-          this.board[row][col].setIsRevealed(true)
+        const cell = this.board[row][col]
+        if (cell.getIsMine() && !cell.getIsFlagged()) {
+          cell.setIsRevealed(true)
         }
       }
     }
   }
 
   private startTimer(): void {
-    if (this.gameStatus === GameStatus.WAITING) {
+    if (this.gameStatus === GameStatus.WAITING && !this.timer.isStarted()) {
       this.timer.start()
     }
   }

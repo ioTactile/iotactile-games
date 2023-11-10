@@ -109,12 +109,12 @@ const restartGame = () => {
 
 const handleRightClick = (data: { rowIndex: number; colIndex: number }) => {
   const { rowIndex, colIndex } = data
-  mineSweeper.value.flagCell(rowIndex, colIndex)
+  mineSweeper.value.handleCellAction(rowIndex, colIndex, 'flag')
 }
 
 const handleLeftClick = (data: { rowIndex: number; colIndex: number }) => {
   const { rowIndex, colIndex } = data
-  mineSweeper.value.clickCell(rowIndex, colIndex)
+  mineSweeper.value.handleCellAction(rowIndex, colIndex, 'click')
 }
 
 onUnmounted(() => {
