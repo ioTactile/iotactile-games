@@ -28,12 +28,16 @@ export interface IMineSweeper {
   getNumCols(): number
   getNumMines(): number
   getNumFlags(): number
+  getNumRevealed(): number
   getTimer(): Timer
+  getCell(row: number, col: number): Cell
+  getGameStatus(): GameStatus
   getGameStatusString(): string
   getDifficulty(): Difficulty
   setup(options: GameOptions): void
   restart(options: GameOptions): void
   handleCellAction(row: number, col: number, action: 'click' | 'flag'): void
+  togglePause(): void
 }
 
 export class MineSweeper implements IMineSweeper {
@@ -104,11 +108,16 @@ export class MineSweeper implements IMineSweeper {
       case GameStatus.WAITING:
         return 'En attente'
       case GameStatus.IN_PROGRESS:
+        if (this.timer.getIsPaused()) {
+          return 'Pause'
+        }
         return 'En cours'
       case GameStatus.WON:
         return 'Gagné'
       case GameStatus.LOST:
         return 'Perdu'
+      default:
+        return 'En attente'
     }
   }
 
@@ -169,6 +178,16 @@ export class MineSweeper implements IMineSweeper {
       this.handleFlagAction(cell)
     } else {
       this.handleClickAction(cell, row, col)
+    }
+  }
+
+  public togglePause(): void {
+    if (
+      this.gameStatus === GameStatus.IN_PROGRESS &&
+      this.timer.getIsPaused()
+    ) {
+      this.timer.start()
+      this.gameStatus = GameStatus.IN_PROGRESS
     }
   }
 
@@ -268,21 +287,22 @@ export class MineSweeper implements IMineSweeper {
 
   private handleLoss(cell: Cell): void {
     cell.setIsMineClicked(true)
-    this.handleGameOver()
+    this.reavealAllMines()
     this.timer.stop()
     this.gameStatus = GameStatus.LOST
   }
 
   private handleWin(): void {
+    this.reavealAllMines()
     this.timer.stop()
     this.gameStatus = GameStatus.WON
   }
 
-  private handleGameOver(): void {
+  private reavealAllMines(): void {
     for (let row = 0; row < this.numRows; row++) {
       for (let col = 0; col < this.numCols; col++) {
         const cell = this.board[row][col]
-        if (cell.getIsMine() && !cell.getIsFlagged()) {
+        if (cell.getIsMine()) {
           cell.setIsRevealed(true)
         }
       }

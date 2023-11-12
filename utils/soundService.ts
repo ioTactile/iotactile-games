@@ -1,16 +1,41 @@
 import { Howl } from 'howler'
-import { random } from '~/utils'
+import { random } from '../utils/'
 
-export default class SoundService {
+export interface ISoundService {
+  loadSound(key: string, src: string, volume: number): void
+  unloadSound(key: string): void
+  playSound(key: string): void
+  stopSound(key: string): void
+  loadAudioTracks(
+    headerTrackName: string,
+    audioTracks: string[],
+    volume: number
+  ): void
+  playAudioTracks(headerTrackName: string, audioTracksLength: number): void
+  stopAudioTracks(headerTrackName: string, audioTracksLength: number): void
+  muteSound(key: string): void
+  unmuteSound(key: string): void
+  stopAllSounds(): void
+  unloadAllSounds(): void
+  isSoundLoaded(key: string): boolean
+  isSoundMuted(key: string): boolean
+  isSoundPlaying(key: string): boolean
+  isAudioTrackPlaying(
+    headerTrackName: string,
+    audioTracksLength: number
+  ): boolean
+  isAudioTrackMuted(headerTrackName: string, audioTracksLength: number): boolean
+  unloadAudioTracks(headerTrackName: string, audioTracksLength: number): void
+  muteAudioTracks(headerTrackName: string, audioTracksLength: number): void
+  unmuteAudioTracks(headerTrackName: string, audioTracksLength: number): void
+  isAudioTrackLoaded(
+    headerTrackName: string,
+    audioTracksLength: number
+  ): boolean
+}
+
+export class SoundService implements ISoundService {
   private sounds: Record<string, Howl> = {}
-
-  public isSoundLoaded(key: string): boolean {
-    return !!this.sounds[key]
-  }
-
-  public isSoundMuted(key: string): boolean {
-    return this.sounds[key]?.volume() === 0
-  }
 
   public loadSound(key: string, src: string, volume: number): void {
     this.sounds[key] = new Howl({
@@ -74,13 +99,75 @@ export default class SoundService {
 
   public muteSound(key: string): void {
     if (this.sounds[key]) {
-      this.sounds[key].volume(0)
+      this.sounds[key].mute(true)
     }
   }
 
   public unmuteSound(key: string): void {
     if (this.sounds[key]) {
-      this.sounds[key].volume(1)
+      this.sounds[key].mute(false)
+    }
+  }
+
+  public stopAllSounds(): void {
+    Object.values(this.sounds).forEach((sound) => {
+      sound.stop()
+    })
+  }
+
+  public unloadAllSounds(): void {
+    Object.values(this.sounds).forEach((sound) => {
+      sound.unload()
+    })
+  }
+
+  public isSoundMuted(key: string): boolean {
+    return !!this.sounds[key]?.mute()
+  }
+
+  // For testing purposes
+
+  public isSoundLoaded(key: string): boolean {
+    return !!this.sounds[key]
+  }
+
+  public isSoundPlaying(key: string): boolean {
+    return !!this.sounds[key]?.playing()
+  }
+
+  public isAudioTrackPlaying(
+    headerTrackName: string,
+    audioTracksLength: number
+  ): boolean {
+    for (let i = 0; i < audioTracksLength; i++) {
+      const trackName = `${headerTrackName}-${i}`
+      if (this.isSoundPlaying(trackName)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  public isAudioTrackMuted(
+    headerTrackName: string,
+    audioTracksLength: number
+  ): boolean {
+    for (let i = 0; i < audioTracksLength; i++) {
+      const trackName = `${headerTrackName}-${i}`
+      if (!this.isSoundMuted(trackName)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  public unloadAudioTracks(
+    headerTrackName: string,
+    audioTracksLength: number
+  ): void {
+    for (let i = 0; i < audioTracksLength; i++) {
+      const trackName = `${headerTrackName}-${i}`
+      this.unloadSound(trackName)
     }
   }
 
@@ -104,15 +191,16 @@ export default class SoundService {
     }
   }
 
-  public stopAllSounds(): void {
-    Object.values(this.sounds).forEach((sound) => {
-      sound.stop()
-    })
-  }
-
-  public unloadAllSounds(): void {
-    Object.values(this.sounds).forEach((sound) => {
-      sound.unload()
-    })
+  public isAudioTrackLoaded(
+    headerTrackName: string,
+    audioTracksLength: number
+  ): boolean {
+    for (let i = 0; i < audioTracksLength; i++) {
+      const trackName = `${headerTrackName}-${i}`
+      if (!this.isSoundLoaded(trackName)) {
+        return false
+      }
+    }
+    return true
   }
 }

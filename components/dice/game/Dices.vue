@@ -64,7 +64,7 @@ import {
   diceSessionPlayerTriesConverter
 } from '~/stores'
 import type { Dice } from '~/functions/src/types'
-import SoundService from '~/utils/soundService'
+import { SoundService } from '~/utils/soundService'
 import { random } from '~/utils'
 
 type diceFaces = {

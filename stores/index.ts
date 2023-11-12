@@ -19,7 +19,8 @@ import type {
   LinguaVaultScoreboard,
   LinguaVaultSessionRemainingTurns,
   LinguaVaultSessionPlayerTurn,
-  LinguaVaultSessionWords
+  LinguaVaultSessionWords,
+  MineSweeperScoreboard
 } from '~/functions/src/types'
 
 type NestedTypeMapper<T, I, O> = T extends I
@@ -406,6 +407,33 @@ export const linguaVaultSessionWordsConverter: FirestoreDataConverter<LocalLingu
       return {
         ...data,
         id: snapshot.id
+      }
+    }
+  }
+
+// Mine Sweeper
+
+type DatabaseMineSweeperSessionScoresType = NestedTypeMapper<
+  MineSweeperScoreboard,
+  Timestamp,
+  FirestoreTimestamp
+>
+export type LocalMineSweeperScoreboardType = NestedTypeMapper<
+  MineSweeperScoreboard,
+  Timestamp,
+  Date
+>
+export const mineSweeperScoreboardConverter: FirestoreDataConverter<LocalMineSweeperScoreboardType> =
+  {
+    toFirestore: (item) => item,
+    fromFirestore: (
+      snapshot: QueryDocumentSnapshot<DatabaseMineSweeperSessionScoresType>,
+      options
+    ) => {
+      const data = snapshot.data(options)
+      return {
+        ...data,
+        userId: snapshot.id
       }
     }
   }

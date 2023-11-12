@@ -1,39 +1,70 @@
 <template>
-  <div class="main-container">
-    <h1 class="game-title">démineur</h1>
-    <div class="header">
-      <MinesweeperDifficultySelector
-        :difficulties="difficulties"
-        @toggle-custom-game="isCustom = !isCustom"
-        @start-game="startGame"
-      />
-      <MinesweeperCustomGameForm
-        v-if="isCustom"
-        @start-custom-game="startGame"
-      />
-      <MinesweeperGameStatus
-        :game-status="gameStatus"
-        :timer="timer"
-        :is-custom="isCustom"
-        @start-custom-game="startGame"
-      />
+  <minesweeper-template>
+    <div class="d-flex justify-center align-center h-100">
+      <template v-if="menuPage !== 4">
+        <div class="menu-wrapper">
+          <button
+            v-if="menuPage"
+            class="arrow-back"
+            @click="returnToPreviousPage(menuPage)"
+          >
+            <img src="/minesweeper/ui/left-arrow.svg" alt="Retour" />
+          </button>
+          <h1 class="game-title mt-10 mb-6">Démineur</h1>
+          <div class="d-flex justify-center">
+            <minesweeper-menu-main
+              v-if="menuPage === 0"
+              @action="handleActions"
+            />
+            <minesweeper-menu-play
+              v-if="menuPage === 1"
+              :is-custom="isCustom"
+              @start-game="startGame"
+              @is-custom="toggleIsCustom"
+              @action="handleActions"
+            />
+            <minesweeper-menu-ranking
+              v-if="menuPage === 2"
+              @action="handleActions"
+            />
+            <minesweeper-menu-rules v-if="menuPage === 3" />
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="game-page">
+          <button class="arrow-back" @click="returnToPreviousPage(menuPage)">
+            <img src="/minesweeper/ui/left-arrow.svg" alt="Retour" />
+          </button>
+          <h1 class="game-title">Démineur</h1>
+          <minesweeper-game-status
+            :game-status-to-string="gameStatusToString"
+            :game-status="gameStatus"
+            :timer="timer"
+          />
+          <div class="game-board">
+            <minesweeper-game-board
+              :game-board="gameBoard"
+              :num-rows="numRows"
+              :num-cols="numCols"
+              :mine-sweeper="mineSweeper"
+              :timer="timer"
+              @restart-game="restartGame"
+              @left-click="handleLeftClick"
+              @right-click="handleRightClick"
+            />
+          </div>
+        </div>
+      </template>
     </div>
-    <MinesweeperGameBoard
-      :game-board="gameBoard"
-      :num-rows="numRows"
-      :num-cols="numCols"
-      :mine-sweeper="mineSweeper"
-      :timer="timer.getNum()"
-      @restart-game="restartGame"
-      @left-click="handleLeftClick"
-      @right-click="handleRightClick"
-    />
-  </div>
+  </minesweeper-template>
 </template>
 
 <script setup lang="ts">
 import { MineSweeper, Difficulty } from '~/utils/minesweeper/mineSweeper'
 import type { GameOptions, IMineSweeper } from '~/utils/minesweeper/mineSweeper'
+import type { Cell } from '~/utils/minesweeper/cell'
+import type { Timer } from '~/utils/minesweeper/Timer'
 
 useSeoMeta({
   title: 'Démineur - ioTactile Games',
@@ -47,44 +78,54 @@ definePageMeta({
   middleware: ['auth']
 })
 
-const difficulties = [
-  {
-    name: 'Débutant',
-    numRows: 9,
-    numCols: 9,
-    numMines: 10,
-    difficulty: Difficulty.BEGINNER
-  },
-  {
-    name: 'Intermédiaire',
-    numRows: 16,
-    numCols: 16,
-    numMines: 40,
-    difficulty: Difficulty.INTERMEDIATE
-  },
-  {
-    name: 'Expert',
-    numRows: 30,
-    numCols: 16,
-    numMines: 99,
-    difficulty: Difficulty.EXPERT
-  }
-]
+const actionMap: Record<string, number> = {
+  play: 1,
+  ranking: 2,
+  rankingBeginner: 2.1,
+  rankingIntermediate: 2.2,
+  rankingExpert: 2.3,
+  rankingCustom: 2.4,
+  rules: 3,
+  gameBoard: 4
+}
 
 const mineSweeper = ref<IMineSweeper>(new MineSweeper())
 const numRows = ref<number>(9)
 const numCols = ref<number>(9)
 const numMines = ref<number>(10)
 const difficulty = ref<Difficulty>(Difficulty.BEGINNER)
+const menuPage = ref<number>(0)
 const isCustom = ref<boolean>(false)
 
-const gameBoard = computed(() => mineSweeper.value.getBoard())
+const toggleIsCustom = (value?: boolean): void => {
+  isCustom.value = value ?? !isCustom.value
+}
 
-const timer = computed(() => mineSweeper.value.getTimer())
+const handleActions = (action: string): void => {
+  menuPage.value = actionMap[action] || 0
+}
 
-const gameStatus = computed(() => mineSweeper.value.getGameStatusString())
+const returnToPreviousPage = (actualPage: number): void => {
+  if (actualPage > 2 && actualPage < 3) {
+    menuPage.value = 2
+  } else if (actualPage === 1 && isCustom.value === true) {
+    isCustom.value = false
+  } else {
+    menuPage.value = 0
+  }
+}
 
-const startGame = (options: GameOptions) => {
+const gameBoard = computed((): Cell[][] => mineSweeper.value.getBoard())
+
+const timer = computed((): Timer => mineSweeper.value.getTimer())
+
+const gameStatusToString = computed((): string =>
+  mineSweeper.value.getGameStatusString()
+)
+
+const gameStatus = computed((): number => mineSweeper.value.getGameStatus())
+
+const startGame = (options: GameOptions): void => {
   if (options.numMines > options.numRows * options.numCols) {
     return
   }
@@ -94,53 +135,108 @@ const startGame = (options: GameOptions) => {
   numCols.value = options.numCols
   numMines.value = options.numMines
   difficulty.value = options.difficulty
-  isCustom.value = false
 }
 
-const restartGame = () => {
+const restartGame = (): void => {
   mineSweeper.value.restart({
     numRows: numRows.value,
     numCols: numCols.value,
     numMines: numMines.value,
     difficulty: difficulty.value
   })
-  isCustom.value = false
 }
 
-const handleRightClick = (data: { rowIndex: number; colIndex: number }) => {
+const handleRightClick = (data: {
+  rowIndex: number
+  colIndex: number
+}): void => {
   const { rowIndex, colIndex } = data
   mineSweeper.value.handleCellAction(rowIndex, colIndex, 'flag')
+  togglePause()
 }
 
-const handleLeftClick = (data: { rowIndex: number; colIndex: number }) => {
+const handleLeftClick = (data: {
+  rowIndex: number
+  colIndex: number
+}): void => {
   const { rowIndex, colIndex } = data
   mineSweeper.value.handleCellAction(rowIndex, colIndex, 'click')
+  togglePause()
 }
 
-onUnmounted(() => {
+const togglePause = () => {
+  mineSweeper.value.togglePause()
+}
+
+onUnmounted((): void => {
   mineSweeper.value.getTimer().stop()
 })
 </script>
 
 <style scoped lang="scss">
-.main-container {
+.menu-wrapper {
+  position: relative;
+  width: 500px;
+  height: 650px;
+  background-color: rgb(var(--v-theme-mineSweeperMainSurface));
+  box-shadow: -10px -10px rgba(217, 217, 217, 0.3);
+  color: rgb(var(--v-theme-mineSweeperMainBackground));
+
+  .game-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .arrow-back {
+    position: absolute;
+    top: 58px;
+    left: 20px;
+
+    img {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+.game-page {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px;
+  width: 1100px;
+  height: 700px;
+  padding: 2rem;
+  background-color: rgb(var(--v-theme-mineSweeperMainSurface));
+  box-shadow: -10px -10px rgba(217, 217, 217, 0.3);
+  color: rgb(var(--v-theme-mineSweeperMainBackground));
 
-  h1 {
-    text-align: center;
-    font-size: 2rem;
+  .game-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3rem;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
     text-transform: uppercase;
-    color: rgb(var(--v-theme-onBackground));
+    color: rgb(var(--v-theme-mineSweeperMainBackground));
   }
 
-  .header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  .game-board {
+    margin-top: 2rem;
+  }
+
+  .arrow-back {
+    position: absolute;
+    top: 48px;
+    left: 340px;
+
+    img {
+      width: 40px;
+      height: 40px;
+    }
   }
 }
 </style>

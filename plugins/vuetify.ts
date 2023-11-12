@@ -18,7 +18,13 @@ const myCustomLightTheme: ThemeDefinition = {
     diceMainTertiary: '#EB9444', // orange
     diceMainLightTertiary: '#FFAC49', // light orange
     diceMainDarkTertiary: '#B77335', // dark orange
-    diceMainModalBackground: '#d9d9d9' // light grey
+    diceMainModalBackground: '#d9d9d9', // light grey
+    // Main MineSweeper colors
+    mineSweeperMainPrimary: '#1479d5', // blue
+    mineSweeperMainSecondary: '#59b4fb', // light blue
+    mineSweeperMainTertiary: '#1363ac', // dark blue
+    mineSweeperMainBackground: '#161616', // dark grey
+    mineSweeperMainSurface: '#d9d9d9' // light grey
   }
 }
 const myCustomDarkTheme: ThemeDefinition = {
@@ -38,7 +44,13 @@ const myCustomDarkTheme: ThemeDefinition = {
     diceMainTertiary: '#EB9444', // orange
     diceMainLightTertiary: '#FFAC49', // light orange
     diceMainDarkTertiary: '#B77335', // dark orange
-    diceMainModalBackground: '#2a2a2a' // dark grey
+    diceMainModalBackground: '#2a2a2a', // dark grey
+    // Main MineSweeper colors
+    mineSweeperMainPrimary: '#1479d5', // blue
+    mineSweeperMainSecondary: '#59b4fb', // light blue
+    mineSweeperMainTertiary: '#1363ac', // dark blue
+    mineSweeperMainBackground: '#161616', // dark grey
+    mineSweeperMainSurface: '#d9d9d9' // light grey
   }
 }
 

@@ -38,7 +38,7 @@ import { VIcon } from 'vuetify/components'
 import { collection } from 'firebase/firestore'
 import { mdiAccount } from '@mdi/js'
 import { diceSessionConverter } from '~/stores'
-import DiceSession from '~/utils/dice/diceSession'
+import { DiceSession } from '~/utils/dice/diceSession'
 
 const db = useFirestore()
 const user = useCurrentUser()

@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import DiceSession from '~/utils/dice/diceSession'
+import { DiceSession } from '~/utils/dice/diceSession'
 
 const emit = defineEmits<{
   (e: 'action', value: string): void

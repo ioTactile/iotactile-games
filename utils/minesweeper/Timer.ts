@@ -22,6 +22,7 @@ export class Timer {
   }
 
   public start(): void {
+    this.isPaused = false
     this.returnType = setInterval(() => {
       this.num++
     }, 1000)
@@ -38,6 +39,7 @@ export class Timer {
   public reset(): void {
     this.returnType = undefined
     this.num = 0
+    this.isPaused = false
   }
 
   public togglePause(): void {
@@ -45,7 +47,7 @@ export class Timer {
       this.start()
     } else {
       this.stop()
+      this.isPaused = true
     }
-    this.isPaused = !this.isPaused
   }
 }

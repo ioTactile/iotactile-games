@@ -37,7 +37,7 @@ import { VImg } from 'vuetify/components'
 import { doc, updateDoc } from 'firebase/firestore'
 import { sleep } from '~/utils'
 import type { Dice } from '~/functions/src/types'
-import SoundService from '~/utils/soundService'
+import { SoundService } from '~/utils/soundService'
 
 // Types
 

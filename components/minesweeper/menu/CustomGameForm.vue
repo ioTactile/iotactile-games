@@ -30,7 +30,7 @@
         max="10000"
       />
     </div>
-    <button type="submit" class="btn">VALIDER</button>
+    <button type="submit" class="button-mineSweeper">VALIDER</button>
   </form>
 </template>
 
@@ -46,7 +46,7 @@ const numRows = ref<number>(30)
 const numCols = ref<number>(30)
 const numMines = ref<number>(150)
 
-const startCustomGame = () => {
+const startCustomGame = (): void => {
   emit('startCustomGame', {
     numRows: numRows.value,
     numCols: numCols.value,
@@ -58,24 +58,38 @@ const startCustomGame = () => {
 
 <style scoped lang="scss">
 form {
-  display: inline-block;
-  margin-bottom: 10px;
-  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
 
   .form-group {
-    display: inline-block;
-    color: rgb(var(--v-theme-onBackground));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     label {
+      font-size: 1.75rem;
+      font-weight: bold;
+      font-family: 'Orbitron', sans-serif;
       text-transform: uppercase;
-      margin-left: 10px;
+      letter-spacing: 0.1rem;
     }
 
     input {
-      border: 1px solid #ccc;
+      width: 100px;
+      height: 64px;
       text-align: center;
-      width: 50px;
-      height: 25px;
+      background-color: rgb(var(--v-theme-mineSweeperMainPrimary));
+      border-top: 4px solid rgb(var(--v-theme-mineSweeperMainSecondary));
+      border-left: 4px solid rgb(var(--v-theme-mineSweeperMainSecondary));
+      border-right: 4px solid rgb(var(--v-theme-mineSweeperMainTertiary));
+      border-bottom: 4px solid rgb(var(--v-theme-mineSweeperMainTertiary));
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.1rem;
+      margin: 1rem 0;
     }
 
     input:focus {
@@ -89,23 +103,8 @@ form {
     }
   }
 
-  @media screen and (max-width: 600px) {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
-    align-items: center;
-
-    .form-group {
-      margin: 5px;
-    }
-  }
-
   button {
-    border: 1px solid #ccc;
-    margin-left: 10px;
-    padding: 0 5px;
-    width: 60px;
-    height: 25px;
+    margin-top: 1rem;
   }
 }
 </style>

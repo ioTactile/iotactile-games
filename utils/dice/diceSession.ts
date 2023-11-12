@@ -20,10 +20,19 @@ import {
   diceSessionScoresConverter,
   diceScoreboardConverter,
   diceSessionChatConverter
-} from '~/stores'
+} from '~/stores/'
 import type { LocalDiceSessionType } from '~/stores'
 
-export default class diceSession {
+export interface IDiceSession {
+  create(name: string): void
+  start(session: LocalDiceSessionType): void
+  leave(session: LocalDiceSessionType): void
+  delete(session: LocalDiceSessionType): void
+  join(session: LocalDiceSessionType): void
+  quickJoin(): void
+}
+
+export class DiceSession implements IDiceSession {
   private db = useFirestore()
   private user = useCurrentUser()
   private notifier = useNotifier()
@@ -116,7 +125,7 @@ export default class diceSession {
     return scores
   }
 
-  create = async (name: string) => {
+  public async create(name: string) {
     if (!this.user.value) return
 
     const sessionId = doc(this.sessionsRef).id
