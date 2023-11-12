@@ -121,15 +121,15 @@ describe('MineSweeper', () => {
 
   test('getTimer', async () => {
     mineSweeper?.setup(options)
-    expect(mineSweeper?.getTimer().getNum()).toBe(0)
+    expect(mineSweeper?.getTimer().getElapsedTime()).toBe(0)
 
     mineSweeper?.handleCellAction(0, 0, 'click')
     await sleep(1000)
-    expect(mineSweeper?.getTimer().getNum()).toBeGreaterThan(0)
+    expect(mineSweeper?.getTimer().getElapsedTime()).toBeGreaterThan(0)
 
-    const timer = mineSweeper?.getTimer().getNum()
+    const timer = mineSweeper?.getTimer().getElapsedTime()
     mineSweeper?.getTimer().togglePause()
-    expect(mineSweeper?.getTimer().getNum()).toBe(timer)
+    expect(mineSweeper?.getTimer().getElapsedTime()).toBe(timer)
     expect(mineSweeper?.getTimer().getIsPaused()).toBe(true)
     mineSweeper?.getTimer().togglePause()
 
@@ -142,9 +142,9 @@ describe('MineSweeper', () => {
 
     mineSweeper?.getTimer().reset()
     expect(mineSweeper?.getTimer().getReturnType()).toBe(undefined)
-    expect(mineSweeper?.getTimer().getNum()).toBe(0)
+    expect(mineSweeper?.getTimer().getElapsedTime()).toBe(0)
 
     mineSweeper?.restart(options)
-    expect(mineSweeper?.getTimer().getNum()).toBe(0)
+    expect(mineSweeper?.getTimer().getElapsedTime()).toBe(0)
   })
 })

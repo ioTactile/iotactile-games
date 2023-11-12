@@ -152,7 +152,6 @@ const handleRightClick = (data: {
 }): void => {
   const { rowIndex, colIndex } = data
   mineSweeper.value.handleCellAction(rowIndex, colIndex, 'flag')
-  togglePause()
 }
 
 const handleLeftClick = (data: {
@@ -161,11 +160,6 @@ const handleLeftClick = (data: {
 }): void => {
   const { rowIndex, colIndex } = data
   mineSweeper.value.handleCellAction(rowIndex, colIndex, 'click')
-  togglePause()
-}
-
-const togglePause = () => {
-  mineSweeper.value.togglePause()
 }
 
 onUnmounted((): void => {

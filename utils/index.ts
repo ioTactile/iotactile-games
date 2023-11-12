@@ -5,6 +5,25 @@ export const numberFormatter = (value: number, isPourcentage: boolean) => {
   return fixedValue
 }
 
+export const timerFormatter = (value: number, withMs: boolean) => {
+  let minutes = 0
+  let seconds = 0
+  let milliseconds = 0
+  if (withMs) {
+    minutes = Math.floor(value / 60000)
+    seconds = Math.floor((value % 60000) / 1000)
+    milliseconds = Math.floor((value % 1000) / 10)
+    return `${minutes < 10 ? '0' : ''}${minutes}:${
+      seconds < 10 ? '0' : ''
+    }${seconds}:${milliseconds < 10 ? '0' : ''}${milliseconds}`
+  }
+  minutes = Math.floor(value / 60)
+  seconds = Math.floor((value % 60) / 1000)
+  return `${minutes < 10 ? '0' : ''}${minutes}:${
+    seconds < 10 ? '0' : ''
+  }${seconds}`
+}
+
 export const sum = (object: Record<string, number | null>) => {
   return Object.values(object).reduce((a, b) => (a || 0) + (b || 0), 0)
 }

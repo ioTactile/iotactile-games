@@ -15,7 +15,9 @@
           :class="{ rotate: isRotating }"
           @click="restartGame"
         />
-        <div class="timer">{{ timer.getNum() }}</div>
+        <div class="timer">
+          {{ timerFormatter(timer.getElapsedTime(), true) }}
+        </div>
       </div>
       <div class="hd_wrapper-border-vert wrapper-border-vert" />
     </div>
@@ -66,7 +68,7 @@ import { mdiReload } from '@mdi/js'
 import { Cell } from '~/utils/minesweeper/cell'
 import type { IMineSweeper } from '~/utils/minesweeper/mineSweeper'
 import type { Timer } from '~/utils/minesweeper/Timer'
-import { sleep } from '~/utils'
+import { sleep, timerFormatter } from '~/utils'
 
 const props = defineProps<{
   gameBoard: Cell[][]
@@ -208,8 +210,8 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
       width: calc(100% - 36px);
       height: 48px;
       float: left;
-      background-color: #fff;
-      color: #000000;
+      background-color: #f0f8ff;
+      color: rgb(var(--v-theme-mineSweeperMainBackground));
 
       div {
         font-size: 1.25rem;
@@ -236,6 +238,7 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
       }
 
       .timer {
+        width: 70px;
         text-align: end;
       }
     }

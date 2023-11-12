@@ -37,7 +37,6 @@ export interface IMineSweeper {
   setup(options: GameOptions): void
   restart(options: GameOptions): void
   handleCellAction(row: number, col: number, action: 'click' | 'flag'): void
-  togglePause(): void
 }
 
 export class MineSweeper implements IMineSweeper {
@@ -52,19 +51,15 @@ export class MineSweeper implements IMineSweeper {
   private difficulty: Difficulty
 
   constructor() {
-    this.numRows = 9
-    this.numCols = 9
-    this.numMines = 10
-    this.difficulty = Difficulty.BEGINNER
+    this.board = []
+    this.numRows = 0
+    this.numCols = 0
+    this.numMines = 0
     this.numFlags = 0
     this.numRevealed = 0
     this.timer = new Timer()
     this.gameStatus = GameStatus.WAITING
-    this.board = Array.from({ length: this.numRows }, () =>
-      Array.from({ length: this.numCols }, () => new Cell())
-    )
-
-    this.generateBoard(this.numMines)
+    this.difficulty = Difficulty.BEGINNER
   }
 
   public getBoard(): Cell[][] {
@@ -178,16 +173,6 @@ export class MineSweeper implements IMineSweeper {
       this.handleFlagAction(cell)
     } else {
       this.handleClickAction(cell, row, col)
-    }
-  }
-
-  public togglePause(): void {
-    if (
-      this.gameStatus === GameStatus.IN_PROGRESS &&
-      this.timer.getIsPaused()
-    ) {
-      this.timer.start()
-      this.gameStatus = GameStatus.IN_PROGRESS
     }
   }
 
