@@ -433,7 +433,23 @@ export const mineSweeperScoreboardConverter: FirestoreDataConverter<LocalMineSwe
       const data = snapshot.data(options)
       return {
         ...data,
-        userId: snapshot.id
+        userId: snapshot.id,
+        beginner: {
+          ...data.beginner,
+          victoryDate: data.beginner.victoryDate.toDate()
+        },
+        intermediate: {
+          ...data.intermediate,
+          victoryDate: data.intermediate.victoryDate.toDate()
+        },
+        expert: {
+          ...data.expert,
+          victoryDate: data.expert.victoryDate.toDate()
+        },
+        custom: data.custom.map((customVictory) => ({
+          ...customVictory,
+          victoryDate: customVictory.victoryDate.toDate()
+        }))
       }
     }
   }

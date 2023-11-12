@@ -24,7 +24,9 @@ const myCustomLightTheme: ThemeDefinition = {
     mineSweeperMainSecondary: '#59b4fb', // light blue
     mineSweeperMainTertiary: '#1363ac', // dark blue
     mineSweeperMainBackground: '#161616', // dark grey
-    mineSweeperMainSurface: '#d9d9d9' // light grey
+    mineSweeperMainSurface: '#d9d9d9', // light grey
+    mineSweeperMainShadow: '#d9d9d9', // light grey
+    mainSweeperMainOnSurface: '#161616' // dark grey
   }
 }
 const myCustomDarkTheme: ThemeDefinition = {
@@ -50,7 +52,9 @@ const myCustomDarkTheme: ThemeDefinition = {
     mineSweeperMainSecondary: '#59b4fb', // light blue
     mineSweeperMainTertiary: '#1363ac', // dark blue
     mineSweeperMainBackground: '#161616', // dark grey
-    mineSweeperMainSurface: '#d9d9d9' // light grey
+    mineSweeperMainSurface: '#222222', // dark grey
+    mineSweeperMainShadow: '#979797', // grey
+    mainSweeperMainOnSurface: '#d9d9d9' // light grey
   }
 }
 

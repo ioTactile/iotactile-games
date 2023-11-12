@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware(async () => {
 
   if (!user) {
     notifier({
-      content: 'Tu dois être connecté pour accéder aux différents jeux.',
+      content: 'Tu dois être connecté pour accéder aux jeux multijoueurs.',
       color: 'error'
     })
     return navigateTo('/')

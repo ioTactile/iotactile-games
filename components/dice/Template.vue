@@ -13,7 +13,7 @@ const scale = ref<number>(1)
 const { width, height } = useDisplay()
 
 const handleResize = () => {
-  const targetHeight = 1080
+  const targetHeight = 980
   const targetWidth = 1200
 
   if (height.value > targetHeight) {
@@ -40,7 +40,7 @@ watch(
 #gamescene {
   position: absolute;
   left: 50%;
-  top: 50px;
+  top: 10px;
   transform: translateX(-50%);
   width: 1200px;
   height: 800px;
@@ -48,7 +48,7 @@ watch(
   background-color: rgb(var(--v-theme-diceMainPrimary));
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1120px) {
   #gamescene {
     border-radius: 0;
   }

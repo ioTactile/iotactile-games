@@ -1,14 +1,14 @@
 <template>
   <minesweeper-template>
     <div class="d-flex justify-center align-center h-100">
-      <template v-if="menuPage !== 4">
+      <template v-if="menuPage !== 5">
         <div class="menu-wrapper">
           <button
             v-if="menuPage"
             class="arrow-back"
             @click="returnToPreviousPage(menuPage)"
           >
-            <img src="/minesweeper/ui/left-arrow.svg" alt="Retour" />
+            <img :src="getArrowBackColor" alt="Retour" />
           </button>
           <h1 class="game-title mt-10 mb-6">Démineur</h1>
           <div class="d-flex justify-center">
@@ -24,23 +24,35 @@
               @action="handleActions"
             />
             <minesweeper-menu-ranking
-              v-if="menuPage === 2"
+              v-if="
+                menuPage === 2 ||
+                menuPage === 2.1 ||
+                menuPage === 2.2 ||
+                menuPage === 2.3 ||
+                menuPage === 2.4
+              "
+              :menu-page="menuPage"
               @action="handleActions"
             />
-            <minesweeper-menu-rules v-if="menuPage === 3" />
+            <minesweeper-menu-results v-if="menuPage === 3" />
+            <minesweeper-menu-rules
+              v-if="menuPage === 4"
+              @action="handleActions"
+            />
           </div>
         </div>
       </template>
       <template v-else>
         <div class="game-page">
           <button class="arrow-back" @click="returnToPreviousPage(menuPage)">
-            <img src="/minesweeper/ui/left-arrow.svg" alt="Retour" />
+            <img :src="getArrowBackColor" alt="Retour" />
           </button>
           <h1 class="game-title">Démineur</h1>
           <minesweeper-game-status
             :game-status-to-string="gameStatusToString"
             :game-status="gameStatus"
             :timer="timer"
+            @restart-game="restartGame"
           />
           <div class="game-board">
             <minesweeper-game-board
@@ -49,7 +61,6 @@
               :num-cols="numCols"
               :mine-sweeper="mineSweeper"
               :timer="timer"
-              @restart-game="restartGame"
               @left-click="handleLeftClick"
               @right-click="handleRightClick"
             />
@@ -61,10 +72,18 @@
 </template>
 
 <script setup lang="ts">
-import { MineSweeper, Difficulty } from '~/utils/minesweeper/mineSweeper'
+import { collection, getDoc, setDoc, doc } from 'firebase/firestore'
+import { useTheme } from 'vuetify'
+import { mineSweeperScoreboardConverter } from '~/stores'
+import {
+  MineSweeper,
+  Difficulty,
+  GameStatus
+} from '~/utils/minesweeper/mineSweeper'
 import type { GameOptions, IMineSweeper } from '~/utils/minesweeper/mineSweeper'
 import type { Cell } from '~/utils/minesweeper/cell'
 import type { Timer } from '~/utils/minesweeper/Timer'
+import type { CustomVictory } from '~/functions/src/types'
 
 useSeoMeta({
   title: 'Démineur - ioTactile Games',
@@ -74,9 +93,24 @@ useSeoMeta({
   ogImage: '/minesweeper.jpg'
 })
 
-definePageMeta({
-  middleware: ['auth']
-})
+// definePageMeta({
+//   middleware: ['auth']
+// })
+
+type OmittedCustomVictory = Omit<
+  CustomVictory,
+  'victories' | 'bestTime' | 'victoryDate'
+>
+
+const { current } = useTheme()
+
+const db = useFirestore()
+const user = useCurrentUser()
+
+const mineSweeperScoreboard = collection(
+  db,
+  'mineSweeperScoreboard'
+).withConverter(mineSweeperScoreboardConverter)
 
 const actionMap: Record<string, number> = {
   play: 1,
@@ -85,8 +119,9 @@ const actionMap: Record<string, number> = {
   rankingIntermediate: 2.2,
   rankingExpert: 2.3,
   rankingCustom: 2.4,
-  rules: 3,
-  gameBoard: 4
+  results: 3,
+  rules: 4,
+  gameBoard: 5
 }
 
 const mineSweeper = ref<IMineSweeper>(new MineSweeper())
@@ -125,6 +160,12 @@ const gameStatusToString = computed((): string =>
 
 const gameStatus = computed((): number => mineSweeper.value.getGameStatus())
 
+const getArrowBackColor = computed((): string => {
+  return current.value.dark
+    ? '/minesweeper/ui/left-arrow-grey.svg'
+    : '/minesweeper/ui/left-arrow.svg'
+})
+
 const startGame = (options: GameOptions): void => {
   if (options.numMines > options.numRows * options.numCols) {
     return
@@ -154,12 +195,124 @@ const handleRightClick = (data: {
   mineSweeper.value.handleCellAction(rowIndex, colIndex, 'flag')
 }
 
-const handleLeftClick = (data: {
+const handleLeftClick = async (data: {
   rowIndex: number
   colIndex: number
-}): void => {
+  callback: (gameStatus: GameStatus) => void
+}): Promise<void> => {
   const { rowIndex, colIndex } = data
   mineSweeper.value.handleCellAction(rowIndex, colIndex, 'click')
+
+  data.callback(mineSweeper.value.getGameStatus())
+  if (mineSweeper.value.getGameStatus() === GameStatus.WON) {
+    if (!user.value) return
+    const userRef = doc(db, 'users', user.value.uid)
+    const userDoc = await getDoc(userRef)
+    if (!userDoc.exists()) {
+      return
+    }
+    const username = userDoc.data().username
+
+    const difficulty = convertDifficultyEnumToString(
+      mineSweeper.value.getDifficulty()
+    )
+
+    let scoreboard: LocalMineSweeperScoreboardType = {
+      userId: user.value.uid,
+      username,
+      beginner: {
+        victories: 0,
+        bestTime: 0,
+        victoryDate: new Date()
+      },
+      intermediate: {
+        victories: 0,
+        bestTime: 0,
+        victoryDate: new Date()
+      },
+      expert: {
+        victories: 0,
+        bestTime: 0,
+        victoryDate: new Date()
+      },
+      custom: []
+    }
+
+    const scoreboardRef = doc(mineSweeperScoreboard, user.value.uid)
+    const scoreboardDoc = await getDoc(scoreboardRef)
+
+    if (scoreboardDoc.exists()) {
+      scoreboard = scoreboardDoc.data() || scoreboard
+    }
+
+    if (difficulty === 'custom') {
+      const customVictoryIndex = scoreboard[difficulty].findIndex(
+        (customVictory: OmittedCustomVictory) =>
+          customVictory.rows === mineSweeper.value.getNumRows() &&
+          customVictory.cols === mineSweeper.value.getNumCols() &&
+          customVictory.mines === mineSweeper.value.getNumMines()
+      )
+
+      if (customVictoryIndex !== -1) {
+        const scoreboardIndex = scoreboard[difficulty][customVictoryIndex]
+        const bestTime =
+          scoreboardIndex.bestTime >
+          mineSweeper.value.getTimer().getElapsedTime()
+            ? mineSweeper.value.getTimer().getElapsedTime()
+            : scoreboardIndex.bestTime
+        scoreboard[difficulty][customVictoryIndex] = {
+          rows: scoreboardIndex.rows,
+          cols: scoreboardIndex.cols,
+          mines: scoreboardIndex.mines,
+          victories: scoreboardIndex.victories + 1,
+          bestTime,
+          victoryDate: new Date(Date.now())
+        }
+      } else {
+        scoreboard[difficulty].push({
+          rows: mineSweeper.value.getNumRows(),
+          cols: mineSweeper.value.getNumCols(),
+          mines: mineSweeper.value.getNumMines(),
+          victories: 1,
+          bestTime: mineSweeper.value.getTimer().getElapsedTime(),
+          victoryDate: new Date(Date.now())
+        })
+      }
+    } else if (
+      difficulty === 'beginner' ||
+      difficulty === 'intermediate' ||
+      difficulty === 'expert'
+    ) {
+      const bestTime =
+        scoreboard[difficulty]?.bestTime >
+        mineSweeper.value.getTimer().getElapsedTime()
+          ? mineSweeper.value.getTimer().getElapsedTime()
+          : scoreboard[difficulty]?.bestTime ||
+            mineSweeper.value.getTimer().getElapsedTime()
+      scoreboard[difficulty] = {
+        victories: scoreboard[difficulty]?.victories + 1 || 1,
+        bestTime,
+        victoryDate: new Date(Date.now())
+      }
+    }
+
+    await setDoc(doc(mineSweeperScoreboard, user.value.uid), scoreboard, {
+      merge: true
+    })
+  }
+}
+
+const convertDifficultyEnumToString = (difficulty: Difficulty): string => {
+  switch (difficulty) {
+    case Difficulty.BEGINNER:
+      return 'beginner'
+    case Difficulty.INTERMEDIATE:
+      return 'intermediate'
+    case Difficulty.EXPERT:
+      return 'expert'
+    case Difficulty.CUSTOM:
+      return 'custom'
+  }
 }
 
 onUnmounted((): void => {
@@ -173,8 +326,8 @@ onUnmounted((): void => {
   width: 500px;
   height: 650px;
   background-color: rgb(var(--v-theme-mineSweeperMainSurface));
-  box-shadow: -10px -10px rgba(217, 217, 217, 0.3);
-  color: rgb(var(--v-theme-mineSweeperMainBackground));
+  box-shadow: -10px -10px rgba(var(--v-theme-mineSweeperMainShadow), 0.3);
+  color: rgb(var(--v-theme-onSurface));
 
   .game-title {
     font-family: 'Orbitron', sans-serif;
@@ -206,8 +359,8 @@ onUnmounted((): void => {
   height: 700px;
   padding: 2rem;
   background-color: rgb(var(--v-theme-mineSweeperMainSurface));
-  box-shadow: -10px -10px rgba(217, 217, 217, 0.3);
-  color: rgb(var(--v-theme-mineSweeperMainBackground));
+  box-shadow: -10px -10px rgba(var(--v-theme-mineSweeperMainShadow), 0.3);
+  color: rgb(var(--v-theme-onSurface));
 
   .game-title {
     font-family: 'Orbitron', sans-serif;
@@ -215,11 +368,25 @@ onUnmounted((): void => {
     font-weight: bold;
     letter-spacing: 0.1rem;
     text-transform: uppercase;
-    color: rgb(var(--v-theme-mineSweeperMainBackground));
+    color: rgb(var(--v-theme-mineSweeperMainOnSurface));
   }
 
   .game-board {
-    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--v-theme-mineSweeperMainBackground));
+    border-radius: 0;
   }
 
   .arrow-back {

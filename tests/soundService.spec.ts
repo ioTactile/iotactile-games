@@ -1,4 +1,4 @@
-import { describe, beforeEach, test, expect } from 'vitest'
+import { describe, beforeEach, test, expect, afterEach } from 'vitest'
 import { SoundService } from '../utils/soundService'
 import type { ISoundService } from '../utils/soundService'
 import { diceAudioTracks } from '../utils/'
@@ -8,6 +8,10 @@ describe('SoundService', () => {
 
   beforeEach(() => {
     soundService = new SoundService()
+  })
+
+  afterEach(() => {
+    soundService = null!
   })
 
   test('should load a sound', () => {

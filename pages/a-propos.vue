@@ -47,7 +47,7 @@ div {
   text-align: justify;
   margin: 20px auto;
 
-  h3 {
+  h1 {
     font-size: 2rem;
     text-align: center;
     margin-bottom: 10px;

@@ -49,6 +49,7 @@ export class MineSweeper implements IMineSweeper {
   private timer: Timer
   private gameStatus: GameStatus
   private difficulty: Difficulty
+  private isFirstClick: boolean
 
   constructor() {
     this.board = []
@@ -60,6 +61,7 @@ export class MineSweeper implements IMineSweeper {
     this.timer = new Timer()
     this.gameStatus = GameStatus.WAITING
     this.difficulty = Difficulty.BEGINNER
+    this.isFirstClick = true
   }
 
   public getBoard(): Cell[][] {
@@ -129,6 +131,7 @@ export class MineSweeper implements IMineSweeper {
     this.numRevealed = 0
     this.timer = new Timer()
     this.gameStatus = GameStatus.WAITING
+    this.isFirstClick = true
     this.board = this.board = Array.from({ length: this.numRows }, () =>
       Array.from({ length: this.numCols }, () => new Cell())
     )
@@ -171,12 +174,27 @@ export class MineSweeper implements IMineSweeper {
 
     if (action === 'flag') {
       this.handleFlagAction(cell)
+    } else if (action === 'click' && this.isFirstClick) {
+      this.handleClickAction(cell, row, col, this.isFirstClick)
     } else {
       this.handleClickAction(cell, row, col)
     }
   }
 
-  private handleClickAction(cell: Cell, row: number, col: number): void {
+  private handleClickAction(
+    cell: Cell,
+    row: number,
+    col: number,
+    isFirstClick?: boolean
+  ): void {
+    if (cell.getIsMine() && isFirstClick) {
+      cell.setIsFlagged(true)
+      return
+    }
+    if (!cell.getIsMine() && isFirstClick) {
+      this.isFirstClick = false
+    }
+
     cell.setIsRevealed(true)
     this.numRevealed++
 

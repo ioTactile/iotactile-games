@@ -26,6 +26,10 @@ const menuItems = [
     action: 'ranking'
   },
   {
+    title: 'Résultats',
+    action: 'results'
+  },
+  {
     title: 'Règles',
     action: 'rules'
   }

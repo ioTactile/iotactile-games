@@ -40,10 +40,10 @@ watch(
 #gamescene {
   position: absolute;
   left: 50%;
-  top: 50px;
+  top: 10px;
   transform: translateX(-50%);
   width: 1200px;
   height: 800px;
-  background-color: rgb(var(--v-theme-mineSweeperMainBackground));
+  background-color: rgb(var(--v-theme-background));
 }
 </style>

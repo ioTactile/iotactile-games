@@ -361,17 +361,26 @@ export const mineSweeperScoreboardConverter = {
   }
 }
 
-export type customVictories = {
+export type CustomVictory = {
   rows: number
   cols: number
   mines: number
+  victories: number
+  bestTime: number
+  victoryDate: Timestamp
+}
+
+export type Victory = {
+  victories: number
+  bestTime: number
+  victoryDate: Timestamp
 }
 
 export type MineSweeperScoreboard = {
   userId: string
   username: string
-  beginnerVictories: number
-  intermediateVictories: number
-  expertVictories: number
-  customVictories: customVictories[]
+  beginner: Victory
+  intermediate: Victory
+  expert: Victory
+  custom: CustomVictory[]
 }

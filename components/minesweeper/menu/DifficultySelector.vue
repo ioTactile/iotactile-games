@@ -61,7 +61,7 @@ const startGame = (value: Difficulty): void => {
 </script>
 
 <style scoped lang="scss">
-.button-mineSweeper:nth-child(even) {
+.button-mineSweeper:nth-child(odd) {
   margin: 3rem 0;
 }
 </style>

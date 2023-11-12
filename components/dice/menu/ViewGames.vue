@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { VIcon } from 'vuetify/components'
-import { collection } from 'firebase/firestore'
+import { collection, where, query, orderBy } from 'firebase/firestore'
 import { mdiAccount } from '@mdi/js'
 import { diceSessionConverter } from '~/stores'
 import { DiceSession } from '~/utils/dice/diceSession'
@@ -46,7 +46,13 @@ const user = useCurrentUser()
 const sessionsRef = collection(db, 'diceSessions').withConverter(
   diceSessionConverter
 )
-const sessions = useCollection(sessionsRef)
+const sessions = useCollection(
+  query(
+    sessionsRef,
+    where('isFinished', '==', false),
+    orderBy('creationDate', 'desc')
+  )
+)
 
 const handleButtonClick = (session: LocalDiceSessionType) => {
   const host = session.players[0].id === user.value?.uid

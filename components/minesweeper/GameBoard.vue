@@ -8,13 +8,7 @@
     <div class="header-screen">
       <div class="hd_wrapper-border-vert wrapper-border-vert" />
       <div class="top-area">
-        <div class="num-flags">{{ numNotDetectedMines }}</div>
-        <v-icon
-          :icon="mdiReload"
-          size="30"
-          :class="{ rotate: isRotating }"
-          @click="restartGame"
-        />
+        <div>{{ numNotDetectedMines }}</div>
         <div class="timer">
           {{ timerFormatter(timer.getElapsedTime(), true) }}
         </div>
@@ -63,12 +57,10 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon } from 'vuetify/components'
-import { mdiReload } from '@mdi/js'
 import { Cell } from '~/utils/minesweeper/cell'
 import type { IMineSweeper } from '~/utils/minesweeper/mineSweeper'
 import type { Timer } from '~/utils/minesweeper/Timer'
-import { sleep, timerFormatter } from '~/utils'
+import { timerFormatter } from '~/utils'
 
 const props = defineProps<{
   gameBoard: Cell[][]
@@ -79,12 +71,13 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'restartGame'): void
   (e: 'rightClick', args: { rowIndex: number; colIndex: number }): void
-  (e: 'leftClick', args: { rowIndex: number; colIndex: number }): void
+  (
+    e: 'leftClick',
+    args: { rowIndex: number; colIndex: number; callback(): void }
+  ): void
 }>()
 
-const isRotating = ref<boolean>(false)
 const cellSize = ref<number>(24)
 
 const numNotDetectedMines = computed((): number => {
@@ -151,19 +144,15 @@ const cellType = (cell: Cell): string => {
   }
 }
 
-const restartGame = async (): Promise<void> => {
-  isRotating.value = true
-  await sleep(1000)
-  isRotating.value = false
-  emit('restartGame')
-}
-
 const rightClick = (rowIndex: number, colIndex: number): void => {
-  emit('rightClick', { rowIndex, colIndex })
+  emit('rightClick', {
+    rowIndex,
+    colIndex
+  })
 }
 
 const leftClick = (rowIndex: number, colIndex: number): void => {
-  emit('leftClick', { rowIndex, colIndex })
+  emit('leftClick', { rowIndex, colIndex, callback: () => {} })
 }
 </script>
 
@@ -214,32 +203,14 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
       color: rgb(var(--v-theme-mineSweeperMainBackground));
 
       div {
-        font-size: 1.25rem;
+        font-size: 1rem;
         font-weight: 700;
-      }
-
-      .rotate {
-        animation: rotate 1s forwards;
-      }
-
-      @keyframes rotate {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      .num-flags,
-      .timer {
-        width: 30px;
-      }
-
-      .num-flags {
-        text-align: start;
+        font-family: 'Orbitron', 'sans-serif';
       }
 
       .timer {
-        width: 70px;
-        text-align: end;
+        min-width: 100px;
+        text-align: center;
       }
     }
   }

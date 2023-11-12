@@ -2,6 +2,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    match /diceSessions {
+      allow read: if request.auth.uid != null;
+    }
+
     match /diceSessions/{diceSession} {
       allow read, write: if request.auth.uid != null;
     }
@@ -30,7 +34,19 @@ service cloud.firestore {
      allow read, write: if request.auth.uid != null;
     }
 
+    match /diceScoreboard {
+      allow read: if request.auth.uid != null;
+    }
+
     match /diceScoreboard/{diceScoreboard} {
+     allow read, write: if request.auth.uid != null;
+    }
+
+    match /mineSweeperScoreboard {
+      allow read;
+    }
+
+    match /mineSweeperScoreboard/{mineSweeperScoreboard} {
      allow read, write: if request.auth.uid != null;
     }
 

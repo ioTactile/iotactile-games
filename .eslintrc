@@ -36,6 +36,7 @@
     "object-curly-spacing": "off",
     "space-before-function-paren": "off",
     "arrow-parens": ["error", "always"],
+    "indent": "off",
     "vue/html-self-closing": [
       "error",
       {

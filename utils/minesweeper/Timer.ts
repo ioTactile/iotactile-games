@@ -61,6 +61,7 @@ export class Timer {
     if (this.returnType) {
       clearInterval(this.returnType)
     }
+    this.returnType = undefined
     this.startTime = undefined
     this.elapsedTime = 0
     this.isPaused = false

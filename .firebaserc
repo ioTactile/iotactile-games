@@ -1,6 +1,5 @@
 {
   "projects": {
-    "iotactile-games": "iotactile-games",
     "default": "iotactile-games"
   }
 }
