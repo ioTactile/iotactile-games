@@ -5,6 +5,14 @@ export const numberFormatter = (value: number, isPourcentage: boolean) => {
   return fixedValue
 }
 
+export const dateFormatter = (value: Date) => {
+  return value.toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric'
+  })
+}
+
 export const timerFormatter = (value: number, withMs: boolean) => {
   let minutes = 0
   let seconds = 0
