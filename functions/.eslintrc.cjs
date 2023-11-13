@@ -28,6 +28,7 @@ module.exports = {
     indent: 'off',
     'object-curly-spacing': ['error', 'always'],
     'operator-linebreak': 'off',
-    'import/no-unresolved': 0
+    'import/no-unresolved': 0,
+    'linebreak-style': ['error', 'unix']
   }
 }

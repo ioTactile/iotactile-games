@@ -159,7 +159,7 @@ const isBestTime = (difficulty: string): boolean => {
   height: 40px;
   font-size: 1.25rem;
   font-family: 'Orbitron', sans-serif;
-  color: #fff;
+  color: rgb(var(--v-theme-onSurfaceButton));
   background-color: rgb(var(--v-theme-mineSweeperMainSecondary));
 
   div {
@@ -177,7 +177,7 @@ const isBestTime = (difficulty: string): boolean => {
     height: 50px;
     font-size: 1.25rem;
     font-family: 'Orbitron', sans-serif;
-    color: #fff;
+    color: rgb(var(--v-theme-onSurfaceButton));
     background-color: rgb(var(--v-theme-mineSweeperMainPrimary));
 
     div {

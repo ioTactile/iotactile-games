@@ -29,14 +29,14 @@
   </v-footer>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { VFooter } from 'vuetify/components'
 import { useDisplay } from 'vuetify'
 
 const { width, xs } = useDisplay()
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .v-footer {
   max-width: 1200px !important;
 }

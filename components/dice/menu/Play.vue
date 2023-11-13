@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { DiceSession } from '~/utils/dice/diceSession'
 
 const emit = defineEmits<{

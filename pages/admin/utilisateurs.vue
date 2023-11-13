@@ -39,7 +39,7 @@
   </v-container>
 </template>
 
-<script lang="ts" async setup>
+<script setup lang="ts">
 import { VContainer, VTable, VBtn } from 'vuetify/components'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { collection, getDocs } from 'firebase/firestore'

@@ -13,7 +13,7 @@
   </v-snackbar>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { VSnackbar, VBtn } from 'vuetify/components'
 import { mdiClose } from '@mdi/js'
 
