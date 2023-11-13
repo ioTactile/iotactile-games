@@ -349,3 +349,38 @@ export type LinguaVaultScoreboard = {
   scoreToGuess: number
   scoreToPropose: number
 }
+
+// Mine Sweeper
+
+export const mineSweeperScoreboardConverter = {
+  toFirestore: (scoreboard: MineSweeperScoreboard): DocumentData => scoreboard,
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot<MineSweeperScoreboard>
+  ): MineSweeperScoreboard {
+    return snapshot.data()
+  }
+}
+
+export type CustomVictory = {
+  rows: number
+  cols: number
+  mines: number
+  victories: number
+  bestTime: number
+  victoryDate: Timestamp
+}
+
+export type Victory = {
+  victories: number
+  bestTime: number
+  victoryDate: Timestamp
+}
+
+export type MineSweeperScoreboard = {
+  userId: string
+  username: string
+  beginner: Victory
+  intermediate: Victory
+  expert: Victory
+  custom: CustomVictory[]
+}

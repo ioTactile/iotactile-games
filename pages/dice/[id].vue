@@ -105,7 +105,7 @@ import {
   diceSessionChatConverter
 } from '~/stores'
 import type { LocalDiceSessionScoresType } from '~/stores'
-import SoundService from '~/utils/soundService'
+import { SoundService } from '~/utils/soundService'
 import { diceAudioTracks as audioTracks } from '~/utils'
 
 interface PlayerData {
@@ -191,6 +191,7 @@ const activateSound = () => {
   isNotificationsActive.value = true
   isMusicActive.value = true
   loadSounds(1)
+  soundS.playAudioTracks('dice', audioTracks.length)
 }
 
 const desactivateSound = () => {
@@ -205,7 +206,6 @@ const loadSounds = (volume: number) => {
   soundS.loadSound('message', '/dice/sounds/message.mp3', volume)
   soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3', volume)
   soundS.loadAudioTracks('dice', audioTracks, volume)
-  soundS.playAudioTracks('dice', audioTracks.length)
 }
 
 onBeforeRouteLeave(() => {

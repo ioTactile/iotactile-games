@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import SoundService from '~/utils/soundService'
+import { SoundService } from '~/utils/soundService'
 import { useDiceSoundsStore } from '~/stores/diceSounds'
 import { diceAudioTracks as audioTracks } from '~/utils'
 
@@ -108,10 +108,8 @@ const changeValue = (soundName: string, value: boolean) => {
     isMusicActive.value = value
 
     if (isMusicActive.value) {
-      props.soundService.unmuteAudioTracks('dice', audioTracks.length)
       props.soundService.playAudioTracks('dice', audioTracks.length)
     } else {
-      props.soundService.muteAudioTracks('dice', audioTracks.length)
       props.soundService.stopAudioTracks('dice', audioTracks.length)
     }
   }

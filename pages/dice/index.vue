@@ -99,6 +99,13 @@ const returnToPreviousPage = (actualPage: number) => {
   border-radius: 8px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
   color: white;
+
+  .game-title {
+    font-family: 'Indie Flower', cursive;
+    font-size: 4rem;
+    font-weight: bold;
+    letter-spacing: 0.3rem;
+  }
 }
 
 .arrow-back {

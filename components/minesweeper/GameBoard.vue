@@ -8,14 +8,10 @@
     <div class="header-screen">
       <div class="hd_wrapper-border-vert wrapper-border-vert" />
       <div class="top-area">
-        <div class="num-flags">{{ numNotDetectedMines }}</div>
-        <v-icon
-          :icon="mdiReload"
-          size="30"
-          :class="{ rotate: isRotating }"
-          @click="restartGame"
-        />
-        <div class="timer">{{ timer }}</div>
+        <div>{{ numNotDetectedMines }}</div>
+        <div class="timer">
+          {{ timerFormatter(timer.getElapsedTime(), true) }}
+        </div>
       </div>
       <div class="hd_wrapper-border-vert wrapper-border-vert" />
     </div>
@@ -30,17 +26,22 @@
         :style="contentWrapperBorderHeight"
       />
       <div class="grid" :style="gridStyle">
-        <div v-for="(row, rowIndex) in gameBoard" :key="rowIndex">
-          <div
-            v-for="(_, colIndex) in row"
-            :key="colIndex"
-            class="cell size24"
-            :class="cellType(row[colIndex])"
-            @click.right="rightClick(rowIndex, colIndex)"
-            @click.left="leftClick(rowIndex, colIndex)"
-            @contextmenu.prevent
-          />
-        </div>
+        <template v-if="mineSweeper.getTimer().getIsPaused()">
+          <div v-for="(_, index) in numCells" :key="index" class="paused" />
+        </template>
+        <template v-else>
+          <div v-for="(row, rowIndex) in gameBoard" :key="rowIndex">
+            <div
+              v-for="(_, colIndex) in row"
+              :key="colIndex"
+              class="cell size24"
+              :class="cellType(row[colIndex])"
+              @click.right="rightClick(rowIndex, colIndex)"
+              @click.left="leftClick(rowIndex, colIndex)"
+              @contextmenu.prevent
+            />
+          </div>
+        </template>
       </div>
       <div
         class="hd_wrapper-border-vert wrapper-border-vert"
@@ -56,54 +57,60 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon } from 'vuetify/components'
-import { mdiReload } from '@mdi/js'
 import { Cell } from '~/utils/minesweeper/cell'
 import type { IMineSweeper } from '~/utils/minesweeper/mineSweeper'
-import { sleep } from '~/utils'
+import type { Timer } from '~/utils/minesweeper/Timer'
+import { timerFormatter } from '~/utils'
 
 const props = defineProps<{
   gameBoard: Cell[][]
   numRows: number
   numCols: number
   mineSweeper: IMineSweeper
-  timer: number
+  timer: Timer
 }>()
 
 const emit = defineEmits<{
-  (e: 'restartGame'): void
   (e: 'rightClick', args: { rowIndex: number; colIndex: number }): void
-  (e: 'leftClick', args: { rowIndex: number; colIndex: number }): void
+  (
+    e: 'leftClick',
+    args: { rowIndex: number; colIndex: number; callback(): void }
+  ): void
 }>()
 
-const isRotating = ref<boolean>(false)
 const cellSize = ref<number>(24)
 
-const numNotDetectedMines = computed(() => {
+const numNotDetectedMines = computed((): number => {
   return props.mineSweeper.getNumMines() - props.mineSweeper.getNumFlags()
 })
 
-const gridStyle = computed(() => {
-  return {
-    gridTemplateColumns: `repeat(${props.numRows}, ${cellSize.value}px)`,
-    gridTemplateRows: `repeat(${props.numCols}, ${cellSize.value}px)`
+const gridStyle = computed(
+  (): { gridTemplateColumns: string; gridTemplateRows: string } => {
+    return {
+      gridTemplateColumns: `repeat(${props.numRows}, ${cellSize.value}px)`,
+      gridTemplateRows: `repeat(${props.numCols}, ${cellSize.value}px)`
+    }
   }
-})
+)
 
-const gameSize = computed(() => {
+const gameSize = computed((): { width: string; height: string } => {
   return {
     width: `${props.numRows * cellSize.value + 36}px`,
     height: `${props.numCols * cellSize.value + 96}px`
   }
 })
 
-const contentWrapperBorderHeight = computed(() => {
+const contentWrapperBorderHeight = computed((): { height: string } => {
   return {
     height: `${props.numCols * cellSize.value}px`
   }
 })
 
-const cellType = (cell: Cell) => {
+const numCells = computed((): number => {
+  return props.numRows * props.numCols
+})
+
+const cellType = (cell: Cell): string => {
   if (cell.getIsFlagged() && !cell.getIsRevealed()) {
     return 'flag'
   } else if (!cell.getIsRevealed()) {
@@ -132,28 +139,25 @@ const cellType = (cell: Cell) => {
     return 'cell_type7'
   } else if (cell.getNumAdjacentMines() === 8) {
     return 'cell_type8'
+  } else {
+    return ''
   }
 }
 
-const restartGame = async () => {
-  isRotating.value = true
-  await sleep(1000)
-  isRotating.value = false
-  emit('restartGame')
+const rightClick = (rowIndex: number, colIndex: number): void => {
+  emit('rightClick', {
+    rowIndex,
+    colIndex
+  })
 }
 
-const rightClick = (rowIndex: number, colIndex: number) => {
-  emit('rightClick', { rowIndex, colIndex })
-}
-
-const leftClick = (rowIndex: number, colIndex: number) => {
-  emit('leftClick', { rowIndex, colIndex })
+const leftClick = (rowIndex: number, colIndex: number): void => {
+  emit('leftClick', { rowIndex, colIndex, callback: () => {} })
 }
 </script>
 
 <style scoped lang="scss">
 #game {
-  margin: 10px;
   filter: brightness(100%);
   box-shadow: 0 4px 4px 0 rgba(19, 99, 172, 0.25);
 
@@ -195,35 +199,18 @@ const leftClick = (rowIndex: number, colIndex: number) => {
       width: calc(100% - 36px);
       height: 48px;
       float: left;
-      background-color: #fff;
-      color: #000000;
+      background-color: #f0f8ff;
+      color: rgb(var(--v-theme-mineSweeperMainBackground));
 
       div {
-        font-size: 1.25rem;
+        font-size: 1rem;
         font-weight: 700;
-      }
-
-      .rotate {
-        animation: rotate 1s forwards;
-      }
-
-      @keyframes rotate {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      .num-flags,
-      .timer {
-        width: 30px;
-      }
-
-      .num-flags {
-        text-align: start;
+        font-family: 'Orbitron', 'sans-serif';
       }
 
       .timer {
-        text-align: end;
+        min-width: 100px;
+        text-align: center;
       }
     }
   }
@@ -257,6 +244,13 @@ const leftClick = (rowIndex: number, colIndex: number) => {
     .grid {
       display: grid;
       float: left;
+
+      .paused {
+        width: 100%;
+        height: 100%;
+        border: 1px solid rgb(var(--v-theme-mineSweeperMainTertiary));
+        background-color: rgb(var(--v-theme-mineSweeperMainPrimary));
+      }
 
       .cell_closed {
         background-image: url('/minesweeper/closed.svg');

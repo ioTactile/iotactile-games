@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import type { LocalDiceSessionChatType } from '~/stores'
-import SoundService from '~/utils/soundService'
+import { SoundService } from '~/utils/soundService'
 
 const props = defineProps<{
   chatMessages: LocalDiceSessionChatType['messages'] | undefined

@@ -126,7 +126,11 @@ export const fullHouseInput = (dices: Dice[]) => {
       sortedDices[2].face === sortedDices[3].face &&
       sortedDices[2].face === sortedDices[4].face)
 
-  return isFullHouse ? 25 : 0
+  const isAllSame = sortedDices.every(
+    (dice, index) => index === 0 || dice.face === sortedDices[index - 1].face
+  )
+
+  return isFullHouse && !isAllSame ? 25 : 0
 }
 
 export const smallStraightInput = (dices: Dice[]) => {
