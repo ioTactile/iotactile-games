@@ -98,9 +98,3 @@ const toggleTheme = () => {
   localStorage.setItem('theme', theme.global.name.value)
 }
 </script>
-
-<style scoped lang="scss">
-.v-app-bar {
-  width: 1200px !important;
-}
-</style>

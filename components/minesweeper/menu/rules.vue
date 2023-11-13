@@ -84,12 +84,4 @@ const emit = defineEmits<{
     }
   }
 }
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgb(var(--v-theme-mainSweeperMainOnSurface));
-}
 </style>

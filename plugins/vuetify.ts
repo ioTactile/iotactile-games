@@ -14,6 +14,8 @@ const myCustomLightTheme: ThemeDefinition = {
     onSurfaceButton: '#000000', // black
     onPrimary: '#000000', // black
     onSecondary: '#000000', // black
+    scrollBarThumb: '#7F7F7F', // light grey
+    scrollBarThumbHover: '#5C5C5C', // grey
     // Main Dice colors
     diceMainPrimary: '#005541', // green
     diceMainSecondary: '#002E23', // dark green
@@ -44,6 +46,8 @@ const myCustomDarkTheme: ThemeDefinition = {
     onSurfaceButton: '#ffffff', // white
     onPrimary: '#000000', // black
     onSecondary: '#000000', // black
+    scrollBarThumb: '#7F7F7F', // light grey
+    scrollBarThumbHover: '#5C5C5C', // grey
     // Main Dice colors
     diceMainPrimary: '#005541', // green
     diceMainSecondary: '#002E23', // dark green

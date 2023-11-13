@@ -62,17 +62,10 @@ const scoreboard = scoreboardDocs.docs.map((doc) => doc.data())
       align-items: center;
       justify-content: center;
     }
-  }
-  .content:nth-child(even) {
-    background-color: rgb(var(--v-theme-diceMainLightTertiary));
-  }
-}
 
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgb(204, 204, 204);
+    &:nth-child(even) {
+      background-color: rgb(var(--v-theme-diceMainLightTertiary));
+    }
+  }
 }
 </style>
