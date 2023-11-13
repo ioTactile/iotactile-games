@@ -36,7 +36,7 @@
   </v-row>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { VRow, VCol, VTextField } from 'vuetify/components'
 import { mdiEye, mdiEyeOff } from '@mdi/js'
 

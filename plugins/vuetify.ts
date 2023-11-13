@@ -6,10 +6,12 @@ const myCustomLightTheme: ThemeDefinition = {
   colors: {
     background: '#ffffff', // white
     surface: '#ececec', // light grey
+    surfaceButton: '#d9d9d9', // white
     primary: '#bb86fc', // purple
     secondary: '#03dac6', // green
     onBackground: '#000000', // black
     onSurface: '#000000', // dark grey
+    onSurfaceButton: '#000000', // black
     onPrimary: '#000000', // black
     onSecondary: '#000000', // black
     // Main Dice colors
@@ -34,10 +36,12 @@ const myCustomDarkTheme: ThemeDefinition = {
   colors: {
     background: '#121212', // dark grey
     surface: '#1d1d1d', // dark grey
+    surfaceButton: '#222222', // dark grey
     primary: '#bb86fc', // purple
     secondary: '#03dac6', // green
     onBackground: '#d9d9d9', // light grey
     onSurface: '#dfdfdf', // light grey
+    onSurfaceButton: '#ffffff', // white
     onPrimary: '#000000', // black
     onSecondary: '#000000', // black
     // Main Dice colors

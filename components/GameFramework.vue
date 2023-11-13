@@ -8,7 +8,7 @@
       height="100%"
     >
       <v-img :src="img" :alt="alt" class="rounded-t-lg" />
-      <h2 class="text-center mt-1">
+      <h2 class="text-center mt-1" :style="{ fontFamily: font }">
         {{ title }}
       </h2>
     </v-card>
@@ -23,15 +23,16 @@ defineProps<{
   alt: string
   title: string
   link: string
+  font: string
 }>()
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 h2 {
   font-size: 2rem;
   font-weight: 600;
   letter-spacing: 0.1rem;
+  text-transform: uppercase;
   color: rgb(var(--v-theme-onSurface));
-  font-family: 'Indie Flower', cursive;
 }
 </style>

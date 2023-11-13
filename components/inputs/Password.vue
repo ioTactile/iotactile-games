@@ -11,11 +11,11 @@
     class="input-group--focused"
     @click:append-inner="show = !show"
     @update:model-value="$emit('update:model-value', $event)"
-    @keypress.enter="$emit('press-enter', $event)"
+    @keypress.enter="$emit('press-enter')"
   />
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { VTextField } from 'vuetify/components'
 import { mdiEye, mdiEyeOff } from '@mdi/js'
 

@@ -103,7 +103,7 @@ const returnToPreviousPage = (actualPage: number) => {
   .game-title {
     font-family: 'Indie Flower', cursive;
     font-size: 4rem;
-    font-weight: bold;
+    font-weight: 700;
     letter-spacing: 0.3rem;
   }
 }

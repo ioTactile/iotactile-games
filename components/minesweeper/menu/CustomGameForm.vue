@@ -69,7 +69,7 @@ form {
 
     label {
       font-size: 1.75rem;
-      font-weight: bold;
+      font-weight: 700;
       font-family: 'Orbitron', sans-serif;
       text-transform: uppercase;
       letter-spacing: 0.1rem;

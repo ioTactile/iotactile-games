@@ -12,7 +12,7 @@
   />
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { VTextField } from 'vuetify/components'
 import { mdiEmail } from '@mdi/js'
 

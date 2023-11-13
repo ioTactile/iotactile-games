@@ -332,7 +332,7 @@ onUnmounted((): void => {
   .game-title {
     font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
-    font-weight: bold;
+    font-weight: 700;
     letter-spacing: 0.1rem;
     text-transform: uppercase;
     text-align: center;
@@ -365,7 +365,7 @@ onUnmounted((): void => {
   .game-title {
     font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
-    font-weight: bold;
+    font-weight: 700;
     letter-spacing: 0.1rem;
     text-transform: uppercase;
     color: rgb(var(--v-theme-mineSweeperMainOnSurface));

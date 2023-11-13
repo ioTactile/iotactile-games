@@ -11,7 +11,7 @@
   </v-app>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { VApp, VMain } from 'vuetify/components'
 
 const user = useCurrentUser()
@@ -23,7 +23,7 @@ onBeforeMount(async () => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .app-wrapper {
   max-width: 1200px;
   margin: 0 auto;

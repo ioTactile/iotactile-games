@@ -33,5 +33,3 @@ const startGame = (options: GameOptions): void => {
 
 const toggleCustomGame = (): void => emit('is-custom')
 </script>
-
-<style scoped lang="scss"></style>

@@ -9,7 +9,8 @@
         class="button-difficulty"
         @click="getDifficultyResults(difficulty)"
       >
-        {{ getDifficultyName(difficulty) }}
+        <h2>{{ getDifficultyName(difficulty) }}</h2>
+        <v-icon :icon="mdiChevronDown" color="onSurface" />
       </button>
       <template v-if="isDifficulty(difficulty)">
         <template
@@ -53,6 +54,8 @@
 
 <script async setup lang="ts">
 import { doc, getDoc } from 'firebase/firestore'
+import { VIcon } from 'vuetify/components'
+import { mdiChevronDown } from '@mdi/js'
 import { timerFormatter, dateFormatter } from '~/utils'
 import { mineSweeperScoreboardConverter } from '~/stores'
 
@@ -138,6 +141,7 @@ const isDifficulty = (difficulty: string): boolean => {
       height: 40px;
       font-size: 1.25rem;
       font-family: 'Orbitron', sans-serif;
+      color: rgb(var(--v-theme-onSurfaceButton));
       background-color: rgb(var(--v-theme-mineSweeperMainSecondary));
 
       div {
@@ -153,6 +157,7 @@ const isDifficulty = (difficulty: string): boolean => {
       height: 50px;
       font-size: 1.25rem;
       font-family: 'Orbitron', sans-serif;
+      color: rgb(var(--v-theme-onSurfaceButton));
       background-color: rgb(var(--v-theme-mineSweeperMainPrimary));
 
       div {
@@ -164,22 +169,30 @@ const isDifficulty = (difficulty: string): boolean => {
     }
 
     .button-difficulty {
-      width: 250px;
+      display: grid;
+      grid-template-columns: 1fr 2rem;
+      align-items: center;
+      width: 100%;
       height: 50px;
-      text-transform: uppercase;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      color: #fff;
-      font-family: 'Orbitron', sans-serif;
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
       border-top: 4px solid rgb(var(--v-theme-mineSweeperMainSecondary));
       border-left: 4px solid rgb(var(--v-theme-mineSweeperMainSecondary));
       border-right: 4px solid rgb(var(--v-theme-mineSweeperMainTertiary));
       border-bottom: 4px solid rgb(var(--v-theme-mineSweeperMainTertiary));
       background-color: rgb(var(--v-theme-mineSweeperMainPrimary));
+
+      h2 {
+        text-transform: uppercase;
+        font-size: 1.5rem;
+        margin-left: 2rem;
+        color: rgb(var(--v-theme-onSurface));
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 400;
+      }
     }
 
     .no-best-time {
+      margin-top: 1rem;
       text-align: center;
       font-size: 1.25rem;
       font-family: 'Orbitron', sans-serif;

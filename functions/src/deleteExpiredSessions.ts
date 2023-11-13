@@ -17,20 +17,7 @@ export const deleteExpiredSessions = functions
       .where('creationDate', '<=', expirationDate)
     const diceSessionsSnapshot = await diceSessionsQuery.get()
 
-    const linguaVaultQuery = firestore
-      .collection('linguaVaultSessions')
-      .where('creationDate', '<=', expirationDate)
-    const linguaVaultSessionsSnapshot = await linguaVaultQuery.get()
-
     const deletePromises: Promise<WriteResult>[] = []
-
-    linguaVaultSessionsSnapshot.forEach((doc) => {
-      const sessionId = doc.id
-      const deletePromisesPerSession = [
-        firestore.collection('linguaVaultSessions').doc(sessionId).delete()
-      ]
-      deletePromises.push(...deletePromisesPerSession)
-    })
 
     diceSessionsSnapshot.forEach((doc) => {
       const sessionId = doc.id

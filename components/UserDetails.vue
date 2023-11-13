@@ -14,9 +14,9 @@
           />
           <v-btn
             type="submit"
-            class="mt-1 text-onPrimary"
+            class="mt-1 text-onSurfaceButton"
             block
-            color="white"
+            color="surfaceButton"
             :loadind="loading"
           >
             Changer de pseudo
@@ -46,14 +46,20 @@
     <section class="pa-2">
       <v-btn
         v-if="userClaims?.admin"
-        color="white"
+        color="surfaceButton"
         block
         to="/admin"
-        class="mb-2"
+        class="mb-2 text-onSurfaceButton"
       >
         Espace d'administration
       </v-btn>
-      <v-btn color="white" block :disabled="loading" @click="logout">
+      <v-btn
+        color="surfaceButton"
+        class="text-onSurfaceButton"
+        block
+        :disabled="loading"
+        @click="logout"
+      >
         Se déconnecter
       </v-btn>
       <v-btn
@@ -221,7 +227,7 @@ const logout = async () => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .v-card {
   left: 50px;
 }

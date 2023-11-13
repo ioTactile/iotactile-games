@@ -47,6 +47,7 @@
                   v-if="!forgotPassword"
                   v-model="password"
                   variant="outlined"
+                  @press-enter="login"
                 />
               </template>
               <div class="d-flex justify-center mb-10">
@@ -98,7 +99,7 @@
   </v-dialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import {
   VForm,
   VDialog,
@@ -237,7 +238,7 @@ const login = async () => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .v-card-title {
   font-size: 1.5rem;
   color: rgb(var(--v-theme-text-onSurface));

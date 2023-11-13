@@ -22,7 +22,7 @@
   </v-app>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { VApp, VMain, VContainer, VBtn } from 'vuetify/components'
 
 const props = defineProps<{

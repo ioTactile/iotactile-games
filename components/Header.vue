@@ -42,7 +42,7 @@
   </client-only>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import {
   VAppBar,
   VBtn,
@@ -99,7 +99,7 @@ const toggleTheme = () => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .v-app-bar {
   width: 1200px !important;
 }

@@ -3,7 +3,14 @@
     <h1 class="d-none">iotactile games</h1>
     <v-row class="d-flex">
       <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
-        <GameFramework img="/dice.png" alt="Dice" title="Dice" link="/dice" />
+        <GameFramework
+          img="/dice.png"
+          alt="Dice"
+          title="Dice"
+          link="/dice"
+          font="'Indie Flower', 'cursive'"
+        />
+        />
       </v-col>
       <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
         <GameFramework
@@ -11,13 +18,14 @@
           alt="Démineur"
           title="Démineur"
           link="/demineur"
+          font="'Orbitron', 'sans-serif'"
         />
       </v-col>
     </v-row>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { VRow, VCol } from 'vuetify/components'
 
 useSeoMeta({
@@ -30,7 +38,7 @@ useSeoMeta({
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 div {
   max-width: 1200px !important;
   margin: 10px 0;

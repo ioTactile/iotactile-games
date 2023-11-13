@@ -59,7 +59,7 @@ const restartGame = async (): Promise<void> => {
   justify-content: center;
   align-items: center;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 700;
   color: rgb(var(--v-theme-mineSweeperMainOnSurface));
 
   .game-status {
