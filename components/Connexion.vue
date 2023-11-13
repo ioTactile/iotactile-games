@@ -201,15 +201,7 @@ const login = async () => {
       })
       forgotPassword.value = false
     } else {
-      const userCredentials = await signInWithEmailAndPassword(
-        auth,
-        email.value,
-        password.value
-      )
-      const { claims } = await getIdTokenResult(userCredentials.user, true)
-      if (claims.admin) {
-        navigateTo('/admin')
-      }
+      await signInWithEmailAndPassword(auth, email.value, password.value)
     }
     emits('update:modelValue', false)
   } catch (error: unknown) {

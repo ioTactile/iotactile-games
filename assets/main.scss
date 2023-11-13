@@ -22,6 +22,8 @@
 body {
   font-family: 'Poppins', sans-serif;
   background-color: rgb(var(--v-theme-background));
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .button-dice {
@@ -60,10 +62,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgb(204, 204, 204);
+  background-color: rgb(var(--v-theme-scrollBarThumb));
   border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(163, 163, 163);
+  background-color: rgb(var(--v-theme-scrollBarThumbHover));
 }

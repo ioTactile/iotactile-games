@@ -3,7 +3,6 @@
     :class="{ 'rounded-t-lg': width > 1200 }"
     color="surface"
     absolute
-    min-height="55.99"
     app
   >
     <div class="d-flex flex-wrap justify-space-evenly align-center w-100">
@@ -15,7 +14,11 @@
       </NuxtLink>
       <div :class="{ 'order-3': xs }" class="pt-2 px-6">
         © {{ new Date().getFullYear() }} - Réalisé par
-        <a href="https://github.com/ioTactile" class="text-decoration-none">
+        <a
+          href="https://github.com/ioTactile"
+          target="_blank"
+          class="text-decoration-none"
+        >
           <strong class="text-onSurface">iotactile</strong>
         </a>
       </div>
@@ -35,9 +38,3 @@ import { useDisplay } from 'vuetify'
 
 const { width, xs } = useDisplay()
 </script>
-
-<style scoped lang="scss">
-.v-footer {
-  max-width: 1200px !important;
-}
-</style>

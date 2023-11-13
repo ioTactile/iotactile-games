@@ -10,7 +10,6 @@
           link="/dice"
           font="'Indie Flower', 'cursive'"
         />
-        />
       </v-col>
       <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
         <GameFramework
@@ -40,7 +39,6 @@ useSeoMeta({
 
 <style scoped lang="scss">
 div {
-  max-width: 1200px !important;
-  margin: 10px 0;
+  margin: 0.5rem 0;
 }
 </style>

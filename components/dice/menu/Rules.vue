@@ -20,17 +20,21 @@
       <h3>Les Points</h3>
       <p>
         La fiche de scores comporte une partie supérieure et une partie
-        inférieure. <br />
+        inférieure.
+        <br />
         <br />
         La partie supérieure comporte les cases des 1, 2, 3, 4, 5 et 6. Si vous
         décidez de saisir le résultat de votre lancer dans cette partie, tous
         les points correspondant à la valeur de la case seront additionnés et
-        saisis ici. <br />
+        saisis ici.
+        <br />
         <br />
         Pour avoir le bonus de <strong>35 points</strong>, vous devez marquer au
-        moins 63 points au total dans la partie supérieure. <br />
+        moins 63 points au total dans la partie supérieure.
         <br />
-        La partie inférieur comporte les lancers spéciaux : <br />
+        <br />
+        La partie inférieur comporte les lancers spéciaux :
+        <br />
         <br />
         - Le <strong>Brelan</strong> nécessite 3 dés identiques. [6] [6] [6] [3]
         [1] = 22 points
@@ -39,11 +43,14 @@
         [5] = 17 points
         <br />
         - Le <strong>Full</strong> nécessite 3 dés identiques et 2 dés
-        identiques. [4] [4] [4] [3] [3] = 25 points <br />
+        identiques. [4] [4] [4] [3] [3] = 25 points
+        <br />
         - La <strong>Petite suite</strong> nécessite 4 dés consécutifs. [1] [2]
-        [3] [4] [6] = 30 points <br />
+        [3] [4] [6] = 30 points
+        <br />
         - La <strong>Grande suite</strong> nécessite 5 dés consécutifs. [2] [3]
-        [4] [5] [6] = 40 points <br />
+        [4] [5] [6] = 40 points
+        <br />
         - Le <strong>Yams</strong> nécessite 5 dés identiques. [5] [5] [5] [5]
         [5] = 50 points
         <br />
@@ -53,10 +60,12 @@
         <br />
         Si vous ne pouvez pas saisir le résultat de votre lancer dans la partie
         supérieure, vous devez saisir le résultat dans la partie inférieure et
-        inversement. <br />
+        inversement.
+        <br />
         <br />
         La partie se termine lorsque tous les joueurs ont rempli toutes les
-        cases de leur fiche de scores. <br />
+        cases de leur fiche de scores.
+        <br />
       </p>
     </section>
     <section>
@@ -104,13 +113,5 @@ const emit = defineEmits<{
       }
     }
   }
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgb(204, 204, 204);
 }
 </style>

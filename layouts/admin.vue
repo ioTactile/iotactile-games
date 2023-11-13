@@ -1,13 +1,13 @@
 <template>
-  <v-app class="app-wrapper overflow-x-hidden">
+  <v-app class="app-wrapper">
     <Header admin />
     <v-main>
       <slot />
     </v-main>
     <Footer />
-    <ClientOnly>
+    <client-only>
       <Snackbar />
-    </ClientOnly>
+    </client-only>
   </v-app>
 </template>
 
@@ -25,17 +25,6 @@ onBeforeMount(async () => {
 
 <style scoped lang="scss">
 .app-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgb(204, 204, 204);
-  width: 8px;
-  border-radius: 8px;
+  overflow-x: hidden;
 }
 </style>
