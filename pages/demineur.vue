@@ -11,7 +11,12 @@
             <img :src="getArrowBackColor" alt="Retour" />
           </button>
           <h1 class="game-title mt-10 mb-6">Démineur</h1>
-          <div class="d-flex justify-center">
+          <button class="volume-button" @click="toggleMusicVolume">
+            <v-icon size="40" color="mineSweeperMainOnSurface">
+              {{ isMusicActive ? mdiVolumeHigh : mdiVolumeOff }}
+            </v-icon>
+          </button>
+          <div class="menu-content">
             <minesweeper-menu-main
               v-if="menuPage === 0"
               @action="handleActions"
@@ -40,6 +45,12 @@
               @action="handleActions"
             />
           </div>
+          <minesweeper-volumes-modal
+            v-if="isVolumesModalOpen"
+            @open-modal="isVolumesModalOpen = $event"
+            @activate-sound="activateSound"
+            @desactivate-sound="desactivateSound"
+          />
         </div>
       </template>
       <template v-else>
@@ -48,6 +59,11 @@
             <img :src="getArrowBackColor" alt="Retour" />
           </button>
           <h1 class="game-title">Démineur</h1>
+          <button class="volume-button" @click="toggleMusicVolume">
+            <v-icon size="40" color="mineSweeperMainOnSurface">
+              {{ isMusicActive ? mdiVolumeHigh : mdiVolumeOff }}
+            </v-icon>
+          </button>
           <minesweeper-game-status
             :game-status-to-string="gameStatusToString"
             :game-status="gameStatus"
@@ -72,8 +88,12 @@
 </template>
 
 <script setup lang="ts">
+import { VIcon } from 'vuetify/components'
+import { mdiVolumeHigh, mdiVolumeOff } from '@mdi/js'
 import { collection, getDoc, setDoc, doc } from 'firebase/firestore'
 import { useTheme } from 'vuetify'
+import { SoundService } from '~/utils/soundService'
+import { audioTracks } from '~/utils'
 import { mineSweeperScoreboardConverter } from '~/stores'
 import {
   MineSweeper,
@@ -90,7 +110,7 @@ useSeoMeta({
   ogTitle: 'Démineur - ioTactile Games',
   description: 'Page du jeu Démineur',
   ogDescription: 'Page du jeu Démineur',
-  ogImage: '/minesweeper.jpg'
+  ogImage: '/minesweeper_blue.jpg'
 })
 
 // definePageMeta({
@@ -131,6 +151,31 @@ const numMines = ref<number>(10)
 const difficulty = ref<Difficulty>(Difficulty.BEGINNER)
 const menuPage = ref<number>(0)
 const isCustom = ref<boolean>(false)
+const isMusicActive = ref<boolean>(true)
+const isVolumesModalOpen = ref<boolean>(true)
+
+const soundS = new SoundService()
+
+const activateSound = (): void => {
+  isMusicActive.value = true
+  soundS.loadAudioTracks('mineSweeper', audioTracks)
+  soundS.playAudioTracks('mineSweeper')
+}
+
+const desactivateSound = (): void => {
+  isMusicActive.value = false
+  soundS.loadAudioTracks('mineSweeper', audioTracks)
+}
+
+const toggleMusicVolume = (): void => {
+  if (isMusicActive.value) {
+    soundS.stopAudioTracks('mineSweeper')
+    isMusicActive.value = false
+  } else {
+    soundS.playAudioTracks('mineSweeper')
+    isMusicActive.value = true
+  }
+}
 
 const toggleIsCustom = (value?: boolean): void => {
   isCustom.value = value ?? !isCustom.value
@@ -329,6 +374,11 @@ onUnmounted((): void => {
   box-shadow: -10px -10px rgba(var(--v-theme-mineSweeperMainShadow), 0.3);
   color: rgb(var(--v-theme-onSurface));
 
+  .menu-content {
+    display: flex;
+    justify-content: center;
+  }
+
   .game-title {
     font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
@@ -336,6 +386,12 @@ onUnmounted((): void => {
     letter-spacing: 0.1rem;
     text-transform: uppercase;
     text-align: center;
+  }
+
+  .volume-button {
+    position: absolute;
+    top: 58px;
+    right: 25px;
   }
 
   .arrow-back {
@@ -369,6 +425,12 @@ onUnmounted((): void => {
     letter-spacing: 0.1rem;
     text-transform: uppercase;
     color: rgb(var(--v-theme-mineSweeperMainOnSurface));
+  }
+
+  .volume-button {
+    position: absolute;
+    top: 48px;
+    right: 340px;
   }
 
   .game-board {

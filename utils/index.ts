@@ -44,7 +44,7 @@ export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export const diceAudioTracks = [
+export const audioTracks = [
   '1.m4a',
   '2.m4a',
   '3.m4a',

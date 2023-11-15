@@ -1,5 +1,4 @@
 import { Howl } from 'howler'
-import { random } from '../utils/'
 
 export interface ISoundService {
   loadSound(key: string, src: string, volume: number): void
@@ -36,6 +35,8 @@ export interface ISoundService {
 
 export class SoundService implements ISoundService {
   private sounds: Record<string, Howl> = {}
+  private audioTracks: Record<string, string[]> = {}
+  private audioTracksLength: number = 0
 
   public loadSound(key: string, src: string, volume: number): void {
     this.sounds[key] = new Howl({
@@ -63,34 +64,55 @@ export class SoundService implements ISoundService {
     }
   }
 
-  public loadAudioTracks(
-    headerTrackName: string,
-    audioTracks: string[],
-    volume: number
-  ): void {
+  public loadAudioTracks(headerTrackName: string, audioTracks: string[]): void {
+    this.shuffleAudioTracks(headerTrackName, audioTracks)
+    audioTracks = this.audioTracks[headerTrackName]
+    this.audioTracksLength = audioTracks.length
+
     audioTracks.forEach((audioTrack, index) => {
       const trackName = `${headerTrackName}-${index}`
       const src = `/${headerTrackName}/music/${audioTrack}`
-      this.loadSound(trackName, src, volume)
+      this.loadSound(trackName, src, 0.5)
     })
   }
 
-  public playAudioTracks(
+  private shuffleAudioTracks(
     headerTrackName: string,
-    audioTracksLength: number
+    audioTracks: string[]
   ): void {
-    const randomIndex = random(audioTracksLength)
-    const randomTrackName = `${headerTrackName}-${randomIndex}`
+    const audioTracksCopy = [...audioTracks]
+    for (let i = audioTracksCopy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      const temp = audioTracksCopy[i]
+      audioTracksCopy[i] = audioTracksCopy[j]
+      audioTracksCopy[j] = temp
+    }
+    this.audioTracks[headerTrackName] = audioTracksCopy
+  }
+
+  public playAudioTracks(headerTrackName: string): void {
+    const audioTracksLength = this.audioTracks[headerTrackName].length
+    if (this.audioTracksLength === 0) {
+      this.loadAudioTracks(headerTrackName, this.audioTracks[headerTrackName])
+      this.audioTracksLength = audioTracksLength
+    }
+
+    if (this.isAudioTrackPlaying(headerTrackName, audioTracksLength)) {
+      return
+    }
+
+    const index = audioTracksLength - this.audioTracksLength
+    const randomTrackName = `${headerTrackName}-${index}`
     this.playSound(randomTrackName)
-    this.sounds[randomTrackName].on('end', () => {
-      this.playAudioTracks(headerTrackName, audioTracksLength)
+    this.sounds[randomTrackName].once('end', () => {
+      this.playAudioTracks(headerTrackName)
+      this.unloadSound(randomTrackName)
+      this.audioTracksLength -= 1
     })
   }
 
-  public stopAudioTracks(
-    headerTrackName: string,
-    audioTracksLength: number
-  ): void {
+  public stopAudioTracks(headerTrackName: string): void {
+    const audioTracksLength = this.audioTracks[headerTrackName].length
     for (let i = 0; i < audioTracksLength; i++) {
       const trackName = `${headerTrackName}-${i}`
       this.stopSound(trackName)

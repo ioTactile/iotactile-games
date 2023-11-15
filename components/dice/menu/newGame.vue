@@ -41,6 +41,7 @@ input {
   height: 64px;
   font-size: 2rem;
   text-align: center;
+  color: rgb(var(--v-theme-onPrimary));
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 8px;
 }
@@ -49,4 +50,3 @@ input {
   margin: 3rem 0;
 }
 </style>
-~/utils/dice/diceSession

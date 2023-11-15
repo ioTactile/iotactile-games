@@ -38,8 +38,9 @@ const clickNoButton = () => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 1200px;
-  height: 800px;
+  width: 500px;
+  height: 650px;
+  font-family: 'Orbitron', 'sans-serif';
   background-color: rgba(var(--v-theme-diceMainModalBackground), 0.7);
 
   .sound-modal {
@@ -56,7 +57,7 @@ const clickNoButton = () => {
 
     h3 {
       text-align: center;
-      font-size: 2rem;
+      font-size: 1.75rem;
       color: rgb(var(--v-theme-onSurface));
     }
 
@@ -69,7 +70,7 @@ const clickNoButton = () => {
       button {
         width: 100px;
         height: 50px;
-        background-color: rgb(var(--v-theme-diceMainTertiary));
+        background-color: rgb(var(--v-theme-mineSweeperMainPrimary));
         color: white;
         border-radius: 8px;
         font-size: 1.5rem;
