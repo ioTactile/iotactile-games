@@ -159,13 +159,20 @@ const soundS = new SoundService()
 
 const activateSound = (): void => {
   isMusicActive.value = true
-  soundS.loadAudioTracks('mineSweeper', audioTracks(25))
-  soundS.playAudioTracks('mineSweeper')
+  setupSound()
+  const volume = soundS.getAudioTracksVolumeFromLocalStorage()
+  soundS.changeAudioTracksVolume('mineSweeper', volume)
 }
 
 const desactivateSound = (): void => {
   isMusicActive.value = false
+  setupSound()
+  soundS.changeAudioTracksVolume('mineSweeper', 0)
+}
+
+const setupSound = (): void => {
   soundS.loadAudioTracks('mineSweeper', audioTracks(25))
+  soundS.playAudioTracks('mineSweeper')
 }
 
 const toggleMusicVolume = (): void => {

@@ -2,17 +2,20 @@
   <div class="button-volume" :style="setPosition()">
     <v-hover v-slot="{ isHovering, props }" open-delay="200">
       <div v-bind="props" class="button-wrapper">
-        <v-icon
-          size="40"
-          :icon="handleVolumeIcon"
-          color="mineSweeperMainOnSurface"
+        <v-btn
+          variant="plain"
           @click="emit('toggleMusicVolume')"
           @keyup.m="emit('toggleMusicVolume')"
         >
-          <v-tooltip activator="parent" location="top" close-on-content-click>
+          <v-icon size="40" :icon="handleVolumeIcon" />
+          <v-tooltip
+            activator="parent"
+            location="top right"
+            close-on-content-click
+          >
             {{ handleVolumeIconTooltips }}
           </v-tooltip>
-        </v-icon>
+        </v-btn>
         <v-card
           v-if="isHovering || isCardHovering"
           width="60"
@@ -46,6 +49,7 @@
 import {
   VCard,
   VCardText,
+  VBtn,
   VIcon,
   VTooltip,
   VSlider,
