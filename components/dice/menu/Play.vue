@@ -53,4 +53,3 @@ const handleAction = (action: string) => {
   margin: 3rem 0;
 }
 </style>
-~/utils/dice/diceSession

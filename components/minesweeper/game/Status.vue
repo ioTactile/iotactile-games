@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import { VIcon } from 'vuetify/components'
 import { mdiPauseBox, mdiPlayBox, mdiReload } from '@mdi/js'
-import { GameStatus } from '~/utils/minesweeper/mineSweeper'
+import type { GameStatus } from '~/utils/minesweeper/mineSweeper'
 import type { Timer } from '~/utils/minesweeper/Timer'
 import { sleep } from '~/utils'
 
@@ -32,7 +32,7 @@ const isRotating = ref<boolean>(false)
 const getTimerIcon = computed((): string => {
   const { timer, gameStatus } = props
   if (timer.getIsPaused()) return mdiPlayBox
-  if (gameStatus === GameStatus.IN_PROGRESS) {
+  if (gameStatus === 'inProgress') {
     return mdiPauseBox
   } else {
     return mdiPlayBox
@@ -41,7 +41,7 @@ const getTimerIcon = computed((): string => {
 
 const togglePause = (): void => {
   const { timer, gameStatus } = props
-  if (gameStatus !== GameStatus.IN_PROGRESS) return
+  if (gameStatus !== 'inProgress') return
   timer.togglePause()
 }
 

@@ -52,7 +52,6 @@
 import { storeToRefs } from 'pinia'
 import { SoundService } from '~/utils/soundService'
 import { useDiceSoundsStore } from '~/stores/diceSounds'
-import { diceAudioTracks as audioTracks } from '~/utils'
 
 const props = defineProps<{
   soundService: SoundService
@@ -108,9 +107,10 @@ const changeValue = (soundName: string, value: boolean) => {
     isMusicActive.value = value
 
     if (isMusicActive.value) {
-      props.soundService.playAudioTracks('dice', audioTracks.length)
+      props.soundService.changeAudioTracksVolume('dice', 0)
     } else {
-      props.soundService.stopAudioTracks('dice', audioTracks.length)
+      const volume = props.soundService.getAudioTracksVolumeFromLocalStorage()
+      props.soundService.changeAudioTracksVolume('dice', volume)
     }
   }
 }

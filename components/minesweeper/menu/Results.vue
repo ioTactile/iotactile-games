@@ -1,7 +1,7 @@
 <template>
   <div v-if="playerResults" class="difficulty-container">
     <div
-      v-for="(difficulty, i) in ['beginner', 'intermediate', 'expert']"
+      v-for="(difficulty, i) in difficulties"
       :key="i"
       class="difficulty-wrapper"
     >
@@ -14,7 +14,9 @@
       </button>
       <template v-if="isDifficulty(difficulty)">
         <template
-          v-if="playerResults[difficulty as DifficultyType].victories > 0"
+          v-if="
+            playerResults[difficulty as DifficultyWithoutCustom].victories > 0
+          "
         >
           <div class="header d-flex justify-space-between">
             <div>Victoires</div>
@@ -23,12 +25,14 @@
           </div>
           <div class="content d-flex justify-space-between">
             <div>
-              {{ playerResults[difficulty as DifficultyType].victories }}
+              {{
+                playerResults[difficulty as DifficultyWithoutCustom].victories
+              }}
             </div>
             <div>
               {{
                 timerFormatter(
-                  playerResults[difficulty as DifficultyType].bestTime,
+                  playerResults[difficulty as DifficultyWithoutCustom].bestTime,
                   true
                 )
               }}
@@ -36,7 +40,8 @@
             <div>
               {{
                 dateFormatter(
-                  playerResults[difficulty as DifficultyType].victoryDate
+                  playerResults[difficulty as DifficultyWithoutCustom]
+                    .victoryDate
                 )
               }}
             </div>
@@ -58,8 +63,9 @@ import { VIcon } from 'vuetify/components'
 import { mdiChevronDown } from '@mdi/js'
 import { timerFormatter, dateFormatter } from '~/utils'
 import { mineSweeperScoreboardConverter } from '~/stores'
+import type { Difficulty } from '~/utils/minesweeper/mineSweeper'
 
-type DifficultyType = 'beginner' | 'intermediate' | 'expert'
+type DifficultyWithoutCustom = Exclude<Difficulty, 'custom'>
 
 const db = useFirestore()
 const user = useCurrentUser()
@@ -72,24 +78,21 @@ const playerScoreboardRef = doc(
 const playerScoreboardDoc = await getDoc(playerScoreboardRef)
 const playerResults = playerScoreboardDoc.data()
 
-const isBeginner = ref<boolean>(true)
-const isIntermediate = ref<boolean>(true)
-const isExpert = ref<boolean>(true)
+const difficulties: Difficulty[] = ['beginner', 'intermediate', 'expert']
 
-const getDifficultyResults = (difficulty: string): void => {
-  switch (difficulty) {
-    case 'beginner':
-      isBeginner.value = !isBeginner.value
-      break
-    case 'intermediate':
-      isIntermediate.value = !isIntermediate.value
-      break
-    case 'expert':
-      isExpert.value = !isExpert.value
-      break
-    default:
-      break
-  }
+const difficultyState = ref<{ [key in Difficulty]: boolean }>({
+  beginner: true,
+  intermediate: true,
+  expert: true,
+  custom: true
+})
+
+const getDifficultyResults = (difficulty: Difficulty): void => {
+  difficultyState.value[difficulty] = !difficultyState.value[difficulty]
+}
+
+const isDifficulty = (difficulty: Difficulty): boolean => {
+  return difficultyState.value[difficulty]
 }
 
 const getDifficultyName = (difficulty: string): string => {
@@ -102,19 +105,6 @@ const getDifficultyName = (difficulty: string): string => {
       return 'Expert'
     default:
       return ''
-  }
-}
-
-const isDifficulty = (difficulty: string): boolean => {
-  switch (difficulty) {
-    case 'beginner':
-      return isBeginner.value
-    case 'intermediate':
-      return isIntermediate.value
-    case 'expert':
-      return isExpert.value
-    default:
-      return false
   }
 }
 </script>

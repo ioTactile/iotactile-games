@@ -1,19 +1,9 @@
 import { Cell } from './cell'
 import { Timer } from './Timer'
 
-export enum GameStatus {
-  WAITING,
-  IN_PROGRESS,
-  WON,
-  LOST
-}
+export type GameStatus = 'waiting' | 'inProgress' | 'won' | 'lost'
 
-export enum Difficulty {
-  BEGINNER,
-  INTERMEDIATE,
-  EXPERT,
-  CUSTOM
-}
+export type Difficulty = 'beginner' | 'intermediate' | 'expert' | 'custom'
 
 export interface GameOptions {
   numRows: number
@@ -59,8 +49,8 @@ export class MineSweeper implements IMineSweeper {
     this.numFlags = 0
     this.numRevealed = 0
     this.timer = new Timer()
-    this.gameStatus = GameStatus.WAITING
-    this.difficulty = Difficulty.BEGINNER
+    this.gameStatus = 'waiting'
+    this.difficulty = 'beginner'
     this.isFirstClick = true
   }
 
@@ -102,16 +92,16 @@ export class MineSweeper implements IMineSweeper {
 
   public getGameStatusString(): string {
     switch (this.gameStatus) {
-      case GameStatus.WAITING:
+      case 'waiting':
         return 'En attente'
-      case GameStatus.IN_PROGRESS:
+      case 'inProgress':
         if (this.timer.getIsPaused()) {
           return 'Pause'
         }
         return 'En cours'
-      case GameStatus.WON:
+      case 'won':
         return 'Gagné'
-      case GameStatus.LOST:
+      case 'lost':
         return 'Perdu'
       default:
         return 'En attente'
@@ -130,7 +120,7 @@ export class MineSweeper implements IMineSweeper {
     this.numFlags = 0
     this.numRevealed = 0
     this.timer = new Timer()
-    this.gameStatus = GameStatus.WAITING
+    this.gameStatus = 'waiting'
     this.isFirstClick = true
     this.board = this.board = Array.from({ length: this.numRows }, () =>
       Array.from({ length: this.numCols }, () => new Cell())
@@ -149,18 +139,15 @@ export class MineSweeper implements IMineSweeper {
     col: number,
     action: 'click' | 'flag'
   ): void {
-    if (
-      this.gameStatus === GameStatus.LOST ||
-      this.gameStatus === GameStatus.WON
-    ) {
+    if (this.gameStatus === 'lost' || this.gameStatus === 'won') {
       return
     }
 
     this.startTimer()
     const cell = this.board[row][col]
 
-    if (this.gameStatus === GameStatus.WAITING) {
-      this.gameStatus = GameStatus.IN_PROGRESS
+    if (this.gameStatus === 'waiting') {
+      this.gameStatus = 'inProgress'
     }
 
     if (
@@ -205,7 +192,6 @@ export class MineSweeper implements IMineSweeper {
       this.numRows * this.numCols - this.numMines
     ) {
       this.handleWin()
-      this.gameStatus = GameStatus.WON
     } else if (cell.getNumAdjacentMines() === 0) {
       this.forEachAdjacentCell(row, col, (cell, row, col) => {
         if (!cell.getIsMine() && !cell.getIsRevealed()) {
@@ -292,13 +278,13 @@ export class MineSweeper implements IMineSweeper {
     cell.setIsMineClicked(true)
     this.reavealAllMines()
     this.timer.stop()
-    this.gameStatus = GameStatus.LOST
+    this.gameStatus = 'lost'
   }
 
   private handleWin(): void {
     this.reavealAllMines()
     this.timer.stop()
-    this.gameStatus = GameStatus.WON
+    this.gameStatus = 'won'
   }
 
   private reavealAllMines(): void {
@@ -313,7 +299,7 @@ export class MineSweeper implements IMineSweeper {
   }
 
   private startTimer(): void {
-    if (this.gameStatus === GameStatus.WAITING && !this.timer.isStarted()) {
+    if (this.gameStatus === 'waiting' && !this.timer.isStarted()) {
       this.timer.start()
     }
   }

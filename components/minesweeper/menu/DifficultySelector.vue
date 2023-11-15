@@ -15,42 +15,50 @@
 </template>
 
 <script setup lang="ts">
-import { Difficulty } from '~/utils/minesweeper/mineSweeper'
-import type { GameOptions } from '~/utils/minesweeper/mineSweeper'
+import type { GameOptions, Difficulty } from '~/utils/minesweeper/mineSweeper'
 
 const emit = defineEmits<{
   (e: 'toggleCustomGame'): void
   (e: 'startGame', args: GameOptions): void
 }>()
 
-const difficulties = [
+const difficulties: {
+  name: string
+  numRows: number
+  numCols: number
+  numMines: number
+  difficulty: Difficulty
+}[] = [
   {
     name: 'Débutant',
     numRows: 9,
     numCols: 9,
     numMines: 10,
-    difficulty: Difficulty.BEGINNER
+    difficulty: 'beginner'
   },
   {
     name: 'Intermédiaire',
     numRows: 16,
     numCols: 16,
     numMines: 40,
-    difficulty: Difficulty.INTERMEDIATE
+    difficulty: 'intermediate'
   },
   {
     name: 'Expert',
     numRows: 30,
     numCols: 16,
     numMines: 99,
-    difficulty: Difficulty.EXPERT
+    difficulty: 'expert'
   }
 ]
 
 const toggleCustomGame = (): void => emit('toggleCustomGame')
 
-const startGame = (value: Difficulty): void => {
-  const { numRows, numCols, numMines, difficulty } = difficulties[value]
+const startGame = (value: string): void => {
+  const { numRows, numCols, numMines, difficulty } =
+    difficulties[
+      difficulties.findIndex((difficulty) => difficulty.difficulty === value)
+    ]
   emit('startGame', {
     numRows,
     numCols,

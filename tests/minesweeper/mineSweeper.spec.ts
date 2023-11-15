@@ -1,9 +1,5 @@
 import { describe, beforeEach, test, expect, afterEach } from 'vitest'
-import {
-  MineSweeper,
-  GameStatus,
-  Difficulty
-} from '../../utils/minesweeper/mineSweeper'
+import { MineSweeper } from '../../utils/minesweeper/mineSweeper'
 import type {
   GameOptions,
   IMineSweeper
@@ -16,8 +12,8 @@ describe('MineSweeper', () => {
     numRows: 5,
     numCols: 5,
     numMines: 3,
-    difficulty: Difficulty.BEGINNER
-  } as GameOptions
+    difficulty: 'beginner'
+  } satisfies GameOptions
 
   beforeEach(() => {
     mineSweeper = new MineSweeper()
@@ -37,14 +33,14 @@ describe('MineSweeper', () => {
     expect(mineSweeper.getBoard()[0].length).toBe(5)
     expect(mineSweeper.getNumFlags()).toBe(0)
     expect(mineSweeper.getNumRevealed()).toBe(0)
-    expect(mineSweeper.getDifficulty()).toBe(Difficulty.BEGINNER)
-    expect(mineSweeper.getGameStatus()).toBe(GameStatus.WAITING)
+    expect(mineSweeper.getDifficulty()).toBe('beginner')
+    expect(mineSweeper.getGameStatus()).toBe('waiting')
   })
 
   test('getGameStatus', () => {
     mineSweeper.setup(options)
 
-    expect(mineSweeper.getGameStatus()).toBe(GameStatus.WAITING)
+    expect(mineSweeper.getGameStatus()).toBe('waiting')
     expect(mineSweeper.getGameStatusString()).toBe('En attente')
 
     for (let row = 0; row < mineSweeper.getNumRows(); row++) {
@@ -56,7 +52,7 @@ describe('MineSweeper', () => {
       }
     }
 
-    expect(mineSweeper.getGameStatus()).toBe(GameStatus.IN_PROGRESS)
+    expect(mineSweeper.getGameStatus()).toBe('inProgress')
     expect(mineSweeper.getGameStatusString()).toBe('En cours')
 
     for (let row = 0; row < mineSweeper.getNumRows(); row++) {
@@ -68,7 +64,7 @@ describe('MineSweeper', () => {
       }
     }
 
-    expect(mineSweeper.getGameStatus()).toBe(GameStatus.LOST)
+    expect(mineSweeper.getGameStatus()).toBe('lost')
     expect(mineSweeper.getGameStatusString()).toBe('Perdu')
 
     mineSweeper.restart(options)
@@ -81,7 +77,7 @@ describe('MineSweeper', () => {
       }
     }
 
-    expect(mineSweeper.getGameStatus()).toBe(GameStatus.WON)
+    expect(mineSweeper.getGameStatus()).toBe('won')
     expect(mineSweeper.getGameStatusString()).toBe('Gagné')
   })
 

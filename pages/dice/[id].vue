@@ -106,7 +106,7 @@ import {
 } from '~/stores'
 import type { LocalDiceSessionScoresType } from '~/stores'
 import { SoundService } from '~/utils/soundService'
-import { diceAudioTracks as audioTracks } from '~/utils'
+import { audioTracks, sleep } from '~/utils'
 
 interface PlayerData {
   playerSheet: LocalDiceSessionScoresType['playerOne']
@@ -191,7 +191,7 @@ const activateSound = () => {
   isNotificationsActive.value = true
   isMusicActive.value = true
   loadSounds(1)
-  soundS.playAudioTracks('dice', audioTracks.length)
+  soundS.playAudioTracks('dice')
 }
 
 const desactivateSound = () => {
@@ -205,7 +205,7 @@ const loadSounds = (volume: number) => {
   soundS.loadSound('dice', '/dice/sounds/dice.mp3', volume)
   soundS.loadSound('message', '/dice/sounds/message.mp3', volume)
   soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3', volume)
-  soundS.loadAudioTracks('dice', audioTracks, volume)
+  soundS.loadAudioTracks('dice', audioTracks(20))
 }
 
 onBeforeRouteLeave(() => {
@@ -259,9 +259,10 @@ const scoreboard = computed(() => {
 
 watch(
   () => playerTurn.value?.playerId,
-  (playerId) => {
+  async (playerId) => {
     if (!session.value?.isFinished) {
       if (playerId === user.value?.uid) {
+        await sleep(2000)
         isScoreboardActive.value = false
       } else {
         isScoreboardActive.value = true

@@ -175,4 +175,3 @@ const getButtonLabel = (session: LocalDiceSessionType) => {
   }
 }
 </style>
-~/utils/dice/diceSession

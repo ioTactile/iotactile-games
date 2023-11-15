@@ -35,7 +35,6 @@
 </template>
 
 <script setup lang="ts">
-import { Difficulty } from '~/utils/minesweeper/mineSweeper'
 import type { GameOptions } from '~/utils/minesweeper/mineSweeper'
 
 const emit = defineEmits<{
@@ -51,7 +50,7 @@ const startCustomGame = (): void => {
     numRows: numRows.value,
     numCols: numCols.value,
     numMines: numMines.value,
-    difficulty: Difficulty.CUSTOM
+    difficulty: 'custom'
   })
 }
 </script>
