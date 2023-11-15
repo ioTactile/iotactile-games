@@ -95,7 +95,7 @@ const setPosition = (): { top: string; right: string } => {
 
 const updateVolume = (value: number): void => {
   properties.soundService.setAudioTracksVolumeInLocalStorage(value)
-  properties.soundService.changeAudioTracksVolume('mineSweeper', value)
+  properties.soundService.changeAudioTracksVolume('minesweeper', value)
 }
 
 const hover = (): void => {
