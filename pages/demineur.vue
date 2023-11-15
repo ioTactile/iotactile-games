@@ -161,27 +161,27 @@ const activateSound = (): void => {
   isMusicActive.value = true
   setupSound()
   const volume = soundS.getAudioTracksVolumeFromLocalStorage()
-  soundS.changeAudioTracksVolume('mineSweeper', volume)
+  soundS.changeAudioTracksVolume('minesweeper', volume)
 }
 
 const desactivateSound = (): void => {
   isMusicActive.value = false
   setupSound()
-  soundS.changeAudioTracksVolume('mineSweeper', 0)
+  soundS.changeAudioTracksVolume('minesweeper', 0)
 }
 
 const setupSound = (): void => {
-  soundS.loadAudioTracks('mineSweeper', audioTracks(25))
-  soundS.playAudioTracks('mineSweeper')
+  soundS.loadAudioTracks('minesweeper', audioTracks(25))
+  soundS.playAudioTracks('minesweeper')
 }
 
 const toggleMusicVolume = (): void => {
   if (isMusicActive.value) {
-    soundS.changeAudioTracksVolume('mineSweeper', 0)
+    soundS.changeAudioTracksVolume('minesweeper', 0)
     isMusicActive.value = false
   } else {
     const volume = soundS.getAudioTracksVolumeFromLocalStorage()
-    soundS.changeAudioTracksVolume('mineSweeper', volume)
+    soundS.changeAudioTracksVolume('minesweeper', volume)
     isMusicActive.value = true
   }
 }
