@@ -11,11 +11,12 @@
             <img :src="getArrowBackColor" alt="Retour" />
           </button>
           <h1 class="game-title mt-10 mb-6">Démineur</h1>
-          <button class="volume-button" @click="toggleMusicVolume">
-            <v-icon size="40" color="mineSweeperMainOnSurface">
-              {{ isMusicActive ? mdiVolumeHigh : mdiVolumeOff }}
-            </v-icon>
-          </button>
+          <minesweeper-volume-hover
+            :is-music-active="isMusicActive"
+            :sound-service="soundS"
+            position="menu"
+            @toggle-music-volume="toggleMusicVolume"
+          />
           <div class="menu-content">
             <minesweeper-menu-main
               v-if="menuPage === 0"
@@ -45,7 +46,7 @@
               @action="handleActions"
             />
           </div>
-          <minesweeper-volumes-modal
+          <minesweeper-menu-volumes-modal
             v-if="isVolumesModalOpen"
             @open-modal="isVolumesModalOpen = $event"
             @activate-sound="activateSound"
@@ -59,11 +60,12 @@
             <img :src="getArrowBackColor" alt="Retour" />
           </button>
           <h1 class="game-title">Démineur</h1>
-          <button class="volume-button" @click="toggleMusicVolume">
-            <v-icon size="40" color="mineSweeperMainOnSurface">
-              {{ isMusicActive ? mdiVolumeHigh : mdiVolumeOff }}
-            </v-icon>
-          </button>
+          <minesweeper-volume-hover
+            :is-music-active="isMusicActive"
+            :sound-service="soundS"
+            position="game"
+            @toggle-music-volume="toggleMusicVolume"
+          />
           <minesweeper-game-status
             :game-status-to-string="gameStatusToString"
             :game-status="gameStatus"
@@ -88,19 +90,18 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon } from 'vuetify/components'
-import { mdiVolumeHigh, mdiVolumeOff } from '@mdi/js'
 import { collection, getDoc, setDoc, doc } from 'firebase/firestore'
 import { useTheme } from 'vuetify'
 import { SoundService } from '~/utils/soundService'
 import { audioTracks } from '~/utils'
 import { mineSweeperScoreboardConverter } from '~/stores'
-import {
-  MineSweeper,
+import { MineSweeper } from '~/utils/minesweeper/mineSweeper'
+import type {
+  GameOptions,
+  IMineSweeper,
   Difficulty,
   GameStatus
 } from '~/utils/minesweeper/mineSweeper'
-import type { GameOptions, IMineSweeper } from '~/utils/minesweeper/mineSweeper'
 import type { Cell } from '~/utils/minesweeper/cell'
 import type { Timer } from '~/utils/minesweeper/Timer'
 import type { CustomVictory } from '~/functions/src/types'
@@ -148,7 +149,7 @@ const mineSweeper = ref<IMineSweeper>(new MineSweeper())
 const numRows = ref<number>(9)
 const numCols = ref<number>(9)
 const numMines = ref<number>(10)
-const difficulty = ref<Difficulty>(Difficulty.BEGINNER)
+const difficulty = ref<Difficulty>('beginner')
 const menuPage = ref<number>(0)
 const isCustom = ref<boolean>(false)
 const isMusicActive = ref<boolean>(true)
@@ -158,21 +159,22 @@ const soundS = new SoundService()
 
 const activateSound = (): void => {
   isMusicActive.value = true
-  soundS.loadAudioTracks('mineSweeper', audioTracks)
+  soundS.loadAudioTracks('mineSweeper', audioTracks(25))
   soundS.playAudioTracks('mineSweeper')
 }
 
 const desactivateSound = (): void => {
   isMusicActive.value = false
-  soundS.loadAudioTracks('mineSweeper', audioTracks)
+  soundS.loadAudioTracks('mineSweeper', audioTracks(25))
 }
 
 const toggleMusicVolume = (): void => {
   if (isMusicActive.value) {
-    soundS.stopAudioTracks('mineSweeper')
+    soundS.changeAudioTracksVolume('mineSweeper', 0)
     isMusicActive.value = false
   } else {
-    soundS.playAudioTracks('mineSweeper')
+    const volume = soundS.getAudioTracksVolumeFromLocalStorage()
+    soundS.changeAudioTracksVolume('mineSweeper', volume)
     isMusicActive.value = true
   }
 }
@@ -203,7 +205,7 @@ const gameStatusToString = computed((): string =>
   mineSweeper.value.getGameStatusString()
 )
 
-const gameStatus = computed((): number => mineSweeper.value.getGameStatus())
+const gameStatus = computed((): GameStatus => mineSweeper.value.getGameStatus())
 
 const getArrowBackColor = computed((): string => {
   return current.value.dark
@@ -249,7 +251,7 @@ const handleLeftClick = async (data: {
   mineSweeper.value.handleCellAction(rowIndex, colIndex, 'click')
 
   data.callback(mineSweeper.value.getGameStatus())
-  if (mineSweeper.value.getGameStatus() === GameStatus.WON) {
+  if (mineSweeper.value.getGameStatus() === 'won') {
     if (!user.value) return
     const userRef = doc(db, 'users', user.value.uid)
     const userDoc = await getDoc(userRef)
@@ -258,9 +260,7 @@ const handleLeftClick = async (data: {
     }
     const username = userDoc.data().username
 
-    const difficulty = convertDifficultyEnumToString(
-      mineSweeper.value.getDifficulty()
-    )
+    const difficulty = mineSweeper.value.getDifficulty()
 
     let scoreboard: LocalMineSweeperScoreboardType = {
       userId: user.value.uid,
@@ -323,11 +323,7 @@ const handleLeftClick = async (data: {
           victoryDate: new Date(Date.now())
         })
       }
-    } else if (
-      difficulty === 'beginner' ||
-      difficulty === 'intermediate' ||
-      difficulty === 'expert'
-    ) {
+    } else {
       const bestTime =
         scoreboard[difficulty]?.bestTime >
         mineSweeper.value.getTimer().getElapsedTime()
@@ -344,19 +340,6 @@ const handleLeftClick = async (data: {
     await setDoc(doc(mineSweeperScoreboard, user.value.uid), scoreboard, {
       merge: true
     })
-  }
-}
-
-const convertDifficultyEnumToString = (difficulty: Difficulty): string => {
-  switch (difficulty) {
-    case Difficulty.BEGINNER:
-      return 'beginner'
-    case Difficulty.INTERMEDIATE:
-      return 'intermediate'
-    case Difficulty.EXPERT:
-      return 'expert'
-    case Difficulty.CUSTOM:
-      return 'custom'
   }
 }
 
@@ -439,16 +422,7 @@ onUnmounted((): void => {
     overflow: auto;
     width: 100%;
     height: 100%;
-    padding: 1rem;
-  }
-
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: rgb(var(--v-theme-mineSweeperMainBackground));
-    border-radius: 0;
+    margin: 1rem auto;
   }
 
   .arrow-back {

@@ -107,9 +107,10 @@ const changeValue = (soundName: string, value: boolean) => {
     isMusicActive.value = value
 
     if (isMusicActive.value) {
-      props.soundService.playAudioTracks('dice')
+      props.soundService.changeAudioTracksVolume('dice', 0)
     } else {
-      props.soundService.stopAudioTracks('dice')
+      const volume = props.soundService.getAudioTracksVolumeFromLocalStorage()
+      props.soundService.changeAudioTracksVolume('dice', volume)
     }
   }
 }

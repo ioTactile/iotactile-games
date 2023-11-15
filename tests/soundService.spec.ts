@@ -1,7 +1,7 @@
 import { describe, beforeEach, test, expect, afterEach } from 'vitest'
 import { SoundService } from '../utils/soundService'
 import type { ISoundService } from '../utils/soundService'
-import { diceAudioTracks } from '../utils/'
+import { audioTracks } from '../utils/'
 
 describe('SoundService', () => {
   let soundService: ISoundService
@@ -41,39 +41,39 @@ describe('SoundService', () => {
   //   })
 
   test('should load a track', () => {
-    soundService.loadAudioTracks('dice', diceAudioTracks, 1)
-    expect(
-      soundService.isAudioTrackLoaded('dice', diceAudioTracks.length)
-    ).toBe(true)
+    soundService.loadAudioTracks('dice', audioTracks, 0.5)
+    expect(soundService.isAudioTrackLoaded('dice', audioTracks.length)).toBe(
+      true
+    )
 
-    soundService.unloadAudioTracks('dice', diceAudioTracks.length)
-    expect(
-      soundService.isAudioTrackLoaded('dice', diceAudioTracks.length)
-    ).toBe(false)
+    soundService.unloadAudioTracks('dice', audioTracks.length)
+    expect(soundService.isAudioTrackLoaded('dice', audioTracks.length)).toBe(
+      false
+    )
   })
 
   //   test('should play a track', () => {
-  //     soundService.loadAudioTracks('dice', diceAudioTracks, 1)
-  //     soundService.playAudioTracks('dice', diceAudioTracks.length)
+  //     soundService.loadAudioTracks('dice', audioTracks, 1)
+  //     soundService.playAudioTracks('dice', audioTracks.length)
   //     expect(
-  //       soundService.isAudioTrackPlaying('dice', diceAudioTracks.length)
+  //       soundService.isAudioTrackPlaying('dice', audioTracks.length)
   //     ).toBe(true)
 
-  //     soundService.stopAudioTracks('dice', diceAudioTracks.length)
+  //     soundService.stopAudioTracks('dice', audioTracks.length)
   //     expect(
-  //       soundService.isAudioTrackPlaying('dice', diceAudioTracks.length)
+  //       soundService.isAudioTrackPlaying('dice', audioTracks.length)
   //     ).toBe(false)
   //   })
 
   //   test('should mute a track', () => {
-  //     soundService.loadAudioTracks('dice', diceAudioTracks, 1)
-  //     soundService.muteAudioTracks('dice', diceAudioTracks.length)
-  //     expect(soundService.isAudioTrackMuted('dice', diceAudioTracks.length)).toBe(
+  //     soundService.loadAudioTracks('dice', audioTracks, 1)
+  //     soundService.muteAudioTracks('dice', audioTracks.length)
+  //     expect(soundService.isAudioTrackMuted('dice', audioTracks.length)).toBe(
   //       true
   //     )
 
-  //     soundService.unmuteAudioTracks('dice', diceAudioTracks.length)
-  //     expect(soundService.isAudioTrackMuted('dice', diceAudioTracks.length)).toBe(
+  //     soundService.unmuteAudioTracks('dice', audioTracks.length)
+  //     expect(soundService.isAudioTrackMuted('dice', audioTracks.length)).toBe(
   //       false
   //     )
   //   })

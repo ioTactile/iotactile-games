@@ -56,8 +56,9 @@ import {
   type LocalMineSweeperScoreboardType
 } from '~/stores'
 import { timerFormatter } from '~/utils'
+import type { Difficulty } from '~/utils/minesweeper/mineSweeper'
 
-type DifficultyType = 'beginner' | 'intermediate' | 'expert'
+type DifficultyWithoutCustom = Exclude<Difficulty, 'custom'>
 
 defineProps<{
   menuPage: number
@@ -134,7 +135,7 @@ const getFormattedTime = (
   player: LocalMineSweeperScoreboardType,
   difficulty: string
 ) => {
-  const difficultyKey = difficulty as DifficultyType
+  const difficultyKey = difficulty as DifficultyWithoutCustom
   const time = player[difficultyKey].bestTime
 
   return timerFormatter(time, true)
@@ -143,7 +144,7 @@ const getFormattedTime = (
 const isBestTime = (difficulty: string): boolean => {
   return ranking.value.length > 0
     ? ranking.value.some(
-        (item) => item[difficulty as DifficultyType].bestTime > 0
+        (item) => item[difficulty as DifficultyWithoutCustom].bestTime > 0
       )
     : false
 }

@@ -33,7 +33,7 @@ const clickNoButton = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 4;
+  z-index: 3;
   position: absolute;
   top: 50%;
   left: 50%;

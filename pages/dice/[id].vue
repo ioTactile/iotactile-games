@@ -205,7 +205,7 @@ const loadSounds = (volume: number) => {
   soundS.loadSound('dice', '/dice/sounds/dice.mp3', volume)
   soundS.loadSound('message', '/dice/sounds/message.mp3', volume)
   soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3', volume)
-  soundS.loadAudioTracks('dice', audioTracks)
+  soundS.loadAudioTracks('dice', audioTracks(20))
 }
 
 onBeforeRouteLeave(() => {
