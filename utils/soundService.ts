@@ -4,43 +4,40 @@ export interface ISoundService {
   loadSound(key: string, src: string, volume: number): void
   unloadSound(key: string): void
   playSound(key: string): void
-  stopSound(key: string): void
-  loadAudioTracks(
-    headerTrackName: string,
-    audioTracks: string[],
-    volume: number
-  ): void
-  playAudioTracks(headerTrackName: string, audioTracksLength: number): void
-  stopAudioTracks(headerTrackName: string, audioTracksLength: number): void
   muteSound(key: string): void
   unmuteSound(key: string): void
+  isSoundMuted(key: string): boolean
+
+  loadAudioTracks(headerTrackName: string, audioTracks: string[]): void
+  unloadAudioTracks(headerTrackName: string): void
+  playAudioTracks(headerTrackName: string): void
+  muteAudioTracks(headerTrackName: string): void
+  unmuteAudioTracks(headerTrackName: string): void
+
+  changeAudioTracksVolume(headerTrackName: string, volume: number): void
+  getAudioTracksVolumeFromLocalStorage(): number
+
   stopAllSounds(): void
   unloadAllSounds(): void
+
   isSoundLoaded(key: string): boolean
-  isSoundMuted(key: string): boolean
   isSoundPlaying(key: string): boolean
+  isAudioTrackLoaded(
+    headerTrackName: string,
+    audioTracksLength: number
+  ): boolean
   isAudioTrackPlaying(
     headerTrackName: string,
     audioTracksLength: number
   ): boolean
   isAudioTrackMuted(headerTrackName: string, audioTracksLength: number): boolean
-  unloadAudioTracks(headerTrackName: string, audioTracksLength: number): void
-  muteAudioTracks(headerTrackName: string, audioTracksLength: number): void
-  unmuteAudioTracks(headerTrackName: string, audioTracksLength: number): void
-  isAudioTrackLoaded(
-    headerTrackName: string,
-    audioTracksLength: number
-  ): boolean
-  changeAudioTracksVolume(headerTrackName: string, volume: number): void
-  getAudioTracksVolumeFromLocalStorage(): number
-  setAudioTracksVolumeInLocalStorage(volume: number): void
 }
 
 export class SoundService implements ISoundService {
   private sounds: Record<string, Howl> = {}
   private audioTracks: Record<string, string[]> = {}
   private audioTracksLength: number = 0
-  private audioTracksVolume: number = 0.5
+  private audioTracksVolume: number = 0
 
   public loadSound(key: string, src: string, volume: number): void {
     this.sounds[key] = new Howl({
@@ -62,16 +59,26 @@ export class SoundService implements ISoundService {
     }
   }
 
-  public stopSound(key: string): void {
+  public muteSound(key: string): void {
     if (this.sounds[key]) {
-      this.sounds[key].stop()
+      this.sounds[key].mute(true)
     }
   }
 
-  public loadAudioTracks(headerTrackName: string, audioTracks: string[]): void {
-    this.audioTracksVolume = this.getAudioTracksVolumeFromLocalStorage()
+  public unmuteSound(key: string): void {
+    if (this.sounds[key]) {
+      this.sounds[key].mute(false)
+    }
+  }
 
-    this.shuffleAudioTracks(headerTrackName, audioTracks)
+  public isSoundMuted(key: string): boolean {
+    return !!this.sounds[key]?.mute()
+  }
+
+  public loadAudioTracks(headerTrackName: string, audioTracks: string[]): void {
+    this.audioTracksVolume = this.getAudioTracksVolumeFromLocalStorage() ?? 0.5
+
+    this.shuffleAndStoreAudioTracks(headerTrackName, audioTracks)
     audioTracks = this.audioTracks[headerTrackName]
     this.audioTracksLength = audioTracks.length
 
@@ -82,18 +89,14 @@ export class SoundService implements ISoundService {
     })
   }
 
-  private shuffleAudioTracks(
-    headerTrackName: string,
-    audioTracks: string[]
-  ): void {
-    const audioTracksCopy = [...audioTracks]
-    for (let i = audioTracksCopy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      const temp = audioTracksCopy[i]
-      audioTracksCopy[i] = audioTracksCopy[j]
-      audioTracksCopy[j] = temp
+  public unloadAudioTracks(headerTrackName: string): void {
+    const audioTracksLength = this.audioTracks[headerTrackName].length
+    for (let i = 0; i < audioTracksLength; i++) {
+      const trackName = `${headerTrackName}-${i}`
+      if (this.isSoundLoaded(trackName)) {
+        this.unloadSound(trackName)
+      }
     }
-    this.audioTracks[headerTrackName] = audioTracksCopy
   }
 
   public playAudioTracks(headerTrackName: string): void {
@@ -113,23 +116,47 @@ export class SoundService implements ISoundService {
     })
   }
 
-  public stopAudioTracks(headerTrackName: string): void {
+  public muteAudioTracks(headerTrackName: string): void {
     const audioTracksLength = this.audioTracks[headerTrackName].length
     for (let i = 0; i < audioTracksLength; i++) {
       const trackName = `${headerTrackName}-${i}`
-      this.stopSound(trackName)
+      if (this.isSoundLoaded(trackName)) {
+        this.muteSound(trackName)
+      }
     }
   }
 
-  public muteSound(key: string): void {
-    if (this.sounds[key]) {
-      this.sounds[key].mute(true)
+  public unmuteAudioTracks(headerTrackName: string): void {
+    const audioTracksLength = this.audioTracks[headerTrackName].length
+    for (let i = 0; i < audioTracksLength; i++) {
+      const trackName = `${headerTrackName}-${i}`
+      if (this.isSoundLoaded(trackName)) {
+        this.unmuteSound(trackName)
+      }
     }
   }
 
-  public unmuteSound(key: string): void {
-    if (this.sounds[key]) {
-      this.sounds[key].mute(false)
+  public changeAudioTracksVolume(
+    headerTrackName: string,
+    newVolume: number
+  ): void {
+    this.audioTracksVolume = newVolume
+    this.setAudioTracksVolumeInLocalStorage(newVolume)
+    const audioTracksLength = this.audioTracks[headerTrackName].length
+    for (let i = 0; i < audioTracksLength; i++) {
+      const trackName = `${headerTrackName}-${i}`
+      if (this.isSoundLoaded(trackName)) {
+        this.sounds[trackName].volume(this.audioTracksVolume)
+      }
+    }
+  }
+
+  public getAudioTracksVolumeFromLocalStorage(): number {
+    const audioTracksVolume = localStorage.getItem('audioTracksVolume')
+    if (audioTracksVolume !== null) {
+      return Number(audioTracksVolume)
+    } else {
+      return this.audioTracksVolume
     }
   }
 
@@ -145,37 +172,24 @@ export class SoundService implements ISoundService {
     })
   }
 
-  public isSoundMuted(key: string): boolean {
-    return !!this.sounds[key]?.mute()
-  }
+  // Private methods
 
-  public changeAudioTracksVolume(
+  private shuffleAndStoreAudioTracks(
     headerTrackName: string,
-    newVolume: number
+    audioTracks: string[]
   ): void {
-    this.audioTracksVolume = newVolume
-    const audioTracksLength = this.audioTracks[headerTrackName].length
-    for (let i = 0; i < audioTracksLength; i++) {
-      const trackName = `${headerTrackName}-${i}`
-      this.sounds[trackName].volume(this.audioTracksVolume)
+    const audioTracksCopy = [...audioTracks]
+    for (let i = audioTracksCopy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      const temp = audioTracksCopy[i]
+      audioTracksCopy[i] = audioTracksCopy[j]
+      audioTracksCopy[j] = temp
     }
+    this.audioTracks[headerTrackName] = audioTracksCopy
   }
 
-  public getAudioTracksVolumeFromLocalStorage(): number {
-    const audioTracksVolume = localStorage.getItem('audioTracksVolume')
-    if (audioTracksVolume !== null) {
-      return Number(audioTracksVolume)
-    } else {
-      return this.audioTracksVolume
-    }
-  }
-
-  public setAudioTracksVolumeInLocalStorage(volume: number): void {
+  private setAudioTracksVolumeInLocalStorage(volume: number): void {
     localStorage.setItem('audioTracksVolume', String(volume))
-  }
-
-  private isAudioTracksVolumeStored(): boolean {
-    return localStorage.getItem('audioTracksVolume') !== null
   }
 
   // For testing purposes
@@ -212,36 +226,6 @@ export class SoundService implements ISoundService {
       }
     }
     return true
-  }
-
-  public unloadAudioTracks(
-    headerTrackName: string,
-    audioTracksLength: number
-  ): void {
-    for (let i = 0; i < audioTracksLength; i++) {
-      const trackName = `${headerTrackName}-${i}`
-      this.unloadSound(trackName)
-    }
-  }
-
-  public muteAudioTracks(
-    headerTrackName: string,
-    audioTracksLength: number
-  ): void {
-    for (let i = 0; i < audioTracksLength; i++) {
-      const trackName = `${headerTrackName}-${i}`
-      this.muteSound(trackName)
-    }
-  }
-
-  public unmuteAudioTracks(
-    headerTrackName: string,
-    audioTracksLength: number
-  ): void {
-    for (let i = 0; i < audioTracksLength; i++) {
-      const trackName = `${headerTrackName}-${i}`
-      this.unmuteSound(trackName)
-    }
   }
 
   public isAudioTrackLoaded(
