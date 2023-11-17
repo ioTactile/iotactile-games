@@ -1,28 +1,30 @@
 <template>
   <div class="button-volume" :style="setPosition()">
-    <v-hover v-slot="{ isHovering, props }" open-delay="200">
+    <v-hover v-slot="{ isHovering, props }">
       <div v-bind="props" class="button-wrapper">
-        <v-btn
-          variant="plain"
-          @click="emit('toggleMusicVolume')"
-          @keyup.m="emit('toggleMusicVolume')"
+        <Tooltip
+          :content="handleVolumeIconTooltips"
+          position="top left"
+          :slot-height="40"
+          :slot-width="40"
         >
-          <v-icon size="40" :icon="handleVolumeIcon" />
-          <v-tooltip
-            activator="parent"
-            location="top right"
-            close-on-content-click
-          >
-            {{ handleVolumeIconTooltips }}
-          </v-tooltip>
-        </v-btn>
+          <template #activator="{ onMouseover, onMouseleave }">
+            <button
+              @click="emit('toggleMusicVolume')"
+              @mouseover="onMouseover"
+              @mouseleave="onMouseleave"
+            >
+              <v-icon size="40" :icon="handleVolumeIcon" />
+            </button>
+          </template>
+        </Tooltip>
         <v-card
           v-if="isHovering || isCardHovering"
           width="60"
           color="mineSweeperMainTertiary"
           class="mt-2"
-          @mouseover="hover"
-          @mouseleave="leave"
+          @mouseover="hoverCard"
+          @mouseleave="leaveCard"
         >
           <v-card-text class="pt-0">
             <v-slider
@@ -46,20 +48,22 @@
 </template>
 
 <script setup lang="ts">
-import {
-  VCard,
-  VCardText,
-  VBtn,
-  VIcon,
-  VTooltip,
-  VSlider,
-  VHover
-} from 'vuetify/components'
+import { VCard, VCardText, VIcon, VSlider, VHover } from 'vuetify/components'
 import { mdiVolumeHigh, mdiVolumeOff } from '@mdi/js'
+import { audioTracks } from '~/utils'
 import type { ISoundService } from '~/utils/soundService'
+
+if (process.client) {
+  window.addEventListener('keyup', (e: KeyboardEvent) => {
+    if (e.key === 'm') {
+      emit('toggleMusicVolume')
+    }
+  })
+}
 
 const properties = defineProps<{
   isMusicActive: boolean
+  isMusicMuted: boolean
   soundService: ISoundService
   position: 'menu' | 'game'
 }>()
@@ -76,13 +80,13 @@ onMounted(() => {
 })
 
 const handleVolumeIcon = computed((): string => {
-  return properties.isMusicActive && volume.value > 0
+  return !properties.isMusicMuted && volume.value > 0
     ? mdiVolumeHigh
     : mdiVolumeOff
 })
 
 const handleVolumeIconTooltips = computed((): string => {
-  return properties.isMusicActive && volume.value > 0
+  return !properties.isMusicMuted && volume.value > 0
     ? 'Désactiver la musique (m)'
     : 'Activer la musique (m)'
 })
@@ -94,15 +98,18 @@ const setPosition = (): { top: string; right: string } => {
 }
 
 const updateVolume = (value: number): void => {
-  properties.soundService.setAudioTracksVolumeInLocalStorage(value)
+  if (!properties.isMusicActive) {
+    properties.soundService.loadAudioTracks('minesweeper', audioTracks(25))
+    properties.soundService.playAudioTracks('minesweeper')
+  }
   properties.soundService.changeAudioTracksVolume('minesweeper', value)
 }
 
-const hover = (): void => {
+const hoverCard = (): void => {
   isCardHovering.value = true
 }
 
-const leave = (): void => {
+const leaveCard = (): void => {
   isCardHovering.value = false
 }
 </script>

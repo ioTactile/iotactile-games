@@ -1,12 +1,38 @@
 <template>
   <div class="container-game-status">
-    <button @click="restartGame">
-      <v-icon :icon="mdiReload" size="30" :class="{ rotate: isRotating }" />
-    </button>
+    <Tooltip
+      :content="'Recommencer (r)'"
+      position="top"
+      :slot-height="30"
+      :slot-width="30"
+    >
+      <template #activator="{ onMouseover, onMouseleave }">
+        <button
+          @click="restartGame"
+          @mouseover="onMouseover"
+          @mouseleave="onMouseleave"
+        >
+          <v-icon :icon="mdiReload" size="30" :class="{ rotate: isRotating }" />
+        </button>
+      </template>
+    </Tooltip>
     <div class="game-status">{{ gameStatusToString }}</div>
-    <button @click="togglePause">
-      <v-icon :icon="getTimerIcon" size="30" />
-    </button>
+    <Tooltip
+      :content="timer.getIsPaused() ? 'Reprendre (espace)' : 'Pause (espace)'"
+      position="top"
+      :slot-height="30"
+      :slot-width="30"
+    >
+      <template #activator="{ onMouseover, onMouseleave }">
+        <button
+          @click="togglePause"
+          @mouseover="onMouseover"
+          @mouseleave="onMouseleave"
+        >
+          <v-icon :icon="getTimerIcon" size="30" />
+        </button>
+      </template>
+    </Tooltip>
   </div>
 </template>
 
@@ -16,6 +42,17 @@ import { mdiPauseBox, mdiPlayBox, mdiReload } from '@mdi/js'
 import type { GameStatus } from '~/utils/minesweeper/mineSweeper'
 import type { Timer } from '~/utils/minesweeper/Timer'
 import { sleep } from '~/utils'
+
+if (process.client) {
+  window.addEventListener('keyup', (e: KeyboardEvent) => {
+    if (e.key === 'r') {
+      restartGame()
+    }
+    if (e.key === ' ') {
+      togglePause()
+    }
+  })
+}
 
 const props = defineProps<{
   gameStatusToString: string

@@ -13,7 +13,8 @@
           <h1 class="game-title mt-10 mb-6">Démineur</h1>
           <minesweeper-volume-hover
             :is-music-active="isMusicActive"
-            :sound-service="soundS"
+            :is-music-muted="isMusicMuted"
+            :sound-service="soundService"
             position="menu"
             @toggle-music-volume="toggleMusicVolume"
           />
@@ -62,7 +63,8 @@
           <h1 class="game-title">Démineur</h1>
           <minesweeper-volume-hover
             :is-music-active="isMusicActive"
-            :sound-service="soundS"
+            :is-music-muted="isMusicMuted"
+            :sound-service="soundService"
             position="game"
             @toggle-music-volume="toggleMusicVolume"
           />
@@ -104,6 +106,7 @@ import type {
 } from '~/utils/minesweeper/mineSweeper'
 import type { Cell } from '~/utils/minesweeper/cell'
 import type { Timer } from '~/utils/minesweeper/Timer'
+import type { ISoundService } from '~/utils/soundService'
 import type { CustomVictory } from '~/functions/src/types'
 
 useSeoMeta({
@@ -114,14 +117,18 @@ useSeoMeta({
   ogImage: '/minesweeper_blue.jpg'
 })
 
-// definePageMeta({
-//   middleware: ['auth']
-// })
-
 type OmittedCustomVictory = Omit<
   CustomVictory,
   'victories' | 'bestTime' | 'victoryDate'
 >
+
+if (process.client) {
+  window.addEventListener('keyup', (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      returnToPreviousPage(menuPage.value)
+    }
+  })
+}
 
 const { current } = useTheme()
 
@@ -152,37 +159,39 @@ const numMines = ref<number>(10)
 const difficulty = ref<Difficulty>('beginner')
 const menuPage = ref<number>(0)
 const isCustom = ref<boolean>(false)
+const soundService = ref<ISoundService>(new SoundService())
 const isMusicActive = ref<boolean>(true)
+const isMusicMuted = ref<boolean>(false)
 const isVolumesModalOpen = ref<boolean>(true)
-
-const soundS = new SoundService()
 
 const activateSound = (): void => {
   isMusicActive.value = true
-  setupSound()
-  const volume = soundS.getAudioTracksVolumeFromLocalStorage()
-  soundS.changeAudioTracksVolume('minesweeper', volume)
+  soundService.value.loadAudioTracks('minesweeper', audioTracks(25))
+  soundService.value.playAudioTracks('minesweeper')
+  const volume = soundService.value.getAudioTracksVolumeFromLocalStorage()
+  soundService.value.changeAudioTracksVolume('minesweeper', volume)
 }
 
 const desactivateSound = (): void => {
   isMusicActive.value = false
-  setupSound()
-  soundS.changeAudioTracksVolume('minesweeper', 0)
-}
-
-const setupSound = (): void => {
-  soundS.loadAudioTracks('minesweeper', audioTracks(25))
-  soundS.playAudioTracks('minesweeper')
+  isMusicMuted.value = true
 }
 
 const toggleMusicVolume = (): void => {
-  if (isMusicActive.value) {
-    soundS.changeAudioTracksVolume('minesweeper', 0)
-    isMusicActive.value = false
-  } else {
-    const volume = soundS.getAudioTracksVolumeFromLocalStorage()
-    soundS.changeAudioTracksVolume('minesweeper', volume)
+  if (!isMusicActive.value) {
     isMusicActive.value = true
+    isMusicMuted.value = false
+    soundService.value.loadAudioTracks('minesweeper', audioTracks(25))
+    soundService.value.playAudioTracks('minesweeper')
+    return
+  }
+
+  if (!isMusicMuted.value) {
+    soundService.value.muteAudioTracks('minesweeper')
+    isMusicMuted.value = true
+  } else {
+    soundService.value.unmuteAudioTracks('minesweeper')
+    isMusicMuted.value = false
   }
 }
 
@@ -350,8 +359,10 @@ const handleLeftClick = async (data: {
   }
 }
 
-onUnmounted((): void => {
+onBeforeRouteLeave((): void => {
   mineSweeper.value.getTimer().stop()
+  soundService.value.stopAllSounds()
+  soundService.value.unloadAllSounds()
 })
 </script>
 
