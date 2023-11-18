@@ -50,11 +50,11 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
-import { SoundService } from '~/utils/soundService'
+import type { ISoundService } from '~/utils/music/soundService'
 import { useDiceSoundsStore } from '~/stores/diceSounds'
 
 const props = defineProps<{
-  soundService: SoundService
+  soundService: ISoundService
 }>()
 
 const emit = defineEmits<{
@@ -62,7 +62,7 @@ const emit = defineEmits<{
 }>()
 
 const diceSoundsStore = useDiceSoundsStore()
-const { isSoundEffectsActive, isNotificationsActive, isMusicActive } =
+const { isSoundEffectsActive, isNotificationsActive } =
   storeToRefs(diceSoundsStore)
 
 const sounds = ref([
@@ -73,10 +73,6 @@ const sounds = ref([
   {
     name: 'NOTIFICATIONS',
     isActive: isNotificationsActive.value
-  },
-  {
-    name: 'MUSIQUE',
-    isActive: isMusicActive.value
   }
 ])
 
@@ -102,14 +98,6 @@ const changeValue = (soundName: string, value: boolean) => {
       props.soundService.unmuteSound('message')
     } else {
       props.soundService.muteSound('message')
-    }
-  } else if (soundName === 'MUSIQUE') {
-    isMusicActive.value = value
-
-    if (isMusicActive.value) {
-      props.soundService.muteAudioTracks('dice')
-    } else {
-      props.soundService.unmuteAudioTracks('dice')
     }
   }
 }
@@ -180,3 +168,4 @@ const changeValue = (soundName: string, value: boolean) => {
   }
 }
 </style>
+~/utils/music/soundService

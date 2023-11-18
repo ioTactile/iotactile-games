@@ -7,6 +7,7 @@
       name="activator"
       :on-mouseover="onMouseover"
       :on-mouseleave="onMouseleave"
+      :on-click="onClick"
     />
   </div>
 </template>
@@ -27,6 +28,10 @@ const props = defineProps<{
   slotWidth: number
 }>()
 
+const emit = defineEmits<{
+  (e: 'onClick'): void
+}>()
+
 const isHovering = ref<boolean>(false)
 
 const onMouseover = (): void => {
@@ -35,6 +40,11 @@ const onMouseover = (): void => {
 
 const onMouseleave = (): void => {
   isHovering.value = false
+}
+
+const onClick = (): void => {
+  isHovering.value = false
+  emit('onClick')
 }
 
 const getPosition = computed(() => {

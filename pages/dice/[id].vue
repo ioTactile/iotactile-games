@@ -14,7 +14,7 @@
       />
       <dice-game-volumes-modal
         v-if="isVolumesModalActive"
-        :sound-service="soundS"
+        :sound-service="soundService"
         @open-volumes="isVolumesModalActive = $event"
       />
       <dice-game-chat-modal
@@ -43,7 +43,7 @@
           <dice-game-chat
             :chat-messages="chat?.messages"
             :is-chat-active="isChatModalActive"
-            :sound-service="soundS"
+            :sound-service="soundService"
             @open-chat="isChatModalActive = $event"
           />
         </div>
@@ -75,7 +75,7 @@
             :is-player-turn="isPlayerTurn"
             :dices="dices.dices"
             :player-tries="playerTries.tries"
-            :sound-service="soundS"
+            :sound-service="soundService"
           />
           <dice-game-dices
             :session-id="sessionId"
@@ -84,7 +84,7 @@
             :player-tries="playerTries.tries"
             :session-is-started="session.isStarted"
             :session-is-finished="session.isFinished"
-            :sound-service="soundS"
+            :sound-service="soundService"
           />
         </div>
       </div>
@@ -105,8 +105,9 @@ import {
   diceSessionChatConverter
 } from '~/stores'
 import type { LocalDiceSessionScoresType } from '~/stores'
-import { SoundService } from '~/utils/soundService'
-import { audioTracks, sleep } from '~/utils'
+import { SoundService } from '~/utils/music/soundService'
+import type { ISoundService } from '~/utils/music/soundService'
+import { sleep } from '~/utils'
 
 interface PlayerData {
   playerSheet: LocalDiceSessionScoresType['playerOne']
@@ -181,36 +182,36 @@ const isEndgameModalActive = ref<boolean>(false)
 const isRulesModalActive = ref<boolean>(false)
 
 const diceSoundsStore = useDiceSoundsStore()
-const { isSoundEffectsActive, isNotificationsActive, isMusicActive } =
+const { isSoundEffectsActive, isNotificationsActive } =
   storeToRefs(diceSoundsStore)
 
-const soundS = new SoundService()
+const soundService = ref<ISoundService>(new SoundService())
 
 const activateSound = () => {
   isSoundEffectsActive.value = true
   isNotificationsActive.value = true
-  isMusicActive.value = true
   loadSounds(1)
-  soundS.playAudioTracks('dice')
 }
 
 const desactivateSound = () => {
   isSoundEffectsActive.value = false
   isNotificationsActive.value = false
-  isMusicActive.value = false
   loadSounds(0)
 }
 
 const loadSounds = (volume: number) => {
-  soundS.loadSound('dice', '/dice/sounds/dice.mp3', volume)
-  soundS.loadSound('message', '/dice/sounds/message.mp3', volume)
-  soundS.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3', volume)
-  soundS.loadAudioTracks('dice', audioTracks(20))
+  soundService.value.loadSound('dice', '/dice/sounds/dice.mp3', volume)
+  soundService.value.loadSound('message', '/dice/sounds/message.mp3', volume)
+  soundService.value.loadSound(
+    'shakeRoll',
+    '/dice/sounds/shake-and-roll.mp3',
+    volume
+  )
 }
 
 onBeforeRouteLeave(() => {
-  soundS.stopAllSounds()
-  soundS.unloadAllSounds()
+  soundService.value.stopAllSounds()
+  soundService.value.unloadAllSounds()
 })
 
 const isPlayerTurn = computed(() => {
@@ -319,3 +320,4 @@ watch(
   height: 655px;
 }
 </style>
+~/utils/music/soundService

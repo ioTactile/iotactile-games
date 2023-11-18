@@ -64,7 +64,7 @@ import {
   diceSessionPlayerTriesConverter
 } from '~/stores'
 import type { Dice } from '~/functions/src/types'
-import { SoundService } from '~/utils/soundService'
+import type { ISoundService } from '~/utils/music/soundService'
 import { random } from '~/utils'
 
 type diceFaces = {
@@ -78,7 +78,7 @@ const props = defineProps<{
   playerTries: number
   sessionIsStarted: boolean
   sessionIsFinished: boolean
-  soundService: SoundService
+  soundService: ISoundService
 }>()
 
 const db = useFirestore()
@@ -297,3 +297,4 @@ watch(
   }
 }
 </style>
+~/utils/music/soundService

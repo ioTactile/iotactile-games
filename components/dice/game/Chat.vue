@@ -47,12 +47,12 @@
 
 <script setup lang="ts">
 import type { LocalDiceSessionChatType } from '~/stores'
-import { SoundService } from '~/utils/soundService'
+import type { ISoundService } from '~/utils/music/soundService'
 
 const props = defineProps<{
   chatMessages: LocalDiceSessionChatType['messages'] | undefined
   isChatActive: boolean
-  soundService: SoundService
+  soundService: ISoundService
 }>()
 
 const emit = defineEmits<{
@@ -117,3 +117,4 @@ button {
   }
 }
 </style>
+~/utils/music/soundService

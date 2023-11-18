@@ -23,15 +23,29 @@
       />
       <v-divider vertical class="mx-2" />
     </template>
+    <template v-else>
+      <musicplayer-music-note-button />
+    </template>
     <v-btn
       v-if="!user"
       color="onSurface"
+      rounded="0"
       :icon="mdiAccount"
       @click="login = true"
     />
-    <v-menu v-else :close-on-content-click="false" origin="top right">
+    <v-menu
+      v-else
+      :close-on-content-click="false"
+      offset="5"
+      origin="top right"
+    >
       <template #activator="{ props }">
-        <v-btn color="onSurface" :icon="mdiAccount" v-bind="props" />
+        <v-btn
+          color="onSurface"
+          rounded="0"
+          :icon="mdiAccount"
+          v-bind="props"
+        />
       </template>
       <UserDetails :theme="theme.current.value" @toggle-theme="toggleTheme" />
     </v-menu>

@@ -32,6 +32,12 @@ export const timerFormatter = (value: number, withMs: boolean) => {
   }${seconds}`
 }
 
+export const timerFormatterLessThanTenMinutes = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60)
+  const secs = seconds - minutes * 60
+  return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
+}
+
 export const sum = (object: Record<string, number | null>) => {
   return Object.values(object).reduce((a, b) => (a || 0) + (b || 0), 0)
 }

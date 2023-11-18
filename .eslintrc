@@ -37,6 +37,7 @@
     "space-before-function-paren": "off",
     "arrow-parens": ["error", "always"],
     "indent": "off",
+    "brace-style": "off",
     "vue/html-self-closing": [
       "error",
       {
