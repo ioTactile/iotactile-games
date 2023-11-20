@@ -88,8 +88,7 @@ const isMusicPaused = ref<boolean>(true)
 const playlists = [
   { name: 'Christmas Lofi', value: 'christmas-lofi' },
   { name: 'Autumn Lofi', value: 'autumn-lofi' },
-  { name: 'Asian Lofi', value: 'asian-lofi' },
-  { name: 'Synthwave', value: 'synthwave' }
+  { name: 'Asian Lofi', value: 'asian-lofi' }
 ]
 
 onMounted(() => {
