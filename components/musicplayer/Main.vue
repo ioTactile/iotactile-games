@@ -1,8 +1,12 @@
 <template>
   <div class="main-container">
     <div class="header-container">
-      <div class="track-current-time">{{ trackSeek }}</div>
-      <div class="track-title">{{ getCurrentTrack }}</div>
+      <div class="track-current-time">{{ currentTime }}</div>
+      <div class="track-title-container">
+        <div class="track-title">
+          <div class="text">{{ getCurrentTrack }}</div>
+        </div>
+      </div>
       <div class="track-duration">{{ trackDuration }}</div>
     </div>
     <div class="footer-container">
@@ -38,22 +42,15 @@
           <v-icon :icon="mdiSkipNext" color="onSurface" />
         </button>
       </div>
-      <musicplayer-volume
-        :is-music-muted="isMusicMuted"
-        :playlist-service="playlist"
-        :current-playlist-genre="getPlaylistGenres"
-      />
+      <musicplayer-volume :is-music-muted="isMusicMuted" :playlist="playlist" />
     </div>
     <template v-if="isShowPlaylists">
       <div class="playlists-container">
         <ul class="list-container">
-          <li
-            v-for="(p, i) in playlists"
-            :key="i"
-            class="list-content"
-            @click="changePlaylist(p.value, p.tracks)"
-          >
-            {{ p.value }}
+          <li v-for="(p, i) in playlists" :key="i" class="list-content">
+            <button @click="changePlaylistType(p.value)">
+              {{ p.name }}
+            </button>
           </li>
         </ul>
       </div>
@@ -71,7 +68,8 @@ import {
   mdiSkipNext
 } from '@mdi/js'
 import { timerFormatterLessThanTenMinutes } from '~/utils'
-import { usePlaylistStore } from '~/stores/playlist'
+import { PlaylistService } from '~/utils/music/playlistService'
+import type { IPlaylistService } from '~/utils/music/playlistService'
 
 if (process.client) {
   window.addEventListener('keyup', (e: KeyboardEvent) => {
@@ -81,29 +79,26 @@ if (process.client) {
   })
 }
 
-onMounted(() => {
-  isMusicActive.value = false
-  isMusicMuted.value = false
-  isMusicPaused.value = true
-})
-
-const playlistStore = usePlaylistStore()
-
-const { playlist, isMusicActive, isMusicMuted, isMusicPaused } =
-  storeToRefs(playlistStore)
-
+const playlist = ref<IPlaylistService>(new PlaylistService())
 const isShowPlaylists = ref<boolean>(false)
+const isMusicActive = ref<boolean>(false)
+const isMusicMuted = ref<boolean>(false)
+const isMusicPaused = ref<boolean>(true)
 
 const playlists = [
-  { value: 'chill', tracks: audioTracks(20) },
-  { value: 'synthwave', tracks: audioTracks(25) }
+  { name: 'Christmas Lofi', value: 'christmas-lofi' },
+  { name: 'Autumn Lofi', value: 'autumn-lofi' },
+  { name: 'Asian Lofi', value: 'asian-lofi' },
+  { name: 'Synthwave', value: 'synthwave' }
 ]
 
-playlist.value.loadPlaylist('chill', audioTracks(20))
+onMounted(() => {
+  playlist.value.loadPlaylist('christmas-lofi')
+})
 
-const trackSeek = computed((): string => {
+const currentTime = computed((): string => {
   return timerFormatterLessThanTenMinutes(
-    Math.round(playlist.value.getTrackSeek())
+    Math.round(playlist.value.getCurrentTime())
   )
 })
 
@@ -111,10 +106,6 @@ const trackDuration = computed((): string => {
   return timerFormatterLessThanTenMinutes(
     Math.round(playlist.value.getTrackDuration())
   )
-})
-
-const getPlaylistGenres = computed((): string => {
-  return playlist.value.getCurrentPlaylistGenre()
 })
 
 const getCurrentTrack = computed((): string => {
@@ -135,12 +126,12 @@ const handlePlayPause = (): void => {
   if (!isMusicActive.value) {
     isMusicActive.value = true
     isMusicPaused.value = false
-    playlist.value.playPlaylist(getPlaylistGenres.value)
+    playlist.value.playPlaylist()
     return
   }
 
   if (isMusicPaused.value) {
-    playlist.value.playPlaylist(getPlaylistGenres.value)
+    playlist.value.playPlaylist()
     isMusicPaused.value = false
   } else {
     playlist.value.pausePlaylist()
@@ -158,8 +149,8 @@ const handleSkipTrack = (direction: string): void => {
   }
 }
 
-const changePlaylist = (genre: string, tracks: string[]): void => {
-  playlist.value.changePlaylistGenre(genre, tracks)
+const changePlaylistType = (type: string): void => {
+  playlist.value.changePlaylistType(type)
   isMusicPaused.value = false
   isShowPlaylists.value = false
 }
@@ -200,9 +191,33 @@ onBeforeUnmount(() => {
       color: rgb(var(--v-theme-onBackground));
     }
 
-    .track-title {
-      font-size: 0.875rem;
-      color: rgb(var(--v-theme-onBackground));
+    .track-title-container {
+      width: 160px;
+      overflow: hidden;
+
+      .track-title {
+        position: relative;
+        font-size: 0.875rem;
+        color: rgb(var(--v-theme-onBackground));
+        width: 160px;
+        white-space: nowrap;
+        overflow: hidden;
+
+        .text {
+          display: inline-block;
+          animation: marquee 10s linear infinite;
+
+          @keyframes marquee {
+            0% {
+              transform: translateX(160px);
+            }
+
+            100% {
+              transform: translateX(-100%);
+            }
+          }
+        }
+      }
     }
   }
 
@@ -210,10 +225,9 @@ onBeforeUnmount(() => {
     background-color: rgb(var(--v-theme-background));
 
     .list-container {
-      list-style: inside '- ';
+      list-style: none;
 
       .list-content {
-        text-transform: capitalize;
         padding: 0.5rem;
         color: rgb(var(--v-theme-onBackground));
         cursor: pointer;

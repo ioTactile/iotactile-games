@@ -31,6 +31,17 @@ export abstract class AbstractAudioService {
     }
   }
 
+  protected playAudioWithSeek(
+    audio: string,
+    seek: number,
+    audioObject: Record<string, Howl>
+  ): void {
+    if (audioObject[audio]) {
+      audioObject[audio].seek(seek)
+      audioObject[audio].play()
+    }
+  }
+
   protected stopAudio(audio: string, audioObject: Record<string, Howl>): void {
     if (audioObject[audio]) {
       audioObject[audio].stop()

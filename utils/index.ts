@@ -50,10 +50,71 @@ export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export const audioTracks = (length: number): string[] => {
-  const tracks = []
-  for (let i = 0; i < length; i++) {
-    tracks.push(`${i + 1}.m4a`)
-  }
-  return tracks
-}
+export const asianLofi = [
+  'Benzaiten ⛩️ Asian Lofi',
+  'Blossom Tree ⛩️ Asian Lofi',
+  'Bon Odori ⛩️ Asian Lofi',
+  'Ebisu ⛩️ Asian Lofi',
+  'Fushimi Inari ⛩️ Asian Lofi',
+  'Gion District ⛩️ Asian Lofi',
+  'Hanabi Festivals ⛩️ Asian Lofi',
+  'Higanbana Field ⛩️ Asian Lofi',
+  'Himawari No Sato ⛩️ Asian Lofi',
+  'Hot Spring ⛩️ Asian Lofi',
+  'Nihon Buyo ⛩️ Asian Lofi',
+  'Oni Gokko ⛩️ Asian Lofi',
+  'Princess Abe ⛩️ Asian Lofi',
+  'Reiwa Era ⛩️ Asian Lofi',
+  'Shakuhachi ⛩️ Asian Lofi',
+  'Tachinomi ⛩️ Asian Lofi',
+  'Takahuru Bus Stop ⛩️ Asian Lofi',
+  'Tengu ⛩️ Asian Lofi',
+  'Ume ⛩️ Asian Lofi',
+  'Walking Thru San Marino ⛩️ Asian Lofi'
+]
+
+export const christmasLofi = [
+  'Arctic Aura ❄️ Christmas Winter Lofi',
+  'Candy Cane ❄️ Christmas Winter Lofi',
+  'Fireplace ❄️ Christmas Winter Lofi',
+  'Fireside ❄️ Christmas Winter Lofi',
+  'Frost Beats ❄️ Christmas Winter Lofi',
+  'Frosty Dawn ❄️ Christmas Winter Lofi',
+  'Frozen Echo ❄️ Christmas Winter Lofi',
+  'Merry Lofi ❄️ Christmas Winter Lofi',
+  'Noel Nights ❄️ Christmas Winter Lofi',
+  'Northern Lights ❄️ Christmas Winter Lofi',
+  'Polar Harmony ❄️ Christmas Winter Lofi',
+  'Scented Dreams ❄️ Christmas Winter Lofi',
+  'Sleigh Ride ❄️ Christmas Winter Lofi',
+  'Snowdrift ❄️ Christmas Winter Lofi',
+  'Snowfall ❄️ Christmas Winter Lofi',
+  'Snowglobe ❄️ Christmas Winter Lofi',
+  'Starlit ❄️ Christmas Winter Lofi',
+  'Sweater Weather ❄️ Christmas Winter Lofi',
+  'Tinsel Tunes ❄️ Christmas Winter Lofi',
+  'Winter Whisper ❄️ Christmas Winter Lofi'
+]
+
+export const autumnLofi = [
+  'Amber Ambiance 🍁 Autumn Lofi',
+  'Autumns Haunted Hues 🍁 Autumn Lofi',
+  'Bonfire Beats 🍁 Autumn Lofi',
+  'Cinnamon Specters 🍁 Autumn Lofi',
+  'Cursed Spells 🍁 Autumn Lofi',
+  'Fallen Leaves 🍁 Autumn Lofi',
+  'Falling Leaves 🍁 Autumn Lofi',
+  'Fireplace Ghost 🍁 Autumn Lofi',
+  'Lantern Glow 🍁 Autumn Lofi',
+  'Mystical Maple 🍁 Autumn Lofi',
+  'October Chill 🍁 Autumn Lofi',
+  'October Overtures 🍁 Autumn Lofi',
+  'Ominous Owls 🍁 Autumn Lofi',
+  'Pumpkin Patch 🍁 Autumn Lofi',
+  'Rainy Resonance 🍁 Autumn Lofi',
+  'Sinister Strings 🍁 Autumn Lofi',
+  'Twilight Tones 🍁 Autumn Lofi',
+  'Voodoo 🍁 Autumn Lofi',
+  'Whisper in the Wind 🍁 Autumn Lofi',
+  'Witching Hours 🍁 Autumn Lofi'
+]

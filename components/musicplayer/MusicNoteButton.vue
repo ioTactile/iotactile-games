@@ -1,25 +1,27 @@
 <template>
-  <v-menu
-    :close-on-content-click="false"
-    location="left"
-    offset="5"
-    transition="slide-x-reverse-transition"
-  >
-    <template #activator="{ props }">
-      <v-btn
-        rounded="0"
-        color="onSurface"
-        :icon="mdiMusicNote"
-        v-bind="props"
+  <div>
+    <v-btn
+      rounded="0"
+      color="onSurface"
+      :icon="mdiMusicNote"
+      @click="toggleMusicPlayer"
+    />
+    <Teleport to="#music-player">
+      <musicplayer-main
+        v-show="isMusicPlayerVisible"
+        @click:outside="isMusicPlayerVisible = false"
       />
-    </template>
-    <musicplayer-main />
-  </v-menu>
+    </Teleport>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { VBtn, VMenu } from 'vuetify/components'
+import { VBtn } from 'vuetify/components'
 import { mdiMusicNote } from '@mdi/js'
-</script>
 
-<style scoped lang="scss"></style>
+const isMusicPlayerVisible = ref<boolean>(false)
+
+const toggleMusicPlayer = () => {
+  isMusicPlayerVisible.value = !isMusicPlayerVisible.value
+}
+</script>

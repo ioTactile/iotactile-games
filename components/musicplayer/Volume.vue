@@ -25,30 +25,24 @@ import { VIcon, VSlider } from 'vuetify/components'
 import { mdiVolumeHigh, mdiVolumeOff } from '@mdi/js'
 import type { IPlaylistService } from '~/utils/music/playlistService'
 
-const properties = defineProps<{
+const props = defineProps<{
   isMusicMuted: boolean
-  playlistService: IPlaylistService
-  currentPlaylistGenre: string
+  playlist: IPlaylistService
 }>()
 
 const volume = ref<number>(0.5)
 const isHovering = ref<boolean>(false)
 
 onMounted(() => {
-  volume.value = properties.playlistService.getPlaylistVolumeFromLocalStorage()
+  volume.value = props.playlist.getPlaylistVolumeFromLocalStorage()
 })
 
 const handleVolumeIcon = computed((): string => {
-  return !properties.isMusicMuted && volume.value > 0
-    ? mdiVolumeHigh
-    : mdiVolumeOff
+  return !props.isMusicMuted && volume.value > 0 ? mdiVolumeHigh : mdiVolumeOff
 })
 
 const updateVolume = (value: number): void => {
-  properties.playlistService.changePlaylistVolume(
-    properties.currentPlaylistGenre,
-    value
-  )
+  props.playlist.changePlaylistVolume(value)
   isHovering.value = false
 }
 </script>
@@ -60,9 +54,12 @@ const updateVolume = (value: number): void => {
   align-items: center;
 
   .volume-slider-container {
+    background-color: rgb(var(--v-theme-background));
+    border-radius: 4px;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25);
+    margin-right: 0.25rem;
     position: absolute;
-    width: 100px;
-    height: auto;
+    width: 150px;
     right: calc(20px + 0.5rem);
   }
 }
