@@ -12,7 +12,7 @@
       >
         À propos
       </NuxtLink>
-      <div :class="{ 'order-3': xs }" class="pt-2 px-6">
+      <div :class="{ 'order-3': xs }" class="text-center pt-2 px-6">
         © {{ new Date().getFullYear() }} - Réalisé par
         <a
           href="https://github.com/ioTactile"

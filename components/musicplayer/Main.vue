@@ -239,7 +239,8 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .main-container {
-  width: 300px;
+  max-width: 300px;
+  min-width: 260px;
   height: auto;
   padding: 0.5rem 1rem;
   background-color: rgb(var(--v-theme-background));
@@ -269,14 +270,14 @@ onBeforeUnmount(() => {
     }
 
     .track-title-container {
-      width: 160px;
+      width: 140px;
       overflow: hidden;
 
       .track-title {
         position: relative;
         font-size: 0.875rem;
         color: rgb(var(--v-theme-onBackground));
-        width: 160px;
+        width: 140px;
         white-space: nowrap;
         overflow: hidden;
 
@@ -286,7 +287,7 @@ onBeforeUnmount(() => {
 
           @keyframes marquee {
             0% {
-              transform: translateX(160px);
+              transform: translateX(140px);
             }
 
             100% {
