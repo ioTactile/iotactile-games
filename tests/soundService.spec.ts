@@ -1,6 +1,6 @@
 import { describe, beforeEach, test, expect, afterEach } from 'vitest'
-import { SoundService } from '../utils/soundService'
-import type { ISoundService } from '../utils/soundService'
+import { SoundService } from '../utils/music/soundService'
+import type { ISoundService } from '../utils/music/soundService'
 import { audioTracks } from '../utils/'
 
 describe('SoundService', () => {

@@ -37,7 +37,7 @@ import { VImg } from 'vuetify/components'
 import { doc, updateDoc } from 'firebase/firestore'
 import { sleep } from '~/utils'
 import type { Dice } from '~/functions/src/types'
-import { SoundService } from '~/utils/soundService'
+import type { ISoundService } from '~/utils/music/soundService'
 
 // Types
 
@@ -56,7 +56,7 @@ const props = defineProps<{
   sessionId: string
   dices: Dice[]
   playerTries: number
-  soundService: SoundService
+  soundService: ISoundService
 }>()
 
 // Refs
@@ -227,3 +227,4 @@ watch(
   }
 }
 </style>
+~/utils/music/soundService

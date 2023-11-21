@@ -1,5 +1,5 @@
 <template>
-  <v-card class="bg-surface mt-1" rounded="lg" width="260">
+  <v-card class="bg-surface" rounded="lg" width="280">
     <section class="pa-2">
       <div class="text-center">
         <form @submit.prevent="changeUsername">

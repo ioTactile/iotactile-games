@@ -5,12 +5,10 @@ export const useDiceSoundsStore = defineStore(
   () => {
     const isSoundEffectsActive = ref<boolean>(true)
     const isNotificationsActive = ref<boolean>(true)
-    const isMusicActive = ref<boolean>(true)
 
     return {
       isSoundEffectsActive,
-      isNotificationsActive,
-      isMusicActive
+      isNotificationsActive
     }
   },
   {

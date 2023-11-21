@@ -3,21 +3,33 @@
     <div class="d-flex justify-center align-center h-100">
       <template v-if="menuPage !== 5">
         <div class="menu-wrapper">
-          <button
-            v-if="menuPage"
+          <Tooltip
+            content="Retour (esc)"
+            position="top right"
+            :slot-height="40"
+            :slot-width="40"
             class="arrow-back"
-            @click="returnToPreviousPage(menuPage)"
+            @on-click="returnToPreviousPage(menuPage)"
           >
-            <img :src="getArrowBackColor" alt="Retour" />
-          </button>
+            <template #activator="{ onMouseover, onMouseleave, onClick }">
+              <button
+                v-if="menuPage"
+                @click="onClick"
+                @mouseover="onMouseover"
+                @mouseleave="onMouseleave"
+              >
+                <img :src="getArrowBackColor" alt="Retour" />
+              </button>
+            </template>
+          </Tooltip>
           <h1 class="game-title mt-10 mb-6">Démineur</h1>
-          <minesweeper-volume-hover
+          <!-- <minesweeper-volume-hover
             :is-music-active="isMusicActive"
             :is-music-muted="isMusicMuted"
             :sound-service="soundService"
             position="menu"
             @toggle-music-volume="toggleMusicVolume"
-          />
+          /> -->
           <div class="menu-content">
             <minesweeper-menu-main
               v-if="menuPage === 0"
@@ -47,27 +59,42 @@
               @action="handleActions"
             />
           </div>
-          <minesweeper-menu-volumes-modal
+          <!-- <minesweeper-menu-volumes-modal
             v-if="isVolumesModalOpen"
             @open-modal="isVolumesModalOpen = $event"
             @activate-sound="activateSound"
             @desactivate-sound="desactivateSound"
-          />
+          /> -->
         </div>
       </template>
       <template v-else>
         <div class="game-page">
-          <button class="arrow-back" @click="returnToPreviousPage(menuPage)">
-            <img :src="getArrowBackColor" alt="Retour" />
-          </button>
+          <Tooltip
+            content="Retour (esc)"
+            position="top right"
+            :slot-height="40"
+            :slot-width="40"
+            class="arrow-back"
+            @on-click="returnToPreviousPage(menuPage)"
+          >
+            <template #activator="{ onMouseover, onMouseleave, onClick }">
+              <button
+                @click="onClick"
+                @mouseover="onMouseover"
+                @mouseleave="onMouseleave"
+              >
+                <img :src="getArrowBackColor" alt="Retour" />
+              </button>
+            </template>
+          </Tooltip>
           <h1 class="game-title">Démineur</h1>
-          <minesweeper-volume-hover
+          <!-- <minesweeper-volume-hover
             :is-music-active="isMusicActive"
             :is-music-muted="isMusicMuted"
             :sound-service="soundService"
             position="game"
             @toggle-music-volume="toggleMusicVolume"
-          />
+          /> -->
           <minesweeper-game-status
             :game-status-to-string="gameStatusToString"
             :game-status="gameStatus"
@@ -94,8 +121,8 @@
 <script setup lang="ts">
 import { collection, getDoc, setDoc, doc } from 'firebase/firestore'
 import { useTheme } from 'vuetify'
-import { SoundService } from '~/utils/soundService'
-import { audioTracks } from '~/utils'
+// import { SoundService } from '~/utils/music/soundService'
+// import { audioTracks } from '~/utils'
 import { mineSweeperScoreboardConverter } from '~/stores'
 import { MineSweeper } from '~/utils/minesweeper/mineSweeper'
 import type {
@@ -106,7 +133,7 @@ import type {
 } from '~/utils/minesweeper/mineSweeper'
 import type { Cell } from '~/utils/minesweeper/cell'
 import type { Timer } from '~/utils/minesweeper/Timer'
-import type { ISoundService } from '~/utils/soundService'
+// import type { ISoundService } from '~/utils/music/soundService'
 import type { CustomVictory } from '~/functions/src/types'
 
 useSeoMeta({
@@ -159,41 +186,41 @@ const numMines = ref<number>(10)
 const difficulty = ref<Difficulty>('beginner')
 const menuPage = ref<number>(0)
 const isCustom = ref<boolean>(false)
-const soundService = ref<ISoundService>(new SoundService())
-const isMusicActive = ref<boolean>(true)
-const isMusicMuted = ref<boolean>(false)
-const isVolumesModalOpen = ref<boolean>(true)
+// const soundService = ref<ISoundService>(new SoundService())
+// const isMusicActive = ref<boolean>(true)
+// const isMusicMuted = ref<boolean>(false)
+// const isVolumesModalOpen = ref<boolean>(true)
 
-const activateSound = (): void => {
-  isMusicActive.value = true
-  soundService.value.loadAudioTracks('minesweeper', audioTracks(25))
-  soundService.value.playAudioTracks('minesweeper')
-  const volume = soundService.value.getAudioTracksVolumeFromLocalStorage()
-  soundService.value.changeAudioTracksVolume('minesweeper', volume)
-}
+// const activateSound = (): void => {
+//   isMusicActive.value = true
+//   soundService.value.loadAudioTracks('minesweeper', audioTracks(25))
+//   soundService.value.playAudioTracks('minesweeper')
+//   const volume = soundService.value.getAudioTracksVolumeFromLocalStorage()
+//   soundService.value.changeAudioTracksVolume('minesweeper', volume)
+// }
 
-const desactivateSound = (): void => {
-  isMusicActive.value = false
-  isMusicMuted.value = true
-}
+// const desactivateSound = (): void => {
+//   isMusicActive.value = false
+//   isMusicMuted.value = true
+// }
 
-const toggleMusicVolume = (): void => {
-  if (!isMusicActive.value) {
-    isMusicActive.value = true
-    isMusicMuted.value = false
-    soundService.value.loadAudioTracks('minesweeper', audioTracks(25))
-    soundService.value.playAudioTracks('minesweeper')
-    return
-  }
+// const toggleMusicVolume = (): void => {
+//   if (!isMusicActive.value) {
+//     isMusicActive.value = true
+//     isMusicMuted.value = false
+//     soundService.value.loadAudioTracks('minesweeper', audioTracks(25))
+//     soundService.value.playAudioTracks('minesweeper')
+//     return
+//   }
 
-  if (!isMusicMuted.value) {
-    soundService.value.muteAudioTracks('minesweeper')
-    isMusicMuted.value = true
-  } else {
-    soundService.value.unmuteAudioTracks('minesweeper')
-    isMusicMuted.value = false
-  }
-}
+//   if (!isMusicMuted.value) {
+//     soundService.value.muteAudioTracks('minesweeper')
+//     isMusicMuted.value = true
+//   } else {
+//     soundService.value.unmuteAudioTracks('minesweeper')
+//     isMusicMuted.value = false
+//   }
+// }
 
 const toggleIsCustom = (value?: boolean): void => {
   isCustom.value = value ?? !isCustom.value
@@ -361,8 +388,8 @@ const handleLeftClick = async (data: {
 
 onBeforeRouteLeave((): void => {
   mineSweeper.value.getTimer().stop()
-  soundService.value.stopAllSounds()
-  soundService.value.unloadAllSounds()
+  // soundService.value.stopAllSounds()
+  // soundService.value.unloadAllSounds()
 })
 </script>
 
@@ -455,3 +482,4 @@ onBeforeRouteLeave((): void => {
   }
 }
 </style>
+~/utils/music/soundService~/utils/music/soundService
