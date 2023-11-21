@@ -10,6 +10,7 @@ export interface IPlaylistService {
   unmutePlaylist(): void
   getTrackDuration(): number
   getCurrentTrack(): string
+  getCustomTrackName(): string
   getTrackSeek(): number
   getCurrentTime(): number
   pausePlaylist(): void
@@ -17,8 +18,8 @@ export interface IPlaylistService {
   changePlaylistVolume(newVolume: number): void
   getPlaylistVolumeFromLocalStorage(): number
   clearPlaylist(): void
-  isPlaylistLoaded(playlistLength: number): boolean
-  isPlaylistPlaying(playlistLength: number): boolean
+  isPlaylistLoaded(): boolean
+  isPlaylistPlaying(): boolean
 }
 
 export class PlaylistService
@@ -27,15 +28,17 @@ export class PlaylistService
 {
   protected audioObject: Record<string, Howl> = {}
   private currentTrack: string = ''
+  private customTrackName: string = ''
   private currentTrackSeek: number = 0
   private playlist: string[] = []
+  private playlistType: string = ''
   private playlistVolume: number = 0
   private interval: ReturnType<typeof setInterval> | undefined = undefined
   private currentTime: number = 0
 
   public loadPlaylist(type: string): void {
-    const playlist = this.getPlaylistType(type)
-    this.initPlaylistData(playlist)
+    const playlist = this.handlePlaylistType(type)
+    this.initPlaylistData(type, playlist)
     playlist.forEach((track) => {
       const src = `/music/${type}/${track}.m4a`
       this.loadAudio(track, src, this.playlistVolume, this.audioObject)
@@ -69,6 +72,10 @@ export class PlaylistService
     return this.currentTrack
   }
 
+  public getCustomTrackName(): string {
+    return this.handleCustomTrackName(this.playlistType, this.currentTrack)
+  }
+
   public getTrackSeek(): number {
     return this.seekAudio(this.currentTrack, this.audioObject)
   }
@@ -90,35 +97,20 @@ export class PlaylistService
   }
 
   public skipTrack(direction: string): void {
-    if (direction === 'next') {
-      this.stopTrack()
-      this.currentTrack = this.getNextTrack()
-    } else if (direction === 'previous') {
-      this.stopTrack()
-      this.currentTrack = this.getPreviousTrack()
-    }
+    this.stopTrack()
+    this.currentTrack =
+      direction === 'next' ? this.getNextTrack() : this.getPreviousTrack()
     this.playPlaylist()
   }
 
   public changePlaylistVolume(newVolume: number): void {
     this.playlistVolume = newVolume
     this.setPlaylistVolumeInLocalStorage(newVolume)
-    const playlistLength = this.playlist.length
-    for (let i = 0; i < playlistLength; i++) {
-      const playlistTrack = this.playlist[i]
-      if (this.isTrackLoaded(playlistTrack)) {
-        this.audioObject[playlistTrack].volume(this.playlistVolume)
-      }
-    }
+    this.adjustVolumeForAllTracks()
   }
 
   public getPlaylistVolumeFromLocalStorage(): number {
-    const playlistVolume = localStorage.getItem('playlistVolume') ?? null
-    if (playlistVolume !== null) {
-      return Number(playlistVolume)
-    } else {
-      return this.playlistVolume
-    }
+    return Number(localStorage.getItem('playlistVolume')) || this.playlistVolume
   }
 
   public clearPlaylist(): void {
@@ -126,19 +118,43 @@ export class PlaylistService
     this.unloadAllTracks()
   }
 
+  public isPlaylistLoaded(): boolean {
+    return this.playlist.every((playlistTrack) =>
+      this.isTrackLoaded(playlistTrack)
+    )
+  }
+
+  public isPlaylistPlaying(): boolean {
+    return this.playlist.some((playlistTrack) =>
+      this.isTrackPlaying(playlistTrack)
+    )
+  }
+
+  private adjustVolumeForAllTracks(): void {
+    this.playlist.forEach((playlistTrack) => {
+      if (this.isTrackLoaded(playlistTrack)) {
+        this.audioObject[playlistTrack].volume(this.playlistVolume)
+      }
+    })
+  }
+
+  private toggleMutePlaylist(isMute: boolean): void {
+    this.playlist.forEach((playlistTrack) => {
+      if (this.isTrackLoaded(playlistTrack)) {
+        this.audioObject[playlistTrack].mute(isMute)
+      }
+    })
+  }
+
   private startInterval(): void {
-    if (this.interval !== undefined) {
-      clearInterval(this.interval)
-    }
+    this.stopInterval()
     this.interval = setInterval(() => {
       this.currentTime += 1
     }, 1000)
   }
 
   private stopInterval(): void {
-    if (this.interval) {
-      clearInterval(this.interval)
-    }
+    clearInterval(this.interval)
   }
 
   private resetCurrentTime(): void {
@@ -156,20 +172,19 @@ export class PlaylistService
     this.resetCurrentTime()
   }
 
-  private initPlaylistData(playlist: string[]): void {
+  private initPlaylistData(type: string, playlist: string[]): void {
     this.playlistVolume = this.getPlaylistVolumeFromLocalStorage() ?? 0.5
     this.playlist = playlist
+    this.playlistType = type
     this.currentTrack = this.playlist[0]
   }
 
   private unloadPlaylistTracks(): void {
-    const playlistLength = this.playlist.length
-    for (let i = 0; i < playlistLength; i++) {
-      const playlistTrack = this.playlist[i]
+    this.playlist.forEach((playlistTrack) => {
       if (this.isTrackLoaded(playlistTrack)) {
         this.unloadAudio(playlistTrack, this.audioObject)
       }
-    }
+    })
   }
 
   private stopAndUnloadCurrentPlaylist(): void {
@@ -177,42 +192,31 @@ export class PlaylistService
     this.unloadPlaylistTracks()
   }
 
-  private toggleMutePlaylist(isMute: boolean): void {
-    const playlistLength = this.playlist.length
-    for (let i = 0; i < playlistLength; i++) {
-      const playlistTrack = this.playlist[i]
-      if (this.isTrackLoaded(playlistTrack)) {
-        this.audioObject[playlistTrack].mute(isMute)
-      }
-    }
-  }
-
   private getNextTrack(): string {
     const currentTrackIndex = this.getCurrentTrackIndex()
-    if (currentTrackIndex === this.playlist.length - 1) {
-      return this.playlist[0]
-    }
-    const nextTrack = this.playlist[currentTrackIndex + 1]
-    return nextTrack
+    return currentTrackIndex === this.playlist.length - 1
+      ? this.playlist[0]
+      : this.playlist[currentTrackIndex + 1]
   }
 
   private getPreviousTrack(): string {
     const currentTrackIndex = this.getCurrentTrackIndex()
-    if (currentTrackIndex === 0) {
-      return this.playlist[this.playlist.length - 1]
-    }
-    const previousTrack = this.playlist[currentTrackIndex - 1]
-    return previousTrack
+    return currentTrackIndex === 0
+      ? this.playlist[this.playlist.length - 1]
+      : this.playlist[currentTrackIndex - 1]
   }
 
   private getCurrentTrackIndex(): number {
-    const currentTrack = this.currentTrack
-    const currentTrackIndex = this.playlist.indexOf(currentTrack)
-    return currentTrackIndex
+    return this.playlist.indexOf(this.currentTrack)
   }
 
   private playCurrentTrack(): void {
     const track = this.currentTrack
+    const playCallback = () => {
+      this.clearTrack()
+      this.currentTrack = this.getNextTrack()
+      this.playPlaylist()
+    }
 
     if (this.currentTrackSeek !== 0) {
       this.playAudioWithSeek(track, this.currentTrackSeek, this.audioObject)
@@ -220,16 +224,10 @@ export class PlaylistService
       this.playAudio(track, this.audioObject)
     }
 
-    const callback = () => {
-      this.clearTrack()
-      this.currentTrack = this.getNextTrack()
-      this.playPlaylist()
-    }
-
-    this.audioObject[track].once('end', callback)
+    this.audioObject[track].once('end', playCallback)
   }
 
-  private getPlaylistType(type: string): string[] {
+  private handlePlaylistType(type: string): string[] {
     switch (type) {
       case 'asian-lofi':
         return asianLofi
@@ -239,6 +237,19 @@ export class PlaylistService
         return autumnLofi
       default:
         return []
+    }
+  }
+
+  private handleCustomTrackName(type: string, track: string): string {
+    switch (type) {
+      case 'asian-lofi':
+        return track.replace('Asian', '⛩️ Asian')
+      case 'christmas-lofi':
+        return track.replace('Christmas', '❄️ Christmas')
+      case 'autumn-lofi':
+        return track.replace('Autumn', '🍂 Autumn')
+      default:
+        return track
     }
   }
 
@@ -269,25 +280,5 @@ export class PlaylistService
 
   private setPlaylistVolumeInLocalStorage(volume: number): void {
     localStorage.setItem('playlistVolume', String(volume))
-  }
-
-  public isPlaylistLoaded(playlistLength: number): boolean {
-    for (let i = 0; i < playlistLength; i++) {
-      const playlistTrack = this.playlist[i]
-      if (!this.isTrackLoaded(playlistTrack)) {
-        return false
-      }
-    }
-    return true
-  }
-
-  public isPlaylistPlaying(playlistLength: number): boolean {
-    for (let i = 0; i < playlistLength; i++) {
-      const playlistTrack = this.playlist[i]
-      if (this.isTrackPlaying(playlistTrack)) {
-        return true
-      }
-    }
-    return false
   }
 }

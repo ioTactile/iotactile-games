@@ -1,7 +1,7 @@
 <template>
   <div class="volume-container">
     <button @click="isHovering = !isHovering">
-      <v-icon size="25" :icon="handleVolumeIcon" color="onBackground" />
+      <v-icon :icon="handleVolumeIcon" size="25" color="onBackground" />
     </button>
     <div v-if="isHovering" class="volume-slider-container">
       <v-slider

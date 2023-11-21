@@ -10,17 +10,41 @@
       <div class="track-duration">{{ trackDuration }}</div>
     </div>
     <div class="footer-container">
-      <button class="playlist">
-        <v-icon
-          :icon="mdiFormatListCheckbox"
-          size="25"
-          @click="isShowPlaylists = !isShowPlaylists"
-        />
-      </button>
+      <Tooltip
+        class="playlist"
+        content="Changer de playlist (tab)"
+        position="top right"
+        :slot-width="30"
+        :slot-height="30"
+      >
+        <template #activator="{ onMouseover, onMouseleave }">
+          <button
+            @click="toggleShowPlaylists"
+            @mouseover="onMouseover"
+            @mouseleave="onMouseleave"
+          >
+            <v-icon :icon="mdiFormatListCheckbox" size="25" color="onSurface" />
+          </button>
+        </template>
+      </Tooltip>
       <div class="action-button">
-        <button class="previous-track" @click="handleSkipTrack('previous')">
-          <v-icon :icon="mdiSkipPrevious" color="onSurface" />
-        </button>
+        <Tooltip
+          class="previous-track"
+          content="Piste précédente (p)"
+          position="top"
+          :slot-width="30"
+          :slot-height="30"
+        >
+          <template #activator="{ onMouseover, onMouseleave }">
+            <button
+              @click="handleSkipTrack('previous')"
+              @mouseover="onMouseover"
+              @mouseleave="onMouseleave"
+            >
+              <v-icon :icon="mdiSkipPrevious" size="25" color="onSurface" />
+            </button>
+          </template>
+        </Tooltip>
         <Tooltip
           class="toggle-pause"
           :content="handleVolumeIconTooltips"
@@ -34,13 +58,27 @@
               @mouseover="onMouseover"
               @mouseleave="onMouseleave"
             >
-              <v-icon :icon="togglePlayPauseIcon" color="onSurface" />
+              <v-icon :icon="togglePlayPauseIcon" size="25" color="onSurface" />
             </button>
           </template>
         </Tooltip>
-        <button class="next-track" @click="handleSkipTrack('next')">
-          <v-icon :icon="mdiSkipNext" color="onSurface" />
-        </button>
+        <Tooltip
+          class="next-track"
+          content="Piste suivante (n)"
+          position="top"
+          :slot-width="30"
+          :slot-height="30"
+        >
+          <template #activator="{ onMouseover, onMouseleave }">
+            <button
+              @click="handleSkipTrack('next')"
+              @mouseover="onMouseover"
+              @mouseleave="onMouseleave"
+            >
+              <v-icon :icon="mdiSkipNext" size="25" color="onSurface" />
+            </button>
+          </template>
+        </Tooltip>
       </div>
       <musicplayer-volume :is-music-muted="isMusicMuted" :playlist="playlist" />
     </div>
@@ -67,14 +105,27 @@ import {
   mdiPlay,
   mdiSkipNext
 } from '@mdi/js'
-import { timerFormatterLessThanTenMinutes } from '~/utils'
+import { timerFormatterLessThanTenMinutes, playlists } from '~/utils'
 import { PlaylistService } from '~/utils/music/playlistService'
 import type { IPlaylistService } from '~/utils/music/playlistService'
 
 if (process.client) {
   window.addEventListener('keyup', (e: KeyboardEvent) => {
-    if (e.key === 'm') {
-      handlePlayPause()
+    switch (e.key) {
+      case 'm':
+        handlePlayPause()
+        break
+      case 'p':
+        handleSkipTrack('previous')
+        break
+      case 'n':
+        handleSkipTrack('next')
+        break
+      case 'Tab':
+        toggleShowPlaylists()
+        break
+      default:
+        break
     }
   })
 }
@@ -84,16 +135,27 @@ const isShowPlaylists = ref<boolean>(false)
 const isMusicActive = ref<boolean>(false)
 const isMusicMuted = ref<boolean>(false)
 const isMusicPaused = ref<boolean>(true)
-
-const playlists = [
-  { name: 'Christmas Lofi', value: 'christmas-lofi' },
-  { name: 'Autumn Lofi', value: 'autumn-lofi' },
-  { name: 'Asian Lofi', value: 'asian-lofi' }
-]
+const trackDuration = ref<string>('0:00')
 
 onMounted(() => {
   playlist.value.loadPlaylist('christmas-lofi')
 })
+
+watch(
+  playlist,
+  () => {
+    if (isMusicActive.value) {
+      if (playlist.value.isPlaylistLoaded()) {
+        trackDuration.value = timerFormatterLessThanTenMinutes(
+          Math.round(playlist.value.getTrackDuration())
+        )
+      } else {
+        trackDuration.value = '0:00'
+      }
+    }
+  },
+  { deep: true }
+)
 
 const currentTime = computed((): string => {
   return timerFormatterLessThanTenMinutes(
@@ -101,14 +163,14 @@ const currentTime = computed((): string => {
   )
 })
 
-const trackDuration = computed((): string => {
-  return timerFormatterLessThanTenMinutes(
-    Math.round(playlist.value.getTrackDuration())
-  )
-})
+// const trackDuration = computed((): string => {
+//   return timerFormatterLessThanTenMinutes(
+//     Math.round(playlist.value.getTrackDuration())
+//   )
+// })
 
 const getCurrentTrack = computed((): string => {
-  return playlist.value.getCurrentTrack()
+  return playlist.value.getCustomTrackName()
 })
 
 const togglePlayPauseIcon = computed((): string => {
@@ -123,8 +185,7 @@ const handleVolumeIconTooltips = computed((): string => {
 
 const handlePlayPause = (): void => {
   if (!isMusicActive.value) {
-    isMusicActive.value = true
-    isMusicPaused.value = false
+    activateMusic()
     playlist.value.playPlaylist()
     return
   }
@@ -139,6 +200,10 @@ const handlePlayPause = (): void => {
 }
 
 const handleSkipTrack = (direction: string): void => {
+  if (!isMusicActive.value) {
+    activateMusic()
+  }
+
   if (direction === 'previous') {
     playlist.value.skipTrack('previous')
     isMusicPaused.value = false
@@ -148,10 +213,23 @@ const handleSkipTrack = (direction: string): void => {
   }
 }
 
+const toggleShowPlaylists = (): void => {
+  isShowPlaylists.value = !isShowPlaylists.value
+}
+
 const changePlaylistType = (type: string): void => {
+  if (!isMusicActive.value) {
+    activateMusic()
+  }
+
   playlist.value.changePlaylistType(type)
   isMusicPaused.value = false
   isShowPlaylists.value = false
+}
+
+const activateMusic = (): void => {
+  isMusicActive.value = true
+  isMusicPaused.value = false
 }
 
 onBeforeUnmount(() => {
