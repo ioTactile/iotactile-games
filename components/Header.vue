@@ -51,7 +51,7 @@
         <UserDetails :theme="theme.current.value" @toggle-theme="toggleTheme" />
       </v-menu>
     </v-app-bar>
-    <div id="music-player" />
+    <div id="music-player" :style="musicPlayerPositionStyle" />
   </div>
 
   <client-only>
@@ -105,6 +105,21 @@ onMounted(async () => {
   adminUser.value = claims.admin
 })
 
+// Computed
+
+const musicPlayerPositionStyle = computed(() => {
+  return width.value < 375
+    ? {
+        top: '55px',
+        right: '50%',
+        transform: 'translateX(50%)'
+      }
+    : {
+        top: '5px',
+        right: '110px'
+      }
+})
+
 // Methods
 
 const toggleTheme = () => {
@@ -120,7 +135,5 @@ const toggleTheme = () => {
 #music-player {
   z-index: 9999;
   position: absolute;
-  top: 5px;
-  right: 110px;
 }
 </style>
