@@ -28,14 +28,15 @@
         vide et les cases adjacentes sont révélées automatiquement.
         <br />
         <br />
-        J'ai fais le choix de sécuriser le premier clic du joueur. En effet, le
-        premier clic ne peut pas être une mine. Si le joueur clique sur une
-        mine, il peut à nouveau cliquer sur une case jusqu'à ce qu'il tombe sur
-        une case sûre.
+        J'ai fais le choix de sécuriser le premier clic du joueur afin
+        d'amoindrir la part d'aéatoire. Si le joueur clique sur une mine, il
+        peut à nouveau cliquer sur une case jusqu'à ce qu'il tombe sur une case
+        sûre.
         <br />
         <br />
         Le temps de jeu est enregistré pour chaque niveau de difficulté. Le but
-        est de battre son propre record.
+        est de battre son propre record. Il faut être connecté pour pouvoir
+        enregistrer son score.
       </p>
     </section>
     <section>

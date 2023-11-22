@@ -1,29 +1,53 @@
 <template>
   <div id="game" class="wrapper noselect" :style="gameSize">
     <div class="header-border-top">
-      <div class="hd_wrapper-border-left-top wrapper-border-left-top" />
-      <div class="hd_wrapper-border-hor wrapper-border-hor" />
-      <div class="hd_wrapper-border-right-top wrapper-border-right-top" />
+      <div
+        class="hd_wrapper-border-left-top wrapper-border-left-top"
+        :style="horBorderSize"
+      />
+      <div
+        class="hd_wrapper-border-hor wrapper-border-hor"
+        :style="horLongBorderSize"
+      />
+      <div
+        class="hd_wrapper-border-right-top wrapper-border-right-top"
+        :style="horBorderSize"
+      />
     </div>
     <div class="header-screen">
-      <div class="hd_wrapper-border-vert wrapper-border-vert" />
-      <div class="top-area">
-        <div>{{ numNotDetectedMines }}</div>
-        <div class="timer">
+      <div
+        class="hd_wrapper-border-vert wrapper-border-vert"
+        :style="vertBorderSize"
+      />
+      <div class="top-area" :style="horTopAreaBorderSize">
+        <div :style="contentFontSize">{{ numNotDetectedMines }}</div>
+        <div class="timer" :style="contentFontSize">
           {{ timerFormatter(timer.getElapsedTime(), true) }}
         </div>
       </div>
-      <div class="hd_wrapper-border-vert wrapper-border-vert" />
+      <div
+        class="hd_wrapper-border-vert wrapper-border-vert"
+        :style="vertBorderSize"
+      />
     </div>
     <div class="header-border-t">
-      <div class="hd_wrapper-border-t-left wrapper-border-t-left" />
-      <div class="hd_wrapper-border-hor wrapper-border-hor" />
-      <div class="hd_wrapper-border-t-right wrapper-border-t-right" />
+      <div
+        class="hd_wrapper-border-t-left wrapper-border-t-left"
+        :style="horBorderSize"
+      />
+      <div
+        class="hd_wrapper-border-hor wrapper-border-hor"
+        :style="horLongBorderSize"
+      />
+      <div
+        class="hd_wrapper-border-t-right wrapper-border-t-right"
+        :style="horBorderSize"
+      />
     </div>
     <div class="content">
       <div
         class="hd_wrapper-border-vert wrapper-border-vert"
-        :style="contentWrapperBorderHeight"
+        :style="vertContentBorderSize"
       />
       <div class="grid" :style="gridStyle">
         <template v-if="mineSweeper.getTimer().getIsPaused()">
@@ -34,7 +58,8 @@
             <div
               v-for="(_, colIndex) in row"
               :key="colIndex"
-              class="cell size24"
+              class="cell"
+              :style="cellSize"
               :class="cellType(row[colIndex])"
               @click.right="rightClick(rowIndex, colIndex)"
               @click.left="leftClick(rowIndex, colIndex)"
@@ -45,13 +70,22 @@
       </div>
       <div
         class="hd_wrapper-border-vert wrapper-border-vert"
-        :style="contentWrapperBorderHeight"
+        :style="vertContentBorderSize"
       />
     </div>
     <div class="footer-border">
-      <div class="hd_wrapper-border-left-bottom wrapper-border-left-bottom" />
-      <div class="hd_wrapper-border-hor wrapper-border-hor" />
-      <div class="hd_wrapper-border-right-bottom wrapper-border-right-bottom" />
+      <div
+        class="hd_wrapper-border-left-bottom wrapper-border-left-bottom"
+        :style="horBorderSize"
+      />
+      <div
+        class="hd_wrapper-border-hor wrapper-border-hor"
+        :style="horLongBorderSize"
+      />
+      <div
+        class="hd_wrapper-border-right-bottom wrapper-border-right-bottom"
+        :style="horBorderSize"
+      />
     </div>
   </div>
 </template>
@@ -61,6 +95,7 @@ import { Cell } from '~/utils/minesweeper/cell'
 import type { IMineSweeper } from '~/utils/minesweeper/mineSweeper'
 import type { Timer } from '~/utils/minesweeper/Timer'
 import { timerFormatter } from '~/utils'
+import { useMineSweeperZoomLevelStore } from '~/stores/mineSweeperZoomLevel'
 
 const props = defineProps<{
   gameBoard: Cell[][]
@@ -78,7 +113,8 @@ const emit = defineEmits<{
   ): void
 }>()
 
-const cellSize = ref<number>(24)
+const zoomLevelStore = useMineSweeperZoomLevelStore()
+const { zoomLevel } = storeToRefs(zoomLevelStore)
 
 const numNotDetectedMines = computed((): number => {
   return props.mineSweeper.getNumMines() - props.mineSweeper.getNumFlags()
@@ -87,28 +123,74 @@ const numNotDetectedMines = computed((): number => {
 const gridStyle = computed(
   (): { gridTemplateColumns: string; gridTemplateRows: string } => {
     return {
-      gridTemplateColumns: `repeat(${props.numRows}, ${cellSize.value}px)`,
-      gridTemplateRows: `repeat(${props.numCols}, ${cellSize.value}px)`
+      gridTemplateColumns: `repeat(${props.numRows}, ${zoomLevel.value}px)`,
+      gridTemplateRows: `repeat(${props.numCols}, ${zoomLevel.value}px)`
     }
   }
 )
 
 const gameSize = computed((): { width: string; height: string } => {
   return {
-    width: `${props.numRows * cellSize.value + 36}px`,
-    height: `${props.numCols * cellSize.value + 96}px`
+    width: `${props.numRows * zoomLevel.value + ratio(36)}px`,
+    height: `${props.numCols * zoomLevel.value + ratio(96)}px`
   }
 })
 
-const contentWrapperBorderHeight = computed((): { height: string } => {
+const horBorderSize = computed((): { width: string; height: string } => {
+  return { width: `${ratio(18)}px`, height: `${ratio(16.5)}px` }
+})
+
+const horLongBorderSize = computed((): { width: string; height: string } => {
   return {
-    height: `${props.numCols * cellSize.value}px`
+    width: `${props.numRows * zoomLevel.value}px`,
+    height: `${ratio(16.5)}px`
   }
 })
+
+const horTopAreaBorderSize = computed((): { width: string; height: string } => {
+  return { width: `calc(100% - ${ratio(36)}px`, height: `${ratio(48)}px` }
+})
+
+const vertBorderSize = computed((): { width: string; height: string } => {
+  return { width: `${ratio(18)}px`, height: `${ratio(48)}px` }
+})
+
+const vertContentBorderSize = computed(
+  (): { width: string; height: string } => {
+    return {
+      width: `${ratio(18)}px`,
+      height: `${props.numCols * zoomLevel.value}px`
+    }
+  }
+)
+
+const contentFontSize = computed((): { fontSize: string } => {
+  return { fontSize: `${ratio(1)}rem` }
+})
+
+const cellSize = computed(
+  (): {
+    width: string
+    height: string
+    fontSize: string
+    lineHeight: string
+  } => {
+    return {
+      width: `${zoomLevel.value}px`,
+      height: `${zoomLevel.value}px`,
+      fontSize: `${ratio(10)}px`,
+      lineHeight: `${zoomLevel.value - ratio(1)}px`
+    }
+  }
+)
 
 const numCells = computed((): number => {
   return props.numRows * props.numCols
 })
+
+const ratio = (size: number): number => {
+  return (zoomLevel.value * size) / 24
+}
 
 const cellType = (cell: Cell): string => {
   if (cell.getIsFlagged() && !cell.getIsRevealed()) {
@@ -163,32 +245,19 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
 
   .header-border-top {
     .hd_wrapper-border-left-top {
-      width: 18px;
-      height: 16px;
       background-image: url('/minesweeper/borders/corner_up_left_blue_2x.png');
     }
 
     .hd_wrapper-border-hor {
-      width: calc(100% - 36px);
-      height: 16px;
       background-image: url('/minesweeper/borders/border_hor_blue_2x.png');
     }
     .hd_wrapper-border-right-top {
-      width: 18px;
-      height: 16px;
       background-image: url('/minesweeper/borders/corner_up_right_blue_2x.png');
-    }
-
-    .wrapper-border-right-top {
-      float: left;
-      background-size: 100% 100%;
     }
   }
 
   .header-screen {
     .hd_wrapper-border-vert {
-      width: 18px;
-      height: 48px;
       background-image: url('/minesweeper/borders/border_vert_blue_2x.png');
     }
 
@@ -196,14 +265,11 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
       display: flex;
       justify-content: space-evenly;
       align-items: center;
-      width: calc(100% - 36px);
-      height: 48px;
       float: left;
       background-color: #f0f8ff;
       color: rgb(var(--v-theme-mineSweeperMainBackground));
 
       div {
-        font-size: 1rem;
         font-weight: 700;
         font-family: 'Orbitron', 'sans-serif';
       }
@@ -217,27 +283,20 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
 
   .header-border-t {
     .hd_wrapper-border-t-left {
-      width: 18px;
-      height: 16px;
       background-image: url('/minesweeper/borders/t_left_blue_2x.png');
     }
 
     .hd_wrapper-border-hor {
-      width: calc(100% - 36px);
-      height: 16px;
       background-image: url('/minesweeper/borders/border_hor_blue_2x.png');
     }
 
     .hd_wrapper-border-t-right {
-      width: 18px;
-      height: 16px;
       background-image: url('/minesweeper/borders/t_right_blue_2x.png');
     }
   }
 
   .content {
     .hd_wrapper-border-vert {
-      width: 18px;
       background-image: url('/minesweeper/borders/border_vert_blue_2x.png');
     }
 
@@ -310,32 +369,19 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
         font-weight: 700;
         text-align: center;
       }
-
-      .size24 {
-        width: 24px;
-        height: 24px;
-        font-size: 10px;
-        line-height: 23px;
-      }
     }
   }
 
   .footer-border {
     .hd_wrapper-border-left-bottom {
-      width: 18px;
-      height: 16px;
       background-image: url('/minesweeper/borders/corner_bottom_left_blue_2x.png');
     }
 
     .hd_wrapper-border-hor {
-      width: calc(100% - 36px);
-      height: 16px;
       background-image: url('/minesweeper/borders/border_hor_blue_2x.png');
     }
 
     .hd_wrapper-border-right-bottom {
-      width: 18px;
-      height: 16px;
       background-image: url('/minesweeper/borders/corner_bottom_right_blue_2x.png');
     }
   }
@@ -346,6 +392,11 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
   }
 
   .wrapper-border-hor {
+    float: left;
+    background-size: 100% 100%;
+  }
+
+  .wrapper-border-right-top {
     float: left;
     background-size: 100% 100%;
   }
