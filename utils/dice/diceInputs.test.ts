@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest'
-import * as diceInputs from '../../utils/dice/diceInputs'
 import type { Dice } from '../../functions/src/types'
+import * as diceInputs from './diceInputs'
 
 const createDice = (faces: number[]): Dice[] => {
   return faces.map((face, index) => ({
@@ -10,7 +10,7 @@ const createDice = (faces: number[]): Dice[] => {
   }))
 }
 
-describe('DiceInputs', () => {
+describe('oneInput', () => {
   test('oneInput', () => {
     const dices = createDice([1, 2, 3, 4, 5])
     expect(diceInputs.oneInput(dices)).toBe(1)
