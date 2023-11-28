@@ -122,7 +122,7 @@ export class MineSweeper implements IMineSweeper {
     this.timer = new Timer()
     this.gameStatus = 'waiting'
     this.isFirstClick = true
-    this.board = this.board = Array.from({ length: this.numRows }, () =>
+    this.board = Array.from({ length: this.numRows }, () =>
       Array.from({ length: this.numCols }, () => new Cell())
     )
 
