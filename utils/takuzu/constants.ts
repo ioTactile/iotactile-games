@@ -7,9 +7,9 @@ export const TileValues = {
 export const ERRORS = {
   DUPLICATE: 'Toutes les lignes et colonnes doivent être uniques',
   BALANCE:
-    'Les tuiles doivent être en quantité égale sur chaque ligne et colonne',
+    'Il doit y avoir autant de boules blanches que de boules noires sur chaque ligne et chaque colonne',
   TRIPLE:
-    'Il ne peut pas y avoir plus de deux tuiles consécutives de la même couleur'
+    'Il ne doit pas y avoir plus de deux boules de la même couleur côte à côte'
 } as const
 
 export const OUT_OF_RANGE = (line: 'row' | 'col') =>

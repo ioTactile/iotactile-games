@@ -357,12 +357,6 @@ onBeforeRouteLeave((): void => {
     text-align: center;
   }
 
-  .volume-button {
-    position: absolute;
-    top: 58px;
-    right: 25px;
-  }
-
   .arrow-back {
     position: absolute;
     top: 58px;
@@ -394,12 +388,6 @@ onBeforeRouteLeave((): void => {
     letter-spacing: 0.1rem;
     text-transform: uppercase;
     color: rgb(var(--v-theme-mineSweeperMainOnSurface));
-  }
-
-  .volume-button {
-    position: absolute;
-    top: 48px;
-    right: 340px;
   }
 
   .game-board {

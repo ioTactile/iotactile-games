@@ -5,8 +5,7 @@ import {
   takeRandomIndexFromArray,
   getRandomNumber
 } from './utils'
-import type { TakuzuBoard } from './types'
-import type { BoardSize } from './takuzu'
+import type { TakuzuBoard, BoardSize } from './types'
 
 export const splitBoardIntoTiles = (
   board: TakuzuBoard[number]

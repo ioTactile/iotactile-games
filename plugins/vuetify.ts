@@ -30,7 +30,13 @@ const myCustomLightTheme: ThemeDefinition = {
     mineSweeperMainBackground: '#161616', // dark grey
     mineSweeperMainSurface: '#d9d9d9', // light grey
     mineSweeperMainShadow: '#d9d9d9', // light grey
-    mainSweeperMainOnSurface: '#161616' // dark grey
+    mainSweeperMainOnSurface: '#161616', // dark grey
+    // Main Takuzu colors
+    takuzuMainPrimary: '#90a4ae', // light blue
+    takuzuMainSecondary: '#37474F', // dark blue
+    takuzuMainSurface: '#CFD8DC', // light grey
+    takuzuMainShadow: '#B0BEC5', // grey
+    takuzuMainOnSurface: '#161616' // dark grey
   }
 }
 const myCustomDarkTheme: ThemeDefinition = {
@@ -62,7 +68,12 @@ const myCustomDarkTheme: ThemeDefinition = {
     mineSweeperMainBackground: '#161616', // dark grey
     mineSweeperMainSurface: '#222222', // dark grey
     mineSweeperMainShadow: '#979797', // grey
-    mainSweeperMainOnSurface: '#d9d9d9' // light grey
+    mainSweeperMainOnSurface: '#d9d9d9', // light grey
+    // Main Takuzu colors
+    takuzuMainPrimary: '#90a4ae', // light blue
+    takuzuMainSecondary: '#37474F', // dark blue
+    takuzuMainSurface: '#CFD8DC', // light grey
+    takuzuMainShadow: '#B0BEC5' // grey
   }
 }
 

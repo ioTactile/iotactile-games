@@ -3,14 +3,12 @@ import { checkBoard } from './checker'
 import type {
   TakuzuBoard,
   TakuzuCheckResult,
-  TileValues as TTilesValues
+  TileValues as TTilesValues,
+  GameStatus,
+  BoardSize
 } from './types'
 import { OUT_OF_RANGE, TileValues } from './constants'
 import { Timer } from './timer'
-
-export type GameStatus = 'waiting' | 'inProgress' | 'won' | 'lost'
-
-export type BoardSize = 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20
 
 export interface ITakuzu {
   getBoard(): TakuzuBoard
@@ -40,7 +38,7 @@ export class Takuzu implements ITakuzu {
   constructor() {
     this.board = []
     this.task = []
-    this.boardSize = 4
+    this.boardSize = 6
     this.timer = new Timer()
     this.GameStatus = 'waiting'
   }
