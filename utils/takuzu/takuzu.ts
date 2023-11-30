@@ -105,7 +105,6 @@ export class Takuzu implements ITakuzu {
     const task = prepareBoard(this.board, fillFactor)
     this.task = task
     this.startedTask = task
-    this.boardHistory.push(task)
   }
 
   private getFillFactor(difficulty: Difficulty): number {
@@ -143,11 +142,9 @@ export class Takuzu implements ITakuzu {
     if (row >= this.boardSize || row < 0) throw new Error(OUT_OF_RANGE('row'))
     if (col >= this.boardSize || col < 0) throw new Error(OUT_OF_RANGE('col'))
 
-    const task = this.task.map((row) => [...row])
-    this.boardHistory.push(task)
-
-    this.task = task
+    this.task = this.task.map((row) => [...row])
     this.task[row][col] = value
+    this.boardHistory.push(this.task)
   }
 
   public check(): TakuzuCheckResult {
@@ -155,8 +152,11 @@ export class Takuzu implements ITakuzu {
   }
 
   public undo(): void {
-    if (this.boardHistory.length > 0) {
-      this.task = this.boardHistory.pop()!
+    this.boardHistory.pop()
+    if (this.boardHistory.length) {
+      this.task = this.boardHistory[this.boardHistory.length - 1]
+    } else {
+      this.task = this.startedTask
     }
   }
 

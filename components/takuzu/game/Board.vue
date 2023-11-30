@@ -191,6 +191,7 @@ const togglePause = (): void => {
 const undo = (): void => {
   if (gameStatus.value !== 'inProgress') return
   takuzu.value.undo()
+  console.log(boardHistory.value)
 }
 
 const returnToMenu = (): void => {
@@ -225,8 +226,6 @@ const toggleCell = (rowIndex: number, colIndex: number): void => {
         : CellValues.EMPTY
 
   takuzu.value.change(rowIndex, colIndex, newValue)
-
-  console.log(boardHistory.value)
 
   if (!takuzu.value.isFull()) return
 
