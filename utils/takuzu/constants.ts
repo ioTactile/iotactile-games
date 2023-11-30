@@ -1,4 +1,4 @@
-export const TileValues = {
+export const CellValues = {
   ZERO: '0',
   ONE: '1',
   EMPTY: '.'

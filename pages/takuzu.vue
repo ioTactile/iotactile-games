@@ -54,7 +54,7 @@
           </Tooltip>
           <h1 class="game-title">Takuzu</h1>
           <div class="game-board">
-            <takuzu-game-board :options="gameOptions" />
+            <takuzu-game-board :options="gameOptions" @action="handleActions" />
           </div>
         </div>
       </template>
@@ -74,10 +74,7 @@ if (process.client) {
 }
 
 const menuPage = ref<number>(0)
-const gameOptions = ref<GameOptions>({
-  boardSize: 6,
-  difficulty: 'easy'
-})
+const gameOptions = ref<GameOptions | null>(null)
 
 const actionMap: Record<string, number> = {
   play: 1,
@@ -152,7 +149,7 @@ const startGameHandler = (options: GameOptions): void => {
   flex-direction: column;
   align-items: center;
   width: 1100px;
-  height: 700px;
+  height: calc(100% - 100px);
   padding: 2rem;
   border-radius: 20px;
   background-color: rgb(var(--v-theme-takuzuMainSurface));

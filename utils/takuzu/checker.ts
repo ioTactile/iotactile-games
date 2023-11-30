@@ -1,4 +1,4 @@
-import { TileValues, ERRORS } from './constants'
+import { CellValues, ERRORS } from './constants'
 import { countSubstrInStr } from './utils'
 import type { TakuzuCheckErrorType, TakuzuCheckResult } from './types'
 
@@ -11,7 +11,7 @@ export const checkBoard = (board: string[][]): TakuzuCheckResult => {
     let col = ''
 
     for (let j = 0; j < board.length; j++) {
-      col += board[i][j]
+      col += board[j][i]
     }
 
     rows.push(row)
@@ -52,16 +52,16 @@ export const checkBoard = (board: string[][]): TakuzuCheckResult => {
 }
 
 const checkBalance = (line: string): boolean => {
-  const zeros = countSubstrInStr(line, TileValues.ZERO)
-  const ones = countSubstrInStr(line, TileValues.ONE)
+  const zeros = countSubstrInStr(line, CellValues.ZERO)
+  const ones = countSubstrInStr(line, CellValues.ONE)
 
   const balanced = zeros === ones
   return balanced
 }
 
 const checkNotTriple = (line: string): boolean => {
-  const tripleZeros = line.includes(TileValues.ZERO.repeat(3))
-  const tripleOnes = line.includes(TileValues.ONE.repeat(3))
+  const tripleZeros = line.includes(CellValues.ZERO.repeat(3))
+  const tripleOnes = line.includes(CellValues.ONE.repeat(3))
 
   const triple = tripleZeros || tripleOnes
   return !triple

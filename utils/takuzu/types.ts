@@ -1,4 +1,4 @@
-import { TileValues } from './constants'
+import { CellValues } from './constants'
 
 export type GameStatus = 'waiting' | 'inProgress' | 'won' | 'lost'
 
@@ -24,6 +24,6 @@ export type TakuzuCheckResult =
       position: string[]
     }
 
-export type TakuzuBoard = (typeof TileValues)[keyof typeof TileValues][][]
+export type TakuzuBoard = (typeof CellValues)[keyof typeof CellValues][][]
 
-export type TileValues = (typeof TileValues)[keyof typeof TileValues]
+export type CellValues = (typeof CellValues)[keyof typeof CellValues]

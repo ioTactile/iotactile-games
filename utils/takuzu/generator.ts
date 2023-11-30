@@ -1,4 +1,4 @@
-import { TileValues } from './constants'
+import { CellValues } from './constants'
 import {
   arrayFromLength,
   countSubstrInStr,
@@ -7,7 +7,7 @@ import {
 } from './utils'
 import type { TakuzuBoard, BoardSize } from './types'
 
-export const splitBoardIntoTiles = (
+export const splitBoardIntoCells = (
   board: TakuzuBoard[number]
 ): TakuzuBoard => {
   const splittedBoard: TakuzuBoard = []
@@ -68,7 +68,7 @@ export const generateBoard = (boardSize: BoardSize): TakuzuBoard | null => {
     }
   }
 
-  return splitBoardIntoTiles(board)
+  return splitBoardIntoCells(board)
 }
 
 export const generateRows = (boardSize: BoardSize): TakuzuBoard[number] => {
@@ -78,14 +78,14 @@ export const generateRows = (boardSize: BoardSize): TakuzuBoard[number] => {
   for (let i = 0; i < max; i++) {
     const str = i
       .toString(2)
-      .padStart(boardSize, TileValues.ZERO)
+      .padStart(boardSize, CellValues.ZERO)
       .toString() as TakuzuBoard[number][number]
 
     if (
-      str.includes(TileValues.ZERO.repeat(3)) ||
-      str.includes(TileValues.ONE.repeat(3)) ||
-      countSubstrInStr(str, TileValues.ZERO) > boardSize / 2 ||
-      countSubstrInStr(str, TileValues.ONE) > boardSize / 2
+      str.includes(CellValues.ZERO.repeat(3)) ||
+      str.includes(CellValues.ONE.repeat(3)) ||
+      countSubstrInStr(str, CellValues.ZERO) > boardSize / 2 ||
+      countSubstrInStr(str, CellValues.ONE) > boardSize / 2
     )
       continue
 
@@ -99,16 +99,16 @@ export const defineNextRow = (cols: string[]): string => {
   let nextRow = ''
 
   for (let i = 0; i < cols.length; i++) {
-    if (cols[i].slice(-2) === TileValues.ZERO.repeat(2)) {
-      nextRow += TileValues.ONE
-    } else if (cols[i].slice(-2) === TileValues.ONE.repeat(2)) {
-      nextRow += TileValues.ZERO
-    } else if (countSubstrInStr(cols[i], TileValues.ZERO) === cols.length / 2) {
-      nextRow += TileValues.ONE
-    } else if (countSubstrInStr(cols[i], TileValues.ONE) === cols.length / 2) {
-      nextRow += TileValues.ZERO
+    if (cols[i].slice(-2) === CellValues.ZERO.repeat(2)) {
+      nextRow += CellValues.ONE
+    } else if (cols[i].slice(-2) === CellValues.ONE.repeat(2)) {
+      nextRow += CellValues.ZERO
+    } else if (countSubstrInStr(cols[i], CellValues.ZERO) === cols.length / 2) {
+      nextRow += CellValues.ONE
+    } else if (countSubstrInStr(cols[i], CellValues.ONE) === cols.length / 2) {
+      nextRow += CellValues.ZERO
     } else {
-      nextRow += TileValues.EMPTY
+      nextRow += CellValues.EMPTY
     }
   }
 
@@ -122,7 +122,7 @@ export const filteringRows = (
   const filteredRows = rows.filter((row) => {
     let isNextRow = true
     for (let i = 0; i < rows.length; i++) {
-      if (pattern[i] === TileValues.EMPTY) continue
+      if (pattern[i] === CellValues.EMPTY) continue
       if (row.split('')[i] !== pattern[i]) {
         isNextRow = false
         break
@@ -151,8 +151,8 @@ export const prepareBoard = (
     const rowIndex = takeRandomIndexFromArray(preparedBoard)
     const colIndex = takeRandomIndexFromArray(preparedBoard[rowIndex])
 
-    if (preparedBoard[rowIndex][colIndex] === TileValues.EMPTY) continue
-    preparedBoard[rowIndex][colIndex] = TileValues.EMPTY
+    if (preparedBoard[rowIndex][colIndex] === CellValues.EMPTY) continue
+    preparedBoard[rowIndex][colIndex] = CellValues.EMPTY
     currentNumberOfEmptyItems++
   }
 

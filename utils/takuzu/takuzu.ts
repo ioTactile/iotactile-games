@@ -3,26 +3,30 @@ import { checkBoard } from './checker'
 import type {
   TakuzuBoard,
   TakuzuCheckResult,
-  TileValues as TTilesValues,
+  CellValues as TCellValues,
   GameStatus,
-  BoardSize
+  BoardSize,
+  Difficulty
 } from './types'
-import { OUT_OF_RANGE, TileValues } from './constants'
+import { OUT_OF_RANGE, CellValues } from './constants'
 import { Timer } from './timer'
 
 export interface ITakuzu {
   getBoard(): TakuzuBoard
   getTask(): TakuzuBoard
+  getStartedTask(): TakuzuBoard
+  getBoardHistory(): TakuzuBoard[]
   getBoardSize(): BoardSize
+  getDifficulty(): Difficulty
   getTimer(): Timer
   getGameStatus(): GameStatus
-  generate(boardSize: BoardSize): void
-  prepare(boardSize: BoardSize, fillFactor?: number): void
-  start(boardSize: BoardSize): void
-  restart(boardSize: BoardSize): void
-  change(row: number, col: number, value: TTilesValues): void
+  start(boardSize: BoardSize, difficulty: Difficulty): void
+  restart(): void
+  reset(): void
+  change(row: number, col: number, value: TCellValues): void
   check(): TakuzuCheckResult
-  getTile(row: number, col: number): TTilesValues
+  undo(): void
+  getCell(row: number, col: number): TCellValues
   startGame(): void
   handleWin(): void
   isFull(): boolean
@@ -31,14 +35,20 @@ export interface ITakuzu {
 export class Takuzu implements ITakuzu {
   private board: TakuzuBoard
   private task: TakuzuBoard
+  private startedTask: TakuzuBoard
+  private boardHistory: TakuzuBoard[]
   private boardSize: BoardSize
+  private difficulty: Difficulty
   private timer: Timer
   private GameStatus: GameStatus
 
   constructor() {
     this.board = []
     this.task = []
+    this.startedTask = []
+    this.boardHistory = []
     this.boardSize = 6
+    this.difficulty = 'easy'
     this.timer = new Timer()
     this.GameStatus = 'waiting'
   }
@@ -51,8 +61,20 @@ export class Takuzu implements ITakuzu {
     return this.task
   }
 
+  public getStartedTask(): TakuzuBoard {
+    return this.startedTask
+  }
+
+  public getBoardHistory(): TakuzuBoard[] {
+    return this.boardHistory
+  }
+
   public getBoardSize(): BoardSize {
     return this.boardSize
+  }
+
+  public getDifficulty(): Difficulty {
+    return this.difficulty
   }
 
   public getTimer(): Timer {
@@ -63,7 +85,7 @@ export class Takuzu implements ITakuzu {
     return this.GameStatus
   }
 
-  public generate(boardSize: BoardSize): void {
+  private generate(boardSize: BoardSize): void {
     let board: TakuzuBoard | null | undefined
     let checkResult: TakuzuCheckResult | undefined
 
@@ -76,37 +98,70 @@ export class Takuzu implements ITakuzu {
     this.boardSize = boardSize
   }
 
-  public prepare(fillFactor: number = 0.4) {
+  private prepare(difficulty: Difficulty): void {
     if (!this.board) this.generate(this.boardSize)
 
-    this.task = prepareBoard(this.board, fillFactor)
+    const fillFactor = this.getFillFactor(difficulty)
+    const task = prepareBoard(this.board, fillFactor)
+    this.task = task
+    this.startedTask = task
+    this.boardHistory.push(task)
   }
 
-  public start(boardSize: BoardSize): void {
+  private getFillFactor(difficulty: Difficulty): number {
+    switch (difficulty) {
+      case 'easy':
+        return 0.5
+      case 'medium':
+        return 0.45
+      case 'hard':
+        return 0.4
+      case 'expert':
+        return 0.35
+      default:
+        return 0.5
+    }
+  }
+
+  public start(boardSize: BoardSize, difficulty: Difficulty): void {
     this.generate(boardSize)
-    this.prepare()
+    this.prepare(difficulty)
   }
 
-  public restart(boardSize: BoardSize): void {
-    this.GameStatus = 'waiting'
-    this.timer.reset()
-    this.generate(boardSize)
-    this.prepare()
+  public restart(): void {
+    this.resetOptions()
+    this.generate(this.boardSize)
+    this.prepare(this.difficulty)
   }
 
-  public change(row: number, col: number, value: TTilesValues): void {
+  public reset(): void {
+    this.resetOptions()
+    this.task = this.startedTask
+  }
+
+  public change(row: number, col: number, value: TCellValues): void {
     if (row >= this.boardSize || row < 0) throw new Error(OUT_OF_RANGE('row'))
     if (col >= this.boardSize || col < 0) throw new Error(OUT_OF_RANGE('col'))
 
+    const task = this.task.map((row) => [...row])
+    this.boardHistory.push(task)
+
+    this.task = task
     this.task[row][col] = value
   }
 
   public check(): TakuzuCheckResult {
-    return checkBoard(this.board)
+    return checkBoard(this.task)
   }
 
-  public getTile(row: number, col: number): TTilesValues {
-    return this.board[row][col]
+  public undo(): void {
+    if (this.boardHistory.length > 0) {
+      this.task = this.boardHistory.pop()!
+    }
+  }
+
+  public getCell(row: number, col: number): TCellValues {
+    return this.task[row][col]
   }
 
   public startGame(): void {
@@ -122,8 +177,14 @@ export class Takuzu implements ITakuzu {
   }
 
   public isFull(): boolean {
-    return this.board.every((row) =>
-      row.every((value) => value !== TileValues.EMPTY)
+    return this.task.every((row) =>
+      row.every((value) => value !== CellValues.EMPTY)
     )
+  }
+
+  private resetOptions(): void {
+    this.GameStatus = 'waiting'
+    this.timer.reset()
+    this.boardHistory = []
   }
 }

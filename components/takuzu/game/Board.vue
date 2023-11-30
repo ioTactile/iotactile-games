@@ -2,114 +2,150 @@
   <div class="game-wrapper">
     <takuzu-game-rules-modal
       v-if="isRulesModalActive"
-      @open-rules="isRulesModalActive = false"
+      @open-rules="closeRulesModal"
+    />
+    <takuzu-game-won-modal
+      v-if="isFinished"
+      @restart="restart"
+      @return-to-menu="returnToMenu"
     />
     <div class="board-container">
       <div class="header-container">
-        <button class="rules" @click="isRulesModalActive = true">
-          <v-icon :icon="mdiLightbulb" color="takuzuMainSurface" />
+        <button class="rules" @click="openRulesModal">
+          <v-icon :icon="mdiLightbulb" color="takuzuMainSurface" size="22" />
         </button>
         <span class="timer">
-          {{ timerFormatter(timer, true) }}
+          {{ timerFormatter(elapsedTime, true) }}
         </span>
         <div class="void" />
       </div>
-      <div ref="game" class="board-container">
-        <div class="board" :style="boardSizeStyle">
+      <div class="board-container">
+        <div ref="board" class="board" :style="boardSizeStyle">
           <div
-            v-for="(row, rowIndex) in gameBoard"
+            v-for="(row, rowIndex) in taskBoard"
             :key="rowIndex"
             class="board-row"
           >
             <div v-for="(_, colIndex) in row" :key="colIndex">
               <button
                 class="cell-button"
+                :class="[
+                  cellValue(row[colIndex]),
+                  startedCell(rowIndex, colIndex),
+                  timer.getIsPaused() ? 'cell--paused' : ''
+                ]"
+                :style="borderEmptyCellsStyle(row[colIndex])"
                 @click="toggleCell(rowIndex, colIndex)"
-              >
-                <div
-                  class="cell-content"
-                  :class="cellState(row[colIndex])"
-                  :style="difficultyBorderColorStyle"
-                >
-                  <div :class="startedCell(rowIndex, colIndex)" />
-                </div>
-              </button>
+              />
             </div>
           </div>
         </div>
       </div>
       <div class="error-message">{{ errorMessage }}</div>
-      <button class="button-replay" @click="restart">Rejouer</button>
+      <div class="actions">
+        <button class="button-action">
+          <v-icon
+            :icon="mdiStepBackward"
+            color="takuzuMainSurface"
+            size="22"
+            @click="undo"
+          />
+        </button>
+        <button class="button-action">
+          <v-icon
+            :icon="getPauseIcon"
+            color="takuzuMainSurface"
+            size="22"
+            @click="togglePause"
+          />
+        </button>
+        <button class="button-replay" @click="restart">Rejouer</button>
+        <button class="button-action">
+          <v-icon
+            :icon="mdiRestart"
+            color="takuzuMainSurface"
+            size="22"
+            :class="{ rotate: isRotating }"
+            @click="reset"
+          />
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { VIcon } from 'vuetify/components'
-import { mdiLightbulb } from '@mdi/js'
-import { TileValues } from '~/utils/takuzu/constants'
+import {
+  mdiLightbulb,
+  mdiPause,
+  mdiPlay,
+  mdiRestart,
+  mdiStepBackward
+} from '@mdi/js'
+import { Takuzu, type ITakuzu } from '~/utils/takuzu/takuzu.js'
+import { CellValues } from '~/utils/takuzu/constants'
+import { sleep } from '~/utils'
 import type {
   GameOptions,
   TakuzuBoard,
-  TileValues as TTileValues
+  CellValues as TCellValues,
+  GameStatus
 } from '~/utils/takuzu/types'
-import { Takuzu, type ITakuzu } from '~/utils/takuzu/takuzu.js'
+import type { Timer } from '~/utils/takuzu/timer'
 
 onMounted(() => {
-  game.value?.addEventListener('contextmenu', (e) => {
+  const newOptions = props.options
+  if (!newOptions) return
+  start(newOptions)
+
+  board.value?.addEventListener('contextmenu', (e) => {
     e.preventDefault()
   })
+})
 
-  watch(
-    () => props.options,
-    (newOptions) => {
-      startGame(newOptions)
-    },
-    {
-      immediate: true
-    }
-  )
+onUnmounted(() => {
+  takuzu.value.getTimer().reset()
 })
 
 const props = defineProps<{
-  options: GameOptions
+  options: GameOptions | null
+}>()
+
+const emits = defineEmits<{
+  (e: 'action', value: string): void
 }>()
 
 const takuzu = ref<ITakuzu>(new Takuzu())
-const game = ref<HTMLElement | null>(null)
+const board = ref<HTMLElement | null>(null)
 const errorMessage = ref<string>('')
-const disabledTiles = ref<boolean[][]>([])
+const disabledCells = ref<boolean[][]>([])
 const isRulesModalActive = ref<boolean>(false)
+const isRotating = ref<boolean>(false)
 
-const startGame = (options: GameOptions): void => {
-  takuzu.value.start(options.boardSize)
-  disabledStartedTiles()
-}
+const taskBoard = computed((): TakuzuBoard => takuzu.value.getTask())
 
-const gameBoard = computed((): TakuzuBoard => takuzu.value.getTask())
+const timer = computed((): Timer => takuzu.value.getTimer())
 
-const timer = computed((): number => takuzu.value.getTimer().getElapsedTime())
+const elapsedTime = computed((): number =>
+  takuzu.value.getTimer().getElapsedTime()
+)
 
-const getBoardSize = computed((): number => {
+const gameStatus = computed((): GameStatus => takuzu.value.getGameStatus())
+
+const boardHistory = computed((): TakuzuBoard[] =>
+  takuzu.value.getBoardHistory()
+)
+
+const boardSize = computed((): number => {
   return takuzu.value.getBoardSize()
 })
 
-// const getGameStatus = computed((): string => {
-//   if (takuzu.value.getGameStatus() === 'won') return 'Gagné'
-//   return ''
-// })
-
 const boardSizeStyle = computed((): Record<string, string> => {
   return {
-    gridTemplateRows: `repeat(${getBoardSize.value}, 30px)`,
-    gridTemplateColumns: `repeat(${getBoardSize.value}, 30px)`,
-    backgroundColor: getBackgroundColor()
-  }
-})
-
-const difficultyBorderColorStyle = computed((): Record<string, string> => {
-  return {
-    border: `0.5px solid ${getBorderColor()}`
+    gridTemplateRows: `repeat(${boardSize.value}, 40px)`,
+    gridTemplateColumns: `repeat(${boardSize.value}, 40px)`,
+    backgroundColor: getColor('background')
   }
 })
 
@@ -117,22 +153,80 @@ const isFinished = computed((): boolean => {
   return takuzu.value.getGameStatus() === 'won'
 })
 
+const getPauseIcon = computed((): string => {
+  if (timer.value.getIsPaused()) return mdiPlay
+  if (gameStatus.value === 'inProgress') {
+    return mdiPause
+  } else {
+    return mdiPlay
+  }
+})
+
+const start = (options: GameOptions): void => {
+  takuzu.value.start(options.boardSize, options.difficulty)
+  disabledStartedCells()
+}
+
+const restart = (): void => {
+  errorMessage.value = ''
+  disabledCells.value = []
+
+  takuzu.value.restart()
+  disabledStartedCells()
+}
+
+const reset = async (): Promise<void> => {
+  if (gameStatus.value !== 'inProgress') return
+  isRotating.value = true
+  await sleep(1000)
+  isRotating.value = false
+  takuzu.value.reset()
+}
+
+const togglePause = (): void => {
+  if (gameStatus.value !== 'inProgress') return
+  timer.value.togglePause()
+}
+
+const undo = (): void => {
+  if (gameStatus.value !== 'inProgress') return
+  takuzu.value.undo()
+}
+
+const returnToMenu = (): void => {
+  emits('action', 'play')
+}
+
+const openRulesModal = (): void => {
+  isRulesModalActive.value = true
+  takuzu.value.getTimer().togglePause()
+}
+
+const closeRulesModal = (): void => {
+  isRulesModalActive.value = false
+  takuzu.value.getTimer().togglePause()
+}
+
 const toggleCell = (rowIndex: number, colIndex: number): void => {
-  if (isFinished.value || disabledTiles.value[rowIndex][colIndex]) return
+  if (isFinished.value || disabledCells.value[rowIndex][colIndex]) return
 
   if (takuzu.value.getGameStatus() === 'waiting') {
     takuzu.value.startGame()
   }
 
-  const oldValue = takuzu.value.getTile(rowIndex, colIndex)
+  errorMessage.value = ''
+
+  const oldValue = takuzu.value.getCell(rowIndex, colIndex)
   const newValue =
-    oldValue === TileValues.EMPTY
-      ? TileValues.ZERO
-      : oldValue === TileValues.ZERO
-        ? TileValues.ONE
-        : TileValues.EMPTY
+    oldValue === CellValues.EMPTY
+      ? CellValues.ZERO
+      : oldValue === CellValues.ZERO
+        ? CellValues.ONE
+        : CellValues.EMPTY
 
   takuzu.value.change(rowIndex, colIndex, newValue)
+
+  console.log(boardHistory.value)
 
   if (!takuzu.value.isFull()) return
 
@@ -146,49 +240,48 @@ const toggleCell = (rowIndex: number, colIndex: number): void => {
   takuzu.value.handleWin()
 }
 
-const disabledStartedTiles = (): boolean[][] => {
-  for (let i = 0; i < getBoardSize.value; i++) {
-    disabledTiles.value.push([])
-    for (let j = 0; j < getBoardSize.value; j++) {
-      disabledTiles.value[i].push(gameBoard.value[i][j] !== TileValues.EMPTY)
+const disabledStartedCells = (): boolean[][] => {
+  for (let i = 0; i < boardSize.value; i++) {
+    disabledCells.value.push([])
+    for (let j = 0; j < boardSize.value; j++) {
+      disabledCells.value[i].push(taskBoard.value[i][j] !== CellValues.EMPTY)
     }
   }
-  return disabledTiles.value
+  return disabledCells.value
 }
 
-const cellState = (cell: TTileValues): string => {
-  if (cell === TileValues.EMPTY) return 'cell--empty'
-  if (cell === TileValues.ZERO) return 'cell--black'
-  if (cell === TileValues.ONE) return 'cell--white'
+const cellValue = (cell: TCellValues): string => {
+  if (cell === CellValues.EMPTY) return 'cell--empty'
+  if (cell === CellValues.ZERO) return 'cell--black'
+  if (cell === CellValues.ONE) return 'cell--white'
   return ''
 }
 
 const startedCell = (rowIndex: number, colIndex: number): string => {
-  if (disabledTiles.value[rowIndex][colIndex]) return 'cell--started'
-  return ''
-}
-const getBackgroundColor = (): string => {
-  if (props.options.difficulty === 'easy') return '#4CAF50'
-  if (props.options.difficulty === 'medium') return '#3F51B5'
-  if (props.options.difficulty === 'hard') return '#FF9800'
-  if (props.options.difficulty === 'expert') return '#F44336'
+  if (disabledCells.value[rowIndex][colIndex]) return 'cell--started'
   return ''
 }
 
-const getBorderColor = (): string => {
-  if (props.options.difficulty === 'easy') return '#388E3C'
-  if (props.options.difficulty === 'medium') return '#303F9F'
-  if (props.options.difficulty === 'hard') return '#F57C00'
-  if (props.options.difficulty === 'expert') return '#D32F2F'
-  return ''
+const borderEmptyCellsStyle = (cell: TCellValues): string => {
+  return cell === CellValues.EMPTY
+    ? `border: 1px solid ${getColor('border')}`
+    : ''
 }
 
-const restart = (): void => {
-  errorMessage.value = ''
-  disabledTiles.value = []
-
-  takuzu.value.restart(props.options.boardSize)
-  disabledStartedTiles()
+const getColor = (value: 'background' | 'border'): string => {
+  if (!props.options) return ''
+  if (value === 'background') {
+    if (props.options.difficulty === 'easy') return '#4CAF50'
+    if (props.options.difficulty === 'medium') return '#3F51B5'
+    if (props.options.difficulty === 'hard') return '#FF9800'
+    if (props.options.difficulty === 'expert') return '#F44336'
+  } else if (value === 'border') {
+    if (props.options.difficulty === 'easy') return '#388E3C'
+    if (props.options.difficulty === 'medium') return '#303F9F'
+    if (props.options.difficulty === 'hard') return '#F57C00'
+    if (props.options.difficulty === 'expert') return '#D32F2F'
+  }
+  return ''
 }
 </script>
 
@@ -196,128 +289,111 @@ const restart = (): void => {
 .game-wrapper {
   position: relative;
   width: 100%;
-}
-.board-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  .header-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-
-    .rules {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background-color: rgb(var(--v-theme-takuzuMainOnSurface));
-      border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
-      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
-      transition: all 0.2s ease-in-out;
-    }
-
-    .timer {
-      width: 150px;
-      height: 30px;
-      text-align: center;
-      padding: 2.5px 5px;
-      margin: 0 20px;
-      border-radius: 20px;
-      background-color: #fff;
-      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
-      color: rgb(var(--v-theme-takuzuMainOnSurface));
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .void {
-      width: 30px;
-      height: 30px;
-    }
-  }
-
-  .button-replay {
-    width: 200px;
-    padding: 0.25rem 0.5rem;
-    border-radius: 20px;
-    background-color: rgb(var(--v-theme-takuzuMainOnSurface));
-    color: rgb(var(--v-theme-background));
-    border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
-    transition: all 0.2s ease-in-out;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
-  }
-
-  .game-status {
-    text-align: center;
-    font-size: 1.5rem;
-    margin: 10px 0;
-  }
 
   .board-container {
     display: flex;
-    justify-content: center;
-    margin: 20px 0;
+    flex-direction: column;
+    align-items: center;
 
-    .board {
+    .header-container {
       display: flex;
-      flex-direction: column;
-      align-items: stretch;
       justify-content: center;
-      padding: 10px;
-      gap: 10px;
-      border-radius: 12px;
+      align-items: center;
+      width: 100%;
 
-      .board-row {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
+      .rules {
+        width: 30px;
         height: 30px;
-        width: 100%;
+        border-radius: 50%;
+        background-color: rgb(var(--v-theme-takuzuMainOnSurface));
+        border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+        transition: all 0.2s ease-in-out;
+      }
 
-        .cell-button {
-          width: 30px;
-          height: 30px;
-        }
+      .timer {
+        width: 150px;
+        height: 30px;
+        text-align: center;
+        padding: 2.5px 5px;
+        margin: 0 20px;
+        border-radius: 20px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+        color: rgb(var(--v-theme-takuzuMainOnSurface));
+        font-family: 'JetBrains Mono', monospace;
+      }
 
-        .cell-content {
-          position: relative;
+      .void {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    .board-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+
+      .board {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: center;
+        padding: 15px;
+        gap: 10px;
+        border-radius: 20px;
+
+        .board-row {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          height: 40px;
           width: 100%;
-          height: 100%;
-          -webkit-transition: background-color 0.2s ease-out;
-          -moz-transition: background-color 0.2s ease-out;
-          -ms-transition: background-color 0.2s ease-out;
-          transition: background-color 0.2s ease-out;
-        }
 
-        .cell--empty {
-          background-color: transparent;
-          border-radius: 50%;
-        }
+          .cell-button {
+            width: 40px;
+            height: 40px;
+            -webkit-transition: background-color 0.2s ease-out;
+            -moz-transition: background-color 0.2s ease-out;
+            -ms-transition: background-color 0.2s ease-out;
+            transition: background-color 0.2s ease-out;
+          }
 
-        .cell--black {
-          background-color: #000000;
-          border-radius: 50%;
-        }
+          .cell--empty {
+            border-radius: 50%;
+          }
 
-        .cell--white {
-          background-color: #ffffff;
-          border-radius: 50%;
-        }
+          .cell--black {
+            background-color: #000000;
+            border-radius: 50%;
+          }
 
-        .cell--started {
-          z-index: 1;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background-color: #b3b3b3;
-          cursor: default;
+          .cell--white {
+            background-color: #ffffff;
+            border-radius: 50%;
+          }
+
+          .cell--started {
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+            transform-origin: center center;
+
+            &:hover,
+            &:active {
+              -webkit-animation: wiggle 0.5s ease;
+              -moz-animation: wiggle 0.5s ease;
+              -ms-animation: wiggle 0.5s ease;
+              animation: wiggle 0.5s ease;
+            }
+          }
+
+          .cell--paused {
+            background-color: rgba(0, 0, 0, 0.1);
+            border: none !important;
+            box-shadow: none !important;
+            animation: none !important;
+            cursor: not-allowed;
+          }
         }
       }
     }
@@ -326,6 +402,82 @@ const restart = (): void => {
       text-align: center;
       font-size: 1.25rem;
     }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+
+      .button-replay {
+        width: 200px;
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        background-color: rgb(var(--v-theme-takuzuMainOnSurface));
+        color: rgb(var(--v-theme-background));
+        border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+        transition: all 0.2s ease-in-out;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+      }
+
+      .button-action {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: rgb(var(--v-theme-takuzuMainOnSurface));
+        border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+        transition: all 0.2s ease-in-out;
+      }
+
+      .rotate {
+        animation: rotate 1s forwards;
+      }
+
+      @keyframes rotate {
+        to {
+          transform: rotate(-360deg);
+        }
+      }
+    }
+  }
+}
+
+@keyframes wiggle {
+  0% {
+    transform: translateX(1px);
+  }
+  10% {
+    transform: translateX(-1px);
+  }
+  20% {
+    transform: translateX(1px);
+  }
+  30% {
+    transform: translateX(-1px);
+  }
+  40% {
+    transform: translateX(1px);
+  }
+  50% {
+    transform: translateX(-1px);
+  }
+  60% {
+    transform: translateX(1px);
+  }
+  70% {
+    transform: translateX(-1px);
+  }
+  80% {
+    transform: translateX(1px);
+  }
+  90% {
+    transform: translateX(-1px);
+  }
+  100% {
+    transform: none;
   }
 }
 </style>

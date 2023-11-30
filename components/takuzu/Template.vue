@@ -15,10 +15,11 @@ const scale = ref<number>(1)
 const { width, height } = useDisplay()
 
 const handleResize = () => {
-  const targetHeight = 980
+  const targetHeight = height.value - 124
   const targetWidth = 1200
 
   if (width.value < 600) {
+    scale.value = 1
     return
   }
 
