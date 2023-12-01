@@ -73,6 +73,12 @@ watch(
   width: 1200px;
   height: calc(100vh - 124px);
   background-color: rgb(var(--v-theme-background));
+
+  @media screen and (max-width: 600px) {
+    position: inherit;
+    width: 100%;
+    height: calc(100vh - 66px);
+  }
 }
 
 @media screen and (max-width: 1120px) {

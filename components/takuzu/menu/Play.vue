@@ -112,11 +112,17 @@ const startGame = (): void => {
 .play-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   height: 100%;
   width: 100%;
   padding-top: 2rem;
+
+  @media screen and (max-width: 600px) {
+    padding-top: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 
   h3 {
     font-size: 1.25rem;
@@ -131,6 +137,11 @@ const startGame = (): void => {
     width: 100%;
     margin-bottom: 5rem;
 
+    @media screen and (max-width: 600px) {
+      flex-wrap: wrap;
+      margin-bottom: 0;
+    }
+
     .button-size {
       padding: 0.5rem 1rem;
       border-radius: 20px;
@@ -140,6 +151,10 @@ const startGame = (): void => {
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
       font-family: 'JetBrains Mono', monospace;
       transition: all 0.2s ease-in-out;
+
+      @media screen and (max-width: 600px) {
+        margin-bottom: 1rem;
+      }
     }
 
     .button-size-selected {
@@ -155,6 +170,11 @@ const startGame = (): void => {
     width: 100%;
     margin-bottom: 5rem;
 
+    @media screen and (max-width: 600px) {
+      flex-wrap: wrap;
+      margin-bottom: 0;
+    }
+
     .button-difficulty {
       padding: 0.5rem 1rem;
       border-radius: 20px;
@@ -162,6 +182,10 @@ const startGame = (): void => {
       font-family: 'JetBrains Mono', monospace;
       transition: all 0.2s ease-in-out;
       opacity: 0.5;
+
+      @media screen and (max-width: 600px) {
+        margin-bottom: 1rem;
+      }
     }
 
     .button-difficulty-selected {

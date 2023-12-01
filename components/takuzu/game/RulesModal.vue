@@ -62,6 +62,10 @@ const closeRules = () => {
   border-radius: 20px;
   padding: 20px;
 
+  @media screen and (max-width: 600px) {
+    border-radius: 0;
+  }
+
   .header {
     display: flex;
     justify-content: flex-end;
@@ -77,6 +81,10 @@ const closeRules = () => {
       color: rgb(var(--v-theme-background));
       border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    @media screen and (max-width: 600px) {
+      display: none;
     }
   }
 
@@ -102,6 +110,22 @@ const closeRules = () => {
       font-family: 'JetBrains Mono', monospace;
       margin-bottom: 3rem;
     }
+
+    @media screen and (max-width: 600px) {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 0 10px;
+
+      span {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        margin-bottom: 1rem;
+      }
+    }
   }
 
   .button-close {
@@ -116,6 +140,10 @@ const closeRules = () => {
     transition: all 0.2s ease-in-out;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
+
+    @media screen and (max-width: 600px) {
+      width: 70vw;
+    }
   }
 }
 </style>

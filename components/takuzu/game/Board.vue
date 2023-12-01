@@ -19,8 +19,12 @@
         </span>
         <div class="void" />
       </div>
-      <div class="board-container">
-        <div ref="board" class="board" :style="boardSizeStyle">
+      <div class="board-content">
+        <div
+          ref="board"
+          class="board"
+          :style="`background-color: ${getColor('background')}`"
+        >
           <div
             v-for="(row, rowIndex) in taskBoard"
             :key="rowIndex"
@@ -51,11 +55,11 @@
             @click="undo"
           />
         </button>
-        <button class="button-action">
+        <button class="button-action pause">
           <v-icon
             :icon="getPauseIcon"
             color="takuzuMainSurface"
-            size="22"
+            size="30"
             @click="togglePause"
           />
         </button>
@@ -133,20 +137,8 @@ const elapsedTime = computed((): number =>
 
 const gameStatus = computed((): GameStatus => takuzu.value.getGameStatus())
 
-const boardHistory = computed((): TakuzuBoard[] =>
-  takuzu.value.getBoardHistory()
-)
-
 const boardSize = computed((): number => {
   return takuzu.value.getBoardSize()
-})
-
-const boardSizeStyle = computed((): Record<string, string> => {
-  return {
-    gridTemplateRows: `repeat(${boardSize.value}, 40px)`,
-    gridTemplateColumns: `repeat(${boardSize.value}, 40px)`,
-    backgroundColor: getColor('background')
-  }
 })
 
 const isFinished = computed((): boolean => {
@@ -173,6 +165,7 @@ const restart = (): void => {
 
   takuzu.value.restart()
   disabledStartedCells()
+  console.log('pressed')
 }
 
 const reset = async (): Promise<void> => {
@@ -181,17 +174,19 @@ const reset = async (): Promise<void> => {
   await sleep(1000)
   isRotating.value = false
   takuzu.value.reset()
+  console.log('pressed')
 }
 
 const togglePause = (): void => {
   if (gameStatus.value !== 'inProgress') return
   timer.value.togglePause()
+  console.log('pressed')
 }
 
 const undo = (): void => {
   if (gameStatus.value !== 'inProgress') return
   takuzu.value.undo()
-  console.log(boardHistory.value)
+  console.log('pressed')
 }
 
 const returnToMenu = (): void => {
@@ -288,11 +283,11 @@ const getColor = (value: 'background' | 'border'): string => {
 .game-wrapper {
   position: relative;
   width: 100%;
+  height: 100%;
 
   .board-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
 
     .header-container {
       display: flex;
@@ -304,6 +299,7 @@ const getColor = (value: 'background' | 'border'): string => {
         width: 30px;
         height: 30px;
         border-radius: 50%;
+        padding-right: 2px;
         background-color: rgb(var(--v-theme-takuzuMainOnSurface));
         border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
@@ -329,9 +325,10 @@ const getColor = (value: 'background' | 'border'): string => {
       }
     }
 
-    .board-container {
+    .board-content {
       display: flex;
       justify-content: center;
+      width: 100%;
       margin: 20px 0;
 
       .board {
@@ -347,7 +344,7 @@ const getColor = (value: 'background' | 'border'): string => {
           display: flex;
           justify-content: center;
           gap: 10px;
-          height: 40px;
+          height: auto;
           width: 100%;
 
           .cell-button {
@@ -424,11 +421,17 @@ const getColor = (value: 'background' | 'border'): string => {
       .button-action {
         width: 30px;
         height: 30px;
+        padding-right: 2px;
         border-radius: 50%;
         background-color: rgb(var(--v-theme-takuzuMainOnSurface));
         border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
         transition: all 0.2s ease-in-out;
+      }
+
+      .button-action.pause {
+        width: 40px;
+        height: 40px;
       }
 
       .rotate {

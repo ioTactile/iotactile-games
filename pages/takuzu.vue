@@ -116,9 +116,17 @@ const startGameHandler = (options: GameOptions): void => {
   box-shadow: -10px -10px rgba(var(--v-theme-takuzuMainShadow), 0.3);
   color: rgb(var(--v-theme-onSurface));
 
+  @media screen and (max-width: 600px) {
+    width: 100%;
+    height: calc(100% - 3rem);
+    margin: 0 1rem;
+  }
+
   .menu-content {
     display: flex;
     justify-content: center;
+    width: 100%;
+    height: calc(100% - 150px);
   }
 
   .game-title {
@@ -156,6 +164,13 @@ const startGameHandler = (options: GameOptions): void => {
   box-shadow: -10px -10px rgba(var(--v-theme-takuzuMainShadow), 0.3);
   color: rgb(var(--v-theme-onSurface));
 
+  @media screen and (max-width: 600px) {
+    width: 100%;
+    height: calc(100% - 2rem);
+    margin: 0 1rem;
+    padding: 0;
+  }
+
   .game-title {
     font-family: 'JetBrains Mono', monospace;
     font-size: 3rem;
@@ -178,6 +193,11 @@ const startGameHandler = (options: GameOptions): void => {
     position: absolute;
     top: 48px;
     left: 400px;
+
+    @media screen and (max-width: 600px) {
+      top: 18px;
+      left: 20px;
+    }
 
     img {
       width: 40px;
