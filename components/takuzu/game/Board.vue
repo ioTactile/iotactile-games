@@ -45,7 +45,7 @@
           </div>
         </div>
       </div>
-      <div class="error-message">{{ errorMessage }}</div>
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
       <div class="actions">
         <button class="button-action">
           <v-icon
@@ -63,7 +63,7 @@
             @click="togglePause"
           />
         </button>
-        <button class="button-replay" @click="restart">Rejouer</button>
+        <!-- <button class="button-replay" @click="restart">Rejouer</button> -->
         <button class="button-action">
           <v-icon
             :icon="mdiRestart"
@@ -165,7 +165,6 @@ const restart = (): void => {
 
   takuzu.value.restart()
   disabledStartedCells()
-  console.log('pressed')
 }
 
 const reset = async (): Promise<void> => {
@@ -173,20 +172,18 @@ const reset = async (): Promise<void> => {
   isRotating.value = true
   await sleep(1000)
   isRotating.value = false
+  errorMessage.value = ''
   takuzu.value.reset()
-  console.log('pressed')
 }
 
 const togglePause = (): void => {
   if (gameStatus.value !== 'inProgress') return
   timer.value.togglePause()
-  console.log('pressed')
 }
 
 const undo = (): void => {
   if (gameStatus.value !== 'inProgress') return
   takuzu.value.undo()
-  console.log('pressed')
 }
 
 const returnToMenu = (): void => {
@@ -195,12 +192,12 @@ const returnToMenu = (): void => {
 
 const openRulesModal = (): void => {
   isRulesModalActive.value = true
-  takuzu.value.getTimer().togglePause()
+  if (gameStatus.value === 'inProgress') takuzu.value.getTimer().togglePause()
 }
 
 const closeRulesModal = (): void => {
   isRulesModalActive.value = false
-  takuzu.value.getTimer().togglePause()
+  if (gameStatus.value === 'inProgress') takuzu.value.getTimer().togglePause()
 }
 
 const toggleCell = (rowIndex: number, colIndex: number): void => {
@@ -288,6 +285,14 @@ const getColor = (value: 'background' | 'border'): string => {
   .board-container {
     display: flex;
     flex-direction: column;
+    height: 100%;
+
+    @media screen and (max-width: 600px) {
+      justify-content: space-evenly;
+    }
+
+    @media screen and (max-height: 500px) {
+    }
 
     .header-container {
       display: flex;
@@ -299,7 +304,6 @@ const getColor = (value: 'background' | 'border'): string => {
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        padding-right: 2px;
         background-color: rgb(var(--v-theme-takuzuMainOnSurface));
         border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
@@ -330,6 +334,10 @@ const getColor = (value: 'background' | 'border'): string => {
       justify-content: center;
       width: 100%;
       margin: 20px 0;
+
+      @media screen and (max-width: 600px) {
+        margin: 10px 0;
+      }
 
       .board {
         display: flex;
@@ -396,7 +404,14 @@ const getColor = (value: 'background' | 'border'): string => {
 
     .error-message {
       text-align: center;
-      font-size: 1.25rem;
+      font-size: 1rem;
+      margin: 0 auto 20px auto;
+      max-width: 500px;
+
+      @media screen and (max-width: 600px) {
+        margin: 0.5rem 5px;
+        font-size: 0.85rem;
+      }
     }
 
     .actions {
@@ -421,7 +436,6 @@ const getColor = (value: 'background' | 'border'): string => {
       .button-action {
         width: 30px;
         height: 30px;
-        padding-right: 2px;
         border-radius: 50%;
         background-color: rgb(var(--v-theme-takuzuMainOnSurface));
         border: 1px solid rgb(var(--v-theme-takuzuMainSuface));

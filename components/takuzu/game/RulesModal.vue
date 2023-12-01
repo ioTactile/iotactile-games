@@ -50,7 +50,7 @@ const closeRules = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  z-index: 2;
+  z-index: 1;
   position: absolute;
   top: 0;
   left: 50%;
@@ -93,7 +93,6 @@ const closeRules = () => {
     justify-content: space-between;
     align-items: center;
     height: 100%;
-
     width: 100%;
     padding: 0 20px;
 
