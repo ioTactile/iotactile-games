@@ -29,6 +29,9 @@
               v-if="menuPage === 1"
               @start-game="startGameHandler"
             />
+            <takuzu-menu-ranking v-if="menuPage === 2" />
+            <takuzu-menu-results v-if="menuPage === 3" />
+            <takuzu-menu-rules v-if="menuPage === 4" @action="handleActions" />
           </div>
         </div>
       </template>
@@ -64,6 +67,14 @@
 
 <script setup lang="ts">
 import type { GameOptions } from '~/utils/takuzu/types'
+
+useSeoMeta({
+  title: 'Takuzu - ioTactile Games',
+  ogTitle: 'Takuzu - ioTactile Games',
+  description: 'Page du jeu Takuzu',
+  ogDescription: 'Page du jeu Takuzu',
+  ogImage: '/minesweeper_blue.jpg'
+})
 
 if (process.client) {
   window.addEventListener('keyup', (e: KeyboardEvent) => {

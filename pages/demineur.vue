@@ -323,9 +323,7 @@ const handleLeftClick = async (data: {
       }
     }
 
-    await setDoc(doc(mineSweeperScoreboard, user.value.uid), scoreboard, {
-      merge: true
-    })
+    await setDoc(scoreboardRef, scoreboard, { merge: true })
   }
 }
 

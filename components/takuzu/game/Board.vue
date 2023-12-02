@@ -11,8 +11,44 @@
     />
     <div class="board-container">
       <div class="header-container">
-        <button class="rules" @click="openRulesModal">
-          <v-icon :icon="mdiLightbulb" color="takuzuMainSurface" size="22" />
+        <button class="rules svg-container" @click="openRulesModal">
+          <svg
+            fill="#CFD8DC"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            width="20px"
+            height="20px"
+            viewBox="0 0 491.535 491.535"
+            xml:space="preserve"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <g id="SVGRepo_iconCarrier">
+              <g>
+                <g>
+                  <g id="Icons_9_">
+                    <g>
+                      <path
+                        d="M306.545,367.594H185.003c-9.041,0-16.382,7.338-16.382,16.385c0,9.05,7.341,16.384,16.382,16.384h121.542 c9.041,0,16.389-7.334,16.389-16.384C322.934,374.932,315.586,367.594,306.545,367.594z"
+                      />
+                      <path
+                        d="M213.917,464.367v8.926c0,10.076,8.157,18.242,18.239,18.242h27.233c10.062,0,18.239-8.166,18.239-18.242v-8.926 c20.642-1.467,36.981-18.498,36.981-39.506H176.92C176.921,445.869,193.277,462.9,213.917,464.367z"
+                      />
+                      <path
+                        d="M245.777,0C155.084,0,81.561,73.516,81.561,164.207c0,38.268,13.164,73.396,35.152,101.287 c19.444,24.647,37.874,51.592,53.76,78.688h150.583c16.049-27.353,34.146-53.793,53.78-78.707 c21.968-27.878,35.139-63.011,35.139-101.27C409.975,73.517,336.451,0,245.777,0z M246.05,56.971 c-58.297,0-105.702,47.412-105.702,105.692c0,9.048-7.327,16.385-16.389,16.385c-9.056,0-16.383-7.337-16.383-16.385 c0-76.346,62.114-138.46,138.474-138.46c9.034,0,16.383,7.334,16.383,16.382S255.084,56.971,246.05,56.971z"
+                      />
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </svg>
         </button>
         <span class="timer">
           {{ timerFormatter(elapsedTime, true) }}
@@ -45,33 +81,108 @@
           </div>
         </div>
       </div>
-      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+      <span v-if="errorMessage" class="error-message">{{ errorMessage }}</span>
       <div class="actions">
-        <button class="button-action">
-          <v-icon
-            :icon="mdiStepBackward"
-            color="takuzuMainSurface"
-            size="22"
-            @click="undo"
-          />
+        <button class="button-action undo svg-container" @click="undo">
+          <svg
+            fill="#CFD8DC"
+            width="20px"
+            height="20px"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+            stroke="#CFD8DC"
+            stroke-width="0.0002"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <g id="SVGRepo_iconCarrier">
+              <path
+                d="M17.959 4.571L10.756 9.52s-.279.201-.279.481.279.479.279.479l7.203 4.951c.572.38 1.041.099 1.041-.626V5.196c0-.727-.469-1.008-1.041-.625zm-9.076 0L1.68 9.52s-.279.201-.279.481.279.479.279.479l7.203 4.951c.572.381 1.041.1 1.041-.625v-9.61c0-.727-.469-1.008-1.041-.625z"
+              />
+            </g>
+          </svg>
         </button>
-        <button class="button-action pause">
-          <v-icon
-            :icon="getPauseIcon"
-            color="takuzuMainSurface"
-            size="30"
-            @click="togglePause"
-          />
+        <button class="button-action pause svg-container" @click="togglePause">
+          <svg
+            v-if="isPaused"
+            width="28px"
+            height="28px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <g id="SVGRepo_iconCarrier">
+              <path
+                d="M8.286 3.407A1.5 1.5 0 0 0 6 4.684v14.632a1.5 1.5 0 0 0 2.286 1.277l11.888-7.316a1.5 1.5 0 0 0 0-2.555L8.286 3.407z"
+                fill="#CFD8DC"
+              />
+            </g>
+          </svg>
+          <svg
+            v-else
+            width="28px"
+            height="28px"
+            viewBox="0 0 24 24"
+            fill=""
+            data-name="Flat Color"
+            xmlns="http://www.w3.org/2000/svg"
+            class="icon flat-color"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <g id="SVGRepo_iconCarrier">
+              <path
+                id="primary"
+                d="M19,4V20a2,2,0,0,1-2,2H15a2,2,0,0,1-2-2V4a2,2,0,0,1,2-2h2A2,2,0,0,1,19,4ZM9,2H7A2,2,0,0,0,5,4V20a2,2,0,0,0,2,2H9a2,2,0,0,0,2-2V4A2,2,0,0,0,9,2Z"
+                fill="#cfd8dc"
+              />
+            </g>
+          </svg>
         </button>
-        <!-- <button class="button-replay" @click="restart">Rejouer</button> -->
-        <button class="button-action">
-          <v-icon
-            :icon="mdiRestart"
-            color="takuzuMainSurface"
-            size="22"
+        <button class="button-action svg-container" @click="reset">
+          <svg
+            width="20px"
+            height="20px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
             :class="{ rotate: isRotating }"
-            @click="reset"
-          />
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+            <g id="SVGRepo_iconCarrier">
+              <path
+                d="M12.207 2.293a1 1 0 0 1 0 1.414L10.914 5H12.5c4.652 0 8.5 3.848 8.5 8.5S17.152 22 12.5 22 4 18.152 4 13.5a1 1 0 1 1 2 0c0 3.548 2.952 6.5 6.5 6.5s6.5-2.952 6.5-6.5S16.048 7 12.5 7h-1.586l1.293 1.293a1 1 0 0 1-1.414 1.414l-3-3a1 1 0 0 1 0-1.414l3-3a1 1 0 0 1 1.414 0z"
+                fill="#CFD8DC"
+              />
+            </g>
+          </svg>
         </button>
       </div>
     </div>
@@ -79,14 +190,7 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon } from 'vuetify/components'
-import {
-  mdiLightbulb,
-  mdiPause,
-  mdiPlay,
-  mdiRestart,
-  mdiStepBackward
-} from '@mdi/js'
+import { collection, getDoc, setDoc, doc } from 'firebase/firestore'
 import { Takuzu, type ITakuzu } from '~/utils/takuzu/takuzu.js'
 import { CellValues } from '~/utils/takuzu/constants'
 import { sleep } from '~/utils'
@@ -97,6 +201,14 @@ import type {
   GameStatus
 } from '~/utils/takuzu/types'
 import type { Timer } from '~/utils/takuzu/timer'
+import type { TakuzuVictory } from '~/functions/src/types'
+
+const db = useFirestore()
+const user = useCurrentUser()
+
+const takuzuScoreboard = collection(db, 'takuzuScoreboard').withConverter(
+  takuzuScoreboardConverter
+)
 
 onMounted(() => {
   const newOptions = props.options
@@ -145,13 +257,9 @@ const isFinished = computed((): boolean => {
   return takuzu.value.getGameStatus() === 'won'
 })
 
-const getPauseIcon = computed((): string => {
-  if (timer.value.getIsPaused()) return mdiPlay
-  if (gameStatus.value === 'inProgress') {
-    return mdiPause
-  } else {
-    return mdiPlay
-  }
+const isPaused = computed((): boolean => {
+  if (timer.value.getIsPaused()) return true
+  return false
 })
 
 const start = (options: GameOptions): void => {
@@ -229,6 +337,103 @@ const toggleCell = (rowIndex: number, colIndex: number): void => {
 
   errorMessage.value = ''
   takuzu.value.handleWin()
+  saveScore()
+}
+
+const saveScore = async () => {
+  if (!user.value) return
+
+  const userRef = doc(db, 'users', user.value.uid)
+  const userDoc = await getDoc(userRef)
+
+  if (!userDoc.exists()) return
+
+  const username = userDoc.data().username
+
+  if (!props.options) return
+
+  const difficulty = props.options.difficulty
+  const boardSize = props.options.boardSize
+
+  const createDefaultVictory = (): TakuzuVictory => ({
+    victories: 0,
+    bestTime: 0
+  })
+
+  const scoreboard: LocalTakuzuScoreboardType = {
+    userId: user.value.uid,
+    username,
+    sixBySix: {
+      easy: createDefaultVictory(),
+      medium: createDefaultVictory(),
+      hard: createDefaultVictory(),
+      expert: createDefaultVictory()
+    },
+    eightByEight: {
+      easy: createDefaultVictory(),
+      medium: createDefaultVictory(),
+      hard: createDefaultVictory(),
+      expert: createDefaultVictory()
+    },
+    tenByTen: {
+      easy: createDefaultVictory(),
+      medium: createDefaultVictory(),
+      hard: createDefaultVictory(),
+      expert: createDefaultVictory()
+    },
+    twelveByTwelve: {
+      easy: createDefaultVictory(),
+      medium: createDefaultVictory(),
+      hard: createDefaultVictory(),
+      expert: createDefaultVictory()
+    }
+  }
+
+  const scoreboardRef = doc(takuzuScoreboard, user.value.uid)
+  const scoreboardDoc = await getDoc(scoreboardRef)
+
+  if (scoreboardDoc.exists()) {
+    Object.assign(scoreboard, scoreboardDoc.data())
+  }
+  console.log(scoreboard)
+
+  const updateScore = (size: keyof LocalTakuzuScoreboardType) => {
+    const sizeBoard = scoreboard[size]
+
+    if (sizeBoard && typeof sizeBoard === 'object' && sizeBoard[difficulty]) {
+      const boardDifficulty = sizeBoard[difficulty]
+      boardDifficulty.victories++
+
+      if (
+        boardDifficulty.bestTime === 0 ||
+        elapsedTime.value < boardDifficulty.bestTime
+      ) {
+        boardDifficulty.bestTime = elapsedTime.value
+      }
+    }
+
+    console.log(sizeBoard)
+  }
+
+  switch (boardSize) {
+    case 6:
+      updateScore('sixBySix')
+      break
+    case 8:
+      updateScore('eightByEight')
+      break
+    case 10:
+      updateScore('tenByTen')
+      break
+    case 12:
+      updateScore('twelveByTwelve')
+      break
+    default:
+      break
+  }
+
+  console.log(scoreboard)
+  await setDoc(scoreboardRef, scoreboard, { merge: true })
 }
 
 const disabledStartedCells = (): boolean[][] => {
@@ -308,6 +513,10 @@ const getColor = (value: 'background' | 'border'): string => {
         border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
         transition: all 0.2s ease-in-out;
+
+        @media screen and (max-width: 600px) {
+          padding-right: 2px;
+        }
       }
 
       .timer {
@@ -441,11 +650,23 @@ const getColor = (value: 'background' | 'border'): string => {
         border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
         transition: all 0.2s ease-in-out;
+
+        @media screen and (max-width: 600px) {
+          padding-right: 2px;
+        }
       }
 
       .button-action.pause {
         width: 40px;
         height: 40px;
+      }
+
+      .button-action.undo {
+        padding-right: 2px;
+
+        @media screen and (max-width: 600px) {
+          padding-right: 4px;
+        }
       }
 
       .rotate {

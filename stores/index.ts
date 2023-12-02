@@ -20,7 +20,8 @@ import type {
   LinguaVaultSessionRemainingTurns,
   LinguaVaultSessionPlayerTurn,
   LinguaVaultSessionWords,
-  MineSweeperScoreboard
+  MineSweeperScoreboard,
+  TakuzuScoreboard
 } from '~/functions/src/types'
 
 type NestedTypeMapper<T, I, O> = T extends I
@@ -450,6 +451,33 @@ export const mineSweeperScoreboardConverter: FirestoreDataConverter<LocalMineSwe
           ...customVictory,
           victoryDate: customVictory.victoryDate.toDate()
         }))
+      }
+    }
+  }
+
+// Takuzu
+
+type DatabaseTakuzuSessionScoresType = NestedTypeMapper<
+  TakuzuScoreboard,
+  Timestamp,
+  FirestoreTimestamp
+>
+export type LocalTakuzuScoreboardType = NestedTypeMapper<
+  TakuzuScoreboard,
+  Timestamp,
+  Date
+>
+export const takuzuScoreboardConverter: FirestoreDataConverter<LocalTakuzuScoreboardType> =
+  {
+    toFirestore: (item) => item,
+    fromFirestore: (
+      snapshot: QueryDocumentSnapshot<DatabaseTakuzuSessionScoresType>,
+      options
+    ) => {
+      const data = snapshot.data(options)
+      return {
+        ...data,
+        userId: snapshot.id
       }
     }
   }

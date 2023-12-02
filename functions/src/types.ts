@@ -370,7 +370,7 @@ export type CustomVictory = {
   victoryDate: Timestamp
 }
 
-export type Victory = {
+export type MineSweeperVictory = {
   victories: number
   bestTime: number
   victoryDate: Timestamp
@@ -379,8 +379,53 @@ export type Victory = {
 export type MineSweeperScoreboard = {
   userId: string
   username: string
-  beginner: Victory
-  intermediate: Victory
-  expert: Victory
+  beginner: MineSweeperVictory
+  intermediate: MineSweeperVictory
+  expert: MineSweeperVictory
   custom: CustomVictory[]
+}
+
+// Takuzu
+
+export const takuzuScoreboardConverter = {
+  toFirestore: (scoreboard: TakuzuScoreboard): DocumentData => scoreboard,
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot<TakuzuScoreboard>
+  ): TakuzuScoreboard {
+    return snapshot.data()
+  }
+}
+
+export type TakuzuVictory = {
+  victories: number
+  bestTime: number
+}
+
+export type TakuzuScoreboard = {
+  userId: string
+  username: string
+  sixBySix: {
+    easy: TakuzuVictory
+    medium: TakuzuVictory
+    hard: TakuzuVictory
+    expert: TakuzuVictory
+  }
+  eightByEight: {
+    easy: TakuzuVictory
+    medium: TakuzuVictory
+    hard: TakuzuVictory
+    expert: TakuzuVictory
+  }
+  tenByTen: {
+    easy: TakuzuVictory
+    medium: TakuzuVictory
+    hard: TakuzuVictory
+    expert: TakuzuVictory
+  }
+  twelveByTwelve: {
+    easy: TakuzuVictory
+    medium: TakuzuVictory
+    hard: TakuzuVictory
+    expert: TakuzuVictory
+  }
 }

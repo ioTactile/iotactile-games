@@ -50,6 +50,14 @@ service cloud.firestore {
      allow read, write: if request.auth.uid != null;
     }
 
+    match /takuzuScoreboard {
+      allow read;
+    }
+
+    match /takuzuScoreboard/{takuzuScoreboard} {
+     allow read, write: if request.auth.uid != null;
+    }
+
     match /users/{userId} {
       allow read: if request.auth.uid != null;
       allow write: if request.auth.uid == userId;

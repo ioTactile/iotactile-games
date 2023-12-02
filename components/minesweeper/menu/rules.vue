@@ -61,7 +61,7 @@ const emit = defineEmits<{
   height: 400px;
   width: 500px;
   overflow-y: auto;
-  color: rgb(var(--v-theme-mainSweeperMainOnSurface));
+  color: rgb(var(--v-theme-mineSweeperMainOnSurface));
 
   section {
     margin-bottom: 20px;
