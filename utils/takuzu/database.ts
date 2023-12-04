@@ -8,7 +8,11 @@ import {
 import type { BoardSize, Difficulty } from './types'
 import type { LocalTakuzuScoreboardType } from '~/stores'
 
-type TakuzuVictory = LocalTakuzuScoreboardType['sixBySix']['easy']
+type TakuzuVictory = {
+  victories: number
+  bestTime: number
+  victoryDate: Date
+}
 
 const DEFAULT_VICTORY: TakuzuVictory = {
   victories: 0,
@@ -60,28 +64,28 @@ const getInitialValues = async (
     userId,
     username,
     sixBySix: {
-      easy: DEFAULT_VICTORY,
-      medium: DEFAULT_VICTORY,
-      hard: DEFAULT_VICTORY,
-      expert: DEFAULT_VICTORY
+      easy: { ...DEFAULT_VICTORY },
+      medium: { ...DEFAULT_VICTORY },
+      hard: { ...DEFAULT_VICTORY },
+      expert: { ...DEFAULT_VICTORY }
     },
     eightByEight: {
-      easy: DEFAULT_VICTORY,
-      medium: DEFAULT_VICTORY,
-      hard: DEFAULT_VICTORY,
-      expert: DEFAULT_VICTORY
+      easy: { ...DEFAULT_VICTORY },
+      medium: { ...DEFAULT_VICTORY },
+      hard: { ...DEFAULT_VICTORY },
+      expert: { ...DEFAULT_VICTORY }
     },
     tenByTen: {
-      easy: DEFAULT_VICTORY,
-      medium: DEFAULT_VICTORY,
-      hard: DEFAULT_VICTORY,
-      expert: DEFAULT_VICTORY
+      easy: { ...DEFAULT_VICTORY },
+      medium: { ...DEFAULT_VICTORY },
+      hard: { ...DEFAULT_VICTORY },
+      expert: { ...DEFAULT_VICTORY }
     },
     twelveByTwelve: {
-      easy: DEFAULT_VICTORY,
-      medium: DEFAULT_VICTORY,
-      hard: DEFAULT_VICTORY,
-      expert: DEFAULT_VICTORY
+      easy: { ...DEFAULT_VICTORY },
+      medium: { ...DEFAULT_VICTORY },
+      hard: { ...DEFAULT_VICTORY },
+      expert: { ...DEFAULT_VICTORY }
     }
   }
 
@@ -89,7 +93,7 @@ const getInitialValues = async (
   const scoreboardDoc = await getDoc(scoreboardRef)
 
   if (scoreboardDoc.exists()) {
-    Object.assign(scoreboard, scoreboardDoc.data())
+    Object.assign({}, scoreboard, scoreboardDoc.data())
   }
 
   return scoreboard
@@ -101,22 +105,20 @@ const updateScoreboard = (
   time: number,
   difficulty: Difficulty
 ): LocalTakuzuScoreboardType => {
-  const sizeBoard = scoreboard[size]
+  const sizeBoard = scoreboard[size] as Record<Difficulty, TakuzuVictory>
+  const boardDifficulty = sizeBoard[difficulty]
 
-  if (sizeBoard && typeof sizeBoard === 'object' && sizeBoard[difficulty]) {
-    const boardDifficulty = sizeBoard[difficulty]
-    boardDifficulty.victories++
-
-    if (boardDifficulty.bestTime === 0 || time < boardDifficulty.bestTime) {
-      boardDifficulty.bestTime = time
-    }
-
-    boardDifficulty.victoryDate = new Date(Date.now())
-
-    sizeBoard[difficulty] = boardDifficulty
+  boardDifficulty.victories += 1
+  if (boardDifficulty.bestTime === 0 || time < boardDifficulty.bestTime) {
+    boardDifficulty.bestTime = time
   }
+  boardDifficulty.victoryDate = new Date(Date.now())
 
-  return scoreboard
+  sizeBoard[difficulty] = boardDifficulty
+
+  const newScoreboard = { ...scoreboard, [size]: sizeBoard }
+
+  return newScoreboard
 }
 
 export const saveScoreboard = async (

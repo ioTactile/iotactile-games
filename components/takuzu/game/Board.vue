@@ -354,6 +354,7 @@ const toggleCell = async (
   const { boardSize, difficulty } = props.options
 
   await saveScoreboard(user.value.uid, elapsedTime.value, boardSize, difficulty)
+  console.log('Scoreboard saved')
 }
 
 const disabledStartedCells = (): boolean[][] => {
