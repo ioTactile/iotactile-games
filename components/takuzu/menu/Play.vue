@@ -159,7 +159,7 @@ const startGame = (): void => {
 
     .button-size-selected {
       background-color: rgb(var(--v-theme-takuzuMainOnSurface));
-      color: rgb(var(--v-theme-background));
+      color: #ffffff;
       border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
     }
   }
@@ -180,6 +180,7 @@ const startGame = (): void => {
       border-radius: 20px;
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
       font-family: 'JetBrains Mono', monospace;
+      color: #000000;
       transition: all 0.2s ease-in-out;
       opacity: 0.5;
 
@@ -200,7 +201,7 @@ const startGame = (): void => {
     font-weight: 700;
     border-radius: 20px;
     background-color: rgb(var(--v-theme-takuzuMainOnSurface));
-    color: rgb(var(--v-theme-background));
+    color: #ffffff;
     border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
     font-family: 'JetBrains Mono', monospace;

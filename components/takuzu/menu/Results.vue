@@ -98,6 +98,7 @@ const difficultyBackgroundColorStyle = (value: string) => {
     align-items: center;
     justify-content: center;
     background-color: rgb(var(--v-theme-takuzuMainShadow));
+    color: #000000;
     width: 100%;
     padding: 0.5rem 1rem;
 
@@ -136,6 +137,7 @@ const difficultyBackgroundColorStyle = (value: string) => {
           top: -35px;
           left: -17.5px;
           background-color: #ffffff;
+          color: #000000;
           border-radius: 8px;
           padding: 0.25rem 0.5rem;
           font-weight: 500;

@@ -497,9 +497,9 @@ watch(
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
         transition: all 0.2s ease-in-out;
 
-        @media screen and (max-width: 600px) {
-          padding-right: 2px;
-        }
+        // @media screen and (max-width: 600px) {
+        //   padding-right: 2px;
+        // }
       }
 
       .timer {
@@ -543,7 +543,7 @@ watch(
           display: flex;
           justify-content: center;
           gap: 10px;
-          height: auto;
+          height: 40px;
           width: 100%;
 
           .cell-button {
@@ -598,6 +598,7 @@ watch(
       font-size: 1rem;
       margin: 0 auto 20px auto;
       max-width: 500px;
+      color: rgb(var(--v-theme-takuzuMainOnSurface));
 
       @media screen and (max-width: 600px) {
         margin: 0.5rem 5px;
@@ -633,9 +634,9 @@ watch(
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
         transition: all 0.2s ease-in-out;
 
-        @media screen and (max-width: 600px) {
-          padding-right: 2px;
-        }
+        // @media screen and (max-width: 600px) {
+        //   padding-right: 2px;
+        // }
       }
 
       .button-action.pause {
@@ -646,9 +647,9 @@ watch(
       .button-action.undo {
         padding-right: 2px;
 
-        @media screen and (max-width: 600px) {
-          padding-right: 4px;
-        }
+        // @media screen and (max-width: 600px) {
+        //   padding-right: 4px;
+        // }
       }
 
       .rotate {

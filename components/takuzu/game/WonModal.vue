@@ -70,7 +70,7 @@ const returnToMenu = () => emits('returnToMenu')
       padding: 0.5rem 1rem;
       border-radius: 20px;
       background-color: rgb(var(--v-theme-takuzuMainOnSurface));
-      color: rgb(var(--v-theme-background));
+      color: #ffffff;
       border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
       transition: all 0.2s ease-in-out;

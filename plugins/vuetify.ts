@@ -73,8 +73,10 @@ const myCustomDarkTheme: ThemeDefinition = {
     // Main Takuzu colors
     takuzuMainPrimary: '#90a4ae', // light blue
     takuzuMainSecondary: '#37474F', // dark blue
+    takuzuMainTertiary: '#546E7A', // grey
     takuzuMainSurface: '#CFD8DC', // light grey
-    takuzuMainShadow: '#B0BEC5' // grey
+    takuzuMainShadow: '#B0BEC5', // grey
+    takuzuMainOnSurface: '#161616' // dark grey
   }
 }
 

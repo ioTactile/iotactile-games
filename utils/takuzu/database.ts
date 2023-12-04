@@ -14,11 +14,11 @@ type TakuzuVictory = {
   victoryDate: Date
 }
 
-const DEFAULT_VICTORY: TakuzuVictory = {
+const createDefaultVictory = (): TakuzuVictory => ({
   victories: 0,
   bestTime: 0,
-  victoryDate: new Date()
-}
+  victoryDate: new Date(0)
+})
 
 const takuzuScoreboard = (): ReturnType<typeof collection> => {
   const db = useFirestore()
@@ -64,28 +64,28 @@ const getInitialValues = async (
     userId,
     username,
     sixBySix: {
-      easy: { ...DEFAULT_VICTORY },
-      medium: { ...DEFAULT_VICTORY },
-      hard: { ...DEFAULT_VICTORY },
-      expert: { ...DEFAULT_VICTORY }
+      easy: createDefaultVictory(),
+      medium: createDefaultVictory(),
+      hard: createDefaultVictory(),
+      expert: createDefaultVictory()
     },
     eightByEight: {
-      easy: { ...DEFAULT_VICTORY },
-      medium: { ...DEFAULT_VICTORY },
-      hard: { ...DEFAULT_VICTORY },
-      expert: { ...DEFAULT_VICTORY }
+      easy: createDefaultVictory(),
+      medium: createDefaultVictory(),
+      hard: createDefaultVictory(),
+      expert: createDefaultVictory()
     },
     tenByTen: {
-      easy: { ...DEFAULT_VICTORY },
-      medium: { ...DEFAULT_VICTORY },
-      hard: { ...DEFAULT_VICTORY },
-      expert: { ...DEFAULT_VICTORY }
+      easy: createDefaultVictory(),
+      medium: createDefaultVictory(),
+      hard: createDefaultVictory(),
+      expert: createDefaultVictory()
     },
     twelveByTwelve: {
-      easy: { ...DEFAULT_VICTORY },
-      medium: { ...DEFAULT_VICTORY },
-      hard: { ...DEFAULT_VICTORY },
-      expert: { ...DEFAULT_VICTORY }
+      easy: createDefaultVictory(),
+      medium: createDefaultVictory(),
+      hard: createDefaultVictory(),
+      expert: createDefaultVictory()
     }
   }
 
@@ -93,7 +93,7 @@ const getInitialValues = async (
   const scoreboardDoc = await getDoc(scoreboardRef)
 
   if (scoreboardDoc.exists()) {
-    Object.assign({}, scoreboard, scoreboardDoc.data())
+    Object.assign(scoreboard, scoreboardDoc.data())
   }
 
   return scoreboard
