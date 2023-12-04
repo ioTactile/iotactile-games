@@ -54,9 +54,27 @@
 useSeoMeta({
   title: 'Dice - ioTactile Games',
   ogTitle: 'Dice - ioTactile Games',
+  twitterTitle: 'Dice - ioTactile Games',
   description: 'Menu du jeu Dice',
   ogDescription: 'Menu du jeu Dice',
-  ogImage: '/dice.png'
+  twitterDescription: 'Menu du jeu Dice',
+  ogImage: '/dice/dice.png',
+  twitterImage: '/dice/dice.png',
+  twitterCard: 'summary_large_image',
+  ogUrl: 'https://iotactile.games/dice'
+})
+
+useHead({
+  htmlAttrs: {
+    lang: 'fr'
+  },
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.png'
+    }
+  ]
 })
 
 definePageMeta({

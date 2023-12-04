@@ -419,10 +419,12 @@ const HandleBackgroundColor = (): void => {
   if (!props.options) return
   const { boardSize } = props.options
   let boardWidth = getWithByBoardSize(boardSize)
+  const targetWidth = width.value - 60
 
   if (width.value < 600) {
-    boardWidth = width.value - 60
+    boardWidth = Math.min(targetWidth, boardWidth)
   } else if (
+    width.value > 600 &&
     gameWrapper.value &&
     gameWrapper.value.clientHeight - 200 < boardWidth
   ) {
@@ -444,6 +446,7 @@ const handleResize = (): void => {
     scale.value = Math.min(targetWidth / boardWidth, 1)
     return
   } else if (
+    width.value > 600 &&
     gameWrapper.value &&
     gameWrapper.value.clientHeight - 200 < boardWidth
   ) {

@@ -4,7 +4,7 @@
     <v-row class="d-flex">
       <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
         <GameFramework
-          img="/dice.png"
+          img="/dice/dice.png"
           alt="Dice"
           title="Dice"
           link="/dice"
@@ -13,7 +13,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
         <GameFramework
-          img="/minesweeper.png"
+          img="/minesweeper/minesweeper.png"
           alt="Démineur"
           title="Démineur"
           link="/demineur"
@@ -22,7 +22,7 @@
       </v-col>
       <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
         <GameFramework
-          img="/takuzu.png"
+          img="/takuzu/takuzu.png"
           alt="Takuzu"
           title="Takuzu"
           link="/takuzu"
@@ -39,10 +39,30 @@ import { VRow, VCol } from 'vuetify/components'
 useSeoMeta({
   title: 'Accueil - ioTactile Games',
   ogTitle: 'Accueil - ioTactile Games',
+  twitterTitle: 'Accueil - ioTactile Games',
   description:
     'ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs',
   ogDescription:
-    'ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs'
+    'ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs',
+  twitterDescription:
+    'ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs',
+  ogImage: '/iotactile-games.png',
+  twitterImage: '/iotactile-games.png',
+  twitterCard: 'summary_large_image',
+  ogUrl: 'https://iotactile.games'
+})
+
+useHead({
+  htmlAttrs: {
+    lang: 'fr'
+  },
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.png'
+    }
+  ]
 })
 </script>
 

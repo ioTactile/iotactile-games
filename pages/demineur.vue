@@ -117,9 +117,27 @@ import type { CustomVictory } from '~/functions/src/types'
 useSeoMeta({
   title: 'Démineur - ioTactile Games',
   ogTitle: 'Démineur - ioTactile Games',
+  twitterTitle: 'Démineur - ioTactile Games',
   description: 'Page du jeu Démineur',
   ogDescription: 'Page du jeu Démineur',
-  ogImage: '/minesweeper.png'
+  twitterDescription: 'Page du jeu Démineur',
+  ogImage: '/minesweeper/minesweeper.png',
+  twitterImage: '/minesweeper/minesweeper.png',
+  twitterCard: 'summary_large_image',
+  ogUrl: 'https://iotactile.games/minesweeper'
+})
+
+useHead({
+  htmlAttrs: {
+    lang: 'fr'
+  },
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      href: 'favicon.png'
+    }
+  ]
 })
 
 type OmittedCustomVictory = Omit<

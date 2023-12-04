@@ -3,8 +3,7 @@ import {
   getDoc,
   setDoc,
   doc,
-  type DocumentData,
-  DocumentSnapshot
+  type DocumentData
 } from 'firebase/firestore'
 import type { BoardSize, Difficulty } from './types'
 import type { LocalTakuzuScoreboardType } from '~/stores'
@@ -50,15 +49,6 @@ const getUserData = async (userId: string): Promise<DocumentData | null> => {
   return userDoc.exists() ? userDoc.data() : null
 }
 
-const mergeScoreboardData = (
-  scoreboard: LocalTakuzuScoreboardType,
-  scoreboardDoc: DocumentSnapshot
-) => {
-  if (scoreboardDoc.exists()) {
-    Object.assign(scoreboard, scoreboardDoc.data())
-  }
-}
-
 const getInitialValues = async (
   userId: string
 ): Promise<LocalTakuzuScoreboardType> => {
@@ -98,7 +88,9 @@ const getInitialValues = async (
   const scoreboardRef = doc(takuzuScoreboard(), userId)
   const scoreboardDoc = await getDoc(scoreboardRef)
 
-  mergeScoreboardData(scoreboard, scoreboardDoc)
+  if (scoreboardDoc.exists()) {
+    Object.assign(scoreboard, scoreboardDoc.data())
+  }
 
   return scoreboard
 }
@@ -133,11 +125,20 @@ export const saveScoreboard = async (
   boardSize: BoardSize,
   difficulty: Difficulty
 ): Promise<void> => {
-  let scoreboard = await getInitialValues(userId)
+  const scoreboard = await getInitialValues(userId)
+
+  console.log('init', scoreboard)
 
   const sizeKey = translateBoardSize(boardSize)
-  scoreboard = updateScoreboard(scoreboard, sizeKey, time, difficulty)
+  const updatedScoreboard = updateScoreboard(
+    scoreboard,
+    sizeKey,
+    time,
+    difficulty
+  )
+
+  console.log('update', updatedScoreboard)
 
   const scoreboardRef = doc(takuzuScoreboard(), userId)
-  await setDoc(scoreboardRef, scoreboard)
+  await setDoc(scoreboardRef, updatedScoreboard)
 }

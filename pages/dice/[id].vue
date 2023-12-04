@@ -114,12 +114,33 @@ interface PlayerData {
   playerLocation: string
 }
 
+const route = useRoute()
+const sessionId = route.params.id as string
+
 useSeoMeta({
   title: 'Session Dice - ioTactile Games',
   ogTitle: 'Session Dice - ioTactile Games',
+  twitterTitle: 'Session Dice - ioTactile Games',
   description: 'Session de jeu Dice',
   ogDescription: 'Session de jeu Dice',
-  ogImage: '/dice.png'
+  twitterDescription: 'Session de jeu Dice',
+  ogImage: '/dice/dice.png',
+  twitterImage: '/dice/dice.png',
+  twitterCard: 'summary_large_image',
+  ogUrl: `https://iotactile.games/dice/${sessionId}`
+})
+
+useHead({
+  htmlAttrs: {
+    lang: 'fr'
+  },
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.png'
+    }
+  ]
 })
 
 definePageMeta({
@@ -128,9 +149,6 @@ definePageMeta({
 
 const db = useFirestore()
 const user = useCurrentUser()
-const route = useRoute()
-
-const sessionId = route.params.id as string
 
 const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(
   diceSessionConverter

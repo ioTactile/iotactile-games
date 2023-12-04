@@ -71,9 +71,27 @@ import type { GameOptions } from '~/utils/takuzu/types'
 useSeoMeta({
   title: 'Takuzu - ioTactile Games',
   ogTitle: 'Takuzu - ioTactile Games',
+  twitterTitle: 'Takuzu - ioTactile Games',
   description: 'Page du jeu Takuzu',
   ogDescription: 'Page du jeu Takuzu',
-  ogImage: '/takuzu.png'
+  twitterDescription: 'Page du jeu Takuzu',
+  ogImage: '/takuzu/takuzu.png',
+  twitterImage: '/takuzu/takuzu.png',
+  twitterCard: 'summary_large_image',
+  ogUrl: 'https://iotactile.games/takuzu'
+})
+
+useHead({
+  htmlAttrs: {
+    lang: 'fr'
+  },
+  link: [
+    {
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.png'
+    }
+  ]
 })
 
 if (process.client) {

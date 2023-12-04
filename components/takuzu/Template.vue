@@ -17,7 +17,7 @@ const scale = ref<number>(1)
 const resizeTimeout = ref<NodeJS.Timeout | null>(null)
 
 const handleResize = () => {
-  const targetHeight = 980
+  const targetHeight = 924
   const targetWidth = 1200
 
   if (width.value < 600) {
