@@ -399,6 +399,7 @@ export const takuzuScoreboardConverter = {
 export type TakuzuVictory = {
   victories: number
   bestTime: number
+  victoryDate: Timestamp
 }
 
 export type TakuzuScoreboard = {

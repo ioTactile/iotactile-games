@@ -45,7 +45,7 @@
     <v-divider class="my-2" />
     <section class="pa-2">
       <v-btn
-        v-if="userClaims?.admin"
+        v-if="adminUser"
         color="surfaceButton"
         block
         to="/admin"
@@ -63,6 +63,17 @@
         Se déconnecter
       </v-btn>
       <v-btn
+        variant="text"
+        density="compact"
+        block
+        rounded="0"
+        :icon="mdiDotsHorizontal"
+        color="onSurface"
+        class="mt-2"
+        @click="isDeleting = !isDeleting"
+      />
+      <v-btn
+        v-if="isDeleting"
         class="mt-2"
         color="error"
         block
@@ -113,13 +124,16 @@ import {
   VDialog
 } from 'vuetify/components'
 import { doc, updateDoc, getDoc, deleteDoc } from 'firebase/firestore'
-import { deleteUser, getIdTokenResult, signOut } from '@firebase/auth'
-import { mdiThemeLightDark } from '@mdi/js'
+import { deleteUser, signOut } from '@firebase/auth'
+import { mdiDotsHorizontal, mdiThemeLightDark } from '@mdi/js'
 import { userConverter } from '~/stores'
 
 // Props
 
-defineProps<{ theme: { dark: boolean } }>()
+defineProps<{
+  theme: { dark: boolean }
+  adminUser: boolean | unknown
+}>()
 const emits = defineEmits<{ (e: 'toggleTheme'): void }>()
 
 // Vuefire
@@ -131,10 +145,10 @@ const db = useFirestore()
 
 // Refs
 
-const userClaims = ref()
 const form = ref(VForm)
 const loading = ref<boolean>(false)
 const openDeleteUser = ref<boolean>(false)
+const isDeleting = ref<boolean>(false)
 const username = ref<string>('')
 
 // onMounted
@@ -151,9 +165,6 @@ onMounted(async () => {
   if (userFetched) {
     username.value = userFetched.username
   }
-
-  const { claims } = await getIdTokenResult(user.value, true)
-  userClaims.value = claims
 })
 
 const changeUsername = async () => {

@@ -1,6 +1,11 @@
 export default defineNuxtConfig({
   ssr: true,
-  modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', 'nuxt-vuefire'],
+  modules: [
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt',
+    'nuxt-vuefire',
+    '@vueuse/nuxt'
+  ],
   css: ['vuetify/styles', '~/assets/main.scss'],
   build: { transpile: ['vuetify'] },
   vite: { define: { 'process.env.DEBUG': false } },

@@ -13,11 +13,20 @@
       </v-col>
       <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
         <GameFramework
-          img="/minesweeper_blue.jpg"
+          img="/minesweeper.png"
           alt="Démineur"
           title="Démineur"
           link="/demineur"
           font="'Orbitron', 'sans-serif'"
+        />
+      </v-col>
+      <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
+        <GameFramework
+          img="/takuzu.png"
+          alt="Takuzu"
+          title="Takuzu"
+          link="/takuzu"
+          font="'JetBrains Mono', monospace"
         />
       </v-col>
     </v-row>

@@ -109,8 +109,8 @@ const getPosition = computed(() => {
     position: absolute;
     width: max-content;
     padding: 0.5rem;
-    background-color: rgb(var(--v-theme-mineSweeperMainBackground));
-    color: white;
+    background-color: #161616;
+    color: #ffffff;
     border-radius: 8px;
     font-size: 0.8rem;
     font-weight: 500;

@@ -20,6 +20,7 @@
         <v-btn
           color="onSurface"
           to="/admin/utilisateurs"
+          rounded="0"
           :icon="mdiAccountCheck"
         />
         <v-divider vertical class="mx-2" />
@@ -48,7 +49,11 @@
             v-bind="props"
           />
         </template>
-        <UserDetails :theme="theme.current.value" @toggle-theme="toggleTheme" />
+        <UserDetails
+          :theme="theme.current.value"
+          :admin-user="adminUser"
+          @toggle-theme="toggleTheme"
+        />
       </v-menu>
     </v-app-bar>
     <div id="music-player" :style="musicPlayerPositionStyle" />

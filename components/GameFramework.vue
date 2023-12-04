@@ -7,7 +7,7 @@
       elevation="3"
       height="100%"
     >
-      <v-img :src="img" :alt="alt" class="rounded-t-lg" />
+      <v-img :src="img" :alt="alt" :aspect-ratio="1.5" class="rounded-t-lg" />
       <h2 class="text-center mt-1" :style="{ fontFamily: font }">
         {{ title }}
       </h2>

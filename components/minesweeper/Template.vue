@@ -9,8 +9,10 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify'
 
-const scale = ref<number>(1)
 const { width, height } = useDisplay()
+
+const scale = ref<number>(1)
+const resizeTimeout = ref<NodeJS.Timeout | null>(null)
 
 const handleResize = () => {
   const targetHeight = 980
@@ -24,9 +26,15 @@ const handleResize = () => {
 }
 
 watch(
-  [height, width],
+  [width, height],
   () => {
-    handleResize()
+    if (resizeTimeout.value) {
+      clearTimeout(resizeTimeout.value)
+    }
+    resizeTimeout.value = setTimeout(() => {
+      handleResize()
+      resizeTimeout.value = null
+    }, 300)
   },
   { immediate: true }
 )

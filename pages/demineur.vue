@@ -119,7 +119,7 @@ useSeoMeta({
   ogTitle: 'Démineur - ioTactile Games',
   description: 'Page du jeu Démineur',
   ogDescription: 'Page du jeu Démineur',
-  ogImage: '/minesweeper_blue.jpg'
+  ogImage: '/minesweeper.png'
 })
 
 type OmittedCustomVictory = Omit<

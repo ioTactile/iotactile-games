@@ -73,7 +73,7 @@ useSeoMeta({
   ogTitle: 'Takuzu - ioTactile Games',
   description: 'Page du jeu Takuzu',
   ogDescription: 'Page du jeu Takuzu',
-  ogImage: '/minesweeper_blue.jpg'
+  ogImage: '/takuzu.png'
 })
 
 if (process.client) {

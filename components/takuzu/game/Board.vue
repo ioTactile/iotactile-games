@@ -1,5 +1,5 @@
 <template>
-  <div class="game-wrapper">
+  <div ref="gameWrapper" class="game-wrapper">
     <takuzu-game-rules-modal
       v-if="isRulesModalActive"
       @open-rules="closeRulesModal"
@@ -55,12 +55,15 @@
         </span>
         <div class="void" />
       </div>
-      <div class="board-content">
-        <div
-          ref="board"
-          class="board"
-          :style="`background-color: ${getColor('background')}`"
-        >
+      <div
+        class="board-content"
+        :style="[
+          `background-color: ${getColor('background')}`,
+          `width: ${backgroundColor.width}`,
+          `height: ${backgroundColor.height}`
+        ]"
+      >
+        <div ref="board" class="board" :style="`transform: scale(${scale})`">
           <div
             v-for="(row, rowIndex) in taskBoard"
             :key="rowIndex"
@@ -190,25 +193,23 @@
 </template>
 
 <script setup lang="ts">
-import { collection, getDoc, setDoc, doc } from 'firebase/firestore'
+import { useDisplay } from 'vuetify'
 import { Takuzu, type ITakuzu } from '~/utils/takuzu/takuzu.js'
 import { CellValues } from '~/utils/takuzu/constants'
+import { saveScoreboard } from '~/utils/takuzu/database'
 import { sleep } from '~/utils'
 import type {
   GameOptions,
   TakuzuBoard,
   CellValues as TCellValues,
-  GameStatus
+  GameStatus,
+  BoardSize
 } from '~/utils/takuzu/types'
 import type { Timer } from '~/utils/takuzu/timer'
-import type { TakuzuVictory } from '~/functions/src/types'
 
-const db = useFirestore()
 const user = useCurrentUser()
 
-const takuzuScoreboard = collection(db, 'takuzuScoreboard').withConverter(
-  takuzuScoreboardConverter
-)
+const { width, height } = useDisplay()
 
 onMounted(() => {
   const newOptions = props.options
@@ -233,11 +234,19 @@ const emits = defineEmits<{
 }>()
 
 const takuzu = ref<ITakuzu>(new Takuzu())
+const gameWrapper = ref<HTMLElement | null>(null)
 const board = ref<HTMLElement | null>(null)
 const errorMessage = ref<string>('')
 const disabledCells = ref<boolean[][]>([])
 const isRulesModalActive = ref<boolean>(false)
 const isRotating = ref<boolean>(false)
+const scale = ref<number>(1)
+const backgroundColor = reactive<{ width: string; height: string }>({
+  width: '320px',
+  height: '320px'
+})
+
+// const resizeTimeout = ref<NodeJS.Timeout | null>(null)
 
 const taskBoard = computed((): TakuzuBoard => takuzu.value.getTask())
 
@@ -308,7 +317,10 @@ const closeRulesModal = (): void => {
   if (gameStatus.value === 'inProgress') takuzu.value.getTimer().togglePause()
 }
 
-const toggleCell = (rowIndex: number, colIndex: number): void => {
+const toggleCell = async (
+  rowIndex: number,
+  colIndex: number
+): Promise<void> => {
   if (isFinished.value || disabledCells.value[rowIndex][colIndex]) return
 
   if (takuzu.value.getGameStatus() === 'waiting') {
@@ -337,103 +349,11 @@ const toggleCell = (rowIndex: number, colIndex: number): void => {
 
   errorMessage.value = ''
   takuzu.value.handleWin()
-  saveScore()
-}
 
-const saveScore = async () => {
-  if (!user.value) return
+  if (!user.value || !elapsedTime.value || !props.options) return
+  const { boardSize, difficulty } = props.options
 
-  const userRef = doc(db, 'users', user.value.uid)
-  const userDoc = await getDoc(userRef)
-
-  if (!userDoc.exists()) return
-
-  const username = userDoc.data().username
-
-  if (!props.options) return
-
-  const difficulty = props.options.difficulty
-  const boardSize = props.options.boardSize
-
-  const createDefaultVictory = (): TakuzuVictory => ({
-    victories: 0,
-    bestTime: 0
-  })
-
-  const scoreboard: LocalTakuzuScoreboardType = {
-    userId: user.value.uid,
-    username,
-    sixBySix: {
-      easy: createDefaultVictory(),
-      medium: createDefaultVictory(),
-      hard: createDefaultVictory(),
-      expert: createDefaultVictory()
-    },
-    eightByEight: {
-      easy: createDefaultVictory(),
-      medium: createDefaultVictory(),
-      hard: createDefaultVictory(),
-      expert: createDefaultVictory()
-    },
-    tenByTen: {
-      easy: createDefaultVictory(),
-      medium: createDefaultVictory(),
-      hard: createDefaultVictory(),
-      expert: createDefaultVictory()
-    },
-    twelveByTwelve: {
-      easy: createDefaultVictory(),
-      medium: createDefaultVictory(),
-      hard: createDefaultVictory(),
-      expert: createDefaultVictory()
-    }
-  }
-
-  const scoreboardRef = doc(takuzuScoreboard, user.value.uid)
-  const scoreboardDoc = await getDoc(scoreboardRef)
-
-  if (scoreboardDoc.exists()) {
-    Object.assign(scoreboard, scoreboardDoc.data())
-  }
-  console.log(scoreboard)
-
-  const updateScore = (size: keyof LocalTakuzuScoreboardType) => {
-    const sizeBoard = scoreboard[size]
-
-    if (sizeBoard && typeof sizeBoard === 'object' && sizeBoard[difficulty]) {
-      const boardDifficulty = sizeBoard[difficulty]
-      boardDifficulty.victories++
-
-      if (
-        boardDifficulty.bestTime === 0 ||
-        elapsedTime.value < boardDifficulty.bestTime
-      ) {
-        boardDifficulty.bestTime = elapsedTime.value
-      }
-    }
-
-    console.log(sizeBoard)
-  }
-
-  switch (boardSize) {
-    case 6:
-      updateScore('sixBySix')
-      break
-    case 8:
-      updateScore('eightByEight')
-      break
-    case 10:
-      updateScore('tenByTen')
-      break
-    case 12:
-      updateScore('twelveByTwelve')
-      break
-    default:
-      break
-  }
-
-  console.log(scoreboard)
-  await setDoc(scoreboardRef, scoreboard, { merge: true })
+  await saveScoreboard(user.value.uid, elapsedTime.value, boardSize, difficulty)
 }
 
 const disabledStartedCells = (): boolean[][] => {
@@ -479,6 +399,69 @@ const getColor = (value: 'background' | 'border'): string => {
   }
   return ''
 }
+
+const getWithByBoardSize = (boardSize?: BoardSize): number => {
+  switch (boardSize) {
+    case 6:
+      return 320
+    case 8:
+      return 420
+    case 10:
+      return 520
+    case 12:
+      return 620
+    default:
+      return 320
+  }
+}
+
+const HandleBackgroundColor = (): void => {
+  if (!props.options) return
+  const { boardSize } = props.options
+  let boardWidth = getWithByBoardSize(boardSize)
+
+  if (width.value < 600) {
+    boardWidth = width.value - 60
+  } else if (
+    gameWrapper.value &&
+    gameWrapper.value.clientHeight - 200 < boardWidth
+  ) {
+    boardWidth = gameWrapper.value.clientHeight - 200
+  }
+
+  backgroundColor.width = `${boardWidth}px`
+  backgroundColor.height = `${boardWidth}px`
+}
+
+const handleResize = (): void => {
+  if (!props.options) return
+  const { boardSize } = props.options
+  const boardWidth = getWithByBoardSize(boardSize)
+
+  const targetWidth = width.value - 60
+
+  if (width.value < 600) {
+    scale.value = Math.min(targetWidth / boardWidth, 1)
+    return
+  } else if (
+    gameWrapper.value &&
+    gameWrapper.value.clientHeight - 200 < boardWidth
+  ) {
+    scale.value = (gameWrapper.value.clientHeight - 200) / boardWidth
+    return
+  }
+
+  scale.value = 1
+}
+
+watch(
+  [width, height],
+  () => {
+    HandleBackgroundColor()
+    handleResize()
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped lang="scss">
@@ -490,13 +473,10 @@ const getColor = (value: 'background' | 'border'): string => {
   .board-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    align-items: center;
 
     @media screen and (max-width: 600px) {
       justify-content: space-evenly;
-    }
-
-    @media screen and (max-height: 500px) {
     }
 
     .header-container {
@@ -541,8 +521,8 @@ const getColor = (value: 'background' | 'border'): string => {
     .board-content {
       display: flex;
       justify-content: center;
-      width: 100%;
       margin: 20px 0;
+      border-radius: 20px;
 
       @media screen and (max-width: 600px) {
         margin: 10px 0;
@@ -555,7 +535,6 @@ const getColor = (value: 'background' | 'border'): string => {
         justify-content: center;
         padding: 15px;
         gap: 10px;
-        border-radius: 20px;
 
         .board-row {
           display: flex;

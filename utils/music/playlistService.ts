@@ -28,7 +28,6 @@ export class PlaylistService
 {
   protected audioObject: Record<string, Howl> = {}
   private currentTrack: string = ''
-  private customTrackName: string = ''
   private currentTrackSeek: number = 0
   private playlist: string[] = []
   private playlistType: string = ''
