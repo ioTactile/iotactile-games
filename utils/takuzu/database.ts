@@ -129,8 +129,6 @@ export const saveScoreboard = async (
 ): Promise<void> => {
   const scoreboard = await getInitialValues(userId)
 
-  console.log('init', scoreboard)
-
   const sizeKey = translateBoardSize(boardSize)
   const updatedScoreboard = updateScoreboard(
     scoreboard,
@@ -138,8 +136,6 @@ export const saveScoreboard = async (
     time,
     difficulty
   )
-
-  console.log('update', updatedScoreboard)
 
   const scoreboardRef = doc(takuzuScoreboard(), userId)
   await setDoc(scoreboardRef, updatedScoreboard)
