@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column justify-space-evenly">
+  <div class="main-container">
     <button
       v-for="(item, i) in menuItems"
       :key="i"
@@ -37,11 +37,9 @@ const menuItems = [
 </script>
 
 <style scoped lang="scss">
-// .button-takuzu:nth-child(odd) {
-//   margin: 3rem 0;
-
-//   @media screen and (max-width: 600px) {
-//     margin: 2rem 0;
-//   }
-// }
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
 </style>

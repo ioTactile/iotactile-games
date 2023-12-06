@@ -1,8 +1,13 @@
 <template>
-  <div class="won-modal-wrapper">
-    <div class="won-modal-title">Bravo</div>
-    <div class="won-modal-text">Tu as réussi à compléter le Takuzu !</div>
-    <div class="won-modal-actions">
+  <div class="victory-container">
+    <span class="content__title">Bravo</span>
+    <p class="content__description">
+      Tu as réussi à compléter le Takuzu en
+      <time>
+        {{ timerFormatter(elapsedTime, true) }}
+      </time>
+    </p>
+    <div class="content__actions">
       <button class="button-action" @click="returnToMenu">Menu</button>
       <button class="button-action" @click="restart">Rejouer</button>
     </div>
@@ -10,6 +15,12 @@
 </template>
 
 <script setup lang="ts">
+import { timerFormatter } from '~/utils'
+
+defineProps<{
+  elapsedTime: number
+}>()
+
 const emits = defineEmits<{
   (e: 'restart'): void
   (e: 'returnToMenu'): void
@@ -20,7 +31,7 @@ const returnToMenu = () => emits('returnToMenu')
 </script>
 
 <style scoped lang="scss">
-.won-modal-wrapper {
+.victory-container {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -40,8 +51,7 @@ const returnToMenu = () => emits('returnToMenu')
     border-radius: 0;
   }
 
-  .won-modal-title {
-    font-family: 'JetBrains Mono', monospace;
+  .content__title {
     text-align: center;
     font-size: 3rem;
     font-weight: 700;
@@ -49,14 +59,17 @@ const returnToMenu = () => emits('returnToMenu')
     color: rgb(var(--v-theme-takuzuMainOnSurface));
   }
 
-  .won-modal-text {
-    font-family: 'JetBrains Mono', monospace;
+  .content__description {
     text-align: center;
     font-size: 1.5rem;
     color: rgb(var(--v-theme-takuzuMainOnSurface));
+
+    time {
+      font-weight: 700;
+    }
   }
 
-  .won-modal-actions {
+  .content__actions {
     display: flex;
     justify-content: space-evenly;
 

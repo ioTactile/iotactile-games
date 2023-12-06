@@ -1,14 +1,14 @@
 <template>
   <takuzu-template>
-    <div class="d-flex justify-center align-center h-100">
+    <div class="container">
       <template v-if="menuPage !== 5">
-        <div class="menu-wrapper">
+        <div class="menu-page">
           <Tooltip
             content="Retour (esc)"
             position="top right"
             :slot-height="40"
             :slot-width="40"
-            class="arrow-back"
+            class="button-back"
             @on-click="returnToPreviousPage(menuPage)"
           >
             <template #activator="{ onMouseover, onMouseleave, onClick }">
@@ -22,13 +22,10 @@
               </button>
             </template>
           </Tooltip>
-          <h1 class="game-title mt-10 mb-6">Takuzu</h1>
-          <div class="menu-content">
-            <takuzu-menu-main v-if="menuPage === 0" @action="handleActions" />
-            <takuzu-menu-play
-              v-if="menuPage === 1"
-              @start-game="startGameHandler"
-            />
+          <h1 class="menu__title title">Takuzu</h1>
+          <div class="menu__content">
+            <takuzu-menu v-if="menuPage === 0" @action="handleActions" />
+            <takuzu-menu-play v-if="menuPage === 1" @start-game="startGame" />
             <takuzu-menu-ranking v-if="menuPage === 2" />
             <takuzu-menu-results v-if="menuPage === 3" />
             <takuzu-menu-rules v-if="menuPage === 4" @action="handleActions" />
@@ -42,7 +39,7 @@
             position="top right"
             :slot-height="35"
             :slot-width="35"
-            class="arrow-back"
+            class="button-back"
             @on-click="returnToPreviousPage(menuPage)"
           >
             <template #activator="{ onMouseover, onMouseleave, onClick }">
@@ -55,9 +52,9 @@
               </button>
             </template>
           </Tooltip>
-          <h1 class="game-title">Takuzu</h1>
-          <div class="game-board">
-            <takuzu-game-board :options="gameOptions" @action="handleActions" />
+          <h1 class="title">Takuzu</h1>
+          <div class="game-content">
+            <takuzu-game :options="gameOptions" @action="handleActions" />
           </div>
         </div>
       </template>
@@ -129,109 +126,110 @@ const returnToPreviousPage = (actualPage: number): void => {
   }
 }
 
-const startGameHandler = (options: GameOptions): void => {
+const startGame = (options: GameOptions): void => {
   menuPage.value = 5
   gameOptions.value = options
 }
 </script>
 
 <style scoped lang="scss">
-.menu-wrapper {
-  position: relative;
-  width: 500px;
-  height: 650px;
-  border-radius: 20px;
-  background-color: rgb(var(--v-theme-takuzuMainSurface));
-  box-shadow: -10px -10px rgba(var(--v-theme-takuzuMainShadow), 0.3);
-  color: rgb(var(--v-theme-onSurface));
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 
-  @media screen and (max-width: 600px) {
-    width: 100%;
-    height: calc(100% - 3rem);
-    margin: 0 1rem;
+  .menu-page {
+    position: relative;
+    width: 500px;
+    height: 650px;
+    border-radius: 20px;
+    background-color: rgb(var(--v-theme-takuzuMainSurface));
+    box-shadow: -10px -10px rgba(var(--v-theme-takuzuMainShadow), 0.3);
+    color: rgb(var(--v-theme-onSurface));
+
+    @media screen and (max-width: 600px) {
+      width: 100%;
+      height: calc(100% - 3rem);
+      margin: 0 1rem;
+    }
+
+    .menu__title {
+      padding: 40px 0 24px 0;
+    }
+
+    .menu__content {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: calc(100% - 150px);
+    }
+
+    .button-back {
+      position: absolute;
+      top: 58px;
+      left: 20px;
+
+      img {
+        width: 40px;
+        height: 40px;
+      }
+    }
   }
 
-  .menu-content {
+  .game-page {
+    position: relative;
     display: flex;
-    justify-content: center;
-    width: 100%;
-    height: calc(100% - 150px);
+    flex-direction: column;
+    align-items: center;
+    width: 1100px;
+    height: calc(100% - 100px);
+    padding: 2rem;
+    border-radius: 20px;
+    background-color: rgb(var(--v-theme-takuzuMainSurface));
+    box-shadow: -10px -10px rgba(var(--v-theme-takuzuMainShadow), 0.3);
+    color: rgb(var(--v-theme-onSurface));
+
+    @media screen and (max-width: 600px) {
+      width: 100%;
+      height: calc(100% - 2rem);
+      margin: 0 1rem;
+      padding: 0;
+    }
+
+    .game-content {
+      display: flex;
+      justify-content: center;
+      overflow: auto;
+      width: 100%;
+      height: 100%;
+      margin: 1rem auto;
+    }
+
+    .button-back {
+      position: absolute;
+      top: 48px;
+      left: 400px;
+
+      @media screen and (max-width: 600px) {
+        top: 18px;
+        left: 20px;
+      }
+
+      img {
+        width: 40px;
+        height: 40px;
+      }
+    }
   }
 
-  .game-title {
-    font-family: 'JetBrains Mono', monospace;
+  .title {
     font-size: 3rem;
     font-weight: 700;
-    letter-spacing: 0.1rem;
     text-transform: uppercase;
     text-align: center;
     color: rgb(var(--v-theme-takuzuMainOnSurface));
-  }
-
-  .arrow-back {
-    position: absolute;
-    top: 58px;
-    left: 20px;
-
-    img {
-      width: 40px;
-      height: 40px;
-    }
-  }
-}
-
-.game-page {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 1100px;
-  height: calc(100% - 100px);
-  padding: 2rem;
-  border-radius: 20px;
-  background-color: rgb(var(--v-theme-takuzuMainSurface));
-  box-shadow: -10px -10px rgba(var(--v-theme-takuzuMainShadow), 0.3);
-  color: rgb(var(--v-theme-onSurface));
-
-  @media screen and (max-width: 600px) {
-    width: 100%;
-    height: calc(100% - 2rem);
-    margin: 0 1rem;
-    padding: 0;
-  }
-
-  .game-title {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 3rem;
-    font-weight: 700;
-    letter-spacing: 0.1rem;
-    text-transform: uppercase;
-    color: rgb(var(--v-theme-takuzuMainOnSurface));
-  }
-
-  .game-board {
-    display: flex;
-    justify-content: center;
-    overflow: auto;
-    width: 100%;
-    height: 100%;
-    margin: 1rem auto;
-  }
-
-  .arrow-back {
-    position: absolute;
-    top: 48px;
-    left: 400px;
-
-    @media screen and (max-width: 600px) {
-      top: 18px;
-      left: 20px;
-    }
-
-    img {
-      width: 40px;
-      height: 40px;
-    }
   }
 }
 </style>

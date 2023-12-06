@@ -1,43 +1,41 @@
 <template>
   <div class="results-container">
-    <div v-for="(size, i) in scoreboard" :key="i" class="result">
-      <div class="header">
+    <div v-for="(size, i) in scoreboard" :key="i" class="results-content">
+      <div class="results-content__header">
         <div>Grilles {{ sizeFormatter(i) }}</div>
       </div>
-      <div class="content">
-        <div
+      <div class="results-content__main">
+        <button
           v-for="(_, j) in size"
           :key="j"
-          class="difficulty"
+          class="button-difficulty"
           :style="difficultyBackgroundColorStyle(j)"
           @click="setSelectResults(i, j)"
         >
           {{ numPlayers(i, j) }}
-        </div>
+        </button>
       </div>
     </div>
     <template v-if="selectResults.length > 0">
-      <div class="players-result">
-        <div class="players-result_header">
+      <div class="players-content">
+        <div class="players-content__header">
           <div class="header">Classement</div>
           <div class="header">Joueur</div>
           <div class="header">Temps</div>
         </div>
-        <div class="players-result_wrapper">
-          <div
-            v-for="(player, k) in selectResults"
-            :key="k"
-            class="players-result_content"
-          >
-            <div class="content">{{ k + 1 }}</div>
-            <div class="content">{{ usernames[k] }}</div>
-            <div class="content">
-              {{ timerFormatter(player.bestTime, true) }}
-            </div>
+        <div
+          v-for="(player, k) in selectResults"
+          :key="k"
+          class="players-content__main"
+        >
+          <div class="content">{{ k + 1 }}</div>
+          <div class="content">{{ usernames[k] }}</div>
+          <div class="content">
+            {{ timerFormatter(player.bestTime, true) }}
           </div>
         </div>
-        <div class="back-wrapper">
-          <button class="back" @click="backToRanking">Retour</button>
+        <div class="players-content__footer">
+          <button class="button-back" @click="backToRanking">Retour</button>
         </div>
       </div>
     </template>
@@ -220,7 +218,7 @@ const backToRanking = (): void => {
   justify-content: space-evenly;
   width: 100%;
 
-  .result {
+  .results-content {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -228,19 +226,19 @@ const backToRanking = (): void => {
     background-color: rgb(var(--v-theme-takuzuMainShadow));
     color: #000000;
     width: 100%;
-    padding: 0.5rem 1rem;
+    padding: 10px;
 
-    .header {
+    .results-content__header {
       text-align: center;
-      margin-bottom: 0.5rem;
+      margin-bottom: 10px;
     }
 
-    .content {
+    .results-content__main {
       display: flex;
       align-items: center;
       justify-content: center;
 
-      .difficulty {
+      .button-difficulty {
         position: relative;
         display: flex;
         align-items: center;
@@ -250,18 +248,12 @@ const backToRanking = (): void => {
         border-radius: 50%;
         font-weight: 700;
         font-size: 0.85rem;
-        margin: 0 0.5rem;
-        cursor: pointer;
+        margin: 0 10px;
       }
     }
   }
 
-  .players-result_wrapper {
-    position: relative;
-    overflow-y: auto;
-  }
-
-  .players-result {
+  .players-content {
     position: absolute;
     top: 0;
     left: 0;
@@ -271,37 +263,24 @@ const backToRanking = (): void => {
     width: 100%;
     height: 100%;
 
-    .back-wrapper {
-      align-self: center;
-      margin-top: auto;
+    .players-content__header {
+      height: 40px;
+      background-color: rgb(var(--v-theme-takuzuMainPrimary));
+    }
 
-      .back {
-        width: 150px;
-        padding: 0.5rem 1rem;
-        margin: 0.5rem 0;
-        font-size: 1rem;
-        font-weight: 700;
-        border-radius: 20px;
-        background-color: rgb(var(--v-theme-takuzuMainOnSurface));
-        color: #ffffff;
-        border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
-        box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-        font-family: 'JetBrains Mono', monospace;
-        transition: all 0.2s ease-in-out;
+    .players-content__main {
+      height: 50px;
+      background-color: rgb(var(--v-theme-takuzuMainTertiary));
+      overflow-y: auto;
 
-        @media screen and (max-width: 600px) {
-          width: 70vw;
-          padding: 0.25rem 0.5rem;
-        }
+      &:nth-child(odd) {
+        background-color: rgb(var(--v-theme-takuzuMainPrimary));
       }
     }
 
-    .players-result_header,
-    .players-result_content {
+    .players-content__header,
+    .players-content__main {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
 
       .header,
       .content {
@@ -313,24 +292,29 @@ const backToRanking = (): void => {
       }
     }
 
-    .players-result_header {
-      height: 40px;
-      background-color: rgb(var(--v-theme-takuzuMainPrimary));
-    }
+    .players-content__footer {
+      align-self: center;
+      margin-top: auto;
 
-    .players-result_content {
-      height: 50px;
-      background-color: rgb(var(--v-theme-takuzuMainTertiary));
-
-      &:nth-child(even) {
-        background-color: rgb(var(--v-theme-takuzuMainPrimary));
+      .button-back {
+        width: 200px;
+        padding: 0.5rem 1rem;
+        margin: 1rem 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        border-radius: 20px;
+        background-color: rgb(var(--v-theme-takuzuMainOnSurface));
+        color: #ffffff;
+        border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
+        box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+        font-family: 'JetBrains Mono', monospace;
+        transition: all 0.2s ease-in-out;
       }
     }
   }
 
   .no-best-time {
     text-align: center;
-    font-family: 'JetBrains Mono', monospace;
     color: rgb(var(--v-theme-takuzuMainOnSurface));
   }
 }

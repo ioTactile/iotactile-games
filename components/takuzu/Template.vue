@@ -58,6 +58,10 @@ watch(
     rgb(var(--v-theme-takuzuMainPrimary)) 0%,
     rgb(var(--v-theme-takuzuMainSecondary)) 100%
   );
+
+  @media screen and (max-width: 1120px) {
+    border-radius: 0;
+  }
 }
 
 .second-layer {
@@ -86,12 +90,6 @@ watch(
     position: inherit;
     width: 100%;
     height: calc(100vh - 66px);
-  }
-}
-
-@media screen and (max-width: 1120px) {
-  .first-layer {
-    border-radius: 0;
   }
 }
 </style>

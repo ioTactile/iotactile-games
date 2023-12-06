@@ -4,7 +4,7 @@
       <div class="menu-wrapper">
         <button
           v-if="menuPage"
-          class="arrow-back"
+          class="arrow-back svg-container"
           @click="returnToPreviousPage(menuPage)"
         >
           <svg

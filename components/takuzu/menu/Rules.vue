@@ -1,5 +1,5 @@
 <template>
-  <div class="rules-wrapper">
+  <div class="rules-container">
     <section>
       <h3>Le jeu</h3>
       <p>
@@ -51,29 +51,22 @@ const emit = defineEmits<{
 </script>
 
 <style scoped lang="scss">
-.rules-wrapper {
-  height: 400px;
-  width: 500px;
+.rules-container {
+  width: 100%;
+  height: 100%;
   overflow-y: auto;
   color: rgb(var(--v-theme-takuzuMainOnSurface));
-
-  @media screen and (max-width: 600px) {
-    width: 100%;
-    height: 100%;
-  }
 
   section {
     margin-bottom: 20px;
 
     h3 {
-      font-family: 'JetBrains Mono', monospace;
-      margin-bottom: 10px;
       text-align: center;
       font-size: 1.5rem;
+      margin-bottom: 10px;
     }
 
     p {
-      font-size: 1rem;
       text-align: justify;
       padding: 0 20px;
 
