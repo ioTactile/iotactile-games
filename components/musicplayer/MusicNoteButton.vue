@@ -7,10 +7,7 @@
       @click="toggleMusicPlayer"
     />
     <Teleport to="#music-player">
-      <musicplayer-main
-        v-show="isMusicPlayerVisible"
-        @click:outside="isMusicPlayerVisible = false"
-      />
+      <musicplayer v-show="isMusicPlayerVisible" ref="musicPlayer" />
     </Teleport>
   </div>
 </template>
@@ -18,8 +15,14 @@
 <script setup lang="ts">
 import { VBtn } from 'vuetify/components'
 import { mdiMusicNote } from '@mdi/js'
+import { onClickOutside } from '@vueuse/core'
 
 const isMusicPlayerVisible = ref<boolean>(false)
+const musicPlayer = ref<HTMLElement | undefined>(undefined)
+
+onClickOutside(musicPlayer, () => {
+  isMusicPlayerVisible.value = false
+})
 
 const toggleMusicPlayer = () => {
   isMusicPlayerVisible.value = !isMusicPlayerVisible.value

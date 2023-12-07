@@ -1,6 +1,6 @@
 <template>
-  <div class="main-container">
-    <div class="header-container">
+  <div class="music-player-container">
+    <div class="music-player__header">
       <div class="track-current-time">{{ currentTime }}</div>
       <div class="track-title-container">
         <div class="track-title">
@@ -9,7 +9,7 @@
       </div>
       <div class="track-duration">{{ trackDuration }}</div>
     </div>
-    <div class="footer-container">
+    <div class="music-player__footer">
       <Tooltip
         class="playlist"
         content="Changer de playlist (tab)"
@@ -27,7 +27,7 @@
           </button>
         </template>
       </Tooltip>
-      <div class="action-button">
+      <div class="actions">
         <Tooltip
           class="previous-track"
           content="Piste précédente (p)"
@@ -238,7 +238,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-.main-container {
+.music-player-container {
   max-width: 300px;
   min-width: 260px;
   height: auto;
@@ -247,14 +247,14 @@ onBeforeUnmount(() => {
   border-radius: 8px;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
 
-  .header-container,
-  .footer-container {
+  .music-player__header,
+  .music-player__footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 3rem;
 
-    .action-button {
+    .actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -262,7 +262,7 @@ onBeforeUnmount(() => {
     }
   }
 
-  .header-container {
+  .music-player__header {
     .track-current-time,
     .track-duration {
       font-size: 0.75rem;
