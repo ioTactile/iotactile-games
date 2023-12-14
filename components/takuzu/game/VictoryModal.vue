@@ -87,7 +87,7 @@ const returnToMenu = () => emits('returnToMenu')
       border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
       transition: all 0.2s ease-in-out;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Quicksand', sans-serif;
       font-weight: 700;
 
       @media screen and (max-width: 600px) {

@@ -8,7 +8,7 @@
           alt="Dice"
           title="Dice"
           link="/dice"
-          font="'Indie Flower', 'cursive'"
+          font="'Indie Flower', cursive"
         />
       </v-col>
       <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
@@ -17,7 +17,7 @@
           alt="Démineur"
           title="Démineur"
           link="/demineur"
-          font="'Orbitron', 'sans-serif'"
+          font="'Orbitron', sans-serif"
         />
       </v-col>
       <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
@@ -26,7 +26,7 @@
           alt="Takuzu"
           title="Takuzu"
           link="/takuzu"
-          font="'JetBrains Mono', monospace"
+          font="'Quicksand', sans-serif"
         />
       </v-col>
     </v-row>

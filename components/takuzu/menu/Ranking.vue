@@ -307,7 +307,7 @@ const backToRanking = (): void => {
         color: #ffffff;
         border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
         box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-        font-family: 'JetBrains Mono', monospace;
+        font-family: 'Quicksand', sans-serif;
         transition: all 0.2s ease-in-out;
       }
     }

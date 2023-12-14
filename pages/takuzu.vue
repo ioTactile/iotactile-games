@@ -225,6 +225,7 @@ const startGame = (options: GameOptions): void => {
   }
 
   .title {
+    font-family: 'QuickSand', sans-serif;
     font-size: 3rem;
     font-weight: 700;
     text-transform: uppercase;

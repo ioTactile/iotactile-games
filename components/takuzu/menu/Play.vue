@@ -128,7 +128,7 @@ const startGame = (): void => {
     font-size: 1.25rem;
     margin-bottom: 1rem;
     color: rgb(var(--v-theme-takuzuMainOnSurface));
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Quicksand', sans-serif;
   }
 
   .button-size-container {
@@ -149,7 +149,7 @@ const startGame = (): void => {
       color: rgb(var(--v-theme-takuzuMainOnSurface));
       border: 1px solid rgb(var(--v-theme-takuzuMainOnSurface));
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Quicksand', sans-serif;
       transition: all 0.2s ease-in-out;
 
       @media screen and (max-width: 600px) {
@@ -179,7 +179,7 @@ const startGame = (): void => {
       padding: 0.5rem 1rem;
       border-radius: 20px;
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Quicksand', sans-serif;
       color: #000000;
       transition: all 0.2s ease-in-out;
       opacity: 0.5;
@@ -204,7 +204,7 @@ const startGame = (): void => {
     color: #ffffff;
     border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Quicksand', sans-serif;
     transition: all 0.2s ease-in-out;
   }
 }
