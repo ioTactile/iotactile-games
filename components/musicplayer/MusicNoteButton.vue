@@ -18,10 +18,12 @@ import { mdiMusicNote } from '@mdi/js'
 import { onClickOutside } from '@vueuse/core'
 
 const isMusicPlayerVisible = ref<boolean>(false)
-const musicPlayer = ref<HTMLElement | undefined>(undefined)
+const musicPlayer = ref<HTMLElement>()
 
-onClickOutside(musicPlayer, () => {
-  isMusicPlayerVisible.value = false
+onMounted(() => {
+  onClickOutside(musicPlayer, () => {
+    isMusicPlayerVisible.value = false
+  })
 })
 
 const toggleMusicPlayer = () => {
