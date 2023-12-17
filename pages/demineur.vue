@@ -300,7 +300,6 @@ onBeforeRouteLeave((): void => {
   height: 100%;
 
   .menu-page {
-    position: relative;
     width: 500px;
     height: 650px;
     background-color: rgb(var(--v-theme-mineSweeperMainSurface));
@@ -360,7 +359,6 @@ onBeforeRouteLeave((): void => {
   }
 
   .game-page {
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -373,8 +371,7 @@ onBeforeRouteLeave((): void => {
 
     @media screen and (max-width: 600px) {
       width: 100%;
-      height: calc(100%);
-      margin: 0;
+      height: 100%;
       padding: 0;
       box-shadow: none;
     }
@@ -427,7 +424,6 @@ onBeforeRouteLeave((): void => {
     font-size: 3rem;
     font-weight: 700;
     text-transform: uppercase;
-    text-align: center;
     color: rgb(var(--v-theme-mineSweeperMainOnSurface));
 
     @media screen and (max-width: 600px) {

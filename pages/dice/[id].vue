@@ -38,7 +38,7 @@
       <dice-game-rules @open-rules="isRulesModalActive = $event" />
       <div class="d-flex justify-space-between mb-4">
         <dice-game-players :players="session.players" />
-        <div>
+        <div class="d-flex">
           <dice-game-volumes @open-volumes="isVolumesModalActive = $event" />
           <dice-game-chat
             :chat-messages="chat?.messages"
@@ -338,4 +338,3 @@ watch(
   height: 655px;
 }
 </style>
-~/utils/music/soundService
