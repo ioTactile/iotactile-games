@@ -3,26 +3,30 @@
     <div class="container">
       <template v-if="menuPage !== 5">
         <div class="menu-page">
-          <Tooltip
-            content="Retour (esc)"
-            position="top right"
-            :slot-height="40"
-            :slot-width="40"
-            class="button-back"
-            @on-click="returnToPreviousPage(menuPage)"
-          >
-            <template #activator="{ onMouseover, onMouseleave, onClick }">
-              <button
-                v-if="menuPage"
-                @click="onClick"
-                @mouseover="onMouseover"
-                @mouseleave="onMouseleave"
-              >
-                <img :src="getArrowBackColor" alt="Retour" />
-              </button>
-            </template>
-          </Tooltip>
-          <h1 class="menu__title title">Démineur</h1>
+          <div class="menu__header">
+            <Tooltip
+              v-if="menuPage"
+              content="Retour (esc)"
+              position="top right"
+              :slot-height="40"
+              :slot-width="40"
+              class="button-back"
+              @on-click="returnToPreviousPage(menuPage)"
+            >
+              <template #activator="{ onMouseover, onMouseleave, onClick }">
+                <button
+                  @click="onClick"
+                  @mouseover="onMouseover"
+                  @mouseleave="onMouseleave"
+                >
+                  <img :src="getArrowBackColor" alt="Retour" />
+                </button>
+              </template>
+            </Tooltip>
+            <div v-else class="void" />
+            <h1 class="title">Démineur</h1>
+            <div class="void" />
+          </div>
           <div class="menu__content">
             <minesweeper-menu v-if="menuPage === 0" @action="handleActions" />
             <minesweeper-menu-play
@@ -53,26 +57,29 @@
       </template>
       <template v-else>
         <div class="game-page">
-          <Tooltip
-            content="Retour (esc)"
-            position="top right"
-            :slot-height="35"
-            :slot-width="35"
-            class="button-back"
-            @on-click="returnToPreviousPage(menuPage)"
-          >
-            <template #activator="{ onMouseover, onMouseleave, onClick }">
-              <button
-                @click="onClick"
-                @mouseover="onMouseover"
-                @mouseleave="onMouseleave"
-              >
-                <img :src="getArrowBackColor" alt="Retour" />
-              </button>
-            </template>
-          </Tooltip>
-          <h1 class="title">Démineur</h1>
-          <minesweeper-game-zoom v-if="isWideScreen" class="magnify" />
+          <div class="game__header">
+            <Tooltip
+              content="Retour (esc)"
+              position="top right"
+              :slot-height="35"
+              :slot-width="35"
+              class="button-back"
+              @on-click="returnToPreviousPage(menuPage)"
+            >
+              <template #activator="{ onMouseover, onMouseleave, onClick }">
+                <button
+                  @click="onClick"
+                  @mouseover="onMouseover"
+                  @mouseleave="onMouseleave"
+                >
+                  <img :src="getArrowBackColor" alt="Retour" />
+                </button>
+              </template>
+            </Tooltip>
+            <h1 class="title">Démineur</h1>
+            <minesweeper-game-zoom v-if="width > 600" class="magnify" />
+            <div v-else class="void" />
+          </div>
           <minesweeper-game-status
             :game-status-to-string="gameStatusToString"
             :game-status="gameStatus"
@@ -158,8 +165,6 @@ const actionMap: Record<string, number> = {
   gameBoard: 5
 }
 
-const MIN_WIDTH_FOR_BOARD = 600
-
 const mineSweeper = ref<IMineSweeper>(new MineSweeper())
 const numRows = ref<number>(9)
 const numCols = ref<number>(9)
@@ -189,7 +194,7 @@ const returnToPreviousPage = (actualPage: number): void => {
 
 const gameBoard = computed((): Cell[][] => {
   const board = mineSweeper.value.getBoard()
-  if (isWideScreen) {
+  if (width.value > 600) {
     return board
   } else {
     const newBoard: Cell[][] = []
@@ -216,8 +221,6 @@ const getArrowBackColor = computed((): string => {
     ? '/minesweeper/ui/left-arrow-grey.svg'
     : '/minesweeper/ui/left-arrow.svg'
 })
-
-const isWideScreen = computed((): boolean => width.value > MIN_WIDTH_FOR_BOARD)
 
 const startGame = (options: GameOptions): void => {
   if (options.numMines > options.numRows * options.numCols) {
@@ -246,7 +249,7 @@ const handleRightClick = (data: {
 }): void => {
   const { rowIndex, colIndex } = data
 
-  if (isWideScreen) {
+  if (width.value > 600) {
     mineSweeper.value.handleCellAction(rowIndex, colIndex, 'flag')
   } else {
     mineSweeper.value.handleCellAction(colIndex, rowIndex, 'flag')
@@ -260,11 +263,11 @@ const handleLeftClick = async (data: {
 }): Promise<void> => {
   const { rowIndex, colIndex } = data
 
-  if (isWideScreen) {
+  if (width.value > 600) {
     mineSweeper.value.handleCellAction(rowIndex, colIndex, 'click')
-  } else if (!isWideScreen && selectedAction.value === 'flag') {
+  } else if (width.value <= 600 && selectedAction.value === 'flag') {
     mineSweeper.value.handleCellAction(colIndex, rowIndex, 'flag')
-  } else if (!isWideScreen && selectedAction.value === 'mine') {
+  } else if (width.value <= 600 && selectedAction.value === 'mine') {
     mineSweeper.value.handleCellAction(colIndex, rowIndex, 'click')
   }
 
@@ -305,42 +308,55 @@ onBeforeRouteLeave((): void => {
     color: rgb(var(--v-theme-onSurface));
 
     @media screen and (max-width: 600px) {
+      box-shadow: none;
       width: 100%;
-      height: calc(100% - 3rem);
-      margin: 0 1rem;
+      height: 100%;
+      margin: 0;
     }
 
-    .menu__title {
-      padding: 40px 0 24px 0;
-    }
-
-    .menu__content {
+    .menu__header {
       display: flex;
-      justify-content: center;
-      width: 100%;
-      height: calc(100% - 150px);
-    }
+      justify-content: space-around;
+      align-items: center;
+      padding: 40px 0 24px 0;
 
-    .button-back {
-      position: absolute;
-      top: 58px;
-      left: 20px;
-
-      img {
-        width: 40px;
-        height: 40px;
-      }
-
-      @media screen and (max-width: 600px) {
-        top: 52px;
-        left: 20px;
+      .button-back {
+        button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
 
         img {
-          width: 25px;
-          height: 25px;
+          width: 40px;
+          height: 40px;
+        }
+
+        @media screen and (max-width: 600px) {
+          img {
+            width: 30px;
+            height: 30px;
+          }
+        }
+      }
+
+      .void {
+        width: 40px;
+        height: 40px;
+
+        @media screen and (max-width: 600px) {
+          width: 30px;
+          height: 30px;
         }
       }
     }
+  }
+
+  .menu__content {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: calc(100% - 150px);
   }
 
   .game-page {
@@ -357,40 +373,51 @@ onBeforeRouteLeave((): void => {
 
     @media screen and (max-width: 600px) {
       width: 100%;
-      height: calc(100% - 2rem);
-      margin: 0 1rem;
+      height: calc(100%);
+      margin: 0;
       padding: 0;
+      box-shadow: none;
     }
 
-    .button-back {
-      position: absolute;
-      top: 34px;
-      left: 340px;
+    .game__header {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 1rem;
 
-      img {
-        width: 40px;
-        height: 40px;
-      }
-
-      @media screen and (max-width: 600px) {
-        top: 12px;
-        left: 35px;
+      .button-back {
+        button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
 
         img {
-          width: 25px;
-          height: 25px;
+          width: 40px;
+          height: 40px;
+        }
+
+        @media screen and (max-width: 600px) {
+          img {
+            width: 30px;
+            height: 30px;
+          }
         }
       }
-    }
 
-    .magnify {
-      position: absolute;
-      top: 34px;
-      right: 345px;
+      .void {
+        width: 40px;
+        height: 40px;
+
+        @media screen and (max-width: 600px) {
+          width: 30px;
+          height: 30px;
+        }
+      }
 
       @media screen and (max-width: 600px) {
-        top: 12px;
-        right: 35px;
+        width: 100%;
+        gap: 0;
       }
     }
   }
@@ -399,13 +426,12 @@ onBeforeRouteLeave((): void => {
     font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
     font-weight: 700;
-    letter-spacing: 0.1rem;
     text-transform: uppercase;
     text-align: center;
     color: rgb(var(--v-theme-mineSweeperMainOnSurface));
 
     @media screen and (max-width: 600px) {
-      font-size: 2rem;
+      font-size: 2.5rem;
     }
   }
 }

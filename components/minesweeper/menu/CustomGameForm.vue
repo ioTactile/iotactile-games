@@ -72,7 +72,6 @@ form {
       font-weight: 700;
       font-family: 'Orbitron', sans-serif;
       text-transform: uppercase;
-      letter-spacing: 0.1rem;
     }
 
     input {
@@ -88,7 +87,6 @@ form {
       font-size: 1.5rem;
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
       font-family: 'Orbitron', sans-serif;
-      letter-spacing: 0.1rem;
       margin: 1rem 0;
     }
 
