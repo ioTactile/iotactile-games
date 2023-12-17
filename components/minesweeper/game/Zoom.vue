@@ -12,11 +12,11 @@
           @mouseleave="onMouseleave"
           @click="toggleMenu"
         >
-          <v-icon :icon="mdiLoupe" size="40" />
+          <v-icon :icon="mdiLoupe" :size="getIconSize" />
         </button>
       </template>
     </Tooltip>
-    <div v-if="isMenuOpen" class="zoom-menu">
+    <div v-if="isMenuOpen" ref="menu" class="zoom-menu">
       <div
         v-for="(level, i) in zoomLevels"
         :key="i"
@@ -30,14 +30,27 @@
 </template>
 
 <script setup lang="ts">
+import { useDisplay } from 'vuetify'
+import { onClickOutside } from '@vueuse/core'
 import { VIcon } from 'vuetify/components'
 import { mdiLoupe } from '@mdi/js'
 import { useMineSweeperZoomLevelStore } from '~/stores/mineSweeperZoomLevel'
+
+const { width } = useDisplay()
 
 const zoomLevelStore = useMineSweeperZoomLevelStore()
 const { zoomLevel } = storeToRefs(zoomLevelStore)
 
 const isMenuOpen = ref<boolean>(false)
+const menu = ref<HTMLElement>()
+
+onClickOutside(menu, (): void => {
+  isMenuOpen.value = false
+})
+
+const getIconSize = computed(() => {
+  return width.value > 600 ? 40 : 25
+})
 
 const zoomLevels: number[] = [
   10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46,
@@ -79,7 +92,7 @@ const currentZoomStyle = (level: number) => {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 5px 10px;
+      padding: 5px 15px 5px 10px;
 
       button {
         background-color: transparent;

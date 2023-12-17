@@ -20,10 +20,8 @@ import { onClickOutside } from '@vueuse/core'
 const isMusicPlayerVisible = ref<boolean>(false)
 const musicPlayer = ref<HTMLElement>()
 
-onMounted(() => {
-  onClickOutside(musicPlayer, () => {
-    isMusicPlayerVisible.value = false
-  })
+onClickOutside(musicPlayer, (): void => {
+  isMusicPlayerVisible.value = false
 })
 
 const toggleMusicPlayer = () => {

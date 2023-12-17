@@ -23,15 +23,17 @@
           <div class="header">Joueur</div>
           <div class="header">Temps</div>
         </div>
-        <div
-          v-for="(player, k) in selectResults"
-          :key="k"
-          class="players-content__main"
-        >
-          <div class="content">{{ k + 1 }}</div>
-          <div class="content">{{ usernames[k] }}</div>
-          <div class="content">
-            {{ timerFormatter(player.bestTime, true) }}
+        <div class="players-content-wrapper">
+          <div
+            v-for="(player, k) in selectResults"
+            :key="k"
+            class="players-content__main"
+          >
+            <div class="content">{{ k + 1 }}</div>
+            <div class="content">{{ usernames[k] }}</div>
+            <div class="content">
+              {{ timerFormatter(player.bestTime, true) }}
+            </div>
           </div>
         </div>
         <div class="players-content__footer">
@@ -268,13 +270,16 @@ const backToRanking = (): void => {
       background-color: rgb(var(--v-theme-takuzuMainPrimary));
     }
 
-    .players-content__main {
-      height: 50px;
-      background-color: rgb(var(--v-theme-takuzuMainTertiary));
+    .players-content-wrapper {
       overflow-y: auto;
 
-      &:nth-child(odd) {
-        background-color: rgb(var(--v-theme-takuzuMainPrimary));
+      .players-content__main {
+        height: 50px;
+        background-color: rgb(var(--v-theme-takuzuMainTertiary));
+
+        &:nth-child(even) {
+          background-color: rgb(var(--v-theme-takuzuMainPrimary));
+        }
       }
     }
 

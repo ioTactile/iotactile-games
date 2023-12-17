@@ -1,16 +1,6 @@
 import { Cell } from './cell'
 import { Timer } from './Timer'
-
-export type GameStatus = 'waiting' | 'inProgress' | 'won' | 'lost'
-
-export type Difficulty = 'beginner' | 'intermediate' | 'expert' | 'custom'
-
-export interface GameOptions {
-  numRows: number
-  numCols: number
-  numMines: number
-  difficulty: Difficulty
-}
+import type { Difficulty, GameOptions, GameStatus } from './types'
 
 export interface IMineSweeper {
   getBoard(): Cell[][]
@@ -154,7 +144,7 @@ export class MineSweeper implements IMineSweeper {
       (action === 'flag' &&
         this.numFlags === this.numMines &&
         !cell.getIsFlagged()) ||
-      (action === 'click' && (cell.getIsFlagged() || cell.getIsRevealed()))
+      (action === 'click' && cell.getIsFlagged())
     ) {
       return
     }
@@ -163,9 +153,22 @@ export class MineSweeper implements IMineSweeper {
       this.handleFlagAction(cell)
     } else if (action === 'click' && this.isFirstClick) {
       this.handleClickAction(cell, row, col, this.isFirstClick)
+    } else if (action === 'click' && cell.getIsRevealed()) {
+      this.handleClickSelectedAction(row, col)
     } else {
       this.handleClickAction(cell, row, col)
     }
+  }
+
+  private handleClickSelectedAction(row: number, col: number): void {
+    this.forEachAdjacentCell(row, col, (adjacentCell, adjRow, adjCol) => {
+      if (adjacentCell.getIsMine() && !adjacentCell.getIsFlagged()) {
+        this.handleLoss(adjacentCell)
+      }
+      if (!adjacentCell.getIsMine() && !adjacentCell.getIsRevealed()) {
+        this.handleClickAction(adjacentCell, adjRow, adjCol)
+      }
+    })
   }
 
   private handleClickAction(
@@ -193,9 +196,9 @@ export class MineSweeper implements IMineSweeper {
     ) {
       this.handleWin()
     } else if (cell.getNumAdjacentMines() === 0) {
-      this.forEachAdjacentCell(row, col, (cell, row, col) => {
-        if (!cell.getIsMine() && !cell.getIsRevealed()) {
-          this.handleClickAction(cell, row, col)
+      this.forEachAdjacentCell(row, col, (adjacentCell, adjRow, adjCol) => {
+        if (!adjacentCell.getIsMine() && !adjacentCell.getIsRevealed()) {
+          this.handleClickAction(adjacentCell, adjRow, adjCol)
         }
       })
     }

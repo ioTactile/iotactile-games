@@ -1,10 +1,6 @@
 <template>
-  <div v-if="playerResults" class="difficulty-container">
-    <div
-      v-for="(difficulty, i) in difficulties"
-      :key="i"
-      class="difficulty-wrapper"
-    >
+  <div v-if="playerResults" class="results-container">
+    <div v-for="(difficulty, i) in difficulties" :key="i" class="content">
       <button
         class="button-difficulty"
         @click="getDifficultyResults(difficulty)"
@@ -18,12 +14,12 @@
             playerResults[difficulty as DifficultyWithoutCustom].victories > 0
           "
         >
-          <div class="header d-flex justify-space-between">
+          <div class="content__header">
             <div>Victoires</div>
             <div>Temps</div>
             <div>Date</div>
           </div>
-          <div class="content d-flex justify-space-between">
+          <div class="content__main">
             <div>
               {{
                 playerResults[difficulty as DifficultyWithoutCustom].victories
@@ -63,7 +59,7 @@ import { VIcon } from 'vuetify/components'
 import { mdiChevronDown } from '@mdi/js'
 import { timerFormatter, dateFormatter } from '~/utils'
 import { mineSweeperScoreboardConverter } from '~/stores'
-import type { Difficulty } from '~/utils/minesweeper/mineSweeper'
+import type { Difficulty } from '~/utils/minesweeper/types'
 
 type DifficultyWithoutCustom = Exclude<Difficulty, 'custom'>
 
@@ -110,27 +106,26 @@ const getDifficultyName = (difficulty: string): string => {
 </script>
 
 <style scoped lang="scss">
-.difficulty-container {
+.results-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
   width: 100%;
-  height: 100%;
 
-  .difficulty-wrapper {
+  .content {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
 
-    &:nth-child(even) {
-      margin: 1rem 0;
-    }
-
-    .header {
-      width: 500px;
+    .content__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
       height: 40px;
       font-size: 1.25rem;
-      font-family: 'Orbitron', sans-serif;
       color: rgb(var(--v-theme-onSurfaceButton));
       background-color: rgb(var(--v-theme-mineSweeperMainSecondary));
 
@@ -140,13 +135,19 @@ const getDifficultyName = (difficulty: string): string => {
         align-items: center;
         justify-content: center;
       }
+
+      @media screen and (max-width: 600px) {
+        font-size: 1rem;
+      }
     }
 
-    .content {
-      width: 500px;
+    .content__main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
       height: 50px;
       font-size: 1.25rem;
-      font-family: 'Orbitron', sans-serif;
       color: rgb(var(--v-theme-onSurfaceButton));
       background-color: rgb(var(--v-theme-mineSweeperMainPrimary));
 
@@ -155,6 +156,10 @@ const getDifficultyName = (difficulty: string): string => {
         display: flex;
         align-items: center;
         justify-content: center;
+      }
+
+      @media screen and (max-width: 600px) {
+        font-size: 1rem;
       }
     }
 
@@ -176,8 +181,11 @@ const getDifficultyName = (difficulty: string): string => {
         font-size: 1.5rem;
         margin-left: 2rem;
         color: rgb(var(--v-theme-onSurface));
-        font-family: 'Orbitron', sans-serif;
         font-weight: 400;
+
+        @media screen and (max-width: 600px) {
+          font-size: 1.25rem;
+        }
       }
     }
 
@@ -185,8 +193,11 @@ const getDifficultyName = (difficulty: string): string => {
       margin-top: 1rem;
       text-align: center;
       font-size: 1.25rem;
-      font-family: 'Orbitron', sans-serif;
       color: rgb(var(--v-theme-mineSweeperOnSurface));
+
+      @media screen and (max-width: 600px) {
+        font-size: 1rem;
+      }
     }
   }
 }

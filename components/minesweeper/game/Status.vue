@@ -5,6 +5,7 @@
       position="top"
       :slot-height="30"
       :slot-width="30"
+      class="button-restart"
     >
       <template #activator="{ onMouseover, onMouseleave }">
         <button
@@ -22,6 +23,7 @@
       position="top"
       :slot-height="30"
       :slot-width="30"
+      class="button-pause"
     >
       <template #activator="{ onMouseover, onMouseleave }">
         <button
@@ -33,13 +35,16 @@
         </button>
       </template>
     </Tooltip>
+    <button class="button-action" :class="selectedAction" @click="selectAction">
+      <div :class="otherAction" class="other-action" />
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { VIcon } from 'vuetify/components'
 import { mdiPauseBox, mdiPlayBox, mdiReload } from '@mdi/js'
-import type { GameStatus } from '~/utils/minesweeper/mineSweeper'
+import type { GameStatus } from '~/utils/minesweeper/types'
 import type { Timer } from '~/utils/minesweeper/Timer'
 import { sleep } from '~/utils'
 
@@ -62,9 +67,11 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'restartGame'): void
+  (e: 'selected-action', value: string): void
 }>()
 
 const isRotating = ref<boolean>(false)
+const selectedAction = ref<string>('mine')
 
 const getTimerIcon = computed((): string => {
   const { timer, gameStatus } = props
@@ -73,6 +80,24 @@ const getTimerIcon = computed((): string => {
     return mdiPauseBox
   } else {
     return mdiPlayBox
+  }
+})
+
+const selectAction = (): void => {
+  if (selectedAction.value === 'flag') {
+    selectedAction.value = 'mine'
+    emit('selected-action', 'mine')
+  } else {
+    selectedAction.value = 'flag'
+    emit('selected-action', 'flag')
+  }
+}
+
+const otherAction = computed((): string => {
+  if (selectedAction.value === 'flag') {
+    return 'mine'
+  } else {
+    return 'flag'
   }
 })
 
@@ -103,7 +128,6 @@ const restartGame = async (): Promise<void> => {
     text-transform: uppercase;
     font-size: 1.25rem;
     letter-spacing: 0.1rem;
-    font-family: 'Orbitron', sans-serif;
     margin: 0 10px;
   }
 
@@ -114,6 +138,53 @@ const restartGame = async (): Promise<void> => {
   @keyframes rotate {
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  .button-action {
+    position: relative;
+    width: 22.5px;
+    height: 22.5px;
+    border-radius: 3px;
+    background-color: rgb(var(--v-theme-mineSweeperMainPrimary));
+    border: 1px solid rgb(var(--v-theme-mineSweeperMainTertiary));
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    margin-left: 1rem;
+
+    &.flag {
+      background-image: url('/minesweeper/flag_nobg.png');
+    }
+
+    &.mine {
+      background-image: url('/minesweeper/mine_nobg.png');
+    }
+
+    .other-action {
+      position: absolute;
+      bottom: -20%;
+      left: -10%;
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      background-color: rgb(var(--v-theme-mineSweeperMainSecondary));
+      border: 0.5px solid rgb(var(--v-theme-mineSweeperMainPrimary));
+      box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.25);
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+
+      &.flag {
+        background-image: url('/minesweeper/flag_nobg.png');
+      }
+
+      &.mine {
+        background-image: url('/minesweeper/mine_nobg.png');
+      }
+    }
+
+    @media screen and (min-width: 600px) {
+      display: none;
     }
   }
 }

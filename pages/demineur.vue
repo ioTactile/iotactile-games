@@ -1,14 +1,14 @@
 <template>
   <minesweeper-template>
-    <div class="d-flex justify-center align-center h-100">
+    <div class="container">
       <template v-if="menuPage !== 5">
-        <div class="menu-wrapper">
+        <div class="menu-page">
           <Tooltip
             content="Retour (esc)"
             position="top right"
             :slot-height="40"
             :slot-width="40"
-            class="arrow-back"
+            class="button-back"
             @on-click="returnToPreviousPage(menuPage)"
           >
             <template #activator="{ onMouseover, onMouseleave, onClick }">
@@ -22,12 +22,9 @@
               </button>
             </template>
           </Tooltip>
-          <h1 class="game-title mt-10 mb-6">Démineur</h1>
-          <div class="menu-content">
-            <minesweeper-menu-main
-              v-if="menuPage === 0"
-              @action="handleActions"
-            />
+          <h1 class="menu__title title">Démineur</h1>
+          <div class="menu__content">
+            <minesweeper-menu v-if="menuPage === 0" @action="handleActions" />
             <minesweeper-menu-play
               v-if="menuPage === 1"
               :is-custom="isCustom"
@@ -61,7 +58,7 @@
             position="top right"
             :slot-height="35"
             :slot-width="35"
-            class="arrow-back"
+            class="button-back"
             @on-click="returnToPreviousPage(menuPage)"
           >
             <template #activator="{ onMouseover, onMouseleave, onClick }">
@@ -74,25 +71,24 @@
               </button>
             </template>
           </Tooltip>
-          <h1 class="game-title">Démineur</h1>
-          <minesweeper-game-zoom class="magnify" />
+          <h1 class="title">Démineur</h1>
+          <minesweeper-game-zoom v-if="isWideScreen" class="magnify" />
           <minesweeper-game-status
             :game-status-to-string="gameStatusToString"
             :game-status="gameStatus"
             :timer="timer"
             @restart-game="restartGame"
+            @selected-action="selectedAction = $event"
           />
-          <div class="game-board">
-            <minesweeper-game-board
-              :game-board="gameBoard"
-              :num-rows="numRows"
-              :num-cols="numCols"
-              :mine-sweeper="mineSweeper"
-              :timer="timer"
-              @left-click="handleLeftClick"
-              @right-click="handleRightClick"
-            />
-          </div>
+          <minesweeper-game-board
+            :game-board="gameBoard"
+            :num-rows="numRows"
+            :num-cols="numCols"
+            :mine-sweeper="mineSweeper"
+            :timer="timer"
+            @left-click="handleLeftClick"
+            @right-click="handleRightClick"
+          />
         </div>
       </template>
     </div>
@@ -100,19 +96,16 @@
 </template>
 
 <script setup lang="ts">
-import { collection, getDoc, setDoc, doc } from 'firebase/firestore'
-import { useTheme } from 'vuetify'
-import { mineSweeperScoreboardConverter } from '~/stores'
-import { MineSweeper } from '~/utils/minesweeper/mineSweeper'
+import { useTheme, useDisplay } from 'vuetify'
+import { MineSweeper, type IMineSweeper } from '~/utils/minesweeper/mineSweeper'
 import type {
   GameOptions,
-  IMineSweeper,
   Difficulty,
   GameStatus
-} from '~/utils/minesweeper/mineSweeper'
+} from '~/utils/minesweeper/types'
 import type { Cell } from '~/utils/minesweeper/cell'
 import type { Timer } from '~/utils/minesweeper/Timer'
-import type { CustomVictory } from '~/functions/src/types'
+import { saveScoreboard } from '~/utils/minesweeper/database'
 
 useSeoMeta({
   title: 'Démineur - ioTactile Games',
@@ -140,11 +133,6 @@ useHead({
   ]
 })
 
-type OmittedCustomVictory = Omit<
-  CustomVictory,
-  'victories' | 'bestTime' | 'victoryDate'
->
-
 if (process.client) {
   window.addEventListener('keyup', (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -154,14 +142,9 @@ if (process.client) {
 }
 
 const { current } = useTheme()
+const { width } = useDisplay()
 
-const db = useFirestore()
 const user = useCurrentUser()
-
-const mineSweeperScoreboard = collection(
-  db,
-  'mineSweeperScoreboard'
-).withConverter(mineSweeperScoreboardConverter)
 
 const actionMap: Record<string, number> = {
   play: 1,
@@ -175,6 +158,8 @@ const actionMap: Record<string, number> = {
   gameBoard: 5
 }
 
+const MIN_WIDTH_FOR_BOARD = 600
+
 const mineSweeper = ref<IMineSweeper>(new MineSweeper())
 const numRows = ref<number>(9)
 const numCols = ref<number>(9)
@@ -182,6 +167,7 @@ const numMines = ref<number>(10)
 const difficulty = ref<Difficulty>('beginner')
 const menuPage = ref<number>(0)
 const isCustom = ref<boolean>(false)
+const selectedAction = ref<string>('mine')
 
 const toggleIsCustom = (value?: boolean): void => {
   isCustom.value = value ?? !isCustom.value
@@ -201,7 +187,21 @@ const returnToPreviousPage = (actualPage: number): void => {
   }
 }
 
-const gameBoard = computed((): Cell[][] => mineSweeper.value.getBoard())
+const gameBoard = computed((): Cell[][] => {
+  const board = mineSweeper.value.getBoard()
+  if (isWideScreen) {
+    return board
+  } else {
+    const newBoard: Cell[][] = []
+    for (let i = 0; i < board[0].length; i++) {
+      newBoard.push([])
+      for (let j = 0; j < board.length; j++) {
+        newBoard[i].push(board[j][i])
+      }
+    }
+    return newBoard
+  }
+})
 
 const timer = computed((): Timer => mineSweeper.value.getTimer())
 
@@ -216,6 +216,8 @@ const getArrowBackColor = computed((): string => {
     ? '/minesweeper/ui/left-arrow-grey.svg'
     : '/minesweeper/ui/left-arrow.svg'
 })
+
+const isWideScreen = computed((): boolean => width.value > MIN_WIDTH_FOR_BOARD)
 
 const startGame = (options: GameOptions): void => {
   if (options.numMines > options.numRows * options.numCols) {
@@ -243,7 +245,12 @@ const handleRightClick = (data: {
   colIndex: number
 }): void => {
   const { rowIndex, colIndex } = data
-  mineSweeper.value.handleCellAction(rowIndex, colIndex, 'flag')
+
+  if (isWideScreen) {
+    mineSweeper.value.handleCellAction(rowIndex, colIndex, 'flag')
+  } else {
+    mineSweeper.value.handleCellAction(colIndex, rowIndex, 'flag')
+  }
 }
 
 const handleLeftClick = async (data: {
@@ -252,96 +259,27 @@ const handleLeftClick = async (data: {
   callback: (gameStatus: GameStatus) => void
 }): Promise<void> => {
   const { rowIndex, colIndex } = data
-  mineSweeper.value.handleCellAction(rowIndex, colIndex, 'click')
+
+  if (isWideScreen) {
+    mineSweeper.value.handleCellAction(rowIndex, colIndex, 'click')
+  } else if (!isWideScreen && selectedAction.value === 'flag') {
+    mineSweeper.value.handleCellAction(colIndex, rowIndex, 'flag')
+  } else if (!isWideScreen && selectedAction.value === 'mine') {
+    mineSweeper.value.handleCellAction(colIndex, rowIndex, 'click')
+  }
 
   data.callback(mineSweeper.value.getGameStatus())
   if (mineSweeper.value.getGameStatus() === 'won') {
     if (!user.value) return
-    const userRef = doc(db, 'users', user.value.uid)
-    const userDoc = await getDoc(userRef)
-    if (!userDoc.exists()) {
-      return
-    }
-    const username = userDoc.data().username
 
-    const difficulty = mineSweeper.value.getDifficulty()
-
-    let scoreboard: LocalMineSweeperScoreboardType = {
-      userId: user.value.uid,
-      username,
-      beginner: {
-        victories: 0,
-        bestTime: 0,
-        victoryDate: new Date()
-      },
-      intermediate: {
-        victories: 0,
-        bestTime: 0,
-        victoryDate: new Date()
-      },
-      expert: {
-        victories: 0,
-        bestTime: 0,
-        victoryDate: new Date()
-      },
-      custom: []
-    }
-
-    const scoreboardRef = doc(mineSweeperScoreboard, user.value.uid)
-    const scoreboardDoc = await getDoc(scoreboardRef)
-
-    if (scoreboardDoc.exists()) {
-      scoreboard = scoreboardDoc.data() || scoreboard
-    }
-
-    if (difficulty === 'custom') {
-      const customVictoryIndex = scoreboard[difficulty].findIndex(
-        (customVictory: OmittedCustomVictory) =>
-          customVictory.rows === mineSweeper.value.getNumRows() &&
-          customVictory.cols === mineSweeper.value.getNumCols() &&
-          customVictory.mines === mineSweeper.value.getNumMines()
-      )
-
-      if (customVictoryIndex !== -1) {
-        const scoreboardIndex = scoreboard[difficulty][customVictoryIndex]
-        const bestTime =
-          scoreboardIndex.bestTime >
-          mineSweeper.value.getTimer().getElapsedTime()
-            ? mineSweeper.value.getTimer().getElapsedTime()
-            : scoreboardIndex.bestTime
-        scoreboard[difficulty][customVictoryIndex] = {
-          rows: scoreboardIndex.rows,
-          cols: scoreboardIndex.cols,
-          mines: scoreboardIndex.mines,
-          victories: scoreboardIndex.victories + 1,
-          bestTime,
-          victoryDate: new Date(Date.now())
-        }
-      } else {
-        scoreboard[difficulty].push({
-          rows: mineSweeper.value.getNumRows(),
-          cols: mineSweeper.value.getNumCols(),
-          mines: mineSweeper.value.getNumMines(),
-          victories: 1,
-          bestTime: mineSweeper.value.getTimer().getElapsedTime(),
-          victoryDate: new Date(Date.now())
-        })
-      }
-    } else {
-      const bestTime =
-        scoreboard[difficulty]?.bestTime >
-        mineSweeper.value.getTimer().getElapsedTime()
-          ? mineSweeper.value.getTimer().getElapsedTime()
-          : scoreboard[difficulty]?.bestTime ||
-            mineSweeper.value.getTimer().getElapsedTime()
-      scoreboard[difficulty] = {
-        victories: scoreboard[difficulty]?.victories + 1 || 1,
-        bestTime,
-        victoryDate: new Date(Date.now())
-      }
-    }
-
-    await setDoc(scoreboardRef, scoreboard, { merge: true })
+    await saveScoreboard(
+      user.value.uid,
+      mineSweeper.value.getTimer().getElapsedTime(),
+      difficulty.value,
+      numCols.value,
+      numRows.value,
+      numMines.value
+    )
   }
 }
 
@@ -351,85 +289,124 @@ onBeforeRouteLeave((): void => {
 </script>
 
 <style scoped lang="scss">
-.menu-wrapper {
-  position: relative;
-  width: 500px;
-  height: 650px;
-  background-color: rgb(var(--v-theme-mineSweeperMainSurface));
-  box-shadow: -10px -10px rgba(var(--v-theme-mineSweeperMainShadow), 0.3);
-  color: rgb(var(--v-theme-onSurface));
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 
-  .menu-content {
-    display: flex;
-    justify-content: center;
+  .menu-page {
+    position: relative;
+    width: 500px;
+    height: 650px;
+    background-color: rgb(var(--v-theme-mineSweeperMainSurface));
+    box-shadow: -10px -10px rgba(var(--v-theme-mineSweeperMainShadow), 0.3);
+    color: rgb(var(--v-theme-onSurface));
+
+    @media screen and (max-width: 600px) {
+      width: 100%;
+      height: calc(100% - 3rem);
+      margin: 0 1rem;
+    }
+
+    .menu__title {
+      padding: 40px 0 24px 0;
+    }
+
+    .menu__content {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: calc(100% - 150px);
+    }
+
+    .button-back {
+      position: absolute;
+      top: 58px;
+      left: 20px;
+
+      img {
+        width: 40px;
+        height: 40px;
+      }
+
+      @media screen and (max-width: 600px) {
+        top: 52px;
+        left: 20px;
+
+        img {
+          width: 25px;
+          height: 25px;
+        }
+      }
+    }
   }
 
-  .game-title {
+  .game-page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 1100px;
+    height: calc(100% - 100px);
+    padding: 1rem;
+    background-color: rgb(var(--v-theme-mineSweeperMainSurface));
+    box-shadow: -10px -10px rgba(var(--v-theme-mineSweeperMainShadow), 0.3);
+    color: rgb(var(--v-theme-onSurface));
+
+    @media screen and (max-width: 600px) {
+      width: 100%;
+      height: calc(100% - 2rem);
+      margin: 0 1rem;
+      padding: 0;
+    }
+
+    .button-back {
+      position: absolute;
+      top: 34px;
+      left: 340px;
+
+      img {
+        width: 40px;
+        height: 40px;
+      }
+
+      @media screen and (max-width: 600px) {
+        top: 12px;
+        left: 35px;
+
+        img {
+          width: 25px;
+          height: 25px;
+        }
+      }
+    }
+
+    .magnify {
+      position: absolute;
+      top: 34px;
+      right: 345px;
+
+      @media screen and (max-width: 600px) {
+        top: 12px;
+        right: 35px;
+      }
+    }
+  }
+
+  .title {
     font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
     font-weight: 700;
     letter-spacing: 0.1rem;
     text-transform: uppercase;
     text-align: center;
-  }
-
-  .arrow-back {
-    position: absolute;
-    top: 58px;
-    left: 20px;
-
-    img {
-      width: 40px;
-      height: 40px;
-    }
-  }
-}
-
-.game-page {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 1100px;
-  height: 700px;
-  padding: 2rem;
-  background-color: rgb(var(--v-theme-mineSweeperMainSurface));
-  box-shadow: -10px -10px rgba(var(--v-theme-mineSweeperMainShadow), 0.3);
-  color: rgb(var(--v-theme-onSurface));
-
-  .game-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 3rem;
-    font-weight: 700;
-    letter-spacing: 0.1rem;
-    text-transform: uppercase;
     color: rgb(var(--v-theme-mineSweeperMainOnSurface));
-  }
 
-  .game-board {
-    display: flex;
-    justify-content: center;
-    overflow: auto;
-    width: 100%;
-    height: 100%;
-    margin: 1rem auto;
-  }
-
-  .arrow-back {
-    position: absolute;
-    top: 48px;
-    left: 340px;
-
-    img {
-      width: 40px;
-      height: 40px;
+    @media screen and (max-width: 600px) {
+      font-size: 2rem;
     }
-  }
-
-  .magnify {
-    position: absolute;
-    top: 50px;
-    right: 345px;
   }
 }
 </style>

@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import type { GameOptions } from '~/utils/minesweeper/mineSweeper'
+import type { GameOptions } from '~/utils/minesweeper/types'
 
 const emit = defineEmits<{
   (e: 'startCustomGame', args: GameOptions): void
@@ -59,7 +59,8 @@ const startCustomGame = (): void => {
 form {
   display: flex;
   flex-direction: column;
-  margin-top: 2rem;
+  justify-content: space-between;
+  height: 100%;
 
   .form-group {
     display: flex;
@@ -95,15 +96,30 @@ form {
       outline: none;
     }
 
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-  }
+    // input::-webkit-outer-spin-button,
+    // input::-webkit-inner-spin-button {
+    //   -webkit-appearance: none;
+    //   margin: 0;
+    // }
 
-  button {
-    margin-top: 1rem;
+    input[type='number'] {
+      appearance: textfield;
+      -webkit-appearance: textfield;
+      -moz-appearance: textfield;
+      -ms-appearance: textfield;
+    }
+
+    @media screen and (max-width: 600px) {
+      label {
+        font-size: 1.5rem;
+      }
+
+      input {
+        width: 75px;
+        height: 48px;
+        font-size: 1.25rem;
+      }
+    }
   }
 }
 </style>

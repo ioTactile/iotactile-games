@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column">
+  <div class="play-default-container">
     <button
       v-for="(difficulty, i) in difficulties"
       :key="i"
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import type { GameOptions, Difficulty } from '~/utils/minesweeper/mineSweeper'
+import type { GameOptions, Difficulty } from '~/utils/minesweeper/types'
 
 const emit = defineEmits<{
   (e: 'toggleCustomGame'): void
@@ -69,7 +69,12 @@ const startGame = (value: string): void => {
 </script>
 
 <style scoped lang="scss">
-.button-mineSweeper:nth-child(odd) {
-  margin: 3rem 0;
+.play-default-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  height: 100%;
 }
 </style>

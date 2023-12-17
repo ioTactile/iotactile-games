@@ -138,5 +138,5 @@ export const saveScoreboard = async (
   )
 
   const scoreboardRef = doc(takuzuScoreboard(), userId)
-  await setDoc(scoreboardRef, updatedScoreboard)
+  await setDoc(scoreboardRef, updatedScoreboard, { merge: true })
 }

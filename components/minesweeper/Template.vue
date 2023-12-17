@@ -18,6 +18,11 @@ const handleResize = () => {
   const targetHeight = 924
   const targetWidth = 1200
 
+  if (width.value < 600) {
+    scale.value = 1
+    return
+  }
+
   if (height.value > targetHeight) {
     height.value = targetHeight
   }
@@ -53,5 +58,11 @@ watch(
   width: 1200px;
   height: 800px;
   background-color: rgb(var(--v-theme-background));
+
+  @media screen and (max-width: 600px) {
+    position: inherit;
+    width: 100%;
+    height: 100vh;
+  }
 }
 </style>

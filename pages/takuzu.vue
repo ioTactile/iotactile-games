@@ -185,7 +185,7 @@ const startGame = (options: GameOptions): void => {
     align-items: center;
     width: 1100px;
     height: calc(100% - 100px);
-    padding: 2rem;
+    padding: 1rem;
     border-radius: 20px;
     background-color: rgb(var(--v-theme-takuzuMainSurface));
     box-shadow: -10px -10px rgba(var(--v-theme-takuzuMainShadow), 0.3);
@@ -209,7 +209,7 @@ const startGame = (options: GameOptions): void => {
 
     .button-back {
       position: absolute;
-      top: 48px;
+      top: 34px;
       left: 400px;
 
       @media screen and (max-width: 600px) {

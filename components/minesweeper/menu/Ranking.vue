@@ -1,52 +1,44 @@
 <template>
-  <template v-if="menuPage === 2">
-    <div class="d-flex flex-column">
-      <button
-        v-for="(item, i) in menuItems"
-        :key="i"
-        class="button-mineSweeper"
-        @click="getRanking(item.action, item.value)"
-      >
-        {{ item.title }}
-      </button>
-    </div>
-  </template>
-  <template
-    v-for="(difficulty, i) in ['beginner', 'intermediate', 'expert']"
-    v-else
-    :key="i"
-  >
-    <div v-if="menuPage === getRankingPage(i)">
-      <div class="header d-flex justify-space-between">
-        <div>Classement</div>
-        <div>Joueur</div>
-        <div>Temps</div>
-      </div>
-      <template v-if="isBestTime(difficulty)">
-        <div class="content-wrapper">
-          <div
-            v-for="(player, j) in ranking"
-            :key="j"
-            class="content d-flex justify-space-between"
-          >
-            <div>{{ j + 1 }}</div>
-            <div>{{ player.username }}</div>
-            <div>
-              {{ getFormattedTime(player, difficulty) }}
+  <div v-if="menuPage === 2" class="results-container">
+    <button
+      v-for="(item, i) in menuItems"
+      :key="i"
+      class="button-mineSweeper"
+      @click="getRanking(item.action, item.value)"
+    >
+      {{ item.title }}
+    </button>
+  </div>
+  <div v-else class="results-container-2">
+    <div
+      v-for="(difficulty, i) in ['beginner', 'intermediate', 'expert']"
+      :key="i"
+    >
+      <div v-if="menuPage === getRankingPage(i)" class="content">
+        <div class="content__header">
+          <div>Classement</div>
+          <div>Joueur</div>
+          <div>Temps</div>
+        </div>
+        <template v-if="isBestTime(difficulty)">
+          <div class="content__main">
+            <div v-for="(player, j) in ranking" :key="j" class="result">
+              <div>{{ j + 1 }}</div>
+              <div>{{ player.username }}</div>
+              <div>
+                {{ getFormattedTime(player, difficulty) }}
+              </div>
             </div>
           </div>
-        </div>
-      </template>
-      <template v-else>
-        <div class="no-best-time">
-          Aucune partie n'a été gagnée dans cette difficulté
-        </div>
-      </template>
+        </template>
+        <template v-else>
+          <div class="no-best-time">
+            Aucune partie n'a été gagnée dans cette difficulté
+          </div>
+        </template>
+      </div>
     </div>
-  </template>
-  <!-- <template v-if="menuPage === 2.4">
-    <div />
-  </template> -->
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -56,7 +48,7 @@ import {
   type LocalMineSweeperScoreboardType
 } from '~/stores'
 import { timerFormatter } from '~/utils'
-import type { Difficulty } from '~/utils/minesweeper/mineSweeper'
+import type { Difficulty } from '~/utils/minesweeper/types'
 
 type DifficultyWithoutCustom = Exclude<Difficulty, 'custom'>
 
@@ -151,35 +143,25 @@ const isBestTime = (difficulty: string): boolean => {
 </script>
 
 <style scoped lang="scss">
-.button-mineSweeper:nth-child(odd) {
-  margin: 3rem 0;
+.results-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
 }
 
-.header {
-  width: 500px;
-  height: 40px;
-  font-size: 1.25rem;
-  font-family: 'Orbitron', sans-serif;
-  color: rgb(var(--v-theme-onSurfaceButton));
-  background-color: rgb(var(--v-theme-mineSweeperMainSecondary));
+.results-container-2 {
+  width: 100%;
 
-  div {
-    flex: 1;
+  .content__header {
     display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-.content-wrapper {
-  height: 400px;
-  width: 500px;
-  overflow-y: auto;
-  .content {
-    height: 50px;
+    justify-content: space-between;
+    width: 100%;
+    height: 40px;
     font-size: 1.25rem;
-    font-family: 'Orbitron', sans-serif;
     color: rgb(var(--v-theme-onSurfaceButton));
-    background-color: rgb(var(--v-theme-mineSweeperMainPrimary));
+    background-color: rgb(var(--v-theme-mineSweeperMainSecondary));
 
     div {
       flex: 1;
@@ -187,18 +169,50 @@ const isBestTime = (difficulty: string): boolean => {
       align-items: center;
       justify-content: center;
     }
-  }
-  .content:nth-child(even) {
-    background-color: rgb(var(--v-theme-mineSweeperMainSecondary));
-  }
-}
 
-.no-best-time {
-  margin-top: 1rem;
-  text-align: center;
-  font-size: 1.25rem;
-  font-family: 'Orbitron', sans-serif;
-  color: rgb(var(--v-theme-mineSweeperOnSurface));
+    @media screen and (max-width: 600px) {
+      font-size: 1rem;
+    }
+  }
+
+  .content__main {
+    overflow-y: auto;
+
+    .result {
+      display: flex;
+      justify-content: space-between;
+      height: 50px;
+      font-size: 1.25rem;
+      color: rgb(var(--v-theme-onSurfaceButton));
+      background-color: rgb(var(--v-theme-mineSweeperMainPrimary));
+
+      &:nth-child(even) {
+        background-color: rgb(var(--v-theme-mineSweeperMainSecondary));
+      }
+
+      div {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @media screen and (max-width: 600px) {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .no-best-time {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 1.25rem;
+    color: rgb(var(--v-theme-mineSweeperOnSurface));
+
+    @media screen and (max-width: 600px) {
+      font-size: 1rem;
+    }
+  }
 }
 
 ::-webkit-scrollbar {

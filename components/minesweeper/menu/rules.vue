@@ -21,6 +21,15 @@
         à lui permet de révéler une case qui vous semble sûre. Si une case a été
         marquée d'un drapeau, il est possible de l'enlever en cliquant à nouveau
         sur la case avec le clic droit.
+        <strong> **Attention**</strong>
+        en format mobile le clic droit est remplacé par l'ajout d'un bouton qui
+        permet de changer l'action de l'unique clic.
+        <br />
+        <br />
+        Afin d'accélerer le jeu, il est possible de cliquer avec le clic gauche
+        sur des cases qui ont déjà été révélées. Si les mines autour de la case
+        cliquée ont toutes été marquées d'un drapeau, les cases restantes se
+        révèlent dans le cas contraires le joueur perd la partie.
         <br />
         <br />
         Une case révélée peut contenir un nombre qui indique le nombre de mines
@@ -58,8 +67,8 @@ const emit = defineEmits<{
 
 <style scoped lang="scss">
 .rules-wrapper {
-  height: 400px;
-  width: 500px;
+  width: 100%;
+  height: 100%;
   overflow-y: auto;
   color: rgb(var(--v-theme-mineSweeperMainOnSurface));
 
