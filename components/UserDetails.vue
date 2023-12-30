@@ -134,6 +134,7 @@ defineProps<{
   theme: { dark: boolean }
   adminUser: boolean | unknown
 }>()
+
 const emits = defineEmits<{ (e: 'toggleTheme'): void }>()
 
 // Vuefire
@@ -145,7 +146,7 @@ const db = useFirestore()
 
 // Refs
 
-const form = ref(VForm)
+const form = ref<VForm>()
 const loading = ref<boolean>(false)
 const openDeleteUser = ref<boolean>(false)
 const isDeleting = ref<boolean>(false)
@@ -171,9 +172,9 @@ const changeUsername = async () => {
   if (!user.value || !(await form.value?.validate())?.valid) {
     return
   }
-  loading.value = true
 
   try {
+    loading.value = true
     if (user.value) {
       const userId = user.value.uid
       const userRef = doc(db, 'users', userId).withConverter(userConverter)
@@ -201,8 +202,9 @@ const deleteProfile = async () => {
   if (!user.value) {
     return
   }
-  loading.value = true
   try {
+    loading.value = true
+
     const userRef = doc(db, 'users', user.value.uid)
     await deleteDoc(userRef)
     await deleteUser(user.value)
@@ -222,8 +224,10 @@ const logout = async () => {
   if (!auth) {
     return
   }
-  loading.value = true
+
   try {
+    loading.value = true
+
     await signOut(auth)
     await navigateTo('/')
   } catch (error) {

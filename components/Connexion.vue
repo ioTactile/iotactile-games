@@ -118,19 +118,19 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   AuthErrorCodes,
-  getIdTokenResult,
-  type ParsedToken
+  getIdTokenResult
 } from 'firebase/auth'
 import { FirebaseError } from '@firebase/util'
 import { Timestamp, doc, setDoc } from 'firebase/firestore'
-import { useFirestore, useCurrentUser, useFirebaseAuth } from 'vuefire'
+import { useFirestore, useFirebaseAuth } from 'vuefire'
+import { storeToRefs } from 'pinia'
+import { useUserStore } from '~/stores/user'
 import { userConverter } from '~/stores'
 
 // Composable & Vuefire
 
 const { notifier } = useNotifier()
 const db = useFirestore()
-const user = useCurrentUser()
 const auth = useFirebaseAuth()
 
 // Props
@@ -148,7 +148,6 @@ const emits = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
 const email = ref('')
 const username = ref('')
 const password = ref('')
-const userClaims = ref<null | ParsedToken>(null)
 const date = ref(new Date(Date.now()))
 const createAccount = ref(false)
 const forgotPassword = ref(false)
@@ -156,14 +155,8 @@ const loading = ref<'email' | null>(null)
 const form = ref<VForm>()
 const tab = ref(null)
 
-// onBeforeMount
-
-onBeforeMount(async () => {
-  if (user.value) {
-    const { claims } = await getIdTokenResult(user.value, true)
-    userClaims.value = claims
-  }
-})
+const userStore = useUserStore()
+const { currentUser, adminClaims } = storeToRefs(userStore)
 
 // Methods
 
@@ -202,7 +195,15 @@ const login = async () => {
       })
       forgotPassword.value = false
     } else {
-      await signInWithEmailAndPassword(auth, email.value, password.value)
+      const userCredentials = await signInWithEmailAndPassword(
+        auth,
+        email.value,
+        password.value
+      )
+
+      currentUser.value = userCredentials.user
+      const { claims } = await getIdTokenResult(currentUser.value, true)
+      adminClaims.value = claims.admin ?? false
     }
     emits('update:modelValue', false)
   } catch (error: unknown) {

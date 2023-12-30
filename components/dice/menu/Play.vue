@@ -33,15 +33,15 @@ const menuItems = [
   }
 ]
 
-const handleAction = (action: string) => {
+const handleAction = async (action: string) => {
   if (action === 'quickGame') {
     const diceSession = new DiceSession()
 
-    try {
-      diceSession.quickJoin()
-    } finally {
-      emit('action', 'quickGame')
+    const result = await diceSession.quickJoin()
+    if (result === false) {
+      return
     }
+    emit('action', 'quickGame')
   } else {
     emit('action', action)
   }

@@ -1,14 +1,14 @@
 <template>
-  <v-snackbar v-model="notification.show" :color="notification.color">
+  <v-snackbar
+    v-model="notification.show"
+    :color="notification.color"
+    timeout="3000"
+  >
     <span>
       {{ notification.content }}
     </span>
     <template #actions>
-      <v-btn
-        color="onPrimary"
-        :icon="mdiClose"
-        @click="notification.show = false"
-      />
+      <v-btn :icon="mdiClose" @click="notification.show = false" />
     </template>
   </v-snackbar>
 </template>
@@ -19,11 +19,3 @@ import { mdiClose } from '@mdi/js'
 
 const { notification } = useNotifier()
 </script>
-
-<style scoped lang="scss">
-span {
-  font-size: 1rem;
-  text-align: justify;
-  color: rgb(var(--v-theme-onPrimary));
-}
-</style>

@@ -47,7 +47,7 @@ import { useFirebaseFunctions } from '~/composables/useFirebaseFunctions'
 import { userConverter } from '~/stores'
 import type { LocalUserType } from '~/stores'
 
-definePageMeta({ layout: 'admin' })
+definePageMeta({ layout: 'admin', middleware: 'auth' })
 
 const db = useFirestore()
 const functions = useFirebaseFunctions()

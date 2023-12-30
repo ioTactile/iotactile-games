@@ -16,7 +16,7 @@
         />
       </NuxtLink>
       <v-spacer />
-      <template v-if="admin && adminUser">
+      <template v-if="admin">
         <v-btn
           color="onSurface"
           to="/admin/utilisateurs"
@@ -51,7 +51,7 @@
         </template>
         <UserDetails
           :theme="theme.current.value"
-          :admin-user="adminUser"
+          :admin-user="adminClaims"
           @toggle-theme="toggleTheme"
         />
       </v-menu>
@@ -74,8 +74,9 @@ import {
   VSpacer
 } from 'vuetify/components'
 import { useTheme, useDisplay } from 'vuetify'
-import { getIdTokenResult } from 'firebase/auth'
 import { mdiAccount, mdiAccountCheck } from '@mdi/js'
+import { storeToRefs } from 'pinia'
+import { useUserStore } from '~/stores/user'
 
 // Vuetify
 
@@ -93,21 +94,15 @@ const user = useCurrentUser()
 // Refs
 
 const login = ref(false)
-const adminUser = ref<boolean | unknown>(false)
+const userStore = useUserStore()
+const { adminClaims } = storeToRefs(userStore)
 
 // onMounted
 
-onMounted(async () => {
+onMounted(() => {
   localStorage.getItem('theme') === 'myCustomDarkTheme'
     ? (theme.global.name.value = 'myCustomDarkTheme')
     : (theme.global.name.value = 'myCustomLightTheme')
-
-  if (!user.value) {
-    return
-  }
-
-  const { claims } = await getIdTokenResult(user.value, true)
-  adminUser.value = claims.admin
 })
 
 // Computed

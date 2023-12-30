@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import { VContainer } from 'vuetify/components'
 
-definePageMeta({ layout: 'admin' })
+definePageMeta({ layout: 'admin', middleware: 'auth' })
 </script>
 
 <style setup lang="scss">

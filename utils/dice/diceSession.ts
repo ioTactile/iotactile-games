@@ -374,7 +374,7 @@ export class DiceSession implements IDiceSession {
         content: 'Aucune session disponible',
         color: 'primary'
       })
-      return
+      return false
     }
 
     const session = sessions[Math.floor(Math.random() * sessions.length)]
@@ -382,7 +382,7 @@ export class DiceSession implements IDiceSession {
     const sessionRef = doc(this.sessionsRef, sessionId)
 
     if (session.players.find((player) => player.id === this.user.value?.uid)) {
-      return
+      return false
     }
 
     const username = await this.getUsername()
@@ -401,7 +401,7 @@ export class DiceSession implements IDiceSession {
     const joinRemainingTurnsDoc = await getDoc(joinRemainingTurnsRef)
 
     if (!joinRemainingTurnsDoc.exists()) {
-      return
+      return false
     }
     const joinRemainingTurns = joinRemainingTurnsDoc.data().remainingTurns
 

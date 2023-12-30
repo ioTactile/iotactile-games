@@ -1,12 +1,21 @@
-export default defineNuxtRouteMiddleware(async () => {
-  const { notifier } = useNotifier()
-  const user = await getCurrentUser()
+import { useUserStore } from '~/stores/user'
 
-  if (!user) {
+export default defineNuxtRouteMiddleware(async (to, _) => {
+  const { notifier } = useNotifier()
+  const { currentUser, adminClaims } = useUserStore()
+
+  if (!currentUser) {
     notifier({
       content: 'Tu dois être connecté pour accéder aux jeux multijoueurs.',
       color: 'error'
     })
-    return navigateTo('/')
+    return await navigateTo('/')
+  }
+
+  if (
+    adminClaims === false &&
+    (to.fullPath === '/admin' || to.fullPath === '/admin/utilisateurs')
+  ) {
+    return await navigateTo('/')
   }
 })
