@@ -1,42 +1,9 @@
-# Nuxt 3 Minimal Starter
+# ioTactile Games
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+iotactile Games was born out of the void left by the end of Adobe Flash Player, which led to the closure of many online gaming sites.
 
-## Setup
+This project is an online or solo gaming site that offers and will offer many games that are close to my heart.
 
-Make sure to install the dependencies:
+The first game I've created is Dice, a dice game for up to 4 players. My second game is Minesweeper, a solo game. The third one is Takuzu, another solo game.
 
-```bash
-# yarn
-yarn install
-
-# npm
-npm install
-
-# pnpm
-pnpm install
-```
-
-## Development Server
-
-Start the development server on http://localhost:3000
-
-```bash
-npm run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+This site is my sandbox, where I put my knowledge and ideas into practice. I experiment and learn new things as the project progresses.

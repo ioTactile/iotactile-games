@@ -1,30 +1,7 @@
-@font-face {
-  font-family: 'Poppins';
-  src: url('/assets/fonts/poppins/Poppins-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Indie Flower';
-  src: url('/assets/fonts/indie-flower/IndieFlower.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Orbitron';
-  src: url('/assets/fonts/orbitron/Orbitron-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Quicksand';
-  src: url('/assets/fonts/quicksand/Quicksand-Regular.ttf') format('truetype');
-  font-weight: normal;  
-  font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
 
 * {
   margin: 0;
@@ -32,7 +9,7 @@
   box-sizing: border-box;
 }
 
-body {
+.v-application {
   font-family: 'Poppins', sans-serif;
   background-color: rgb(var(--v-theme-background));
   max-width: 1200px;
