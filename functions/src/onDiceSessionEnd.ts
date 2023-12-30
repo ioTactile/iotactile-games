@@ -69,10 +69,9 @@ export const onDiceSessionEnd = functions
         const userData = userDoc.data();
 
         if (playerData && userData) {
-          const averageScore =
-            playerData.games === 0
-              ? total
-              : (playerData.totalScore + total) / (playerData.games + 1);
+          const scores =
+            (playerData.totalScore + total) / (playerData.games + 1);
+          const averageScore = playerData.games === 0 ? total : scores;
 
           const updatedPlayerData = {
             userId: id,

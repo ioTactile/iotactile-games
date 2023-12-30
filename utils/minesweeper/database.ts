@@ -76,11 +76,11 @@ const updateCustomScoreboard = (
   time: number,
   customVictoryIndex: number,
 ) => {
-  const customVictory = scoreboard["custom"][customVictoryIndex];
+  const customVictory = scoreboard.custom[customVictoryIndex];
   const bestTime =
     customVictory.bestTime > time ? time : customVictory.bestTime;
 
-  scoreboard["custom"][customVictoryIndex] = {
+  scoreboard.custom[customVictoryIndex] = {
     ...customVictory,
     victories: customVictory.victories + 1,
     bestTime,
@@ -126,7 +126,7 @@ export const saveScoreboard = async (
     if (customVictoryIndex !== -1) {
       updateCustomScoreboard(scoreboard, time, customVictoryIndex);
     } else {
-      scoreboard["custom"].push({
+      scoreboard.custom.push({
         rows: numRows,
         cols: numCols,
         mines: numMines,
