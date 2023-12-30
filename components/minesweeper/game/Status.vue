@@ -42,77 +42,77 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon } from 'vuetify/components'
-import { mdiPauseBox, mdiPlayBox, mdiReload } from '@mdi/js'
-import type { GameStatus } from '~/utils/minesweeper/types'
-import type { Timer } from '~/utils/minesweeper/Timer'
-import { sleep } from '~/utils'
+import { VIcon } from "vuetify/components";
+import { mdiPauseBox, mdiPlayBox, mdiReload } from "@mdi/js";
+import type { GameStatus } from "~/utils/minesweeper/types";
+import type { Timer } from "~/utils/minesweeper/Timer";
+import { sleep } from "~/utils";
 
 if (process.client) {
-  window.addEventListener('keyup', (e: KeyboardEvent) => {
-    if (e.key === 'r') {
-      restartGame()
+  window.addEventListener("keyup", (e: KeyboardEvent) => {
+    if (e.key === "r") {
+      restartGame();
     }
-    if (e.key === ' ') {
-      togglePause()
+    if (e.key === " ") {
+      togglePause();
     }
-  })
+  });
 }
 
 const props = defineProps<{
-  gameStatusToString: string
-  gameStatus: GameStatus
-  timer: Timer
-}>()
+  gameStatusToString: string;
+  gameStatus: GameStatus;
+  timer: Timer;
+}>();
 
 const emit = defineEmits<{
-  (e: 'restartGame'): void
-  (e: 'selected-action', value: string): void
-}>()
+  (e: "restartGame"): void;
+  (e: "selected-action", value: string): void;
+}>();
 
-const isRotating = ref<boolean>(false)
-const selectedAction = ref<string>('mine')
+const isRotating = ref<boolean>(false);
+const selectedAction = ref<string>("mine");
 
 const getTimerIcon = computed((): string => {
-  const { timer, gameStatus } = props
-  if (timer.getIsPaused()) return mdiPlayBox
-  if (gameStatus === 'inProgress') {
-    return mdiPauseBox
+  const { timer, gameStatus } = props;
+  if (timer.getIsPaused()) return mdiPlayBox;
+  if (gameStatus === "inProgress") {
+    return mdiPauseBox;
   } else {
-    return mdiPlayBox
+    return mdiPlayBox;
   }
-})
+});
 
 const selectAction = (): void => {
-  if (selectedAction.value === 'flag') {
-    selectedAction.value = 'mine'
-    emit('selected-action', 'mine')
+  if (selectedAction.value === "flag") {
+    selectedAction.value = "mine";
+    emit("selected-action", "mine");
   } else {
-    selectedAction.value = 'flag'
-    emit('selected-action', 'flag')
+    selectedAction.value = "flag";
+    emit("selected-action", "flag");
   }
-}
+};
 
 const otherAction = computed((): string => {
-  if (selectedAction.value === 'flag') {
-    return 'mine'
+  if (selectedAction.value === "flag") {
+    return "mine";
   } else {
-    return 'flag'
+    return "flag";
   }
-})
+});
 
 const togglePause = (): void => {
-  const { timer, gameStatus } = props
-  if (gameStatus !== 'inProgress') return
-  timer.togglePause()
-}
+  const { timer, gameStatus } = props;
+  if (gameStatus !== "inProgress") return;
+  timer.togglePause();
+};
 
 const restartGame = async (): Promise<void> => {
-  isRotating.value = true
-  await sleep(1000)
-  isRotating.value = false
-  emit('restartGame')
-}
+  isRotating.value = true;
+  await sleep(1000);
+  isRotating.value = false;
+  emit("restartGame");
+};
 </script>
 
 <style scoped lang="scss">
@@ -154,11 +154,11 @@ const restartGame = async (): Promise<void> => {
     margin-left: 1rem;
 
     &.flag {
-      background-image: url('/minesweeper/flag_nobg.png');
+      background-image: url("/minesweeper/flag_nobg.png");
     }
 
     &.mine {
-      background-image: url('/minesweeper/mine_nobg.png');
+      background-image: url("/minesweeper/mine_nobg.png");
     }
 
     .other-action {
@@ -175,11 +175,11 @@ const restartGame = async (): Promise<void> => {
       background-repeat: no-repeat;
 
       &.flag {
-        background-image: url('/minesweeper/flag_nobg.png');
+        background-image: url("/minesweeper/flag_nobg.png");
       }
 
       &.mine {
-        background-image: url('/minesweeper/mine_nobg.png');
+        background-image: url("/minesweeper/mine_nobg.png");
       }
     }
 

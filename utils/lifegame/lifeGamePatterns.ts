@@ -3,15 +3,15 @@ export const glider: number[][] = [
   [1, 2],
   [2, 0],
   [2, 1],
-  [2, 2]
-]
+  [2, 2],
+];
 
 export const bar: number[][] = [
   [0, 0],
   [1, 0],
   [2, 0],
-  [3, 0]
-]
+  [3, 0],
+];
 
 export const pentaDecathlon: number[][] = [
   [4, 0],
@@ -31,13 +31,13 @@ export const pentaDecathlon: number[][] = [
   [2, 7],
   [7, 7],
   [4, 8],
-  [5, 8]
-]
+  [5, 8],
+];
 
 export const pentomino: number[][] = [
   [1, 0],
   [2, 0],
   [0, 1],
   [1, 1],
-  [1, 2]
-]
+  [1, 2],
+];

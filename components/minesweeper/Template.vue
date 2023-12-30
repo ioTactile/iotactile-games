@@ -7,42 +7,45 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from 'vuetify'
+import { useDisplay } from "vuetify";
 
-const { width, height } = useDisplay()
+const { width, height } = useDisplay();
 
-const scale = ref<number>(1)
-const resizeTimeout = ref<NodeJS.Timeout | null>(null)
+const scale = ref<number>(1);
+const resizeTimeout = ref<NodeJS.Timeout | null>(null);
 
 const handleResize = () => {
-  const targetHeight = height.value - 124
-  const targetWidth = 1200
+  const targetHeight = height.value - 124;
+  const targetWidth = 1200;
 
   if (width.value < 600) {
-    scale.value = 1
-    return
+    scale.value = 1;
+    return;
   }
 
   if (height.value > targetHeight) {
-    height.value = targetHeight
+    height.value = targetHeight;
   }
 
-  scale.value = Math.min(height.value / targetHeight, width.value / targetWidth)
-}
+  scale.value = Math.min(
+    height.value / targetHeight,
+    width.value / targetWidth,
+  );
+};
 
 watch(
   [width, height],
   () => {
     if (resizeTimeout.value) {
-      clearTimeout(resizeTimeout.value)
+      clearTimeout(resizeTimeout.value);
     }
     resizeTimeout.value = setTimeout(() => {
-      handleResize()
-      resizeTimeout.value = null
-    }, 300)
+      handleResize();
+      resizeTimeout.value = null;
+    }, 300);
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 </script>
 
 <style scoped lang="scss">

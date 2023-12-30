@@ -103,55 +103,58 @@
 </template>
 
 <script setup lang="ts">
-import { useTheme, useDisplay } from 'vuetify'
-import { MineSweeper, type IMineSweeper } from '~/utils/minesweeper/mineSweeper'
+import { useTheme, useDisplay } from "vuetify";
+import {
+  MineSweeper,
+  type IMineSweeper,
+} from "~/utils/minesweeper/mineSweeper";
 import type {
   GameOptions,
   Difficulty,
-  GameStatus
-} from '~/utils/minesweeper/types'
-import type { Cell } from '~/utils/minesweeper/cell'
-import type { Timer } from '~/utils/minesweeper/Timer'
-import { saveScoreboard } from '~/utils/minesweeper/database'
+  GameStatus,
+} from "~/utils/minesweeper/types";
+import type { Cell } from "~/utils/minesweeper/cell";
+import type { Timer } from "~/utils/minesweeper/Timer";
+import { saveScoreboard } from "~/utils/minesweeper/database";
 
 useSeoMeta({
-  title: 'Démineur - ioTactile Games',
-  ogTitle: 'Démineur - ioTactile Games',
-  twitterTitle: 'Démineur - ioTactile Games',
-  description: 'Page du jeu Démineur',
-  ogDescription: 'Page du jeu Démineur',
-  twitterDescription: 'Page du jeu Démineur',
-  ogImage: '/minesweeper/minesweeper.png',
-  twitterImage: '/minesweeper/minesweeper.png',
-  twitterCard: 'summary_large_image',
-  ogUrl: 'https://iotactile.games/minesweeper'
-})
+  title: "Démineur - ioTactile Games",
+  ogTitle: "Démineur - ioTactile Games",
+  twitterTitle: "Démineur - ioTactile Games",
+  description: "Page du jeu Démineur",
+  ogDescription: "Page du jeu Démineur",
+  twitterDescription: "Page du jeu Démineur",
+  ogImage: "/minesweeper/minesweeper.png",
+  twitterImage: "/minesweeper/minesweeper.png",
+  twitterCard: "summary_large_image",
+  ogUrl: "https://iotactile.games/minesweeper",
+});
 
 useHead({
   htmlAttrs: {
-    lang: 'fr'
+    lang: "fr",
   },
   link: [
     {
-      rel: 'icon',
-      type: 'image/png',
-      href: 'favicon.png'
-    }
-  ]
-})
+      rel: "icon",
+      type: "image/png",
+      href: "favicon.png",
+    },
+  ],
+});
 
 if (process.client) {
-  window.addEventListener('keyup', (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      returnToPreviousPage(menuPage.value)
+  window.addEventListener("keyup", (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      returnToPreviousPage(menuPage.value);
     }
-  })
+  });
 }
 
-const { current } = useTheme()
-const { width } = useDisplay()
+const { current } = useTheme();
+const { width } = useDisplay();
 
-const user = useCurrentUser()
+const user = useCurrentUser();
 
 const actionMap: Record<string, number> = {
   play: 1,
@@ -162,118 +165,120 @@ const actionMap: Record<string, number> = {
   rankingCustom: 2.4,
   results: 3,
   rules: 4,
-  gameBoard: 5
-}
+  gameBoard: 5,
+};
 
-const mineSweeper = ref<IMineSweeper>(new MineSweeper())
-const numRows = ref<number>(9)
-const numCols = ref<number>(9)
-const numMines = ref<number>(10)
-const difficulty = ref<Difficulty>('beginner')
-const menuPage = ref<number>(0)
-const isCustom = ref<boolean>(false)
-const selectedAction = ref<string>('mine')
+const mineSweeper = ref<IMineSweeper>(new MineSweeper());
+const numRows = ref<number>(9);
+const numCols = ref<number>(9);
+const numMines = ref<number>(10);
+const difficulty = ref<Difficulty>("beginner");
+const menuPage = ref<number>(0);
+const isCustom = ref<boolean>(false);
+const selectedAction = ref<string>("mine");
 
 const toggleIsCustom = (value?: boolean): void => {
-  isCustom.value = value ?? !isCustom.value
-}
+  isCustom.value = value ?? !isCustom.value;
+};
 
 const handleActions = (action: string): void => {
-  menuPage.value = actionMap[action] || 0
-}
+  menuPage.value = actionMap[action] || 0;
+};
 
 const returnToPreviousPage = (actualPage: number): void => {
   if (actualPage > 2 && actualPage < 3) {
-    menuPage.value = 2
+    menuPage.value = 2;
   } else if (actualPage === 1 && isCustom.value === true) {
-    isCustom.value = false
+    isCustom.value = false;
   } else {
-    menuPage.value = 0
+    menuPage.value = 0;
   }
-}
+};
 
 const gameBoard = computed((): Cell[][] => {
-  const board = mineSweeper.value.getBoard()
+  const board = mineSweeper.value.getBoard();
   if (width.value > 600) {
-    return board
+    return board;
   } else {
-    const newBoard: Cell[][] = []
+    const newBoard: Cell[][] = [];
     for (let i = 0; i < board[0].length; i++) {
-      newBoard.push([])
+      newBoard.push([]);
       for (let j = 0; j < board.length; j++) {
-        newBoard[i].push(board[j][i])
+        newBoard[i].push(board[j][i]);
       }
     }
-    return newBoard
+    return newBoard;
   }
-})
+});
 
-const timer = computed((): Timer => mineSweeper.value.getTimer())
+const timer = computed((): Timer => mineSweeper.value.getTimer());
 
 const gameStatusToString = computed((): string =>
-  mineSweeper.value.getGameStatusString()
-)
+  mineSweeper.value.getGameStatusString(),
+);
 
-const gameStatus = computed((): GameStatus => mineSweeper.value.getGameStatus())
+const gameStatus = computed(
+  (): GameStatus => mineSweeper.value.getGameStatus(),
+);
 
 const getArrowBackColor = computed((): string => {
   return current.value.dark
-    ? '/minesweeper/ui/left-arrow-grey.svg'
-    : '/minesweeper/ui/left-arrow.svg'
-})
+    ? "/minesweeper/ui/left-arrow-grey.svg"
+    : "/minesweeper/ui/left-arrow.svg";
+});
 
 const startGame = (options: GameOptions): void => {
   if (options.numMines > options.numRows * options.numCols) {
-    return
+    return;
   }
 
-  mineSweeper.value.setup(options)
-  numRows.value = options.numRows
-  numCols.value = options.numCols
-  numMines.value = options.numMines
-  difficulty.value = options.difficulty
-}
+  mineSweeper.value.setup(options);
+  numRows.value = options.numRows;
+  numCols.value = options.numCols;
+  numMines.value = options.numMines;
+  difficulty.value = options.difficulty;
+};
 
 const restartGame = (): void => {
   mineSweeper.value.restart({
     numRows: numRows.value,
     numCols: numCols.value,
     numMines: numMines.value,
-    difficulty: difficulty.value
-  })
-}
+    difficulty: difficulty.value,
+  });
+};
 
 const handleRightClick = (data: {
-  rowIndex: number
-  colIndex: number
+  rowIndex: number;
+  colIndex: number;
 }): void => {
-  const { rowIndex, colIndex } = data
+  const { rowIndex, colIndex } = data;
 
   if (width.value > 600) {
-    mineSweeper.value.handleCellAction(rowIndex, colIndex, 'flag')
+    mineSweeper.value.handleCellAction(rowIndex, colIndex, "flag");
   } else {
-    mineSweeper.value.handleCellAction(colIndex, rowIndex, 'flag')
+    mineSweeper.value.handleCellAction(colIndex, rowIndex, "flag");
   }
-}
+};
 
 const handleLeftClick = async (data: {
-  rowIndex: number
-  colIndex: number
-  callback: (gameStatus: GameStatus) => void
+  rowIndex: number;
+  colIndex: number;
+  callback: (gameStatus: GameStatus) => void;
 }): Promise<void> => {
-  const { rowIndex, colIndex } = data
+  const { rowIndex, colIndex } = data;
 
   if (width.value > 600) {
-    mineSweeper.value.handleCellAction(rowIndex, colIndex, 'click')
-  } else if (width.value <= 600 && selectedAction.value === 'flag') {
-    mineSweeper.value.handleCellAction(colIndex, rowIndex, 'flag')
-  } else if (width.value <= 600 && selectedAction.value === 'mine') {
-    mineSweeper.value.handleCellAction(colIndex, rowIndex, 'click')
+    mineSweeper.value.handleCellAction(rowIndex, colIndex, "click");
+  } else if (width.value <= 600 && selectedAction.value === "flag") {
+    mineSweeper.value.handleCellAction(colIndex, rowIndex, "flag");
+  } else if (width.value <= 600 && selectedAction.value === "mine") {
+    mineSweeper.value.handleCellAction(colIndex, rowIndex, "click");
   }
 
-  data.callback(mineSweeper.value.getGameStatus())
-  if (mineSweeper.value.getGameStatus() === 'won') {
-    if (!user.value) return
+  data.callback(mineSweeper.value.getGameStatus());
+  if (mineSweeper.value.getGameStatus() === "won") {
+    if (!user.value) return;
 
     await saveScoreboard(
       user.value.uid,
@@ -281,14 +286,14 @@ const handleLeftClick = async (data: {
       difficulty.value,
       numCols.value,
       numRows.value,
-      numMines.value
-    )
+      numMines.value,
+    );
   }
-}
+};
 
 onBeforeRouteLeave((): void => {
-  mineSweeper.value.getTimer().reset()
-})
+  mineSweeper.value.getTimer().reset();
+});
 </script>
 
 <style scoped lang="scss">
@@ -423,7 +428,7 @@ onBeforeRouteLeave((): void => {
   }
 
   .title {
-    font-family: 'Orbitron', sans-serif;
+    font-family: "Orbitron", sans-serif;
     font-size: 3rem;
     font-weight: 700;
     text-transform: uppercase;

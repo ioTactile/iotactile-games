@@ -38,12 +38,12 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: 'openRules', value: boolean): void
-}>()
+  (e: "openRules", value: boolean): void;
+}>();
 
 const openRules = () => {
-  emit('openRules', true)
-}
+  emit("openRules", true);
+};
 </script>
 
 <style scoped lang="scss">

@@ -61,8 +61,8 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: 'action', value: string): void
-}>()
+  (e: "action", value: string): void;
+}>();
 </script>
 
 <style scoped lang="scss">
@@ -76,7 +76,7 @@ const emit = defineEmits<{
     margin-bottom: 20px;
 
     h3 {
-      font-family: 'Orbitron', sans-serif;
+      font-family: "Orbitron", sans-serif;
       margin-bottom: 10px;
       text-align: center;
       font-size: 1.5rem;

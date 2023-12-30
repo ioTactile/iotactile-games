@@ -13,18 +13,18 @@
 </template>
 
 <script setup lang="ts">
-import { VBtn } from 'vuetify/components'
-import { mdiMusicNote } from '@mdi/js'
-import { onClickOutside } from '@vueuse/core'
+import { VBtn } from "vuetify/components";
+import { mdiMusicNote } from "@mdi/js";
+import { onClickOutside } from "@vueuse/core";
 
-const isMusicPlayerVisible = ref<boolean>(false)
-const musicPlayer = ref<HTMLElement>()
+const isMusicPlayerVisible = ref<boolean>(false);
+const musicPlayer = ref<HTMLElement>();
 
 onClickOutside(musicPlayer, (): void => {
-  isMusicPlayerVisible.value = false
-})
+  isMusicPlayerVisible.value = false;
+});
 
 const toggleMusicPlayer = () => {
-  isMusicPlayerVisible.value = !isMusicPlayerVisible.value
-}
+  isMusicPlayerVisible.value = !isMusicPlayerVisible.value;
+};
 </script>

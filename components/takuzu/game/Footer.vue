@@ -109,28 +109,28 @@
 
 <script setup lang="ts">
 defineProps<{
-  errorMessage: string
-  isPaused: boolean
-  isRotating: boolean
-}>()
+  errorMessage: string;
+  isPaused: boolean;
+  isRotating: boolean;
+}>();
 
 const emit = defineEmits<{
-  (e: 'undo'): void
-  (e: 'reset'): void
-  (e: 'togglePause'): void
-}>()
+  (e: "undo"): void;
+  (e: "reset"): void;
+  (e: "togglePause"): void;
+}>();
 
 const undo = () => {
-  emit('undo')
-}
+  emit("undo");
+};
 
 const reset = () => {
-  emit('reset')
-}
+  emit("reset");
+};
 
 const togglePause = () => {
-  emit('togglePause')
-}
+  emit("togglePause");
+};
 </script>
 
 <style scoped lang="scss">

@@ -1,97 +1,97 @@
-import { CellValues, ERRORS } from './constants'
-import { countSubstrInStr } from './utils'
-import type { TakuzuCheckErrorType, TakuzuCheckResult } from './types'
+import { CellValues, ERRORS } from "./constants";
+import { countSubstrInStr } from "./utils";
+import type { TakuzuCheckErrorType, TakuzuCheckResult } from "./types";
 
 export const checkBoard = (board: string[][]): TakuzuCheckResult => {
-  const rows: string[] = []
-  const cols: string[] = []
+  const rows: string[] = [];
+  const cols: string[] = [];
 
   for (let i = 0; i < board.length; i++) {
-    const row = board[i].join('')
-    let col = ''
+    const row = board[i].join("");
+    let col = "";
 
     for (let j = 0; j < board.length; j++) {
-      col += board[j][i]
+      col += board[j][i];
     }
 
-    rows.push(row)
-    cols.push(col)
+    rows.push(row);
+    cols.push(col);
   }
 
-  const duplicatedRows = checkDuplication(rows, 'row')
+  const duplicatedRows = checkDuplication(rows, "row");
   if (duplicatedRows.length > 0) {
-    return createCheckerError('duplicate', ERRORS.DUPLICATE, duplicatedRows)
+    return createCheckerError("duplicate", ERRORS.DUPLICATE, duplicatedRows);
   }
 
-  const duplicatedCols = checkDuplication(cols, 'col')
+  const duplicatedCols = checkDuplication(cols, "col");
   if (duplicatedCols.length > 0) {
-    return createCheckerError('duplicate', ERRORS.DUPLICATE, duplicatedCols)
+    return createCheckerError("duplicate", ERRORS.DUPLICATE, duplicatedCols);
   }
 
   for (let i = 0; i < rows.length; i++) {
-    const isNotTripled = checkNotTriple(rows[i])
+    const isNotTripled = checkNotTriple(rows[i]);
     if (!isNotTripled)
-      return createCheckerError('triple', ERRORS.TRIPLE, [`row-${i}`])
+      return createCheckerError("triple", ERRORS.TRIPLE, [`row-${i}`]);
 
-    const isBalanced = checkBalance(rows[i])
+    const isBalanced = checkBalance(rows[i]);
     if (!isBalanced)
-      return createCheckerError('balance', ERRORS.BALANCE, [`row-${i}`])
+      return createCheckerError("balance", ERRORS.BALANCE, [`row-${i}`]);
   }
 
   for (let i = 0; i < cols.length; i++) {
-    const isNotTripled = checkNotTriple(cols[i])
+    const isNotTripled = checkNotTriple(cols[i]);
     if (!isNotTripled)
-      return createCheckerError('triple', ERRORS.TRIPLE, [`col-${i}`])
+      return createCheckerError("triple", ERRORS.TRIPLE, [`col-${i}`]);
 
-    const isBalanced = checkBalance(cols[i])
+    const isBalanced = checkBalance(cols[i]);
     if (!isBalanced)
-      return createCheckerError('balance', ERRORS.BALANCE, [`col-${i}`])
+      return createCheckerError("balance", ERRORS.BALANCE, [`col-${i}`]);
   }
 
-  return { error: false }
-}
+  return { error: false };
+};
 
 const checkBalance = (line: string): boolean => {
-  const zeros = countSubstrInStr(line, CellValues.ZERO)
-  const ones = countSubstrInStr(line, CellValues.ONE)
+  const zeros = countSubstrInStr(line, CellValues.ZERO);
+  const ones = countSubstrInStr(line, CellValues.ONE);
 
-  const balanced = zeros === ones
-  return balanced
-}
+  const balanced = zeros === ones;
+  return balanced;
+};
 
 const checkNotTriple = (line: string): boolean => {
-  const tripleZeros = line.includes(CellValues.ZERO.repeat(3))
-  const tripleOnes = line.includes(CellValues.ONE.repeat(3))
+  const tripleZeros = line.includes(CellValues.ZERO.repeat(3));
+  const tripleOnes = line.includes(CellValues.ONE.repeat(3));
 
-  const triple = tripleZeros || tripleOnes
-  return !triple
-}
+  const triple = tripleZeros || tripleOnes;
+  return !triple;
+};
 
-const checkDuplication = (lines: string[], type: 'row' | 'col'): string[] => {
-  const position = []
+const checkDuplication = (lines: string[], type: "row" | "col"): string[] => {
+  const position = [];
 
   for (let i = 0; i < lines.length; i++) {
     for (let j = i + 1; j < lines.length; j++) {
       if (lines[i] === lines[j]) {
-        position.push(`${type}-${i}, ${type}-${j}`)
+        position.push(`${type}-${i}, ${type}-${j}`);
       }
     }
 
-    if (position.length) break
+    if (position.length) break;
   }
 
-  return position
-}
+  return position;
+};
 
 const createCheckerError = (
   type: TakuzuCheckErrorType,
   message: string,
-  position: string[]
+  position: string[],
 ): TakuzuCheckResult => {
   return {
     error: true,
     type,
     message,
-    position
-  }
-}
+    position,
+  };
+};

@@ -1,17 +1,17 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
 export const useDiceSoundsStore = defineStore(
-  'diceSounds',
+  "diceSounds",
   () => {
-    const isSoundEffectsActive = ref<boolean>(true)
-    const isNotificationsActive = ref<boolean>(true)
+    const isSoundEffectsActive = ref<boolean>(true);
+    const isNotificationsActive = ref<boolean>(true);
 
     return {
       isSoundEffectsActive,
-      isNotificationsActive
-    }
+      isNotificationsActive,
+    };
   },
   {
-    persist: true
-  }
-)
+    persist: true,
+  },
+);

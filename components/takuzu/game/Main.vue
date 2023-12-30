@@ -4,7 +4,7 @@
     :style="[
       `background-color: ${getColor('background')}`,
       `width: ${backgroundColor.width}`,
-      `height: ${backgroundColor.height}`
+      `height: ${backgroundColor.height}`,
     ]"
   >
     <div ref="board" class="board" :style="{ transform: `scale(${scale})` }">
@@ -19,7 +19,7 @@
             :class="[
               cellValue(row[colIndex]),
               startedCell(rowIndex, colIndex),
-              timer.getIsPaused() ? 'cell--paused' : ''
+              timer.getIsPaused() ? 'cell--paused' : '',
             ]"
             :style="borderEmptyCellsStyle(row[colIndex])"
             @click="toggleCell(rowIndex, colIndex)"
@@ -31,74 +31,77 @@
 </template>
 
 <script setup lang="ts">
-import { CellValues } from '~/utils/takuzu/constants'
-import type { Timer } from '~/utils/takuzu/timer'
-import type { CellValues as TCellValues, BoardSize } from '~/utils/takuzu/types'
+import { CellValues } from "~/utils/takuzu/constants";
+import type { Timer } from "~/utils/takuzu/timer";
+import type {
+  CellValues as TCellValues,
+  BoardSize,
+} from "~/utils/takuzu/types";
 
 const props = defineProps<{
-  timer: Timer
-  taskBoard: TCellValues[][]
-  disabledCells: boolean[][]
+  timer: Timer;
+  taskBoard: TCellValues[][];
+  disabledCells: boolean[][];
   options: {
-    boardSize: BoardSize
-    difficulty: string
-  } | null
-  scale: number
+    boardSize: BoardSize;
+    difficulty: string;
+  } | null;
+  scale: number;
   backgroundColor: {
-    width: string
-    height: string
-  }
-}>()
+    width: string;
+    height: string;
+  };
+}>();
 
 const emits = defineEmits<{
-  (e: 'toggleCell', args: { rowIndex: number; colIndex: number }): void
-}>()
+  (e: "toggleCell", args: { rowIndex: number; colIndex: number }): void;
+}>();
 
 onMounted(() => {
-  board.value?.addEventListener('contextmenu', (e) => {
-    e.preventDefault()
-  })
-})
+  board.value?.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+  });
+});
 
-const board = ref<HTMLElement | undefined>(undefined)
+const board = ref<HTMLElement | undefined>(undefined);
 
 const toggleCell = (rowIndex: number, colIndex: number): void => {
-  emits('toggleCell', { rowIndex, colIndex })
-}
+  emits("toggleCell", { rowIndex, colIndex });
+};
 
 const cellValue = (cell: TCellValues): string => {
-  if (cell === CellValues.EMPTY) return 'cell--empty'
-  if (cell === CellValues.ZERO) return 'cell--black'
-  if (cell === CellValues.ONE) return 'cell--white'
-  return ''
-}
+  if (cell === CellValues.EMPTY) return "cell--empty";
+  if (cell === CellValues.ZERO) return "cell--black";
+  if (cell === CellValues.ONE) return "cell--white";
+  return "";
+};
 
 const startedCell = (rowIndex: number, colIndex: number): string => {
-  if (props.disabledCells[rowIndex][colIndex]) return 'cell--started'
-  return ''
-}
+  if (props.disabledCells[rowIndex][colIndex]) return "cell--started";
+  return "";
+};
 
 const borderEmptyCellsStyle = (cell: TCellValues): string => {
   return cell === CellValues.EMPTY
-    ? `border: 1px solid ${getColor('border')}`
-    : ''
-}
+    ? `border: 1px solid ${getColor("border")}`
+    : "";
+};
 
-const getColor = (value: 'background' | 'border'): string => {
-  if (!props.options) return ''
-  if (value === 'background') {
-    if (props.options.difficulty === 'easy') return '#4CAF50'
-    if (props.options.difficulty === 'medium') return '#3F51B5'
-    if (props.options.difficulty === 'hard') return '#FF9800'
-    if (props.options.difficulty === 'expert') return '#F44336'
-  } else if (value === 'border') {
-    if (props.options.difficulty === 'easy') return '#388E3C'
-    if (props.options.difficulty === 'medium') return '#303F9F'
-    if (props.options.difficulty === 'hard') return '#F57C00'
-    if (props.options.difficulty === 'expert') return '#D32F2F'
+const getColor = (value: "background" | "border"): string => {
+  if (!props.options) return "";
+  if (value === "background") {
+    if (props.options.difficulty === "easy") return "#4CAF50";
+    if (props.options.difficulty === "medium") return "#3F51B5";
+    if (props.options.difficulty === "hard") return "#FF9800";
+    if (props.options.difficulty === "expert") return "#F44336";
+  } else if (value === "border") {
+    if (props.options.difficulty === "easy") return "#388E3C";
+    if (props.options.difficulty === "medium") return "#303F9F";
+    if (props.options.difficulty === "hard") return "#F57C00";
+    if (props.options.difficulty === "expert") return "#D32F2F";
   }
-  return ''
-}
+  return "";
+};
 </script>
 
 <style scoped lang="scss">

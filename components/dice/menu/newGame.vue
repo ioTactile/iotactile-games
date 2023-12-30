@@ -12,27 +12,27 @@
 </template>
 
 <script setup lang="ts">
-import { DiceSession } from '~/utils/dice/diceSession'
+import { DiceSession } from "~/utils/dice/diceSession";
 
 const emit = defineEmits<{
-  (e: 'action', value: string): void
-}>()
+  (e: "action", value: string): void;
+}>();
 
-const sessionName = ref<string>('')
+const sessionName = ref<string>("");
 
 const createSession = () => {
   if (!sessionName.value) {
-    return
+    return;
   }
-  const diceSession = new DiceSession()
+  const diceSession = new DiceSession();
 
   try {
-    diceSession.create(sessionName.value)
+    diceSession.create(sessionName.value);
   } finally {
-    sessionName.value = ''
-    emit('action', 'viewGames')
+    sessionName.value = "";
+    emit("action", "viewGames");
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

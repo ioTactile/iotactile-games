@@ -13,27 +13,27 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: 'action', value: string): void
-}>()
+  (e: "action", value: string): void;
+}>();
 
 const menuItems = [
   {
-    title: 'Jouer',
-    action: 'play'
+    title: "Jouer",
+    action: "play",
   },
   {
-    title: 'Classement',
-    action: 'ranking'
+    title: "Classement",
+    action: "ranking",
   },
   {
-    title: 'Résultats',
-    action: 'results'
+    title: "Résultats",
+    action: "results",
   },
   {
-    title: 'Règles',
-    action: 'rules'
-  }
-]
+    title: "Règles",
+    action: "rules",
+  },
+];
 </script>
 
 <style scoped lang="scss">

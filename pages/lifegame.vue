@@ -57,7 +57,7 @@
               :disabled="!lifeGame"
               @click="startStop"
             >
-              {{ isRunning ? 'Arrêter' : 'Démarrer' }}
+              {{ isRunning ? "Arrêter" : "Démarrer" }}
             </button>
           </div>
           <div>
@@ -103,140 +103,140 @@
 </template>
 
 <script setup lang="ts">
-import { LifeGame } from '~/utils/lifegame/lifeGame'
-import * as patterns from '~/utils/lifegame/lifeGamePatterns'
+import { LifeGame } from "~/utils/lifegame/lifeGame";
+import * as patterns from "~/utils/lifegame/lifeGamePatterns";
 
-const numRows = ref<number>(100)
-const numCols = ref<number>(80)
-const lifeGame = ref<LifeGame | null>(null)
-const isDrawing = ref<boolean>(false)
-const isRunning = ref<boolean>(false)
-const isRecording = ref<boolean>(false)
-const speed = ref<number>(100)
-const intervalId = ref<NodeJS.Timeout | undefined>(undefined)
-const selectedPattern = ref<number[][] | null>(null)
-const mediaRecorder = ref<MediaRecorder | null>(null)
-const recordedChunks = ref<Blob[]>([])
+const numRows = ref<number>(100);
+const numCols = ref<number>(80);
+const lifeGame = ref<LifeGame | null>(null);
+const isDrawing = ref<boolean>(false);
+const isRunning = ref<boolean>(false);
+const isRecording = ref<boolean>(false);
+const speed = ref<number>(100);
+const intervalId = ref<NodeJS.Timeout | undefined>(undefined);
+const selectedPattern = ref<number[][] | null>(null);
+const mediaRecorder = ref<MediaRecorder | null>(null);
+const recordedChunks = ref<Blob[]>([]);
 
 const patternsArray = [
   {
     schema: patterns.glider,
-    name: 'Glider'
+    name: "Glider",
   },
   {
     schema: patterns.bar,
-    name: 'La ruche'
+    name: "La ruche",
   },
   {
     schema: patterns.pentaDecathlon,
-    name: 'Pentadecathlon'
+    name: "Pentadecathlon",
   },
   {
     schema: patterns.pentomino,
-    name: 'Pentomino'
-  }
-]
+    name: "Pentomino",
+  },
+];
 
 watch(
   () => selectedPattern.value,
   (newValue) => {
     if (newValue) {
-      clearBoard()
-      lifeGame.value?.loadPattern(newValue)
+      clearBoard();
+      lifeGame.value?.loadPattern(newValue);
       lifeGame.value?.getBoard().forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
           if (cell) {
-            addCell(rowIndex, colIndex)
+            addCell(rowIndex, colIndex);
           }
-        })
-      })
+        });
+      });
     }
-  }
-)
+  },
+);
 
 const board = computed(() => {
-  return lifeGame.value?.getBoard()
-})
+  return lifeGame.value?.getBoard();
+});
 
 const gridStyle = computed(() => {
   return {
     gridTemplateRows: `repeat(${numCols.value}, 10px)`,
-    gridTemplateColumns: `repeat(${numRows.value}, 10px)`
-  }
-})
+    gridTemplateColumns: `repeat(${numRows.value}, 10px)`,
+  };
+});
 
 const startStop = () => {
   if (isRunning.value) {
-    clearInterval(intervalId.value)
-    intervalId.value = undefined
+    clearInterval(intervalId.value);
+    intervalId.value = undefined;
 
     if (isRecording.value && mediaRecorder.value) {
-      mediaRecorder.value.stop()
+      mediaRecorder.value.stop();
       const blob = new Blob(recordedChunks.value, {
-        type: 'video/webm'
-      })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `life_game_${Date.now()}.webm`
-      a.click()
-      recordedChunks.value = []
+        type: "video/webm",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `life_game_${Date.now()}.webm`;
+      a.click();
+      recordedChunks.value = [];
     }
   } else {
     if (isRecording.value) {
       const stream = (
-        document.querySelector('.grid') as HTMLDivElement
-      ).captureStream() as MediaStream
+        document.querySelector(".grid") as HTMLDivElement
+      ).captureStream() as MediaStream;
       mediaRecorder.value = new MediaRecorder(stream, {
-        mimeType: 'video/webm'
-      })
+        mimeType: "video/webm",
+      });
       mediaRecorder.value.ondataavailable = (e) => {
         if (e.data.size > 0) {
-          recordedChunks.value.push(e.data)
+          recordedChunks.value.push(e.data);
         }
-      }
-      mediaRecorder.value.start()
+      };
+      mediaRecorder.value.start();
     }
 
     intervalId.value = setInterval(() => {
-      lifeGame.value?.update()
+      lifeGame.value?.update();
       //   removeBorderConnectedGroups()
-      removeActiveCells()
+      removeActiveCells();
       lifeGame.value?.getBoard().forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
           if (cell) {
-            addCell(rowIndex, colIndex)
+            addCell(rowIndex, colIndex);
           }
-        })
-      })
-    }, speed.value)
+        });
+      });
+    }, speed.value);
   }
-  isRunning.value = !isRunning.value
-}
+  isRunning.value = !isRunning.value;
+};
 
 const getBoard = () => {
   if (!numRows.value || !numCols.value) {
-    return
+    return;
   }
 
-  clearBoard()
-  lifeGame.value = new LifeGame(numRows.value, numCols.value)
-}
+  clearBoard();
+  lifeGame.value = new LifeGame(numRows.value, numCols.value);
+};
 
 const clearBoard = () => {
-  lifeGame.value?.clearBoard()
-  selectedPattern.value = null
-  removeActiveCells()
-}
+  lifeGame.value?.clearBoard();
+  selectedPattern.value = null;
+  removeActiveCells();
+};
 
 const addCell = (rowIndex: number, colIndex: number) => {
   const cell = document.querySelector(
-    `.grid > div:nth-child(${rowIndex + 1}) > div:nth-child(${colIndex + 1})`
-  )
+    `.grid > div:nth-child(${rowIndex + 1}) > div:nth-child(${colIndex + 1})`,
+  );
   if (cell) {
-    cell.classList.add('alive')
+    cell.classList.add("alive");
   }
-}
+};
 
 // const removeCell = (rowIndex: number, colIndex: number) => {
 //   const cell = document.querySelector(
@@ -249,24 +249,24 @@ const addCell = (rowIndex: number, colIndex: number) => {
 
 const toggleCell = (rowIndex: number, colIndex: number) => {
   if (!lifeGame.value) {
-    return
+    return;
   }
-  isDrawing.value = true
-  lifeGame.value.toggleCell(rowIndex, colIndex)
+  isDrawing.value = true;
+  lifeGame.value.toggleCell(rowIndex, colIndex);
   const cell = document.querySelector(
-    `.grid > div:nth-child(${rowIndex + 1}) > div:nth-child(${colIndex + 1})`
-  )
+    `.grid > div:nth-child(${rowIndex + 1}) > div:nth-child(${colIndex + 1})`,
+  );
   if (cell) {
-    cell.classList.toggle('alive')
+    cell.classList.toggle("alive");
   }
-}
+};
 
 const removeActiveCells = () => {
-  const activeCells = document.querySelectorAll('.alive')
+  const activeCells = document.querySelectorAll(".alive");
   activeCells.forEach((cell) => {
-    cell.classList.remove('alive')
-  })
-}
+    cell.classList.remove("alive");
+  });
+};
 
 // const removeBorderConnectedGroups = () => {
 //   if (!lifeGame.value) {
@@ -511,7 +511,7 @@ input {
   }
 
   input + span:before {
-    content: '';
+    content: "";
     display: inline-block;
     position: absolute;
     top: 50%;

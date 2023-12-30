@@ -20,7 +20,7 @@
         :key="j"
         class="button-difficulty"
         :class="{
-          'button-difficulty-selected': difficulty === diff.value
+          'button-difficulty-selected': difficulty === diff.value,
         }"
         :style="difficultyStyle(diff.value)"
         @click="difficulty = diff.value"
@@ -34,78 +34,78 @@
 </template>
 
 <script setup lang="ts">
-import type { Difficulty, BoardSize, GameOptions } from '~/utils/takuzu/types'
+import type { Difficulty, BoardSize, GameOptions } from "~/utils/takuzu/types";
 
 const emit = defineEmits<{
-  (e: 'start-game', args: GameOptions): void
-}>()
+  (e: "start-game", args: GameOptions): void;
+}>();
 
-const boardSize = ref<BoardSize>(6)
-const difficulty = ref<Difficulty>('easy')
+const boardSize = ref<BoardSize>(6);
+const difficulty = ref<Difficulty>("easy");
 
 const boardSizes: {
-  name: string
-  value: BoardSize
+  name: string;
+  value: BoardSize;
 }[] = [
   {
-    name: '6 x 6',
-    value: 6
+    name: "6 x 6",
+    value: 6,
   },
   {
-    name: '8 x 8',
-    value: 8
+    name: "8 x 8",
+    value: 8,
   },
   {
-    name: '10 x 10',
-    value: 10
+    name: "10 x 10",
+    value: 10,
   },
   {
-    name: '12 x 12',
-    value: 12
-  }
-]
+    name: "12 x 12",
+    value: 12,
+  },
+];
 
 const difficulties: {
-  name: string
-  value: Difficulty
+  name: string;
+  value: Difficulty;
 }[] = [
   {
-    name: 'Facile',
-    value: 'easy'
+    name: "Facile",
+    value: "easy",
   },
   {
-    name: 'Moyen',
-    value: 'medium'
+    name: "Moyen",
+    value: "medium",
   },
   {
-    name: 'Difficile',
-    value: 'hard'
+    name: "Difficile",
+    value: "hard",
   },
   {
-    name: 'Expert',
-    value: 'expert'
-  }
-]
+    name: "Expert",
+    value: "expert",
+  },
+];
 
 const difficultyStyle = (difficulty: Difficulty): string => {
   switch (difficulty) {
-    case 'easy':
-      return 'background-color: #4CAF50;'
-    case 'medium':
-      return 'background-color: #3F51B5;'
-    case 'hard':
-      return 'background-color: #FF9800;'
-    case 'expert':
-      return 'background-color: #F44336;'
+    case "easy":
+      return "background-color: #4CAF50;";
+    case "medium":
+      return "background-color: #3F51B5;";
+    case "hard":
+      return "background-color: #FF9800;";
+    case "expert":
+      return "background-color: #F44336;";
   }
-}
+};
 
 const startGame = (): void => {
-  emit('start-game', {
+  emit("start-game", {
     boardSize: boardSize.value,
-    difficulty: difficulty.value
-  })
-}
+    difficulty: difficulty.value,
+  });
+};
 </script>
 
 <style scoped lang="scss">
@@ -128,7 +128,7 @@ const startGame = (): void => {
     font-size: 1.25rem;
     margin-bottom: 1rem;
     color: rgb(var(--v-theme-takuzuMainOnSurface));
-    font-family: 'Quicksand', sans-serif;
+    font-family: "Quicksand", sans-serif;
   }
 
   .button-size-container {
@@ -149,7 +149,7 @@ const startGame = (): void => {
       color: rgb(var(--v-theme-takuzuMainOnSurface));
       border: 1px solid rgb(var(--v-theme-takuzuMainOnSurface));
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
-      font-family: 'Quicksand', sans-serif;
+      font-family: "Quicksand", sans-serif;
       transition: all 0.2s ease-in-out;
 
       @media screen and (max-width: 600px) {
@@ -179,7 +179,7 @@ const startGame = (): void => {
       padding: 0.5rem 1rem;
       border-radius: 20px;
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
-      font-family: 'Quicksand', sans-serif;
+      font-family: "Quicksand", sans-serif;
       color: #000000;
       transition: all 0.2s ease-in-out;
       opacity: 0.5;
@@ -204,7 +204,7 @@ const startGame = (): void => {
     color: #ffffff;
     border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-    font-family: 'Quicksand', sans-serif;
+    font-family: "Quicksand", sans-serif;
     transition: all 0.2s ease-in-out;
   }
 }

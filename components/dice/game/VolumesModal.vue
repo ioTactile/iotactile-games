@@ -47,58 +47,58 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-import type { ISoundService } from '~/utils/music/soundService'
-import { useDiceSoundsStore } from '~/stores/diceSounds'
+import { storeToRefs } from "pinia";
+import type { ISoundService } from "~/utils/music/soundService";
+import { useDiceSoundsStore } from "~/stores/diceSounds";
 
 const props = defineProps<{
-  soundService: ISoundService
-}>()
+  soundService: ISoundService;
+}>();
 
 const emit = defineEmits<{
-  (e: 'openVolumes', value: boolean): void
-}>()
+  (e: "openVolumes", value: boolean): void;
+}>();
 
-const diceSoundsStore = useDiceSoundsStore()
+const diceSoundsStore = useDiceSoundsStore();
 const { isSoundEffectsActive, isNotificationsActive } =
-  storeToRefs(diceSoundsStore)
+  storeToRefs(diceSoundsStore);
 
 const sounds = ref([
   {
-    name: 'EFFETS SONORES',
-    isActive: isSoundEffectsActive.value
+    name: "EFFETS SONORES",
+    isActive: isSoundEffectsActive.value,
   },
   {
-    name: 'NOTIFICATIONS',
-    isActive: isNotificationsActive.value
-  }
-])
+    name: "NOTIFICATIONS",
+    isActive: isNotificationsActive.value,
+  },
+]);
 
 const closeVolume = () => {
-  emit('openVolumes', false)
-}
+  emit("openVolumes", false);
+};
 
 const changeValue = (soundName: string, value: boolean) => {
-  if (soundName === 'EFFETS SONORES') {
-    isSoundEffectsActive.value = value
+  if (soundName === "EFFETS SONORES") {
+    isSoundEffectsActive.value = value;
 
     if (isSoundEffectsActive.value) {
-      props.soundService.unmuteSound('dice')
-      props.soundService.unmuteSound('shakeRoll')
+      props.soundService.unmuteSound("dice");
+      props.soundService.unmuteSound("shakeRoll");
     } else {
-      props.soundService.muteSound('dice')
-      props.soundService.muteSound('shakeRoll')
+      props.soundService.muteSound("dice");
+      props.soundService.muteSound("shakeRoll");
     }
-  } else if (soundName === 'NOTIFICATIONS') {
-    isNotificationsActive.value = value
+  } else if (soundName === "NOTIFICATIONS") {
+    isNotificationsActive.value = value;
 
     if (isNotificationsActive.value) {
-      props.soundService.unmuteSound('message')
+      props.soundService.unmuteSound("message");
     } else {
-      props.soundService.muteSound('message')
+      props.soundService.muteSound("message");
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

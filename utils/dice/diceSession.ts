@@ -9,8 +9,8 @@ import {
   query,
   where,
   deleteField,
-  Timestamp
-} from 'firebase/firestore'
+  Timestamp,
+} from "firebase/firestore";
 import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
@@ -19,77 +19,77 @@ import {
   diceSessionPlayerTriesConverter,
   diceSessionScoresConverter,
   diceScoreboardConverter,
-  diceSessionChatConverter
-} from '~/stores/'
-import type { LocalDiceSessionType } from '~/stores'
+  diceSessionChatConverter,
+} from "~/stores/";
+import type { LocalDiceSessionType } from "~/stores";
 
 export interface IDiceSession {
-  create(name: string): void
-  start(session: LocalDiceSessionType): void
-  leave(session: LocalDiceSessionType): void
-  delete(session: LocalDiceSessionType): void
-  join(session: LocalDiceSessionType): void
-  quickJoin(): void
+  create(name: string): void;
+  start(session: LocalDiceSessionType): void;
+  leave(session: LocalDiceSessionType): void;
+  delete(session: LocalDiceSessionType): void;
+  join(session: LocalDiceSessionType): void;
+  quickJoin(): void;
 }
 
 export class DiceSession implements IDiceSession {
-  private db = useFirestore()
-  private user = useCurrentUser()
-  private notifier = useNotifier()
+  private db = useFirestore();
+  private user = useCurrentUser();
+  private notifier = useNotifier();
 
-  private sessionsRef = collection(this.db, 'diceSessions').withConverter(
-    diceSessionConverter
-  )
+  private sessionsRef = collection(this.db, "diceSessions").withConverter(
+    diceSessionConverter,
+  );
 
   private playerTurnRef = collection(
     this.db,
-    'diceSessionPlayerTurn'
-  ).withConverter(diceSessionPlayerTurnConverter)
+    "diceSessionPlayerTurn",
+  ).withConverter(diceSessionPlayerTurnConverter);
 
   private remainingTurnsRef = collection(
     this.db,
-    'diceSessionRemainingTurns'
-  ).withConverter(diceSessionRemainingTurnsConverter)
+    "diceSessionRemainingTurns",
+  ).withConverter(diceSessionRemainingTurnsConverter);
 
-  private dicesRef = collection(this.db, 'diceSessionDices').withConverter(
-    diceSessionDicesConverter
-  )
+  private dicesRef = collection(this.db, "diceSessionDices").withConverter(
+    diceSessionDicesConverter,
+  );
 
   private playerTriesRef = collection(
     this.db,
-    'diceSessionPlayerTries'
-  ).withConverter(diceSessionPlayerTriesConverter)
+    "diceSessionPlayerTries",
+  ).withConverter(diceSessionPlayerTriesConverter);
 
-  private scoresRef = collection(this.db, 'diceSessionScores').withConverter(
-    diceSessionScoresConverter
-  )
+  private scoresRef = collection(this.db, "diceSessionScores").withConverter(
+    diceSessionScoresConverter,
+  );
 
-  private scoreboardRef = collection(this.db, 'diceScoreboard').withConverter(
-    diceScoreboardConverter
-  )
+  private scoreboardRef = collection(this.db, "diceScoreboard").withConverter(
+    diceScoreboardConverter,
+  );
 
-  private chatRef = collection(this.db, 'diceSessionChat').withConverter(
-    diceSessionChatConverter
-  )
+  private chatRef = collection(this.db, "diceSessionChat").withConverter(
+    diceSessionChatConverter,
+  );
 
   private async getUsername() {
-    const userRef = doc(this.db, 'users', this.user.value!.uid)
-    const userDoc = await getDoc(userRef)
+    const userRef = doc(this.db, "users", this.user.value!.uid);
+    const userDoc = await getDoc(userRef);
     if (!userDoc.exists()) {
-      return
+      return;
     }
-    return userDoc.data()?.username
+    return userDoc.data()?.username;
   }
 
   private async checkScoreboard() {
     const scoreboardQuery = query(
       this.scoreboardRef,
-      where('userId', '==', this.user.value!.uid)
-    )
-    const scoreboardSnapshot = await getDocs(scoreboardQuery)
-    const scoreboard = scoreboardSnapshot.docs.map((doc) => doc.data())
+      where("userId", "==", this.user.value!.uid),
+    );
+    const scoreboardSnapshot = await getDocs(scoreboardQuery);
+    const scoreboard = scoreboardSnapshot.docs.map((doc) => doc.data());
     if (scoreboard.length === 0) {
-      const username = await this.getUsername()
+      const username = await this.getUsername();
       await setDoc(doc(this.scoreboardRef, this.user.value!.uid), {
         userId: this.user.value!.uid,
         username,
@@ -98,8 +98,8 @@ export class DiceSession implements IDiceSession {
         averageScore: 0,
         totalScore: 0,
         victories: 0,
-        dice: 0
-      })
+        dice: 0,
+      });
     }
   }
 
@@ -120,19 +120,19 @@ export class DiceSession implements IDiceSession {
       largeStraight: null,
       chance: null,
       dice: null,
-      total: 0
-    }
-    return scores
+      total: 0,
+    };
+    return scores;
   }
 
   public async create(name: string) {
-    if (!this.user.value) return
+    if (!this.user.value) return;
 
-    const sessionId = doc(this.sessionsRef).id
+    const sessionId = doc(this.sessionsRef).id;
 
-    const sessionRef = doc(this.sessionsRef, sessionId)
+    const sessionRef = doc(this.sessionsRef, sessionId);
 
-    const username = await this.getUsername()
+    const username = await this.getUsername();
 
     await setDoc(sessionRef, {
       id: sessionId,
@@ -140,288 +140,288 @@ export class DiceSession implements IDiceSession {
       players: [
         {
           id: this.user.value.uid,
-          username
-        }
+          username,
+        },
       ],
       isFull: false,
       isStarted: false,
       isFinished: false,
-      creationDate: Timestamp.fromDate(new Date(Date.now()))
-    })
+      creationDate: Timestamp.fromDate(new Date(Date.now())),
+    });
 
     await setDoc(doc(this.playerTurnRef, sessionId), {
       id: sessionId,
-      playerId: this.user.value.uid
-    })
+      playerId: this.user.value.uid,
+    });
 
     await setDoc(doc(this.remainingTurnsRef, sessionId), {
       id: sessionId,
-      remainingTurns: 13
-    })
+      remainingTurns: 13,
+    });
 
     await setDoc(doc(this.dicesRef, sessionId), {
       id: sessionId,
-      dices: []
-    })
+      dices: [],
+    });
 
     await setDoc(doc(this.playerTriesRef, sessionId), {
       id: sessionId,
-      tries: 3
-    })
+      tries: 3,
+    });
 
     await setDoc(doc(this.scoresRef, sessionId), {
       id: sessionId,
       playerOne: this.initScores(),
-      creationDate: Timestamp.fromDate(new Date(Date.now()))
-    })
+      creationDate: Timestamp.fromDate(new Date(Date.now())),
+    });
 
-    this.checkScoreboard()
+    this.checkScoreboard();
   }
 
   public async start(session: LocalDiceSessionType) {
     if (!this.user.value) {
-      return
+      return;
     }
 
     if (session.players.length < 2) {
-      return
+      return;
     }
 
-    const sessionId = session.id
+    const sessionId = session.id;
 
-    const sessionRef = doc(this.sessionsRef, sessionId)
+    const sessionRef = doc(this.sessionsRef, sessionId);
 
-    await updateDoc(sessionRef, { isStarted: true })
+    await updateDoc(sessionRef, { isStarted: true });
   }
 
   public async leave(session: LocalDiceSessionType) {
     if (!this.user.value) {
-      return
+      return;
     }
 
-    const sessionId = session.id
+    const sessionId = session.id;
 
-    const sessionRef = doc(this.sessionsRef, sessionId)
-    const scoresDocRef = doc(this.scoresRef, sessionId)
-    const remainingTurnsDoc = doc(this.remainingTurnsRef, sessionId)
-    const scoresDoc = await getDoc(scoresDocRef)
-    const scores = scoresDoc.data()
+    const sessionRef = doc(this.sessionsRef, sessionId);
+    const scoresDocRef = doc(this.scoresRef, sessionId);
+    const remainingTurnsDoc = doc(this.remainingTurnsRef, sessionId);
+    const scoresDoc = await getDoc(scoresDocRef);
+    const scores = scoresDoc.data();
 
     if (!session) {
-      return
+      return;
     }
 
     if (!session.players.find((player) => player.id === this.user.value?.uid)) {
-      return
+      return;
     }
 
     if (session.isStarted) {
-      return
+      return;
     }
 
     if (scores?.playerTwo?.id === this.user.value.uid) {
       await updateDoc(scoresDocRef, {
-        playerTwo: deleteField()
-      })
+        playerTwo: deleteField(),
+      });
     } else if (scores?.playerThree?.id === this.user.value.uid) {
       await updateDoc(scoresDocRef, {
-        playerThree: deleteField()
-      })
+        playerThree: deleteField(),
+      });
     } else if (scores?.playerFour?.id === this.user.value.uid) {
       await updateDoc(scoresDocRef, {
-        playerFour: deleteField()
-      })
+        playerFour: deleteField(),
+      });
     }
 
     session.players = session.players.filter(
-      (player) => player.id !== this.user.value?.uid
-    )
+      (player) => player.id !== this.user.value?.uid,
+    );
 
-    const joinRemainingTurnsDoc = await getDoc(remainingTurnsDoc)
+    const joinRemainingTurnsDoc = await getDoc(remainingTurnsDoc);
 
     if (!joinRemainingTurnsDoc.exists()) {
-      return
+      return;
     }
 
-    const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns
+    const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns;
 
     await updateDoc(remainingTurnsDoc, {
       id: sessionId,
-      remainingTurns: joinRemainingTurns - 13
-    })
+      remainingTurns: joinRemainingTurns - 13,
+    });
 
     if (session.players.length < 4) {
-      session.isFull = false
+      session.isFull = false;
     }
 
-    await updateDoc(sessionRef, session)
+    await updateDoc(sessionRef, session);
   }
 
   public async delete(session: LocalDiceSessionType) {
     if (!this.user.value) {
-      return
+      return;
     }
 
-    const sessionId = session.id
+    const sessionId = session.id;
 
-    const sessionRef = doc(this.sessionsRef, sessionId)
-    const playerTurnDoc = doc(this.playerTurnRef, sessionId)
-    const scoresDocRef = doc(this.scoresRef, sessionId)
-    const remainingTurnsDoc = doc(this.remainingTurnsRef, sessionId)
-    const dicesDoc = doc(this.dicesRef, sessionId)
-    const playerTriesDoc = doc(this.playerTriesRef, sessionId)
-    const chatDoc = doc(this.chatRef, sessionId)
+    const sessionRef = doc(this.sessionsRef, sessionId);
+    const playerTurnDoc = doc(this.playerTurnRef, sessionId);
+    const scoresDocRef = doc(this.scoresRef, sessionId);
+    const remainingTurnsDoc = doc(this.remainingTurnsRef, sessionId);
+    const dicesDoc = doc(this.dicesRef, sessionId);
+    const playerTriesDoc = doc(this.playerTriesRef, sessionId);
+    const chatDoc = doc(this.chatRef, sessionId);
 
     if (!session) {
-      return
+      return;
     }
     if (!session.players.find((player) => player.id === this.user.value?.uid)) {
-      return
+      return;
     }
     if (session.isStarted) {
-      return
+      return;
     }
 
     if (session.players.length === 1) {
-      await deleteDoc(sessionRef)
-      await deleteDoc(playerTurnDoc)
-      await deleteDoc(scoresDocRef)
-      await deleteDoc(remainingTurnsDoc)
-      await deleteDoc(dicesDoc)
-      await deleteDoc(playerTriesDoc)
+      await deleteDoc(sessionRef);
+      await deleteDoc(playerTurnDoc);
+      await deleteDoc(scoresDocRef);
+      await deleteDoc(remainingTurnsDoc);
+      await deleteDoc(dicesDoc);
+      await deleteDoc(playerTriesDoc);
       if (chatDoc) {
-        await deleteDoc(chatDoc)
+        await deleteDoc(chatDoc);
       }
     }
   }
 
   public async join(session: LocalDiceSessionType) {
     if (!this.user.value) {
-      return
+      return;
     }
 
-    const sessionId = session.id
-    const sessionRef = doc(this.sessionsRef, sessionId)
+    const sessionId = session.id;
+    const sessionRef = doc(this.sessionsRef, sessionId);
 
-    const username = await this.getUsername()
+    const username = await this.getUsername();
 
     if (!session) {
-      return
+      return;
     }
     if (session.isStarted) {
-      return
+      return;
     }
     if (session.players.length >= 4) {
-      return
+      return;
     }
     if (session.players.find((player) => player.id === this.user.value?.uid)) {
-      return
+      return;
     }
 
     session.players.push({
       id: this.user.value.uid,
-      username
-    })
+      username,
+    });
 
     if (session.players.length >= 4) {
-      session.isFull = true
+      session.isFull = true;
     }
 
-    const joinRemainingTurnsRef = doc(this.remainingTurnsRef, sessionId)
-    const joinRemainingTurnsDoc = await getDoc(joinRemainingTurnsRef)
+    const joinRemainingTurnsRef = doc(this.remainingTurnsRef, sessionId);
+    const joinRemainingTurnsDoc = await getDoc(joinRemainingTurnsRef);
 
     if (!joinRemainingTurnsDoc.exists()) {
-      return
+      return;
     }
 
-    const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns
+    const joinRemainingTurns = joinRemainingTurnsDoc.data()?.remainingTurns;
 
     await updateDoc(doc(this.remainingTurnsRef, sessionId), {
       id: sessionId,
-      remainingTurns: joinRemainingTurns + 13
-    })
+      remainingTurns: joinRemainingTurns + 13,
+    });
 
-    await updateDoc(sessionRef, session)
+    await updateDoc(sessionRef, session);
 
-    const scoresDoc = doc(this.scoresRef, sessionId)
+    const scoresDoc = doc(this.scoresRef, sessionId);
 
     if (session.players.length === 2) {
-      await updateDoc(scoresDoc, { playerTwo: this.initScores() })
+      await updateDoc(scoresDoc, { playerTwo: this.initScores() });
     } else if (session.players.length === 3) {
-      await updateDoc(scoresDoc, { playerThree: this.initScores() })
+      await updateDoc(scoresDoc, { playerThree: this.initScores() });
     } else if (session.players.length === 4) {
-      await updateDoc(scoresDoc, { playerFour: this.initScores() })
+      await updateDoc(scoresDoc, { playerFour: this.initScores() });
     }
 
-    this.checkScoreboard()
+    this.checkScoreboard();
   }
 
   public async quickJoin() {
     if (!this.user.value) {
-      return
+      return;
     }
 
     const sessionsQuery = query(
       this.sessionsRef,
-      where('isFull', '==', false),
-      where('isStarted', '==', false)
-    )
-    const sessionsSnapshot = await getDocs(sessionsQuery)
-    const sessions = sessionsSnapshot.docs.map((doc) => doc.data())
+      where("isFull", "==", false),
+      where("isStarted", "==", false),
+    );
+    const sessionsSnapshot = await getDocs(sessionsQuery);
+    const sessions = sessionsSnapshot.docs.map((doc) => doc.data());
 
     if (sessions.length === 0) {
       this.notifier.notifier({
-        content: 'Aucune session disponible',
-        color: 'primary'
-      })
-      return false
+        content: "Aucune session disponible",
+        color: "primary",
+      });
+      return false;
     }
 
-    const session = sessions[Math.floor(Math.random() * sessions.length)]
-    const sessionId = session.id
-    const sessionRef = doc(this.sessionsRef, sessionId)
+    const session = sessions[Math.floor(Math.random() * sessions.length)];
+    const sessionId = session.id;
+    const sessionRef = doc(this.sessionsRef, sessionId);
 
     if (session.players.find((player) => player.id === this.user.value?.uid)) {
-      return false
+      return false;
     }
 
-    const username = await this.getUsername()
+    const username = await this.getUsername();
 
     session.players.push({
       id: this.user.value.uid,
-      username
-    })
+      username,
+    });
 
     if (session.players.length >= 4) {
-      session.isFull = true
+      session.isFull = true;
     }
 
-    const joinRemainingTurnsRef = doc(this.remainingTurnsRef, sessionId)
+    const joinRemainingTurnsRef = doc(this.remainingTurnsRef, sessionId);
 
-    const joinRemainingTurnsDoc = await getDoc(joinRemainingTurnsRef)
+    const joinRemainingTurnsDoc = await getDoc(joinRemainingTurnsRef);
 
     if (!joinRemainingTurnsDoc.exists()) {
-      return false
+      return false;
     }
-    const joinRemainingTurns = joinRemainingTurnsDoc.data().remainingTurns
+    const joinRemainingTurns = joinRemainingTurnsDoc.data().remainingTurns;
 
     await updateDoc(doc(this.remainingTurnsRef, sessionId), {
       id: sessionId,
-      remainingTurns: joinRemainingTurns + 13
-    })
+      remainingTurns: joinRemainingTurns + 13,
+    });
 
-    await updateDoc(sessionRef, session)
+    await updateDoc(sessionRef, session);
 
-    const scoresDoc = doc(this.scoresRef, sessionId)
+    const scoresDoc = doc(this.scoresRef, sessionId);
 
     if (session.players.length === 2) {
-      await updateDoc(scoresDoc, { playerTwo: this.initScores() })
+      await updateDoc(scoresDoc, { playerTwo: this.initScores() });
     } else if (session.players.length === 3) {
-      await updateDoc(scoresDoc, { playerThree: this.initScores() })
+      await updateDoc(scoresDoc, { playerThree: this.initScores() });
     } else if (session.players.length === 4) {
-      await updateDoc(scoresDoc, { playerFour: this.initScores() })
+      await updateDoc(scoresDoc, { playerFour: this.initScores() });
     }
 
-    this.checkScoreboard()
+    this.checkScoreboard();
   }
 }

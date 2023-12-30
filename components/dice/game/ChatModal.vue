@@ -37,57 +37,57 @@
 </template>
 
 <script setup lang="ts">
-import { doc, arrayUnion, setDoc } from 'firebase/firestore'
-import { diceSessionChatConverter } from '~/stores'
-import type { LocalDiceSessionChatType } from '~/stores'
-import type { CardUser } from '~/functions/src/types'
+import { doc, arrayUnion, setDoc } from "firebase/firestore";
+import { diceSessionChatConverter } from "~/stores";
+import type { LocalDiceSessionChatType } from "~/stores";
+import type { CardUser } from "~/functions/src/types";
 
 const props = defineProps<{
-  sessionId: string
-  chatMessages: LocalDiceSessionChatType['messages'] | undefined
-  players: CardUser[]
-}>()
+  sessionId: string;
+  chatMessages: LocalDiceSessionChatType["messages"] | undefined;
+  players: CardUser[];
+}>();
 
 const emit = defineEmits<{
-  (e: 'openChat', value: boolean): void
-}>()
+  (e: "openChat", value: boolean): void;
+}>();
 
-const user = useCurrentUser()
-const db = useFirestore()
+const user = useCurrentUser();
+const db = useFirestore();
 
-const chatRef = doc(db, 'diceSessionChat', props.sessionId).withConverter(
-  diceSessionChatConverter
-)
+const chatRef = doc(db, "diceSessionChat", props.sessionId).withConverter(
+  diceSessionChatConverter,
+);
 
-const text = ref<string>('')
+const text = ref<string>("");
 
 const closeChat = () => {
-  emit('openChat', false)
-}
+  emit("openChat", false);
+};
 
 const sendMessage = async () => {
   if (!user.value) {
-    return
+    return;
   }
   if (!text.value) {
-    return
+    return;
   }
 
   try {
-    const uid = user.value.uid
+    const uid = user.value.uid;
 
     const currentUser = props.players.find(
-      (player: CardUser) => player.id === uid
-    )
+      (player: CardUser) => player.id === uid,
+    );
 
     if (!currentUser) {
-      return
+      return;
     }
 
-    const { username } = currentUser
+    const { username } = currentUser;
 
     const index =
-      props.players.findIndex((player: CardUser) => player.id === uid) + 1
+      props.players.findIndex((player: CardUser) => player.id === uid) + 1;
 
     await setDoc(
       chatRef,
@@ -96,28 +96,28 @@ const sendMessage = async () => {
         messages: arrayUnion({
           index,
           username,
-          content: text.value
-        })
+          content: text.value,
+        }),
       },
-      { merge: true }
-    )
+      { merge: true },
+    );
   } finally {
-    text.value = ''
+    text.value = "";
   }
-}
+};
 
 const getPlayerClass = (index: number) => {
   switch (index) {
     case 1:
-      return 'text-pink'
+      return "text-pink";
     case 2:
-      return 'text-indigo'
+      return "text-indigo";
     case 3:
-      return 'text-yellow'
+      return "text-yellow";
     case 4:
-      return 'text-brown'
+      return "text-brown";
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

@@ -29,7 +29,7 @@
               {{
                 timerFormatter(
                   playerResults[difficulty as DifficultyWithoutCustom].bestTime,
-                  true
+                  true,
                 )
               }}
             </div>
@@ -37,7 +37,7 @@
               {{
                 dateFormatter(
                   playerResults[difficulty as DifficultyWithoutCustom]
-                    .victoryDate
+                    .victoryDate,
                 )
               }}
             </div>
@@ -54,55 +54,55 @@
 </template>
 
 <script async setup lang="ts">
-import { doc, getDoc } from 'firebase/firestore'
-import { VIcon } from 'vuetify/components'
-import { mdiChevronDown } from '@mdi/js'
-import { timerFormatter, dateFormatter } from '~/utils'
-import { mineSweeperScoreboardConverter } from '~/stores'
-import type { Difficulty } from '~/utils/minesweeper/types'
+import { doc, getDoc } from "firebase/firestore";
+import { VIcon } from "vuetify/components";
+import { mdiChevronDown } from "@mdi/js";
+import { timerFormatter, dateFormatter } from "~/utils";
+import { mineSweeperScoreboardConverter } from "~/stores";
+import type { Difficulty } from "~/utils/minesweeper/types";
 
-type DifficultyWithoutCustom = Exclude<Difficulty, 'custom'>
+type DifficultyWithoutCustom = Exclude<Difficulty, "custom">;
 
-const db = useFirestore()
-const user = useCurrentUser()
+const db = useFirestore();
+const user = useCurrentUser();
 
 const playerScoreboardRef = doc(
   db,
-  'mineSweeperScoreboard',
-  user.value!.uid
-).withConverter(mineSweeperScoreboardConverter)
-const playerScoreboardDoc = await getDoc(playerScoreboardRef)
-const playerResults = playerScoreboardDoc.data()
+  "mineSweeperScoreboard",
+  user.value!.uid,
+).withConverter(mineSweeperScoreboardConverter);
+const playerScoreboardDoc = await getDoc(playerScoreboardRef);
+const playerResults = playerScoreboardDoc.data();
 
-const difficulties: Difficulty[] = ['beginner', 'intermediate', 'expert']
+const difficulties: Difficulty[] = ["beginner", "intermediate", "expert"];
 
 const difficultyState = ref<{ [key in Difficulty]: boolean }>({
   beginner: true,
   intermediate: true,
   expert: true,
-  custom: true
-})
+  custom: true,
+});
 
 const getDifficultyResults = (difficulty: Difficulty): void => {
-  difficultyState.value[difficulty] = !difficultyState.value[difficulty]
-}
+  difficultyState.value[difficulty] = !difficultyState.value[difficulty];
+};
 
 const isDifficulty = (difficulty: Difficulty): boolean => {
-  return difficultyState.value[difficulty]
-}
+  return difficultyState.value[difficulty];
+};
 
 const getDifficultyName = (difficulty: string): string => {
   switch (difficulty) {
-    case 'beginner':
-      return 'Débutant'
-    case 'intermediate':
-      return 'Intermédiaire'
-    case 'expert':
-      return 'Expert'
+    case "beginner":
+      return "Débutant";
+    case "intermediate":
+      return "Intermédiaire";
+    case "expert":
+      return "Expert";
     default:
-      return ''
+      return "";
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

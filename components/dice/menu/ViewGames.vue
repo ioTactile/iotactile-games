@@ -13,7 +13,7 @@
       <div>{{ session.name }}</div>
       <div class="players-wrapper">
         <div class="players-name">
-          {{ session.players.map((player) => player.username).join(', ') }}
+          {{ session.players.map((player) => player.username).join(", ") }}
         </div>
         <v-icon
           v-for="(player, j) in 4"
@@ -34,72 +34,72 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon } from 'vuetify/components'
-import { collection, where, query, orderBy } from 'firebase/firestore'
-import { mdiAccount } from '@mdi/js'
-import { diceSessionConverter } from '~/stores'
-import { DiceSession } from '~/utils/dice/diceSession'
+import { VIcon } from "vuetify/components";
+import { collection, where, query, orderBy } from "firebase/firestore";
+import { mdiAccount } from "@mdi/js";
+import { diceSessionConverter } from "~/stores";
+import { DiceSession } from "~/utils/dice/diceSession";
 
-const db = useFirestore()
-const user = useCurrentUser()
+const db = useFirestore();
+const user = useCurrentUser();
 
-const sessionsRef = collection(db, 'diceSessions').withConverter(
-  diceSessionConverter
-)
+const sessionsRef = collection(db, "diceSessions").withConverter(
+  diceSessionConverter,
+);
 const sessions = useCollection(
   query(
     sessionsRef,
-    where('isFinished', '==', false),
-    orderBy('creationDate', 'desc')
-  )
-)
+    where("isFinished", "==", false),
+    orderBy("creationDate", "desc"),
+  ),
+);
 
 const handleButtonClick = (session: LocalDiceSessionType) => {
-  const host = session.players[0].id === user.value?.uid
+  const host = session.players[0].id === user.value?.uid;
   const isPlayerInSession = session.players.some(
-    (player) => player.id === user.value?.uid
-  )
+    (player) => player.id === user.value?.uid,
+  );
 
   if (!session.isStarted) {
-    const diceSession = new DiceSession()
+    const diceSession = new DiceSession();
     if (host && session.players.length === 1) {
-      return diceSession.delete(session)
+      return diceSession.delete(session);
     }
     if (host) {
-      return diceSession.start(session)
+      return diceSession.start(session);
     }
     if (isPlayerInSession) {
-      return diceSession.leave(session)
+      return diceSession.leave(session);
     }
-    return diceSession.join(session)
+    return diceSession.join(session);
   } else if (session.isStarted) {
-    return navigateTo({ path: `/dice/${session.id}` })
+    return navigateTo({ path: `/dice/${session.id}` });
   }
-}
+};
 
 const getButtonLabel = (session: LocalDiceSessionType) => {
-  const host = session.players[0].id === user.value?.uid
+  const host = session.players[0].id === user.value?.uid;
   const isPlayerInSession = session.players.some(
-    (player) => player.id === user.value?.uid
-  )
+    (player) => player.id === user.value?.uid,
+  );
 
   if (!session.isStarted) {
     if (host && session.players.length === 1) {
-      return 'Supprimer'
+      return "Supprimer";
     }
     if (host) {
-      return 'Commencer'
+      return "Commencer";
     }
     if (isPlayerInSession) {
-      return 'Quitter'
+      return "Quitter";
     }
-    return 'Rejoindre'
+    return "Rejoindre";
   } else if (session.isStarted && isPlayerInSession) {
-    return 'Rejoindre!'
+    return "Rejoindre!";
   } else {
-    return 'Regarder!'
+    return "Regarder!";
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

@@ -13,34 +13,34 @@
 </template>
 
 <script setup lang="ts">
-import { VTextField } from 'vuetify/components'
-import { mdiEmail } from '@mdi/js'
+import { VTextField } from "vuetify/components";
+import { mdiEmail } from "@mdi/js";
 
 withDefaults(
   defineProps<{
-    modelValue?: string
-    label?: string
-    name?: string
-    icon?: boolean
-    variant?: 'filled' | 'outlined' | 'plain' | 'underlined' | 'solo'
+    modelValue?: string;
+    label?: string;
+    name?: string;
+    icon?: boolean;
+    variant?: "filled" | "outlined" | "plain" | "underlined" | "solo";
   }>(),
   {
     modelValue: undefined,
-    label: 'Email',
-    name: 'email',
-    variant: undefined
-  }
-)
+    label: "Email",
+    name: "email",
+    variant: undefined,
+  },
+);
 
-defineEmits<{ (e: 'update:model-value', value: string): void }>()
+defineEmits<{ (e: "update:model-value", value: string): void }>();
 
 const rules = [
-  (v?: string) => !!v || 'Adresse e-mail requise',
+  (v?: string) => !!v || "Adresse e-mail requise",
   (v?: string) =>
     (v &&
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/.test(
-        v
+        v,
       )) ||
-    "L'adresse email doit être valide"
-]
+    "L'adresse email doit être valide",
+];
 </script>

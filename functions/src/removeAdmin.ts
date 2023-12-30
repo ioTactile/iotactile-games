@@ -13,19 +13,19 @@ export const removeAdmin = functions
     if (context.app == undefined) {
       throw new functions.https.HttpsError(
         "failed-precondition",
-        "The function must be called from an App Check verified app."
+        "The function must be called from an App Check verified app.",
       );
     }
     if (!context.auth) {
       throw new functions.https.HttpsError(
         "unauthenticated",
-        "Une authentification est nécessaire"
+        "Une authentification est nécessaire",
       );
     }
     if (!data.id) {
       throw new functions.https.HttpsError(
         "invalid-argument",
-        "Paramètres incorrect"
+        "Paramètres incorrect",
       );
     }
 

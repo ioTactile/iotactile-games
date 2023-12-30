@@ -97,198 +97,198 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from 'vuetify'
-import { Cell } from '~/utils/minesweeper/cell'
-import type { IMineSweeper } from '~/utils/minesweeper/mineSweeper'
-import type { Timer } from '~/utils/minesweeper/Timer'
-import { timerFormatter } from '~/utils'
-import { useMineSweeperZoomLevelStore } from '~/stores/mineSweeperZoomLevel'
+import { useDisplay } from "vuetify";
+import { Cell } from "~/utils/minesweeper/cell";
+import type { IMineSweeper } from "~/utils/minesweeper/mineSweeper";
+import type { Timer } from "~/utils/minesweeper/Timer";
+import { timerFormatter } from "~/utils";
+import { useMineSweeperZoomLevelStore } from "~/stores/mineSweeperZoomLevel";
 
 const props = defineProps<{
-  gameBoard: Cell[][]
-  numRows: number
-  numCols: number
-  mineSweeper: IMineSweeper
-  timer: Timer
-}>()
+  gameBoard: Cell[][];
+  numRows: number;
+  numCols: number;
+  mineSweeper: IMineSweeper;
+  timer: Timer;
+}>();
 
 const emit = defineEmits<{
-  (e: 'rightClick', args: { rowIndex: number; colIndex: number }): void
+  (e: "rightClick", args: { rowIndex: number; colIndex: number }): void;
   (
-    e: 'leftClick',
-    args: { rowIndex: number; colIndex: number; callback(): void }
-  ): void
-}>()
+    e: "leftClick",
+    args: { rowIndex: number; colIndex: number; callback(): void },
+  ): void;
+}>();
 
-const { width } = useDisplay()
+const { width } = useDisplay();
 
-const gameBoardRef = ref<HTMLElement>()
+const gameBoardRef = ref<HTMLElement>();
 
-const zoomLevelStore = useMineSweeperZoomLevelStore()
-const { zoomLevel } = storeToRefs(zoomLevelStore)
+const zoomLevelStore = useMineSweeperZoomLevelStore();
+const { zoomLevel } = storeToRefs(zoomLevelStore);
 
 const numNotDetectedMines = computed((): number => {
-  return props.mineSweeper.getNumMines() - props.mineSweeper.getNumFlags()
-})
+  return props.mineSweeper.getNumMines() - props.mineSweeper.getNumFlags();
+});
 
 const gridStyle = computed(
   (): { gridTemplateColumns: string; gridTemplateRows: string } => {
     if (width.value > 600) {
       return {
         gridTemplateColumns: `repeat(${props.numRows}, ${zoomLevel.value}px)`,
-        gridTemplateRows: `repeat(${props.numCols}, ${zoomLevel.value}px)`
-      }
+        gridTemplateRows: `repeat(${props.numCols}, ${zoomLevel.value}px)`,
+      };
     } else {
       return {
         gridTemplateColumns: `repeat(${props.numCols}, ${zoomLevel.value}px)`,
-        gridTemplateRows: `repeat(${props.numRows}, ${zoomLevel.value}px)`
-      }
+        gridTemplateRows: `repeat(${props.numRows}, ${zoomLevel.value}px)`,
+      };
     }
-  }
-)
+  },
+);
 
 const gameSize = computed((): { width: string; height: string } => {
   if (width.value > 600) {
     return {
       width: `${props.numRows * zoomLevel.value + ratio(36)}px`,
-      height: `${props.numCols * zoomLevel.value + ratio(96)}px`
-    }
+      height: `${props.numCols * zoomLevel.value + ratio(96)}px`,
+    };
   } else {
     return {
       width: `${props.numCols * zoomLevel.value + ratio(36)}px`,
-      height: `${props.numRows * zoomLevel.value + ratio(96)}px`
-    }
+      height: `${props.numRows * zoomLevel.value + ratio(96)}px`,
+    };
   }
-})
+});
 
 const horBorderSize = computed((): { width: string; height: string } => {
-  return { width: `${ratio(18)}px`, height: `${ratio(16.5)}px` }
-})
+  return { width: `${ratio(18)}px`, height: `${ratio(16.5)}px` };
+});
 
 const horLongBorderSize = computed((): { width: string; height: string } => {
   if (width.value > 600) {
     return {
       width: `${props.numRows * zoomLevel.value}px`,
-      height: `${ratio(16.5)}px`
-    }
+      height: `${ratio(16.5)}px`,
+    };
   } else {
     return {
       width: `${props.numCols * zoomLevel.value}px`,
-      height: `${ratio(16.5)}px`
-    }
+      height: `${ratio(16.5)}px`,
+    };
   }
-})
+});
 
 const horTopAreaBorderSize = computed((): { width: string; height: string } => {
-  return { width: `calc(100% - ${ratio(36)}px`, height: `${ratio(48)}px` }
-})
+  return { width: `calc(100% - ${ratio(36)}px`, height: `${ratio(48)}px` };
+});
 
 const vertBorderSize = computed((): { width: string; height: string } => {
-  return { width: `${ratio(18)}px`, height: `${ratio(48)}px` }
-})
+  return { width: `${ratio(18)}px`, height: `${ratio(48)}px` };
+});
 
 const vertContentBorderSize = computed(
   (): { width: string; height: string } => {
     if (width.value > 600) {
       return {
         width: `${ratio(18)}px`,
-        height: `${props.numCols * zoomLevel.value}px`
-      }
+        height: `${props.numCols * zoomLevel.value}px`,
+      };
     } else {
       return {
         width: `${ratio(18)}px`,
-        height: `${props.numRows * zoomLevel.value}px`
-      }
+        height: `${props.numRows * zoomLevel.value}px`,
+      };
     }
-  }
-)
+  },
+);
 
 const contentFontSize = computed((): { fontSize: string } => {
-  return { fontSize: `${ratio(1)}rem` }
-})
+  return { fontSize: `${ratio(1)}rem` };
+});
 
 const cellSize = computed(
   (): {
-    width: string
-    height: string
-    fontSize: string
-    lineHeight: string
+    width: string;
+    height: string;
+    fontSize: string;
+    lineHeight: string;
   } => {
     return {
       width: `${zoomLevel.value}px`,
       height: `${zoomLevel.value}px`,
       fontSize: `${ratio(10)}px`,
-      lineHeight: `${zoomLevel.value - ratio(1)}px`
-    }
-  }
-)
+      lineHeight: `${zoomLevel.value - ratio(1)}px`,
+    };
+  },
+);
 
 const numCells = computed((): number => {
-  return props.numRows * props.numCols
-})
+  return props.numRows * props.numCols;
+});
 
 const ratio = (size: number): number => {
-  return (zoomLevel.value * size) / 24
-}
+  return (zoomLevel.value * size) / 24;
+};
 
 const cellType = (cell: Cell): string => {
   if (cell.getIsFlagged() && !cell.getIsRevealed()) {
-    return 'flag'
+    return "flag";
   } else if (!cell.getIsRevealed()) {
-    return 'cell_closed'
+    return "cell_closed";
   } else if (cell.getIsMine()) {
     if (cell.getIsRevealed() && cell.getIsMineClicked()) {
-      return 'cell_type11'
+      return "cell_type11";
     } else {
-      return 'cell_type10'
+      return "cell_type10";
     }
   } else if (cell.getNumAdjacentMines() === 0) {
-    return 'cell_type0'
+    return "cell_type0";
   } else if (cell.getNumAdjacentMines() === 1) {
-    return 'cell_type1'
+    return "cell_type1";
   } else if (cell.getNumAdjacentMines() === 2) {
-    return 'cell_type2'
+    return "cell_type2";
   } else if (cell.getNumAdjacentMines() === 3) {
-    return 'cell_type3'
+    return "cell_type3";
   } else if (cell.getNumAdjacentMines() === 4) {
-    return 'cell_type4'
+    return "cell_type4";
   } else if (cell.getNumAdjacentMines() === 5) {
-    return 'cell_type5'
+    return "cell_type5";
   } else if (cell.getNumAdjacentMines() === 6) {
-    return 'cell_type6'
+    return "cell_type6";
   } else if (cell.getNumAdjacentMines() === 7) {
-    return 'cell_type7'
+    return "cell_type7";
   } else if (cell.getNumAdjacentMines() === 8) {
-    return 'cell_type8'
+    return "cell_type8";
   } else {
-    return ''
+    return "";
   }
-}
+};
 
 const scale = computed(() => {
-  if (!gameBoardRef.value) return 1
-  const gameBoardWith = gameBoardRef.value.clientWidth
+  if (!gameBoardRef.value) return 1;
+  const gameBoardWith = gameBoardRef.value.clientWidth;
 
   if (width.value < 600) {
     return Math.min(
       gameBoardWith / (props.numCols * zoomLevel.value + ratio(36)),
-      1
-    )
+      1,
+    );
   }
 
-  return 1
-})
+  return 1;
+});
 
 const rightClick = (rowIndex: number, colIndex: number): void => {
-  emit('rightClick', {
+  emit("rightClick", {
     rowIndex,
-    colIndex
-  })
-}
+    colIndex,
+  });
+};
 
 const leftClick = (rowIndex: number, colIndex: number): void => {
-  emit('leftClick', { rowIndex, colIndex, callback: () => {} })
-}
+  emit("leftClick", { rowIndex, colIndex, callback: () => {} });
+};
 </script>
 
 <style scoped lang="scss">
@@ -308,20 +308,20 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
 
     .header-border-top {
       .hd_wrapper-border-left-top {
-        background-image: url('/minesweeper/borders/corner_up_left_blue_2x.png');
+        background-image: url("/minesweeper/borders/corner_up_left_blue_2x.png");
       }
 
       .hd_wrapper-border-hor {
-        background-image: url('/minesweeper/borders/border_hor_blue_2x.png');
+        background-image: url("/minesweeper/borders/border_hor_blue_2x.png");
       }
       .hd_wrapper-border-right-top {
-        background-image: url('/minesweeper/borders/corner_up_right_blue_2x.png');
+        background-image: url("/minesweeper/borders/corner_up_right_blue_2x.png");
       }
     }
 
     .header-screen {
       .hd_wrapper-border-vert {
-        background-image: url('/minesweeper/borders/border_vert_blue_2x.png');
+        background-image: url("/minesweeper/borders/border_vert_blue_2x.png");
       }
 
       .top-area {
@@ -334,7 +334,7 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
 
         div {
           font-weight: 700;
-          font-family: 'Orbitron', 'sans-serif';
+          font-family: "Orbitron", "sans-serif";
         }
 
         .timer {
@@ -346,21 +346,21 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
 
     .header-border-t {
       .hd_wrapper-border-t-left {
-        background-image: url('/minesweeper/borders/t_left_blue_2x.png');
+        background-image: url("/minesweeper/borders/t_left_blue_2x.png");
       }
 
       .hd_wrapper-border-hor {
-        background-image: url('/minesweeper/borders/border_hor_blue_2x.png');
+        background-image: url("/minesweeper/borders/border_hor_blue_2x.png");
       }
 
       .hd_wrapper-border-t-right {
-        background-image: url('/minesweeper/borders/t_right_blue_2x.png');
+        background-image: url("/minesweeper/borders/t_right_blue_2x.png");
       }
     }
 
     .content {
       .hd_wrapper-border-vert {
-        background-image: url('/minesweeper/borders/border_vert_blue_2x.png');
+        background-image: url("/minesweeper/borders/border_vert_blue_2x.png");
       }
 
       .grid {
@@ -375,55 +375,55 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
         }
 
         .cell_closed {
-          background-image: url('/minesweeper/closed.svg');
+          background-image: url("/minesweeper/closed.svg");
         }
 
         .flag {
-          background-image: url('/minesweeper/flag.svg');
+          background-image: url("/minesweeper/flag.svg");
         }
 
         .cell_type0 {
-          background-image: url('/minesweeper/type0.svg');
+          background-image: url("/minesweeper/type0.svg");
         }
 
         .cell_type1 {
-          background-image: url('/minesweeper/type1.svg');
+          background-image: url("/minesweeper/type1.svg");
         }
 
         .cell_type2 {
-          background-image: url('/minesweeper/type2.svg');
+          background-image: url("/minesweeper/type2.svg");
         }
 
         .cell_type3 {
-          background-image: url('/minesweeper/type3.svg');
+          background-image: url("/minesweeper/type3.svg");
         }
 
         .cell_type4 {
-          background-image: url('/minesweeper/type4.svg');
+          background-image: url("/minesweeper/type4.svg");
         }
 
         .cell_type5 {
-          background-image: url('/minesweeper/type5.svg');
+          background-image: url("/minesweeper/type5.svg");
         }
 
         .cell_type6 {
-          background-image: url('/minesweeper/type6.svg');
+          background-image: url("/minesweeper/type6.svg");
         }
 
         .cell_type7 {
-          background-image: url('/minesweeper/type7.svg');
+          background-image: url("/minesweeper/type7.svg");
         }
 
         .cell_type8 {
-          background-image: url('/minesweeper/type8.svg');
+          background-image: url("/minesweeper/type8.svg");
         }
 
         .cell_type10 {
-          background-image: url('/minesweeper/mine.svg');
+          background-image: url("/minesweeper/mine.svg");
         }
 
         .cell_type11 {
-          background-image: url('/minesweeper/mine_red.svg');
+          background-image: url("/minesweeper/mine_red.svg");
         }
 
         .cell {
@@ -437,15 +437,15 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
 
     .footer-border {
       .hd_wrapper-border-left-bottom {
-        background-image: url('/minesweeper/borders/corner_bottom_left_blue_2x.png');
+        background-image: url("/minesweeper/borders/corner_bottom_left_blue_2x.png");
       }
 
       .hd_wrapper-border-hor {
-        background-image: url('/minesweeper/borders/border_hor_blue_2x.png');
+        background-image: url("/minesweeper/borders/border_hor_blue_2x.png");
       }
 
       .hd_wrapper-border-right-bottom {
-        background-image: url('/minesweeper/borders/corner_bottom_right_blue_2x.png');
+        background-image: url("/minesweeper/borders/corner_bottom_right_blue_2x.png");
       }
     }
 

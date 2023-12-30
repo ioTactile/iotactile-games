@@ -5,9 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import { VContainer } from 'vuetify/components'
+import { VContainer } from "vuetify/components";
 
-definePageMeta({ layout: 'admin', middleware: 'auth' })
+definePageMeta({ layout: "admin", middleware: "auth" });
 </script>
 
 <style setup lang="scss">

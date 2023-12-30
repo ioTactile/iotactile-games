@@ -52,7 +52,7 @@
               </template>
               <div class="d-flex justify-center mb-10">
                 <v-btn variant="text" @click="forgotPassword = !forgotPassword">
-                  {{ forgotPassword ? 'Retour' : 'Mot de passe oublié' }}
+                  {{ forgotPassword ? "Retour" : "Mot de passe oublié" }}
                 </v-btn>
               </div>
             </v-window-item>
@@ -89,8 +89,8 @@
               createAccount
                 ? "M'inscire"
                 : forgotPassword
-                  ? 'Réinitialiser mon mot de passe'
-                  : 'Connexion'
+                  ? "Réinitialiser mon mot de passe"
+                  : "Connexion"
             }}
           </v-btn>
         </v-form>
@@ -110,69 +110,69 @@ import {
   VWindow,
   VWindowItem,
   VTabs,
-  VTab
-} from 'vuetify/components'
-import { mdiClose } from '@mdi/js'
+  VTab,
+} from "vuetify/components";
+import { mdiClose } from "@mdi/js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   AuthErrorCodes,
-  getIdTokenResult
-} from 'firebase/auth'
-import { FirebaseError } from '@firebase/util'
-import { Timestamp, doc, setDoc } from 'firebase/firestore'
-import { useFirestore, useFirebaseAuth } from 'vuefire'
-import { storeToRefs } from 'pinia'
-import { useUserStore } from '~/stores/user'
-import { userConverter } from '~/stores'
+  getIdTokenResult,
+} from "firebase/auth";
+import { FirebaseError } from "@firebase/util";
+import { Timestamp, doc, setDoc } from "firebase/firestore";
+import { useFirestore, useFirebaseAuth } from "vuefire";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "~/stores/user";
+import { userConverter } from "~/stores";
 
 // Composable & Vuefire
 
-const { notifier } = useNotifier()
-const db = useFirestore()
-const auth = useFirebaseAuth()
+const { notifier } = useNotifier();
+const db = useFirestore();
+const auth = useFirebaseAuth();
 
 // Props
 
 defineProps<{
-  modelValue: boolean
-}>()
+  modelValue: boolean;
+}>();
 
 // Emits
 
-const emits = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
+const emits = defineEmits<{ (e: "update:modelValue", value: boolean): void }>();
 
 // Refs
 
-const email = ref('')
-const username = ref('')
-const password = ref('')
-const date = ref(new Date(Date.now()))
-const createAccount = ref(false)
-const forgotPassword = ref(false)
-const loading = ref<'email' | null>(null)
-const form = ref<VForm>()
-const tab = ref(null)
+const email = ref("");
+const username = ref("");
+const password = ref("");
+const date = ref(new Date(Date.now()));
+const createAccount = ref(false);
+const forgotPassword = ref(false);
+const loading = ref<"email" | null>(null);
+const form = ref<VForm>();
+const tab = ref(null);
 
-const userStore = useUserStore()
-const { currentUser, adminClaims } = storeToRefs(userStore)
+const userStore = useUserStore();
+const { currentUser, adminClaims } = storeToRefs(userStore);
 
 // Methods
 
 const login = async () => {
   if (!auth || !(await form.value?.validate())?.valid) {
-    return
+    return;
   }
-  loading.value = 'email'
+  loading.value = "email";
 
   try {
     if (createAccount.value) {
       createUserWithEmailAndPassword(auth, email.value, password.value).then(
         (credentials) => {
-          const userRef = doc(db, 'users', credentials.user.uid).withConverter(
-            userConverter
-          )
+          const userRef = doc(db, "users", credentials.user.uid).withConverter(
+            userConverter,
+          );
           setDoc(
             userRef,
             {
@@ -180,56 +180,56 @@ const login = async () => {
               email: email.value,
               username: username.value,
               creationDate: Timestamp.fromDate(date.value),
-              updateDate: Timestamp.now()
+              updateDate: Timestamp.now(),
             },
-            { merge: true }
-          )
-        }
-      )
-      notifier({ content: 'Inscription réussie', color: 'success' })
+            { merge: true },
+          );
+        },
+      );
+      notifier({ content: "Inscription réussie", color: "success" });
     } else if (forgotPassword.value) {
-      await sendPasswordResetEmail(auth, email.value)
+      await sendPasswordResetEmail(auth, email.value);
       notifier({
-        content: 'Un email de réinitialisation a été envoyé',
-        color: 'success'
-      })
-      forgotPassword.value = false
+        content: "Un email de réinitialisation a été envoyé",
+        color: "success",
+      });
+      forgotPassword.value = false;
     } else {
       const userCredentials = await signInWithEmailAndPassword(
         auth,
         email.value,
-        password.value
-      )
+        password.value,
+      );
 
-      currentUser.value = userCredentials.user
-      const { claims } = await getIdTokenResult(currentUser.value, true)
-      adminClaims.value = claims.admin ?? false
+      currentUser.value = userCredentials.user;
+      const { claims } = await getIdTokenResult(currentUser.value, true);
+      adminClaims.value = claims.admin ?? false;
     }
-    emits('update:modelValue', false)
+    emits("update:modelValue", false);
   } catch (error: unknown) {
     if (!(error instanceof FirebaseError)) {
-      throw error
+      throw error;
     }
-    let errMessage
+    let errMessage;
     switch (error.code) {
       case AuthErrorCodes.EMAIL_EXISTS:
-        errMessage = 'Adresse mail déjà utilisée'
-        break
+        errMessage = "Adresse mail déjà utilisée";
+        break;
       case AuthErrorCodes.USER_DELETED:
-        errMessage = 'Utilisateur supprimé'
-        break
+        errMessage = "Utilisateur supprimé";
+        break;
       case AuthErrorCodes.INVALID_PASSWORD:
-        errMessage = 'Mot de passe incorrect'
-        break
+        errMessage = "Mot de passe incorrect";
+        break;
       default:
-        errMessage = 'Une erreur est survenue'
-        break
+        errMessage = "Une erreur est survenue";
+        break;
     }
-    notifier({ content: errMessage, color: 'error', error })
+    notifier({ content: errMessage, color: "error", error });
   } finally {
-    loading.value = null
+    loading.value = null;
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

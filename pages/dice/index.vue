@@ -52,36 +52,36 @@
 
 <script setup lang="ts">
 useSeoMeta({
-  title: 'Dice - ioTactile Games',
-  ogTitle: 'Dice - ioTactile Games',
-  twitterTitle: 'Dice - ioTactile Games',
-  description: 'Menu du jeu Dice',
-  ogDescription: 'Menu du jeu Dice',
-  twitterDescription: 'Menu du jeu Dice',
-  ogImage: '/dice/dice.png',
-  twitterImage: '/dice/dice.png',
-  twitterCard: 'summary_large_image',
-  ogUrl: 'https://iotactile.games/dice'
-})
+  title: "Dice - ioTactile Games",
+  ogTitle: "Dice - ioTactile Games",
+  twitterTitle: "Dice - ioTactile Games",
+  description: "Menu du jeu Dice",
+  ogDescription: "Menu du jeu Dice",
+  twitterDescription: "Menu du jeu Dice",
+  ogImage: "/dice/dice.png",
+  twitterImage: "/dice/dice.png",
+  twitterCard: "summary_large_image",
+  ogUrl: "https://iotactile.games/dice",
+});
 
 useHead({
   htmlAttrs: {
-    lang: 'fr'
+    lang: "fr",
   },
   link: [
     {
-      rel: 'icon',
-      type: 'image/png',
-      href: '/favicon.png'
-    }
-  ]
-})
+      rel: "icon",
+      type: "image/png",
+      href: "/favicon.png",
+    },
+  ],
+});
 
 definePageMeta({
-  middleware: ['auth']
-})
+  middleware: ["auth"],
+});
 
-const menuPage = ref<number>(0)
+const menuPage = ref<number>(0);
 
 const actionMap: Record<string, number> = {
   play: 1,
@@ -90,22 +90,22 @@ const actionMap: Record<string, number> = {
   newGame: 1.2,
   ranking: 2,
   results: 3,
-  rules: 4
-}
+  rules: 4,
+};
 
 const handleActions = (action: string) => {
-  menuPage.value = actionMap[action] || 0
-}
+  menuPage.value = actionMap[action] || 0;
+};
 
 const returnToPreviousPage = (actualPage: number) => {
   if (actualPage >= 2) {
-    menuPage.value = 0
+    menuPage.value = 0;
   } else if (actualPage > 1) {
-    menuPage.value = 1
+    menuPage.value = 1;
   } else if (actualPage === 1) {
-    menuPage.value = 0
+    menuPage.value = 0;
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
@@ -119,7 +119,7 @@ const returnToPreviousPage = (actualPage: number) => {
   color: white;
 
   .game-title {
-    font-family: 'Indie Flower', cursive;
+    font-family: "Indie Flower", cursive;
     font-size: 4rem;
     font-weight: 700;
     letter-spacing: 0.3rem;

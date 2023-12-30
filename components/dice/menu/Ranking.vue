@@ -20,17 +20,17 @@
 </template>
 
 <script async setup lang="ts">
-import { collection, getDocs, query, orderBy } from 'firebase/firestore'
-import { diceScoreboardConverter } from '~/stores'
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { diceScoreboardConverter } from "~/stores";
 
-const db = useFirestore()
+const db = useFirestore();
 
-const scoreboardRef = collection(db, 'diceScoreboard').withConverter(
-  diceScoreboardConverter
-)
-const scoreboardQuery = query(scoreboardRef, orderBy('victories', 'desc'))
-const scoreboardDocs = await getDocs(scoreboardQuery)
-const scoreboard = scoreboardDocs.docs.map((doc) => doc.data())
+const scoreboardRef = collection(db, "diceScoreboard").withConverter(
+  diceScoreboardConverter,
+);
+const scoreboardQuery = query(scoreboardRef, orderBy("victories", "desc"));
+const scoreboardDocs = await getDocs(scoreboardQuery);
+const scoreboard = scoreboardDocs.docs.map((doc) => doc.data());
 </script>
 
 <style scoped lang="scss">

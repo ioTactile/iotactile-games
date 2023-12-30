@@ -44,25 +44,25 @@
 </template>
 
 <script setup lang="ts">
-import type { LocalDiceSessionChatType } from '~/stores'
-import type { ISoundService } from '~/utils/music/soundService'
+import type { LocalDiceSessionChatType } from "~/stores";
+import type { ISoundService } from "~/utils/music/soundService";
 
 const props = defineProps<{
-  chatMessages: LocalDiceSessionChatType['messages'] | undefined
-  isChatActive: boolean
-  soundService: ISoundService
-}>()
+  chatMessages: LocalDiceSessionChatType["messages"] | undefined;
+  isChatActive: boolean;
+  soundService: ISoundService;
+}>();
 
 const emit = defineEmits<{
-  (e: 'openChat', value: boolean): void
-}>()
+  (e: "openChat", value: boolean): void;
+}>();
 
-const isNewMessage = ref<boolean>(false)
+const isNewMessage = ref<boolean>(false);
 
 const openChat = () => {
-  isNewMessage.value = false
-  emit('openChat', true)
-}
+  isNewMessage.value = false;
+  emit("openChat", true);
+};
 
 watch(
   () => props.chatMessages,
@@ -74,15 +74,15 @@ watch(
     ) {
       if (oldValue !== newValue) {
         if (!props.isChatActive) {
-          if (!props.soundService.isSoundMuted('message')) {
-            props.soundService.playSound('message')
+          if (!props.soundService.isSoundMuted("message")) {
+            props.soundService.playSound("message");
           }
-          isNewMessage.value = true
+          isNewMessage.value = true;
         }
       }
     }
-  }
-)
+  },
+);
 </script>
 
 <style scoped lang="scss">

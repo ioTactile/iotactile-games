@@ -50,43 +50,43 @@
 </template>
 
 <script async setup lang="ts">
-import { collection, getDocs } from 'firebase/firestore'
-import { takuzuScoreboardConverter } from '~/stores'
-import { timerFormatter } from '~/utils'
+import { collection, getDocs } from "firebase/firestore";
+import { takuzuScoreboardConverter } from "~/stores";
+import { timerFormatter } from "~/utils";
 
 type TakuzuVictory = {
-  victories: number
-  bestTime: number
-  victoryDate: Date
-}
+  victories: number;
+  bestTime: number;
+  victoryDate: Date;
+};
 
-type Difficulty = 'easy' | 'medium' | 'hard' | 'expert'
+type Difficulty = "easy" | "medium" | "hard" | "expert";
 
 interface SizeBoard {
-  easy: TakuzuVictory
-  medium: TakuzuVictory
-  hard: TakuzuVictory
-  expert: TakuzuVictory
+  easy: TakuzuVictory;
+  medium: TakuzuVictory;
+  hard: TakuzuVictory;
+  expert: TakuzuVictory;
 }
 
 interface PlayerScoreboard {
-  username: string
-  scoreboard: SizeBoard[]
+  username: string;
+  scoreboard: SizeBoard[];
 }
 
-const db = useFirestore()
+const db = useFirestore();
 
-const playerScoreboardRef = collection(db, 'takuzuScoreboard').withConverter(
-  takuzuScoreboardConverter
-)
+const playerScoreboardRef = collection(db, "takuzuScoreboard").withConverter(
+  takuzuScoreboardConverter,
+);
 
 onMounted(async () => {
-  const playerScoreboardDoc = await getDocs(playerScoreboardRef)
+  const playerScoreboardDoc = await getDocs(playerScoreboardRef);
 
   const playersScoreboardData = playerScoreboardDoc.docs.map((doc) =>
-    doc.data()
-  )
-  if (!playersScoreboardData) return
+    doc.data(),
+  );
+  if (!playersScoreboardData) return;
 
   playersScoreboard.value = playersScoreboardData.map((playerScoreboard) => ({
     username: playerScoreboard.username,
@@ -94,121 +94,121 @@ onMounted(async () => {
       playerScoreboard.sixBySix,
       playerScoreboard.eightByEight,
       playerScoreboard.tenByTen,
-      playerScoreboard.twelveByTwelve
-    ]
-  }))
-})
+      playerScoreboard.twelveByTwelve,
+    ],
+  }));
+});
 
-const playersScoreboard = ref<PlayerScoreboard[]>([])
-const selectResults = ref<TakuzuVictory[]>([])
-const usernames = ref<string[]>([])
-const isNotResults = ref<boolean>(false)
+const playersScoreboard = ref<PlayerScoreboard[]>([]);
+const selectResults = ref<TakuzuVictory[]>([]);
+const usernames = ref<string[]>([]);
+const isNotResults = ref<boolean>(false);
 
 const scoreboard = [
   {
     easy: {},
     medium: {},
     hard: {},
-    expert: {}
+    expert: {},
   },
   {
     easy: {},
     medium: {},
     hard: {},
-    expert: {}
+    expert: {},
   },
   {
     easy: {},
     medium: {},
     hard: {},
-    expert: {}
+    expert: {},
   },
   {
     easy: {},
     medium: {},
     hard: {},
-    expert: {}
-  }
-]
+    expert: {},
+  },
+];
 
 const setSelectResults = (size: number, difficulty: Difficulty): void => {
   const players = playersScoreboard.value.map(
-    (sizeBoard) => sizeBoard.scoreboard[size][difficulty]
-  )
+    (sizeBoard) => sizeBoard.scoreboard[size][difficulty],
+  );
 
   const filteredPlayers = players
     .filter((player) => player.bestTime > 0)
-    .sort((a, b) => a.bestTime - b.bestTime)
+    .sort((a, b) => a.bestTime - b.bestTime);
 
-  selectResults.value = filteredPlayers
+  selectResults.value = filteredPlayers;
 
-  usernames.value = getUsernames(size, difficulty)
+  usernames.value = getUsernames(size, difficulty);
 
   if (filteredPlayers.length > 0) {
-    isNotResults.value = false
+    isNotResults.value = false;
   } else {
-    isNotResults.value = true
+    isNotResults.value = true;
   }
-}
+};
 
 const getUsernames = (size: number, difficulty: Difficulty): string[] => {
   const usernames = playersScoreboard.value
     .map((playerScoreboard) => playerScoreboard.username)
     .sort((a, b) => {
       const playerA = playersScoreboard.value.find(
-        (playerScoreboard) => playerScoreboard.username === a
-      )
+        (playerScoreboard) => playerScoreboard.username === a,
+      );
       const playerB = playersScoreboard.value.find(
-        (playerScoreboard) => playerScoreboard.username === b
-      )
+        (playerScoreboard) => playerScoreboard.username === b,
+      );
 
-      const playerAScore = playerA!.scoreboard[size][difficulty]
-      const playerBScore = playerB!.scoreboard[size][difficulty]
+      const playerAScore = playerA!.scoreboard[size][difficulty];
+      const playerBScore = playerB!.scoreboard[size][difficulty];
 
-      if (playerAScore.bestTime === 0) return 1
-      if (playerBScore.bestTime === 0) return -1
+      if (playerAScore.bestTime === 0) return 1;
+      if (playerBScore.bestTime === 0) return -1;
 
-      return playerAScore.bestTime - playerBScore.bestTime
-    })
+      return playerAScore.bestTime - playerBScore.bestTime;
+    });
 
-  return usernames
-}
+  return usernames;
+};
 
 const sizeFormatter = (value: number): string => {
-  const sizes = ['6 x 6', '8 x 8', '10 x 10', '12 x 12']
-  return sizes[value]
-}
+  const sizes = ["6 x 6", "8 x 8", "10 x 10", "12 x 12"];
+  return sizes[value];
+};
 
 const difficultyBackgroundColorStyle = (value: string): string => {
-  const colors = ['#4CAF50', '#3F51B5', '#FF9800', '#F44336']
+  const colors = ["#4CAF50", "#3F51B5", "#FF9800", "#F44336"];
   switch (value) {
-    case 'easy':
-      return `background-color: ${colors[0]}`
-    case 'medium':
-      return `background-color: ${colors[1]}`
-    case 'hard':
-      return `background-color: ${colors[2]}`
-    case 'expert':
-      return `background-color: ${colors[3]}`
+    case "easy":
+      return `background-color: ${colors[0]}`;
+    case "medium":
+      return `background-color: ${colors[1]}`;
+    case "hard":
+      return `background-color: ${colors[2]}`;
+    case "expert":
+      return `background-color: ${colors[3]}`;
     default:
-      return ''
+      return "";
   }
-}
+};
 
 const numPlayers = (size: number, difficulty: Difficulty): number => {
   const players = playersScoreboard.value.map(
-    (sizeBoard) => sizeBoard.scoreboard[size][difficulty]
-  )
+    (sizeBoard) => sizeBoard.scoreboard[size][difficulty],
+  );
 
-  const filteredPlayers = players.filter((player) => player.bestTime > 0)
+  const filteredPlayers = players.filter((player) => player.bestTime > 0);
 
-  return filteredPlayers.length
-}
+  return filteredPlayers.length;
+};
 
 const backToRanking = (): void => {
-  selectResults.value = []
-  usernames.value = []
-}
+  selectResults.value = [];
+  usernames.value = [];
+};
 </script>
 
 <style scoped lang="scss">
@@ -312,7 +312,7 @@ const backToRanking = (): void => {
         color: #ffffff;
         border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
         box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-        font-family: 'Quicksand', sans-serif;
+        font-family: "Quicksand", sans-serif;
         transition: all 0.2s ease-in-out;
       }
     }

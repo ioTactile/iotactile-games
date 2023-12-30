@@ -12,7 +12,7 @@
             {{ getInput(row.value) }}
           </button>
           <button v-else class="button-input mr-4">
-            {{ row.input === null ? '-' : row.input }}
+            {{ row.input === null ? "-" : row.input }}
           </button>
         </div>
         <div class="left-row-bottom-wrapper">
@@ -75,7 +75,7 @@
             {{ getInput(row.value) }}
           </button>
           <button v-else class="button-input mr-4">
-            {{ row.input === null ? '-' : row.input }}
+            {{ row.input === null ? "-" : row.input }}
           </button>
         </div>
         <div class="right-row-bottom-wrapper">
@@ -93,25 +93,25 @@
 </template>
 
 <script setup lang="ts">
-import { updateDoc, doc } from 'firebase/firestore'
-import { VIcon, VImg } from 'vuetify/components'
+import { updateDoc, doc } from "firebase/firestore";
+import { VIcon, VImg } from "vuetify/components";
 import {
   mdiDice1,
   mdiDice2,
   mdiDice3,
   mdiDice4,
   mdiDice5,
-  mdiDice6
-} from '@mdi/js'
+  mdiDice6,
+} from "@mdi/js";
 import {
   diceSessionScoresConverter,
   diceSessionRemainingTurnsConverter,
   diceSessionPlayerTurnConverter,
   diceSessionDicesConverter,
-  diceSessionPlayerTriesConverter
-} from '~/stores'
-import type { LocalDiceSessionScoresType } from '~/stores'
-import type { Dice, CardUser } from '~/functions/src/types'
+  diceSessionPlayerTriesConverter,
+} from "~/stores";
+import type { LocalDiceSessionScoresType } from "~/stores";
+import type { Dice, CardUser } from "~/functions/src/types";
 import {
   oneInput,
   twoInput,
@@ -127,179 +127,179 @@ import {
   diceInput,
   chanceInput,
   getUpperSectionTotal,
-  getLowerSectionTotal
-} from '~/utils/dice/diceInputs'
+  getLowerSectionTotal,
+} from "~/utils/dice/diceInputs";
 
 type InputMappings = {
-  one: number
-  two: number
-  three: number
-  four: number
-  five: number
-  six: number
-  threeOfAKind: number
-  fourOfAKind: number
-  fullHouse: number
-  smallStraight: number
-  largeStraight: number
-  dice: number
-  chance: number
-  [key: string]: number
-}
+  one: number;
+  two: number;
+  three: number;
+  four: number;
+  five: number;
+  six: number;
+  threeOfAKind: number;
+  fourOfAKind: number;
+  fullHouse: number;
+  smallStraight: number;
+  largeStraight: number;
+  dice: number;
+  chance: number;
+  [key: string]: number;
+};
 
 type PlayerSheetRow = {
-  value: string
-  icon?: string
-  src?: string
-  input: number | null
-}
+  value: string;
+  icon?: string;
+  src?: string;
+  input: number | null;
+};
 
 // Vuefire
 
-const db = useFirestore()
+const db = useFirestore();
 
 // Props & Emits
 
 const props = defineProps<{
-  sessionId: string
-  dices: Dice[]
+  sessionId: string;
+  dices: Dice[];
   playerData: {
-    playerSheet: LocalDiceSessionScoresType['playerOne']
-    playerLocation: string
-  }
-  isPlayerTurn: boolean
-  playerTurnId: string
-  remainingTurns: number
-  players: CardUser[]
-}>()
+    playerSheet: LocalDiceSessionScoresType["playerOne"];
+    playerLocation: string;
+  };
+  isPlayerTurn: boolean;
+  playerTurnId: string;
+  remainingTurns: number;
+  players: CardUser[];
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:isScoreboardActive', value: boolean): void
-}>()
+  (e: "update:isScoreboardActive", value: boolean): void;
+}>();
 
 // Refs
 
 const upperPlayerSheet = ref<PlayerSheetRow[]>([
   {
-    value: 'one',
+    value: "one",
     icon: mdiDice1,
-    input: props.playerData.playerSheet.one
+    input: props.playerData.playerSheet.one,
   },
   {
-    value: 'two',
+    value: "two",
     icon: mdiDice2,
-    input: props.playerData.playerSheet.two
+    input: props.playerData.playerSheet.two,
   },
   {
-    value: 'three',
+    value: "three",
     icon: mdiDice3,
-    input: props.playerData.playerSheet.three
+    input: props.playerData.playerSheet.three,
   },
   {
-    value: 'four',
+    value: "four",
     icon: mdiDice4,
-    input: props.playerData.playerSheet.four
+    input: props.playerData.playerSheet.four,
   },
   {
-    value: 'five',
+    value: "five",
     icon: mdiDice5,
-    input: props.playerData.playerSheet.five
+    input: props.playerData.playerSheet.five,
   },
   {
-    value: 'six',
+    value: "six",
     icon: mdiDice6,
-    input: props.playerData.playerSheet.six
-  }
-])
+    input: props.playerData.playerSheet.six,
+  },
+]);
 
 const lowerPlayerSheet = ref<PlayerSheetRow[]>([
   {
-    value: 'threeOfAKind',
-    src: '/dice/inputs/three-of-a-kind.png',
-    input: props.playerData.playerSheet.threeOfAKind
+    value: "threeOfAKind",
+    src: "/dice/inputs/three-of-a-kind.png",
+    input: props.playerData.playerSheet.threeOfAKind,
   },
   {
-    value: 'fourOfAKind',
-    src: '/dice/inputs/four-of-a-kind.png',
-    input: props.playerData.playerSheet.fourOfAKind
+    value: "fourOfAKind",
+    src: "/dice/inputs/four-of-a-kind.png",
+    input: props.playerData.playerSheet.fourOfAKind,
   },
   {
-    value: 'fullHouse',
-    src: '/dice/inputs/full-house.png',
-    input: props.playerData.playerSheet.fullHouse
+    value: "fullHouse",
+    src: "/dice/inputs/full-house.png",
+    input: props.playerData.playerSheet.fullHouse,
   },
   {
-    value: 'smallStraight',
-    src: '/dice/inputs/small-straight.png',
-    input: props.playerData.playerSheet.smallStraight
+    value: "smallStraight",
+    src: "/dice/inputs/small-straight.png",
+    input: props.playerData.playerSheet.smallStraight,
   },
   {
-    value: 'largeStraight',
-    src: '/dice/inputs/large-straight.png',
-    input: props.playerData.playerSheet.largeStraight
+    value: "largeStraight",
+    src: "/dice/inputs/large-straight.png",
+    input: props.playerData.playerSheet.largeStraight,
   },
   {
-    value: 'dice',
-    src: '/dice/inputs/dice.png',
-    input: props.playerData.playerSheet.dice
+    value: "dice",
+    src: "/dice/inputs/dice.png",
+    input: props.playerData.playerSheet.dice,
   },
   {
-    value: 'chance',
-    src: '/dice/inputs/chance.png',
-    input: props.playerData.playerSheet.chance
-  }
-])
+    value: "chance",
+    src: "/dice/inputs/chance.png",
+    input: props.playerData.playerSheet.chance,
+  },
+]);
 
 // Firebase refs
 
-const scoresRef = doc(db, 'diceSessionScores', props.sessionId).withConverter(
-  diceSessionScoresConverter
-)
+const scoresRef = doc(db, "diceSessionScores", props.sessionId).withConverter(
+  diceSessionScoresConverter,
+);
 const remainingTurnsRef = doc(
   db,
-  'diceSessionRemainingTurns',
-  props.sessionId
-).withConverter(diceSessionRemainingTurnsConverter)
+  "diceSessionRemainingTurns",
+  props.sessionId,
+).withConverter(diceSessionRemainingTurnsConverter);
 const playerTurnRef = doc(
   db,
-  'diceSessionPlayerTurn',
-  props.sessionId
-).withConverter(diceSessionPlayerTurnConverter)
-const dicesRef = doc(db, 'diceSessionDices', props.sessionId).withConverter(
-  diceSessionDicesConverter
-)
+  "diceSessionPlayerTurn",
+  props.sessionId,
+).withConverter(diceSessionPlayerTurnConverter);
+const dicesRef = doc(db, "diceSessionDices", props.sessionId).withConverter(
+  diceSessionDicesConverter,
+);
 const playerTriesRef = doc(
   db,
-  'diceSessionPlayerTries',
-  props.sessionId
-).withConverter(diceSessionPlayerTriesConverter)
+  "diceSessionPlayerTries",
+  props.sessionId,
+).withConverter(diceSessionPlayerTriesConverter);
 
 // Computed
 
 const upperPlayerSheetTotal = computed(() =>
-  getUpperSectionTotal(upperPlayerSheet.value)
-)
+  getUpperSectionTotal(upperPlayerSheet.value),
+);
 
 const lowerPlayerSheetTotal = computed(() =>
-  getLowerSectionTotal(lowerPlayerSheet.value)
-)
+  getLowerSectionTotal(lowerPlayerSheet.value),
+);
 
 const upperPlayerSheetBonus = computed(() => {
-  return upperPlayerSheetTotal.value >= 63 ? 35 : 0
-})
+  return upperPlayerSheetTotal.value >= 63 ? 35 : 0;
+});
 
 const playerSheetTotal = computed(() => {
   return (
     upperPlayerSheetTotal.value +
     lowerPlayerSheetTotal.value +
     upperPlayerSheetBonus.value
-  )
-})
+  );
+});
 
 // Mappings
 
 const inputMappings = computed<InputMappings>(() => {
-  const dices = props.dices
+  const dices = props.dices;
 
   return {
     one: oneInput(dices),
@@ -314,54 +314,54 @@ const inputMappings = computed<InputMappings>(() => {
     smallStraight: smallStraightInput(dices),
     largeStraight: largeStraightInput(dices),
     dice: diceInput(dices),
-    chance: chanceInput(dices)
-  }
-})
+    chance: chanceInput(dices),
+  };
+});
 
 // Methods
 
 const openScoreboard = () => {
-  emit('update:isScoreboardActive', true)
-}
+  emit("update:isScoreboardActive", true);
+};
 
 const switchPlayerTurn = async () => {
   const playerTurnIndex = props.players.findIndex(
-    (player: CardUser) => player.id === props.playerTurnId
-  )
+    (player: CardUser) => player.id === props.playerTurnId,
+  );
   const nextPlayerTurnIndex =
-    playerTurnIndex === props.players.length - 1 ? 0 : playerTurnIndex + 1
+    playerTurnIndex === props.players.length - 1 ? 0 : playerTurnIndex + 1;
 
   await updateDoc(playerTurnRef, {
-    playerId: props.players[nextPlayerTurnIndex].id
-  })
-  await updateDoc(dicesRef, { dices: [] })
+    playerId: props.players[nextPlayerTurnIndex].id,
+  });
+  await updateDoc(dicesRef, { dices: [] });
   await updateDoc(remainingTurnsRef, {
-    remainingTurns: props.remainingTurns - 1
-  })
-  await updateDoc(playerTriesRef, { tries: 3 })
-}
+    remainingTurns: props.remainingTurns - 1,
+  });
+  await updateDoc(playerTriesRef, { tries: 3 });
+};
 
 const getInput = (value: string) => {
-  return inputMappings.value[value]
-}
+  return inputMappings.value[value];
+};
 
 const saveInput = async (value: string) => {
   if (props.isPlayerTurn) {
-    const input = getInput(value)
+    const input = getInput(value);
 
     if (input !== undefined) {
       await updateDoc(scoresRef, {
         [props.playerData.playerLocation]: {
           ...props.playerData.playerSheet,
           [value]: input,
-          total: playerSheetTotal.value
-        }
-      })
+          total: playerSheetTotal.value,
+        },
+      });
 
-      await switchPlayerTurn()
+      await switchPlayerTurn();
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
@@ -496,7 +496,7 @@ const saveInput = async (value: string) => {
     width: 50px;
     height: 50px;
     cursor: default;
-    font-family: 'Indie Flower', cursive;
+    font-family: "Indie Flower", cursive;
   }
 }
 </style>

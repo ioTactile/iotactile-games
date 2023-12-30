@@ -35,24 +35,24 @@
 </template>
 
 <script setup lang="ts">
-import type { GameOptions } from '~/utils/minesweeper/types'
+import type { GameOptions } from "~/utils/minesweeper/types";
 
 const emit = defineEmits<{
-  (e: 'startCustomGame', args: GameOptions): void
-}>()
+  (e: "startCustomGame", args: GameOptions): void;
+}>();
 
-const numRows = ref<number>(30)
-const numCols = ref<number>(30)
-const numMines = ref<number>(150)
+const numRows = ref<number>(30);
+const numCols = ref<number>(30);
+const numMines = ref<number>(150);
 
 const startCustomGame = (): void => {
-  emit('startCustomGame', {
+  emit("startCustomGame", {
     numRows: numRows.value,
     numCols: numCols.value,
     numMines: numMines.value,
-    difficulty: 'custom'
-  })
-}
+    difficulty: "custom",
+  });
+};
 </script>
 
 <style scoped lang="scss">
@@ -70,7 +70,7 @@ form {
     label {
       font-size: 1.75rem;
       font-weight: 700;
-      font-family: 'Orbitron', sans-serif;
+      font-family: "Orbitron", sans-serif;
       text-transform: uppercase;
     }
 
@@ -86,7 +86,7 @@ form {
       color: white;
       font-size: 1.5rem;
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-      font-family: 'Orbitron', sans-serif;
+      font-family: "Orbitron", sans-serif;
       margin: 1rem 0;
     }
 
@@ -100,7 +100,7 @@ form {
     //   margin: 0;
     // }
 
-    input[type='number'] {
+    input[type="number"] {
       appearance: textfield;
       -webkit-appearance: textfield;
       -moz-appearance: textfield;

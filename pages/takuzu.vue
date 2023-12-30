@@ -63,44 +63,44 @@
 </template>
 
 <script setup lang="ts">
-import type { GameOptions } from '~/utils/takuzu/types'
+import type { GameOptions } from "~/utils/takuzu/types";
 
 useSeoMeta({
-  title: 'Takuzu - ioTactile Games',
-  ogTitle: 'Takuzu - ioTactile Games',
-  twitterTitle: 'Takuzu - ioTactile Games',
-  description: 'Page du jeu Takuzu',
-  ogDescription: 'Page du jeu Takuzu',
-  twitterDescription: 'Page du jeu Takuzu',
-  ogImage: '/takuzu/takuzu.png',
-  twitterImage: '/takuzu/takuzu.png',
-  twitterCard: 'summary_large_image',
-  ogUrl: 'https://iotactile.games/takuzu'
-})
+  title: "Takuzu - ioTactile Games",
+  ogTitle: "Takuzu - ioTactile Games",
+  twitterTitle: "Takuzu - ioTactile Games",
+  description: "Page du jeu Takuzu",
+  ogDescription: "Page du jeu Takuzu",
+  twitterDescription: "Page du jeu Takuzu",
+  ogImage: "/takuzu/takuzu.png",
+  twitterImage: "/takuzu/takuzu.png",
+  twitterCard: "summary_large_image",
+  ogUrl: "https://iotactile.games/takuzu",
+});
 
 useHead({
   htmlAttrs: {
-    lang: 'fr'
+    lang: "fr",
   },
   link: [
     {
-      rel: 'icon',
-      type: 'image/png',
-      href: '/favicon.png'
-    }
-  ]
-})
+      rel: "icon",
+      type: "image/png",
+      href: "/favicon.png",
+    },
+  ],
+});
 
 if (process.client) {
-  window.addEventListener('keyup', (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      returnToPreviousPage(menuPage.value)
+  window.addEventListener("keyup", (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      returnToPreviousPage(menuPage.value);
     }
-  })
+  });
 }
 
-const menuPage = ref<number>(0)
-const gameOptions = ref<GameOptions | null>(null)
+const menuPage = ref<number>(0);
+const gameOptions = ref<GameOptions | null>(null);
 
 const actionMap: Record<string, number> = {
   play: 1,
@@ -111,25 +111,25 @@ const actionMap: Record<string, number> = {
   rankingCustom: 2.4,
   results: 3,
   rules: 4,
-  gameBoard: 5
-}
+  gameBoard: 5,
+};
 
 const handleActions = (action: string): void => {
-  menuPage.value = actionMap[action] || 0
-}
+  menuPage.value = actionMap[action] || 0;
+};
 
 const returnToPreviousPage = (actualPage: number): void => {
   if (actualPage > 2 && actualPage < 3) {
-    menuPage.value = 2
+    menuPage.value = 2;
   } else {
-    menuPage.value = 0
+    menuPage.value = 0;
   }
-}
+};
 
 const startGame = (options: GameOptions): void => {
-  menuPage.value = 5
-  gameOptions.value = options
-}
+  menuPage.value = 5;
+  gameOptions.value = options;
+};
 </script>
 
 <style scoped lang="scss">
@@ -225,7 +225,7 @@ const startGame = (options: GameOptions): void => {
   }
 
   .title {
-    font-family: 'QuickSand', sans-serif;
+    font-family: "QuickSand", sans-serif;
     font-size: 3rem;
     font-weight: 700;
     text-transform: uppercase;

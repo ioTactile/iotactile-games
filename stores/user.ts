@@ -1,18 +1,18 @@
-import { defineStore } from 'pinia'
-import type { User } from 'firebase/auth'
+import { defineStore } from "pinia";
+import type { User } from "firebase/auth";
 
 export const useUserStore = defineStore(
-  'user',
+  "user",
   () => {
-    const currentUser = ref<User | null>(null)
-    const adminClaims = ref<boolean | unknown>()
+    const currentUser = ref<User | null>(null);
+    const adminClaims = ref<boolean | unknown>();
 
     return {
       currentUser,
-      adminClaims
-    }
+      adminClaims,
+    };
   },
   {
-    persist: true
-  }
-)
+    persist: true,
+  },
+);

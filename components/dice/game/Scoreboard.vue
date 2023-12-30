@@ -54,7 +54,7 @@
                 {{ getInput(l) }}
               </button>
               <button v-else>
-                {{ value === null ? '-' : value }}
+                {{ value === null ? "-" : value }}
               </button>
             </div>
             <div>
@@ -87,7 +87,7 @@
                 {{ getInput(m) }}
               </button>
               <button v-else>
-                {{ value === null ? '-' : value }}
+                {{ value === null ? "-" : value }}
               </button>
             </div>
             <div>
@@ -117,18 +117,18 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon, VImg } from 'vuetify/components'
+import { VIcon, VImg } from "vuetify/components";
 import {
   mdiDice1,
   mdiDice2,
   mdiDice3,
   mdiDice4,
   mdiDice5,
-  mdiDice6
-} from '@mdi/js'
-import type { LocalDiceSessionScoresType } from '~/stores'
-import type { Dice } from '~/functions/src/types'
-import { sum } from '~/utils'
+  mdiDice6,
+} from "@mdi/js";
+import type { LocalDiceSessionScoresType } from "~/stores";
+import type { Dice } from "~/functions/src/types";
+import { sum } from "~/utils";
 import {
   oneInput,
   twoInput,
@@ -142,35 +142,35 @@ import {
   smallStraightInput,
   largeStraightInput,
   diceInput,
-  chanceInput
-} from '~/utils/dice/diceInputs'
+  chanceInput,
+} from "~/utils/dice/diceInputs";
 
 type InputMappings = {
-  one: number
-  two: number
-  three: number
-  four: number
-  five: number
-  six: number
-  threeOfAKind: number
-  fourOfAKind: number
-  fullHouse: number
-  smallStraight: number
-  largeStraight: number
-  dice: number
-  chance: number
-  [key: string]: number
-}
+  one: number;
+  two: number;
+  three: number;
+  four: number;
+  five: number;
+  six: number;
+  threeOfAKind: number;
+  fourOfAKind: number;
+  fullHouse: number;
+  smallStraight: number;
+  largeStraight: number;
+  dice: number;
+  chance: number;
+  [key: string]: number;
+};
 
 const props = defineProps<{
-  scoreboard: LocalDiceSessionScoresType['playerOne'][]
-  dices: Dice[]
-  playerTurn: string
-}>()
+  scoreboard: LocalDiceSessionScoresType["playerOne"][];
+  dices: Dice[];
+  playerTurn: string;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:isScoreboardActive', value: boolean): void
-}>()
+  (e: "update:isScoreboardActive", value: boolean): void;
+}>();
 
 const scoreboardHeaderIcons: Record<number, string> = {
   1: mdiDice1,
@@ -178,28 +178,28 @@ const scoreboardHeaderIcons: Record<number, string> = {
   3: mdiDice3,
   4: mdiDice4,
   5: mdiDice5,
-  6: mdiDice6
-}
+  6: mdiDice6,
+};
 
 const scoreboardHeaderImages: Record<number, string> = {
-  1: '/dice/inputs/three-of-a-kind.png',
-  2: '/dice/inputs/four-of-a-kind.png',
-  3: '/dice/inputs/full-house.png',
-  4: '/dice/inputs/small-straight.png',
-  5: '/dice/inputs/large-straight.png',
-  6: '/dice/inputs/dice.png',
-  7: '/dice/inputs/chance.png'
-}
+  1: "/dice/inputs/three-of-a-kind.png",
+  2: "/dice/inputs/four-of-a-kind.png",
+  3: "/dice/inputs/full-house.png",
+  4: "/dice/inputs/small-straight.png",
+  5: "/dice/inputs/large-straight.png",
+  6: "/dice/inputs/dice.png",
+  7: "/dice/inputs/chance.png",
+};
 
 const OpenPlayerSheet = () => {
-  emit('update:isScoreboardActive', false)
-}
+  emit("update:isScoreboardActive", false);
+};
 
 const upperPlayerSheet = (key: number): Record<string, number> | {} => {
-  const playerData = props.scoreboard[key]
+  const playerData = props.scoreboard[key];
 
   if (!playerData) {
-    return {}
+    return {};
   }
 
   return {
@@ -208,15 +208,15 @@ const upperPlayerSheet = (key: number): Record<string, number> | {} => {
     three: playerData.three,
     four: playerData.four,
     five: playerData.five,
-    six: playerData.six
-  }
-}
+    six: playerData.six,
+  };
+};
 
 const lowerPlayerSheet = (key: number): Record<string, number> | {} => {
-  const playerData = props.scoreboard[key]
+  const playerData = props.scoreboard[key];
 
   if (!playerData) {
-    return {}
+    return {};
   }
 
   return {
@@ -226,38 +226,38 @@ const lowerPlayerSheet = (key: number): Record<string, number> | {} => {
     smallStraight: playerData.smallStraight,
     largeStraight: playerData.largeStraight,
     dice: playerData.dice,
-    chance: playerData.chance
-  }
-}
+    chance: playerData.chance,
+  };
+};
 
 const upperPlayerSheetBonus = (key: number): number => {
-  const upperTotal = sum(upperPlayerSheet(key))
+  const upperTotal = sum(upperPlayerSheet(key));
   if (upperTotal! >= 63) {
-    return 35
+    return 35;
   }
-  return 0
-}
+  return 0;
+};
 
 const upperPlayerSheetTotal = (key: number): number => {
-  const result = sum(upperPlayerSheet(key))
-  return result! + upperPlayerSheetBonus(key)
-}
+  const result = sum(upperPlayerSheet(key));
+  return result! + upperPlayerSheetBonus(key);
+};
 
 const lowerPlayerSheetTotal = (key: number): number => {
-  const result = sum(lowerPlayerSheet(key))
-  return result!
-}
+  const result = sum(lowerPlayerSheet(key));
+  return result!;
+};
 
 const playerSheetTotal = (key: number): number => {
-  const upperTotal = upperPlayerSheetTotal(key)
-  const lowerTotal = lowerPlayerSheetTotal(key)
-  return upperTotal + lowerTotal
-}
+  const upperTotal = upperPlayerSheetTotal(key);
+  const lowerTotal = lowerPlayerSheetTotal(key);
+  return upperTotal + lowerTotal;
+};
 
 // Mappings
 
 const inputMappings = computed<InputMappings>(() => {
-  const dices = props.dices
+  const dices = props.dices;
 
   return {
     one: oneInput(dices),
@@ -272,17 +272,17 @@ const inputMappings = computed<InputMappings>(() => {
     smallStraight: smallStraightInput(dices),
     largeStraight: largeStraightInput(dices),
     dice: diceInput(dices),
-    chance: chanceInput(dices)
-  }
-})
+    chance: chanceInput(dices),
+  };
+});
 
 const getInput = (value: string) => {
-  return inputMappings.value[value]
-}
+  return inputMappings.value[value];
+};
 
 const getPlayerTurn = (playerId: string) => {
-  return props.playerTurn === playerId
-}
+  return props.playerTurn === playerId;
+};
 </script>
 
 <style scoped lang="scss">

@@ -30,47 +30,47 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from 'vuetify'
-import { onClickOutside } from '@vueuse/core'
-import { VIcon } from 'vuetify/components'
-import { mdiLoupe } from '@mdi/js'
-import { useMineSweeperZoomLevelStore } from '~/stores/mineSweeperZoomLevel'
+import { useDisplay } from "vuetify";
+import { onClickOutside } from "@vueuse/core";
+import { VIcon } from "vuetify/components";
+import { mdiLoupe } from "@mdi/js";
+import { useMineSweeperZoomLevelStore } from "~/stores/mineSweeperZoomLevel";
 
-const { width } = useDisplay()
+const { width } = useDisplay();
 
-const zoomLevelStore = useMineSweeperZoomLevelStore()
-const { zoomLevel } = storeToRefs(zoomLevelStore)
+const zoomLevelStore = useMineSweeperZoomLevelStore();
+const { zoomLevel } = storeToRefs(zoomLevelStore);
 
-const isMenuOpen = ref<boolean>(false)
-const menu = ref<HTMLElement>()
+const isMenuOpen = ref<boolean>(false);
+const menu = ref<HTMLElement>();
 
 onClickOutside(menu, (): void => {
-  isMenuOpen.value = false
-})
+  isMenuOpen.value = false;
+});
 
 const getIconSize = computed(() => {
-  return width.value > 600 ? 40 : 25
-})
+  return width.value > 600 ? 40 : 25;
+});
 
 const zoomLevels: number[] = [
   10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46,
-  48, 50, 52, 54, 56, 58, 60
-]
+  48, 50, 52, 54, 56, 58, 60,
+];
 
 const setZoom = (level: number): void => {
-  zoomLevel.value = level
-  isMenuOpen.value = false
-}
+  zoomLevel.value = level;
+  isMenuOpen.value = false;
+};
 
 const toggleMenu = (): void => {
-  isMenuOpen.value = !isMenuOpen.value
-}
+  isMenuOpen.value = !isMenuOpen.value;
+};
 
 const currentZoomStyle = (level: number) => {
   return {
-    'current-zoom': zoomLevel.value === level
-  }
-}
+    "current-zoom": zoomLevel.value === level,
+  };
+};
 </script>
 
 <style scoped lang="scss">

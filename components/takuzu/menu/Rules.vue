@@ -46,8 +46,8 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: 'action', value: string): void
-}>()
+  (e: "action", value: string): void;
+}>();
 </script>
 
 <style scoped lang="scss">

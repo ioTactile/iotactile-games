@@ -13,25 +13,25 @@
 </template>
 
 <script setup lang="ts">
-import type { GameOptions } from '~/utils/minesweeper/types'
+import type { GameOptions } from "~/utils/minesweeper/types";
 
 defineProps<{
-  isCustom: boolean
-}>()
+  isCustom: boolean;
+}>();
 
 const emit = defineEmits<{
-  (e: 'start-game', args: GameOptions): void
-  (e: 'action', value: string): void
-  (e: 'is-custom', value?: boolean): void
-}>()
+  (e: "start-game", args: GameOptions): void;
+  (e: "action", value: string): void;
+  (e: "is-custom", value?: boolean): void;
+}>();
 
 const startGame = (options: GameOptions): void => {
-  emit('start-game', options)
-  emit('is-custom', false)
-  emit('action', 'gameBoard')
-}
+  emit("start-game", options);
+  emit("is-custom", false);
+  emit("action", "gameBoard");
+};
 
-const toggleCustomGame = (): void => emit('is-custom')
+const toggleCustomGame = (): void => emit("is-custom");
 </script>
 
 <style scoped lang="scss">

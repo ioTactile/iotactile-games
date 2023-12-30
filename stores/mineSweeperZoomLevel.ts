@@ -1,15 +1,15 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
 export const useMineSweeperZoomLevelStore = defineStore(
-  'mineSweeperZoomLevel',
+  "mineSweeperZoomLevel",
   () => {
-    const zoomLevel = ref<number>(24)
+    const zoomLevel = ref<number>(24);
 
     return {
-      zoomLevel
-    }
+      zoomLevel,
+    };
   },
   {
-    persist: true
-  }
-)
+    persist: true,
+  },
+);

@@ -12,7 +12,7 @@
       <tbody>
         <tr v-for="user in users" :key="user.id">
           <td>{{ user.email }}</td>
-          <td>{{ user.role?.admin ? 'Oui' : 'Non' }}</td>
+          <td>{{ user.role?.admin ? "Oui" : "Non" }}</td>
           <td>
             <v-btn
               :icon="mdiCheck"
@@ -40,53 +40,53 @@
 </template>
 
 <script setup lang="ts">
-import { VContainer, VTable, VBtn } from 'vuetify/components'
-import { mdiCheck, mdiClose } from '@mdi/js'
-import { collection, getDocs } from 'firebase/firestore'
-import { useFirebaseFunctions } from '~/composables/useFirebaseFunctions'
-import { userConverter } from '~/stores'
-import type { LocalUserType } from '~/stores'
+import { VContainer, VTable, VBtn } from "vuetify/components";
+import { mdiCheck, mdiClose } from "@mdi/js";
+import { collection, getDocs } from "firebase/firestore";
+import { useFirebaseFunctions } from "~/composables/useFirebaseFunctions";
+import { userConverter } from "~/stores";
+import type { LocalUserType } from "~/stores";
 
-definePageMeta({ layout: 'admin', middleware: 'auth' })
+definePageMeta({ layout: "admin", middleware: "auth" });
 
-const db = useFirestore()
-const functions = useFirebaseFunctions()
-const { notifier } = useNotifier()
+const db = useFirestore();
+const functions = useFirebaseFunctions();
+const { notifier } = useNotifier();
 
-const removing = ref<string | null>(null)
-const adding = ref<string | null>(null)
-const users = ref<LocalUserType[]>([])
+const removing = ref<string | null>(null);
+const adding = ref<string | null>(null);
+const users = ref<LocalUserType[]>([]);
 
 onMounted(async () => {
-  const usersRef = collection(db, 'users').withConverter(userConverter)
-  const usersDocs = await getDocs(usersRef)
+  const usersRef = collection(db, "users").withConverter(userConverter);
+  const usersDocs = await getDocs(usersRef);
   if (!usersDocs.empty) {
-    users.value = usersDocs.docs.map((doc) => doc.data())
+    users.value = usersDocs.docs.map((doc) => doc.data());
   }
-})
+});
 
 const addAdmin = async (id: string) => {
-  adding.value = id
+  adding.value = id;
 
   try {
-    await functions('addAdmin')({
+    await functions("addAdmin")({
       id,
-      role: { admin: true }
-    })
-    notifier({ content: 'Admin ajouté', color: 'success' })
+      role: { admin: true },
+    });
+    notifier({ content: "Admin ajouté", color: "success" });
   } finally {
-    adding.value = null
+    adding.value = null;
   }
-}
+};
 
 const removeAdmin = async (id: string) => {
-  removing.value = id
+  removing.value = id;
 
   try {
-    await functions('removeAdmin')({ id })
-    notifier({ content: 'Admin retiré', color: 'success' })
+    await functions("removeAdmin")({ id });
+    notifier({ content: "Admin retiré", color: "success" });
   } finally {
-    removing.value = null
+    removing.value = null;
   }
-}
+};
 </script>

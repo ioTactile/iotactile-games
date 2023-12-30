@@ -56,92 +56,92 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon, VImg } from 'vuetify/components'
+import { VIcon, VImg } from "vuetify/components";
 import {
   mdiDice1,
   mdiDice2,
   mdiDice3,
   mdiDice4,
   mdiDice5,
-  mdiDice6
-} from '@mdi/js'
+  mdiDice6,
+} from "@mdi/js";
 
-const emit = defineEmits<{ (e: 'openRules', value: boolean): void }>()
+const emit = defineEmits<{ (e: "openRules", value: boolean): void }>();
 
 const leftColumn = [
   {
     icon: mdiDice1,
     icons: [mdiDice1, mdiDice1, mdiDice1, mdiDice1, mdiDice1],
-    text: 'NOMBRE DE 1'
+    text: "NOMBRE DE 1",
   },
   {
     icon: mdiDice2,
     icons: [mdiDice2, mdiDice2, mdiDice2, mdiDice2, mdiDice2],
-    text: 'NOMBRE DE 2'
+    text: "NOMBRE DE 2",
   },
   {
     icon: mdiDice3,
     icons: [mdiDice3, mdiDice3, mdiDice3, mdiDice3, mdiDice3],
-    text: 'NOMBRE DE 3'
+    text: "NOMBRE DE 3",
   },
   {
     icon: mdiDice4,
     icons: [mdiDice4, mdiDice4, mdiDice4, mdiDice4, mdiDice4],
-    text: 'NOMBRE DE 4'
+    text: "NOMBRE DE 4",
   },
   {
     icon: mdiDice5,
     icons: [mdiDice5, mdiDice5, mdiDice5, mdiDice5, mdiDice5],
-    text: 'NOMBRE DE 5'
+    text: "NOMBRE DE 5",
   },
   {
     icon: mdiDice6,
     icons: [mdiDice6, mdiDice6, mdiDice6, mdiDice6, mdiDice6],
-    text: 'NOMBRE DE 6'
-  }
-]
+    text: "NOMBRE DE 6",
+  },
+];
 
 const rightColumn = [
   {
-    src: '/dice/inputs/three-of-a-kind.png',
+    src: "/dice/inputs/three-of-a-kind.png",
     icons: [mdiDice4, mdiDice4, mdiDice4],
-    text: 'BRELAN'
+    text: "BRELAN",
   },
   {
-    src: '/dice/inputs/four-of-a-kind.png',
+    src: "/dice/inputs/four-of-a-kind.png",
     icons: [mdiDice2, mdiDice2, mdiDice2, mdiDice2],
-    text: 'CARRÉ'
+    text: "CARRÉ",
   },
   {
-    src: '/dice/inputs/full-house.png',
+    src: "/dice/inputs/full-house.png",
     icons: [mdiDice1, mdiDice1, mdiDice1, mdiDice3, mdiDice3],
-    text: 'FULL HOUSE'
+    text: "FULL HOUSE",
   },
   {
-    src: '/dice/inputs/small-straight.png',
+    src: "/dice/inputs/small-straight.png",
     icons: [mdiDice1, mdiDice2, mdiDice3, mdiDice4],
-    text: 'SUITE DE 4 DÉS'
+    text: "SUITE DE 4 DÉS",
   },
   {
-    src: '/dice/inputs/large-straight.png',
+    src: "/dice/inputs/large-straight.png",
     icons: [mdiDice1, mdiDice2, mdiDice3, mdiDice4, mdiDice5],
-    text: 'SUITE DE 5 DÉS'
+    text: "SUITE DE 5 DÉS",
   },
   {
-    src: '/dice/inputs/dice.png',
+    src: "/dice/inputs/dice.png",
     icons: [mdiDice6, mdiDice6, mdiDice6, mdiDice6, mdiDice6],
-    text: '5 DÉS IDENTIQUES'
+    text: "5 DÉS IDENTIQUES",
   },
   {
-    src: '/dice/inputs/chance.png',
+    src: "/dice/inputs/chance.png",
     icons: [mdiDice5, mdiDice6, mdiDice4, mdiDice2, mdiDice6],
-    text: 'CHANCE'
-  }
-]
+    text: "CHANCE",
+  },
+];
 
 const closeRules = () => {
-  emit('openRules', false)
-}
+  emit("openRules", false);
+};
 </script>
 
 <style scoped lang="scss">

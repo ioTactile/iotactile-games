@@ -33,8 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { VFooter } from 'vuetify/components'
-import { useDisplay } from 'vuetify'
+import { VFooter } from "vuetify/components";
+import { useDisplay } from "vuetify";
 
-const { width, xs } = useDisplay()
+const { width, xs } = useDisplay();
 </script>

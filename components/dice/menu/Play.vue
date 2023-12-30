@@ -12,40 +12,40 @@
 </template>
 
 <script setup lang="ts">
-import { DiceSession } from '~/utils/dice/diceSession'
+import { DiceSession } from "~/utils/dice/diceSession";
 
 const emit = defineEmits<{
-  (e: 'action', value: string): void
-}>()
+  (e: "action", value: string): void;
+}>();
 
 const menuItems = [
   {
-    title: 'Partie rapide',
-    action: 'quickGame'
+    title: "Partie rapide",
+    action: "quickGame",
   },
   {
-    title: 'Nouvelle partie',
-    action: 'newGame'
+    title: "Nouvelle partie",
+    action: "newGame",
   },
   {
-    title: 'Voir les parties',
-    action: 'viewGames'
-  }
-]
+    title: "Voir les parties",
+    action: "viewGames",
+  },
+];
 
 const handleAction = async (action: string) => {
-  if (action === 'quickGame') {
-    const diceSession = new DiceSession()
+  if (action === "quickGame") {
+    const diceSession = new DiceSession();
 
-    const result = await diceSession.quickJoin()
+    const result = await diceSession.quickJoin();
     if (result === false) {
-      return
+      return;
     }
-    emit('action', 'quickGame')
+    emit("action", "quickGame");
   } else {
-    emit('action', action)
+    emit("action", action);
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

@@ -37,30 +37,30 @@
 
 <script setup lang="ts">
 useSeoMeta({
-  title: 'À propos - ioTactile Games',
-  ogTitle: 'À propos - ioTactile Games',
-  twitterTitle: 'À propos - ioTactile Games',
-  description: 'Page où je présente le site et moi-même',
-  ogDescription: 'Page où je présente le site et moi-même',
-  twitterDescription: 'Page où je présente le site et moi-même',
-  ogImage: '/iotactile-games.png',
-  twitterImage: '/iotactile-games.png',
-  twitterCard: 'summary_large_image',
-  ogUrl: 'https://iotactile.games/a-propos'
-})
+  title: "À propos - ioTactile Games",
+  ogTitle: "À propos - ioTactile Games",
+  twitterTitle: "À propos - ioTactile Games",
+  description: "Page où je présente le site et moi-même",
+  ogDescription: "Page où je présente le site et moi-même",
+  twitterDescription: "Page où je présente le site et moi-même",
+  ogImage: "/iotactile-games.png",
+  twitterImage: "/iotactile-games.png",
+  twitterCard: "summary_large_image",
+  ogUrl: "https://iotactile.games/a-propos",
+});
 
 useHead({
   htmlAttrs: {
-    lang: 'fr'
+    lang: "fr",
   },
   link: [
     {
-      rel: 'icon',
-      type: 'image/png',
-      href: '/favicon.png'
-    }
-  ]
-})
+      rel: "icon",
+      type: "image/png",
+      href: "/favicon.png",
+    },
+  ],
+});
 </script>
 
 <style scoped lang="scss">

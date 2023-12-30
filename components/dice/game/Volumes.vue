@@ -30,12 +30,12 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: 'openVolumes', value: boolean): void
-}>()
+  (e: "openVolumes", value: boolean): void;
+}>();
 
 const openVolumes = () => {
-  emit('openVolumes', true)
-}
+  emit("openVolumes", true);
+};
 </script>
 
 <style scoped lang="scss">

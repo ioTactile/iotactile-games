@@ -28,19 +28,19 @@
 </template>
 
 <script async setup lang="ts">
-import { doc, getDoc } from 'firebase/firestore'
-import { numberFormatter } from '~/utils'
+import { doc, getDoc } from "firebase/firestore";
+import { numberFormatter } from "~/utils";
 
-const db = useFirestore()
-const user = useCurrentUser()
+const db = useFirestore();
+const user = useCurrentUser();
 
 const playerScoreboardRef = doc(
   db,
-  'diceScoreboard',
-  user.value!.uid
-).withConverter(diceScoreboardConverter)
-const playerScoreboardDoc = await getDoc(playerScoreboardRef)
-const playerResults = playerScoreboardDoc.data()
+  "diceScoreboard",
+  user.value!.uid,
+).withConverter(diceScoreboardConverter);
+const playerScoreboardDoc = await getDoc(playerScoreboardRef);
+const playerResults = playerScoreboardDoc.data();
 </script>
 
 <style scoped lang="scss">

@@ -93,213 +93,213 @@
 </template>
 
 <script setup lang="ts">
-import { collection, doc, updateDoc } from 'firebase/firestore'
-import { storeToRefs } from 'pinia'
-import { useDiceSoundsStore } from '~/stores/diceSounds'
+import { collection, doc, updateDoc } from "firebase/firestore";
+import { storeToRefs } from "pinia";
+import { useDiceSoundsStore } from "~/stores/diceSounds";
 import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
   diceSessionScoresConverter,
   diceSessionDicesConverter,
   diceSessionRemainingTurnsConverter,
-  diceSessionChatConverter
-} from '~/stores'
-import type { LocalDiceSessionScoresType } from '~/stores'
-import { SoundService } from '~/utils/music/soundService'
-import type { ISoundService } from '~/utils/music/soundService'
-import { sleep } from '~/utils'
+  diceSessionChatConverter,
+} from "~/stores";
+import type { LocalDiceSessionScoresType } from "~/stores";
+import { SoundService } from "~/utils/music/soundService";
+import type { ISoundService } from "~/utils/music/soundService";
+import { sleep } from "~/utils";
 
 interface PlayerData {
-  playerSheet: LocalDiceSessionScoresType['playerOne']
-  playerLocation: string
+  playerSheet: LocalDiceSessionScoresType["playerOne"];
+  playerLocation: string;
 }
 
-const route = useRoute()
-const sessionId = route.params.id as string
+const route = useRoute();
+const sessionId = route.params.id as string;
 
 useSeoMeta({
-  title: 'Session Dice - ioTactile Games',
-  ogTitle: 'Session Dice - ioTactile Games',
-  twitterTitle: 'Session Dice - ioTactile Games',
-  description: 'Session de jeu Dice',
-  ogDescription: 'Session de jeu Dice',
-  twitterDescription: 'Session de jeu Dice',
-  ogImage: '/dice/dice.png',
-  twitterImage: '/dice/dice.png',
-  twitterCard: 'summary_large_image',
-  ogUrl: `https://iotactile.games/dice/${sessionId}`
-})
+  title: "Session Dice - ioTactile Games",
+  ogTitle: "Session Dice - ioTactile Games",
+  twitterTitle: "Session Dice - ioTactile Games",
+  description: "Session de jeu Dice",
+  ogDescription: "Session de jeu Dice",
+  twitterDescription: "Session de jeu Dice",
+  ogImage: "/dice/dice.png",
+  twitterImage: "/dice/dice.png",
+  twitterCard: "summary_large_image",
+  ogUrl: `https://iotactile.games/dice/${sessionId}`,
+});
 
 useHead({
   htmlAttrs: {
-    lang: 'fr'
+    lang: "fr",
   },
   link: [
     {
-      rel: 'icon',
-      type: 'image/png',
-      href: '/favicon.png'
-    }
-  ]
-})
+      rel: "icon",
+      type: "image/png",
+      href: "/favicon.png",
+    },
+  ],
+});
 
 definePageMeta({
-  middleware: ['auth']
-})
+  middleware: ["auth"],
+});
 
-const db = useFirestore()
-const user = useCurrentUser()
+const db = useFirestore();
+const user = useCurrentUser();
 
-const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(
-  diceSessionConverter
-)
-const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(
-  diceSessionPlayerTurnConverter
-)
-const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(
-  diceSessionScoresConverter
-)
-const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(
-  diceSessionDicesConverter
-)
+const sessionRef = doc(db, "diceSessions", sessionId).withConverter(
+  diceSessionConverter,
+);
+const playerTurnRef = doc(db, "diceSessionPlayerTurn", sessionId).withConverter(
+  diceSessionPlayerTurnConverter,
+);
+const scoresRef = doc(db, "diceSessionScores", sessionId).withConverter(
+  diceSessionScoresConverter,
+);
+const dicesRef = doc(db, "diceSessionDices", sessionId).withConverter(
+  diceSessionDicesConverter,
+);
 const remainingTurnsRef = doc(
   db,
-  'diceSessionRemainingTurns',
-  sessionId
-).withConverter(diceSessionRemainingTurnsConverter)
+  "diceSessionRemainingTurns",
+  sessionId,
+).withConverter(diceSessionRemainingTurnsConverter);
 const playerTriesRef = doc(
   db,
-  'diceSessionPlayerTries',
-  sessionId
-).withConverter(diceSessionPlayerTriesConverter)
-const chatRef = doc(db, 'diceSessionChat', sessionId).withConverter(
-  diceSessionChatConverter
-)
+  "diceSessionPlayerTries",
+  sessionId,
+).withConverter(diceSessionPlayerTriesConverter);
+const chatRef = doc(db, "diceSessionChat", sessionId).withConverter(
+  diceSessionChatConverter,
+);
 
-const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id))
+const session = useDocument(doc(collection(db, "diceSessions"), sessionRef.id));
 const playerTurn = useDocument(
-  doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id)
-)
+  doc(collection(db, "diceSessionPlayerTurn"), playerTurnRef.id),
+);
 const scores = useDocument(
-  doc(collection(db, 'diceSessionScores'), scoresRef.id)
-)
-const dices = useDocument(doc(collection(db, 'diceSessionDices'), dicesRef.id))
+  doc(collection(db, "diceSessionScores"), scoresRef.id),
+);
+const dices = useDocument(doc(collection(db, "diceSessionDices"), dicesRef.id));
 const remainingTurns = useDocument(
-  doc(collection(db, 'diceSessionRemainingTurns'), remainingTurnsRef.id)
-)
+  doc(collection(db, "diceSessionRemainingTurns"), remainingTurnsRef.id),
+);
 const playerTries = useDocument(
-  doc(collection(db, 'diceSessionPlayerTries'), playerTriesRef.id)
-)
-const chat = useDocument(doc(collection(db, 'diceSessionChat'), chatRef.id))
+  doc(collection(db, "diceSessionPlayerTries"), playerTriesRef.id),
+);
+const chat = useDocument(doc(collection(db, "diceSessionChat"), chatRef.id));
 
-const isScoreboardActive = ref<boolean>(false)
-const isVolumesModalActive = ref<boolean>(false)
-const isChatModalActive = ref<boolean>(false)
-const isFirstVolumesModalOpen = ref<boolean>(true)
-const isEndgameModalActive = ref<boolean>(false)
-const isRulesModalActive = ref<boolean>(false)
+const isScoreboardActive = ref<boolean>(false);
+const isVolumesModalActive = ref<boolean>(false);
+const isChatModalActive = ref<boolean>(false);
+const isFirstVolumesModalOpen = ref<boolean>(true);
+const isEndgameModalActive = ref<boolean>(false);
+const isRulesModalActive = ref<boolean>(false);
 
-const diceSoundsStore = useDiceSoundsStore()
+const diceSoundsStore = useDiceSoundsStore();
 const { isSoundEffectsActive, isNotificationsActive } =
-  storeToRefs(diceSoundsStore)
+  storeToRefs(diceSoundsStore);
 
-const soundService = ref<ISoundService>(new SoundService())
+const soundService = ref<ISoundService>(new SoundService());
 
 const activateSound = () => {
-  isSoundEffectsActive.value = true
-  isNotificationsActive.value = true
-  loadSounds(1)
-}
+  isSoundEffectsActive.value = true;
+  isNotificationsActive.value = true;
+  loadSounds(1);
+};
 
 const desactivateSound = () => {
-  isSoundEffectsActive.value = false
-  isNotificationsActive.value = false
-  loadSounds(0)
-}
+  isSoundEffectsActive.value = false;
+  isNotificationsActive.value = false;
+  loadSounds(0);
+};
 
 const loadSounds = (volume: number) => {
-  soundService.value.loadSound('dice', '/dice/sounds/dice.mp3', volume)
-  soundService.value.loadSound('message', '/dice/sounds/message.mp3', volume)
+  soundService.value.loadSound("dice", "/dice/sounds/dice.mp3", volume);
+  soundService.value.loadSound("message", "/dice/sounds/message.mp3", volume);
   soundService.value.loadSound(
-    'shakeRoll',
-    '/dice/sounds/shake-and-roll.mp3',
-    volume
-  )
-}
+    "shakeRoll",
+    "/dice/sounds/shake-and-roll.mp3",
+    volume,
+  );
+};
 
 onBeforeRouteLeave(() => {
-  soundService.value.stopAllSounds()
-  soundService.value.unloadAllSounds()
-})
+  soundService.value.stopAllSounds();
+  soundService.value.unloadAllSounds();
+});
 
 const isPlayerTurn = computed(() => {
   if (playerTurn.value?.playerId === user.value?.uid) {
-    return true
+    return true;
   } else {
-    return false
+    return false;
   }
-})
+});
 
 const playerData = computed((): PlayerData => {
-  let playerSheet
-  let playerLocation = ''
+  let playerSheet;
+  let playerLocation = "";
 
   if (scores.value) {
     if (scores.value.playerOne.id === user.value?.uid) {
-      playerSheet = scores.value.playerOne
-      playerLocation = 'playerOne'
+      playerSheet = scores.value.playerOne;
+      playerLocation = "playerOne";
     } else if (scores.value.playerTwo?.id === user.value?.uid) {
-      playerSheet = scores.value.playerTwo
-      playerLocation = 'playerTwo'
+      playerSheet = scores.value.playerTwo;
+      playerLocation = "playerTwo";
     } else if (scores.value.playerThree?.id === user.value?.uid) {
-      playerSheet = scores.value.playerThree
-      playerLocation = 'playerThree'
+      playerSheet = scores.value.playerThree;
+      playerLocation = "playerThree";
     } else if (scores.value.playerFour?.id === user.value?.uid) {
-      playerSheet = scores.value.playerFour
-      playerLocation = 'playerFour'
+      playerSheet = scores.value.playerFour;
+      playerLocation = "playerFour";
     }
   }
 
   return {
     playerSheet,
-    playerLocation
-  }
-})
+    playerLocation,
+  };
+});
 
 const scoreboard = computed(() => {
-  const scoreboard = scores.value
-  const newScoreboard: LocalDiceSessionScoresType['playerOne'][] = []
-  if (scoreboard!.playerOne) newScoreboard.push(scoreboard!.playerOne)
-  if (scoreboard?.playerTwo) newScoreboard.push(scoreboard!.playerTwo)
-  if (scoreboard?.playerThree) newScoreboard.push(scoreboard!.playerThree)
-  if (scoreboard?.playerFour) newScoreboard.push(scoreboard!.playerFour)
-  return newScoreboard
-})
+  const scoreboard = scores.value;
+  const newScoreboard: LocalDiceSessionScoresType["playerOne"][] = [];
+  if (scoreboard!.playerOne) newScoreboard.push(scoreboard!.playerOne);
+  if (scoreboard?.playerTwo) newScoreboard.push(scoreboard!.playerTwo);
+  if (scoreboard?.playerThree) newScoreboard.push(scoreboard!.playerThree);
+  if (scoreboard?.playerFour) newScoreboard.push(scoreboard!.playerFour);
+  return newScoreboard;
+});
 
 watch(
   () => playerTurn.value?.playerId,
   async (playerId) => {
     if (!session.value?.isFinished) {
       if (playerId === user.value?.uid) {
-        await sleep(2000)
-        isScoreboardActive.value = false
+        await sleep(2000);
+        isScoreboardActive.value = false;
       } else {
-        isScoreboardActive.value = true
+        isScoreboardActive.value = true;
       }
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 watch(
   () => session.value?.isFinished,
   (isFinished) => {
     if (isFinished) {
-      isEndgameModalActive.value = true
+      isEndgameModalActive.value = true;
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 watch(
   () => remainingTurns.value?.remainingTurns,
@@ -307,13 +307,13 @@ watch(
     if (oldValue !== undefined && newValue !== undefined && newValue === 0) {
       if (oldValue !== newValue) {
         await updateDoc(sessionRef, {
-          isFinished: true
-        })
+          isFinished: true,
+        });
       }
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 </script>
 
 <style scoped lang="scss">

@@ -23,24 +23,24 @@
 </template>
 
 <script setup lang="ts">
-import { VApp, VMain, VContainer, VBtn } from 'vuetify/components'
+import { VApp, VMain, VContainer, VBtn } from "vuetify/components";
 
 const props = defineProps<{
   error: {
-    statusCode: number
-    statusMessage: string
-  }
-}>()
+    statusCode: number;
+    statusMessage: string;
+  };
+}>();
 
-const btnOutlined = ref(true)
+const btnOutlined = ref(true);
 
 // eslint-disable-next-line no-console
-console.error(props)
+console.error(props);
 
 useHead({
   title:
     props.error.statusCode === 404
-      ? 'Page introuvable'
-      : 'Une erreur est survenue'
-})
+      ? "Page introuvable"
+      : "Une erreur est survenue",
+});
 </script>

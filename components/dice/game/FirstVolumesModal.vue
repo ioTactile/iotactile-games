@@ -12,20 +12,20 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: 'openModal', value: boolean): void
-  (e: 'activateSound'): void
-  (e: 'desactivateSound'): void
-}>()
+  (e: "openModal", value: boolean): void;
+  (e: "activateSound"): void;
+  (e: "desactivateSound"): void;
+}>();
 
 const clickYesButton = () => {
-  emit('activateSound')
-  emit('openModal', false)
-}
+  emit("activateSound");
+  emit("openModal", false);
+};
 
 const clickNoButton = () => {
-  emit('desactivateSound')
-  emit('openModal', false)
-}
+  emit("desactivateSound");
+  emit("openModal", false);
+};
 </script>
 
 <style scoped lang="scss">

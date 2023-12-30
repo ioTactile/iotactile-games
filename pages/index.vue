@@ -34,36 +34,36 @@
 </template>
 
 <script setup lang="ts">
-import { VRow, VCol } from 'vuetify/components'
+import { VRow, VCol } from "vuetify/components";
 
 useSeoMeta({
-  title: 'Accueil - ioTactile Games',
-  ogTitle: 'Accueil - ioTactile Games',
-  twitterTitle: 'Accueil - ioTactile Games',
+  title: "Accueil - ioTactile Games",
+  ogTitle: "Accueil - ioTactile Games",
+  twitterTitle: "Accueil - ioTactile Games",
   description:
-    'ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs',
+    "ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs",
   ogDescription:
-    'ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs',
+    "ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs",
   twitterDescription:
-    'ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs',
-  ogImage: '/iotactile-games.png',
-  twitterImage: '/iotactile-games.png',
-  twitterCard: 'summary_large_image',
-  ogUrl: 'https://iotactile.games'
-})
+    "ioTactile Games - Un site de jeux amusants à jouer seul ou à plusieurs",
+  ogImage: "/iotactile-games.png",
+  twitterImage: "/iotactile-games.png",
+  twitterCard: "summary_large_image",
+  ogUrl: "https://iotactile.games",
+});
 
 useHead({
   htmlAttrs: {
-    lang: 'fr'
+    lang: "fr",
   },
   link: [
     {
-      rel: 'icon',
-      type: 'image/png',
-      href: '/favicon.png'
-    }
-  ]
-})
+      rel: "icon",
+      type: "image/png",
+      href: "/favicon.png",
+    },
+  ],
+});
 </script>
 
 <style scoped lang="scss">

@@ -97,49 +97,49 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon } from 'vuetify/components'
+import { VIcon } from "vuetify/components";
 import {
   mdiFormatListCheckbox,
   mdiSkipPrevious,
   mdiPause,
   mdiPlay,
-  mdiSkipNext
-} from '@mdi/js'
-import { timerFormatterLessThanTenMinutes, playlists } from '~/utils'
-import { PlaylistService } from '~/utils/music/playlistService'
-import type { IPlaylistService } from '~/utils/music/playlistService'
+  mdiSkipNext,
+} from "@mdi/js";
+import { timerFormatterLessThanTenMinutes, playlists } from "~/utils";
+import { PlaylistService } from "~/utils/music/playlistService";
+import type { IPlaylistService } from "~/utils/music/playlistService";
 
 if (process.client) {
-  window.addEventListener('keyup', (e: KeyboardEvent) => {
+  window.addEventListener("keyup", (e: KeyboardEvent) => {
     switch (e.key) {
-      case 'm':
-        handlePlayPause()
-        break
-      case 'p':
-        handleSkipTrack('previous')
-        break
-      case 'n':
-        handleSkipTrack('next')
-        break
-      case 'Tab':
-        toggleShowPlaylists()
-        break
+      case "m":
+        handlePlayPause();
+        break;
+      case "p":
+        handleSkipTrack("previous");
+        break;
+      case "n":
+        handleSkipTrack("next");
+        break;
+      case "Tab":
+        toggleShowPlaylists();
+        break;
       default:
-        break
+        break;
     }
-  })
+  });
 }
 
-const playlist = ref<IPlaylistService>(new PlaylistService())
-const isShowPlaylists = ref<boolean>(false)
-const isMusicActive = ref<boolean>(false)
-const isMusicMuted = ref<boolean>(false)
-const isMusicPaused = ref<boolean>(true)
-const trackDuration = ref<string>('0:00')
+const playlist = ref<IPlaylistService>(new PlaylistService());
+const isShowPlaylists = ref<boolean>(false);
+const isMusicActive = ref<boolean>(false);
+const isMusicMuted = ref<boolean>(false);
+const isMusicPaused = ref<boolean>(true);
+const trackDuration = ref<string>("0:00");
 
 onMounted(() => {
-  playlist.value.loadPlaylist('christmas-lofi')
-})
+  playlist.value.loadPlaylist("christmas-lofi");
+});
 
 watch(
   playlist,
@@ -147,21 +147,21 @@ watch(
     if (isMusicActive.value) {
       if (playlist.value.isPlaylistLoaded()) {
         trackDuration.value = timerFormatterLessThanTenMinutes(
-          Math.round(playlist.value.getTrackDuration())
-        )
+          Math.round(playlist.value.getTrackDuration()),
+        );
       } else {
-        trackDuration.value = '0:00'
+        trackDuration.value = "0:00";
       }
     }
   },
-  { deep: true }
-)
+  { deep: true },
+);
 
 const currentTime = computed((): string => {
   return timerFormatterLessThanTenMinutes(
-    Math.round(playlist.value.getCurrentTime())
-  )
-})
+    Math.round(playlist.value.getCurrentTime()),
+  );
+});
 
 // const trackDuration = computed((): string => {
 //   return timerFormatterLessThanTenMinutes(
@@ -170,71 +170,71 @@ const currentTime = computed((): string => {
 // })
 
 const getCurrentTrack = computed((): string => {
-  return playlist.value.getCustomTrackName()
-})
+  return playlist.value.getCustomTrackName();
+});
 
 const togglePlayPauseIcon = computed((): string => {
-  return isMusicPaused.value ? mdiPlay : mdiPause
-})
+  return isMusicPaused.value ? mdiPlay : mdiPause;
+});
 
 const handleVolumeIconTooltips = computed((): string => {
   return !isMusicMuted.value
-    ? 'Désactiver la musique (m)'
-    : 'Activer la musique (m)'
-})
+    ? "Désactiver la musique (m)"
+    : "Activer la musique (m)";
+});
 
 const handlePlayPause = (): void => {
   if (!isMusicActive.value) {
-    activateMusic()
-    playlist.value.playPlaylist()
-    return
+    activateMusic();
+    playlist.value.playPlaylist();
+    return;
   }
 
   if (isMusicPaused.value) {
-    playlist.value.playPlaylist()
-    isMusicPaused.value = false
+    playlist.value.playPlaylist();
+    isMusicPaused.value = false;
   } else {
-    playlist.value.pausePlaylist()
-    isMusicPaused.value = true
+    playlist.value.pausePlaylist();
+    isMusicPaused.value = true;
   }
-}
+};
 
 const handleSkipTrack = (direction: string): void => {
   if (!isMusicActive.value) {
-    activateMusic()
+    activateMusic();
   }
 
-  if (direction === 'previous') {
-    playlist.value.skipTrack('previous')
-    isMusicPaused.value = false
+  if (direction === "previous") {
+    playlist.value.skipTrack("previous");
+    isMusicPaused.value = false;
   } else {
-    playlist.value.skipTrack('next')
-    isMusicPaused.value = false
+    playlist.value.skipTrack("next");
+    isMusicPaused.value = false;
   }
-}
+};
 
 const toggleShowPlaylists = (): void => {
-  isShowPlaylists.value = !isShowPlaylists.value
-}
+  isShowPlaylists.value = !isShowPlaylists.value;
+};
 
 const changePlaylistType = (type: string): void => {
   if (!isMusicActive.value) {
-    activateMusic()
+    activateMusic();
   }
 
-  playlist.value.changePlaylistType(type)
-  isMusicPaused.value = false
-  isShowPlaylists.value = false
-}
+  playlist.value.changePlaylistType(type);
+  isMusicPaused.value = false;
+  isShowPlaylists.value = false;
+};
 
 const activateMusic = (): void => {
-  isMusicActive.value = true
-  isMusicPaused.value = false
-}
+  isMusicActive.value = true;
+  isMusicPaused.value = false;
+};
 
 onBeforeUnmount(() => {
-  playlist.value.clearPlaylist()
-})
+  playlist.value.clearPlaylist();
+});
 </script>
 
 <style scoped lang="scss">

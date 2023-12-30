@@ -47,17 +47,17 @@
 </template>
 
 <script setup lang="ts">
-import { timerFormatter } from '~/utils'
+import { timerFormatter } from "~/utils";
 
 defineProps<{
-  elapsedTime: number
-}>()
+  elapsedTime: number;
+}>();
 
-const emit = defineEmits<{ (e: 'openRulesModal', value: boolean): void }>()
+const emit = defineEmits<{ (e: "openRulesModal", value: boolean): void }>();
 
 const openRulesModal = () => {
-  emit('openRulesModal', true)
-}
+  emit("openRulesModal", true);
+};
 </script>
 
 <style scoped lang="scss">

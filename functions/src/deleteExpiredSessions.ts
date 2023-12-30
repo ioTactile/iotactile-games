@@ -35,7 +35,7 @@ export const deleteExpiredSessions = functions
       deletePromises.push(...deletePromisesPerSession);
       if (!doc.data().isFinished) {
         deletePromises.push(
-          firestore.collection("diceSessionScores").doc(sessionId).delete()
+          firestore.collection("diceSessionScores").doc(sessionId).delete(),
         );
       }
     });

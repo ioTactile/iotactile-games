@@ -51,35 +51,35 @@
 </template>
 
 <script setup lang="ts">
-import type { LocalDiceSessionScoresType } from '~/stores'
-import type { CardUser } from '~/functions/src/types'
+import type { LocalDiceSessionScoresType } from "~/stores";
+import type { CardUser } from "~/functions/src/types";
 
 const props = defineProps<{
-  sessionId: string
-  players: CardUser[]
-  scoreboard: LocalDiceSessionScoresType['playerOne'][]
-}>()
+  sessionId: string;
+  players: CardUser[];
+  scoreboard: LocalDiceSessionScoresType["playerOne"][];
+}>();
 
-const emit = defineEmits<{ (e: 'openEndgame', value: boolean): void }>()
+const emit = defineEmits<{ (e: "openEndgame", value: boolean): void }>();
 
 const closeEndgame = () => {
-  emit('openEndgame', false)
-}
+  emit("openEndgame", false);
+};
 
 const goToMenu = () => {
-  navigateTo('/dice')
-}
+  navigateTo("/dice");
+};
 
 const orderedPlayers = computed(() => {
   const players = props.players.map((player, i) => {
     return {
       ...player,
-      total: props.scoreboard[i]!.total
-    }
-  })
+      total: props.scoreboard[i]!.total,
+    };
+  });
 
-  return players.sort((a, b) => b.total - a.total)
-})
+  return players.sort((a, b) => b.total - a.total);
+});
 </script>
 
 <style scoped lang="scss">

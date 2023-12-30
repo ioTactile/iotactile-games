@@ -22,15 +22,15 @@
 </template>
 
 <script setup lang="ts">
-import { VCard, VImg, VResponsive } from 'vuetify/components'
+import { VCard, VImg, VResponsive } from "vuetify/components";
 
 defineProps<{
-  img: string
-  alt: string
-  title: string
-  link: string
-  font: string
-}>()
+  img: string;
+  alt: string;
+  title: string;
+  link: string;
+  font: string;
+}>();
 </script>
 
 <style scoped lang="scss">

@@ -3,7 +3,7 @@
     <div v-for="(_, i) in 5" :key="i" class="dice-content">
       <button
         :style="{
-          cursor: isPlayerTurn ? 'pointer' : 'default'
+          cursor: isPlayerTurn ? 'pointer' : 'default',
         }"
         @click="removeDiceFromHand(dicesOnHand[i].id)"
       >
@@ -23,7 +23,7 @@
           isPlayerTurn &&
           playerTries > 0 &&
           sessionIsStarted &&
-          !sessionIsFinished
+          !sessionIsFinished,
       }"
       :disabled="isRolling"
       @click="rollCup"
@@ -57,74 +57,74 @@
 </template>
 
 <script setup lang="ts">
-import { VImg } from 'vuetify/components'
-import { doc, updateDoc } from 'firebase/firestore'
+import { VImg } from "vuetify/components";
+import { doc, updateDoc } from "firebase/firestore";
 import {
   diceSessionDicesConverter,
-  diceSessionPlayerTriesConverter
-} from '~/stores'
-import type { Dice } from '~/functions/src/types'
-import type { ISoundService } from '~/utils/music/soundService'
-import { random } from '~/utils'
+  diceSessionPlayerTriesConverter,
+} from "~/stores";
+import type { Dice } from "~/functions/src/types";
+import type { ISoundService } from "~/utils/music/soundService";
+import { random } from "~/utils";
 
 type diceFaces = {
-  [key: number]: { light: string }
-}
+  [key: number]: { light: string };
+};
 
 const props = defineProps<{
-  isPlayerTurn: boolean
-  sessionId: string
-  dices: Dice[]
-  playerTries: number
-  sessionIsStarted: boolean
-  sessionIsFinished: boolean
-  soundService: ISoundService
-}>()
+  isPlayerTurn: boolean;
+  sessionId: string;
+  dices: Dice[];
+  playerTries: number;
+  sessionIsStarted: boolean;
+  sessionIsFinished: boolean;
+  soundService: ISoundService;
+}>();
 
-const db = useFirestore()
+const db = useFirestore();
 
-const dicesRef = doc(db, 'diceSessionDices', props.sessionId).withConverter(
-  diceSessionDicesConverter
-)
+const dicesRef = doc(db, "diceSessionDices", props.sessionId).withConverter(
+  diceSessionDicesConverter,
+);
 const playerTriesRef = doc(
   db,
-  'diceSessionPlayerTries',
-  props.sessionId
-).withConverter(diceSessionPlayerTriesConverter)
+  "diceSessionPlayerTries",
+  props.sessionId,
+).withConverter(diceSessionPlayerTriesConverter);
 
-const isRolling = ref<boolean>(false)
+const isRolling = ref<boolean>(false);
 
 const dicesOnHand = computed(() => {
   if (props.dices) {
-    return props.dices.filter((dice: Dice) => !dice.isOnBoard)
+    return props.dices.filter((dice: Dice) => !dice.isOnBoard);
   } else {
-    return []
+    return [];
   }
-})
+});
 
 const getDiceFace = (dice: number) => {
   const diceFaces: diceFaces = {
-    1: { light: '/dice/colors/dice-white-one.png' },
-    2: { light: '/dice/colors/dice-white-two.png' },
-    3: { light: '/dice/colors/dice-white-three.png' },
-    4: { light: '/dice/colors/dice-white-four.png' },
-    5: { light: '/dice/colors/dice-white-five.png' },
-    6: { light: '/dice/colors/dice-white-six.png' }
-  }
+    1: { light: "/dice/colors/dice-white-one.png" },
+    2: { light: "/dice/colors/dice-white-two.png" },
+    3: { light: "/dice/colors/dice-white-three.png" },
+    4: { light: "/dice/colors/dice-white-four.png" },
+    5: { light: "/dice/colors/dice-white-five.png" },
+    6: { light: "/dice/colors/dice-white-six.png" },
+  };
 
-  return diceFaces[dice].light
-}
+  return diceFaces[dice].light;
+};
 
 const removeDiceFromHand = async (diceId: number) => {
   if (!props.isPlayerTurn) {
-    return
+    return;
   }
 
-  const currentDice = props.dices.find((dice: Dice) => dice.id === diceId)
-  const otherDices = props.dices.filter((dice: Dice) => dice.id !== diceId)
+  const currentDice = props.dices.find((dice: Dice) => dice.id === diceId);
+  const otherDices = props.dices.filter((dice: Dice) => dice.id !== diceId);
 
   if (!currentDice) {
-    return
+    return;
   }
 
   await updateDoc(dicesRef, {
@@ -132,64 +132,64 @@ const removeDiceFromHand = async (diceId: number) => {
       ...otherDices,
       {
         ...currentDice,
-        isOnBoard: true
-      }
-    ]
-  })
-}
+        isOnBoard: true,
+      },
+    ],
+  });
+};
 
 const rollCup = async () => {
   if (!props.isPlayerTurn) {
-    return
+    return;
   }
   if (!props.sessionIsStarted) {
-    return
+    return;
   }
   if (props.sessionIsFinished) {
-    return
+    return;
   }
   if (props.playerTries === 0) {
-    return
+    return;
   }
 
   try {
-    isRolling.value = true
+    isRolling.value = true;
 
-    let rollDices = props.dices
+    let rollDices = props.dices;
     const diceOnBoard = rollDices
       ? rollDices.filter((dice: Dice) => dice.isOnBoard)
-      : []
+      : [];
 
-    await updateDoc(playerTriesRef, { tries: props.playerTries - 1 })
+    await updateDoc(playerTriesRef, { tries: props.playerTries - 1 });
 
     await new Promise<void>((resolve) => {
       setTimeout(() => {
         if (diceOnBoard.length === 0) {
-          rollDices = []
+          rollDices = [];
           for (let i = 0; i < 5; i++) {
-            const dice = random(6, 1)
+            const dice = random(6, 1);
             rollDices.push({
               id: i,
               face: dice,
-              isOnBoard: true
-            })
+              isOnBoard: true,
+            });
           }
         } else {
           for (const dice of diceOnBoard) {
-            dice.face = random(6, 1)
+            dice.face = random(6, 1);
           }
         }
-        resolve()
-      }, 2300)
-    })
+        resolve();
+      }, 2300);
+    });
 
     await updateDoc(dicesRef, {
-      dices: rollDices
-    })
+      dices: rollDices,
+    });
   } finally {
-    isRolling.value = false
+    isRolling.value = false;
   }
-}
+};
 
 // Watchers
 
@@ -198,18 +198,18 @@ watch(
   (newValue, oldValue) => {
     if (newValue !== undefined && oldValue !== undefined) {
       if (oldValue !== newValue) {
-        const newDices = newValue.filter((dice: Dice) => dice.isOnBoard)
-        const oldDices = oldValue.filter((dice: Dice) => dice.isOnBoard)
+        const newDices = newValue.filter((dice: Dice) => dice.isOnBoard);
+        const oldDices = oldValue.filter((dice: Dice) => dice.isOnBoard);
 
         if (newDices.length > oldDices.length) {
-          if (!props.soundService.isSoundMuted('dice')) {
-            props.soundService.playSound('dice')
+          if (!props.soundService.isSoundMuted("dice")) {
+            props.soundService.playSound("dice");
           }
         }
       }
     }
-  }
-)
+  },
+);
 </script>
 
 <style scoped lang="scss">

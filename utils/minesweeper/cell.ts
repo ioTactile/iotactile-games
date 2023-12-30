@@ -1,55 +1,55 @@
 export class Cell {
-  private isMine: boolean
-  private isMineClicked: boolean
-  private isRevealed: boolean
-  private isFlagged: boolean
-  private numAdjacentMines: number
+  private isMine: boolean;
+  private isMineClicked: boolean;
+  private isRevealed: boolean;
+  private isFlagged: boolean;
+  private numAdjacentMines: number;
 
   constructor() {
-    this.isMine = false
-    this.isMineClicked = false
-    this.isRevealed = false
-    this.isFlagged = false
-    this.numAdjacentMines = 0
+    this.isMine = false;
+    this.isMineClicked = false;
+    this.isRevealed = false;
+    this.isFlagged = false;
+    this.numAdjacentMines = 0;
   }
 
   public getIsMine(): boolean {
-    return this.isMine
+    return this.isMine;
   }
 
   public setIsMine(isMine: boolean): void {
-    this.isMine = isMine
+    this.isMine = isMine;
   }
 
   public getIsMineClicked(): boolean {
-    return this.isMineClicked
+    return this.isMineClicked;
   }
 
   public setIsMineClicked(isMineClicked: boolean): void {
-    this.isMineClicked = isMineClicked
+    this.isMineClicked = isMineClicked;
   }
 
   public getIsRevealed(): boolean {
-    return this.isRevealed
+    return this.isRevealed;
   }
 
   public setIsRevealed(isRevealed: boolean): void {
-    this.isRevealed = isRevealed
+    this.isRevealed = isRevealed;
   }
 
   public getIsFlagged(): boolean {
-    return this.isFlagged
+    return this.isFlagged;
   }
 
   public setIsFlagged(isFlagged: boolean): void {
-    this.isFlagged = isFlagged
+    this.isFlagged = isFlagged;
   }
 
   public getNumAdjacentMines(): number {
-    return this.numAdjacentMines
+    return this.numAdjacentMines;
   }
 
   public setNumAdjacentMines(numAdjacentMines: number): void {
-    this.numAdjacentMines = numAdjacentMines
+    this.numAdjacentMines = numAdjacentMines;
   }
 }

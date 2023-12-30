@@ -7,11 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import type { CardUser } from '~/functions/src/types'
+import type { CardUser } from "~/functions/src/types";
 
 defineProps<{
-  players: CardUser[]
-}>()
+  players: CardUser[];
+}>();
 </script>
 
 <style scoped lang="scss">

@@ -15,19 +15,19 @@
 </template>
 
 <script setup lang="ts">
-import { timerFormatter } from '~/utils'
+import { timerFormatter } from "~/utils";
 
 defineProps<{
-  elapsedTime: number
-}>()
+  elapsedTime: number;
+}>();
 
 const emits = defineEmits<{
-  (e: 'restart'): void
-  (e: 'returnToMenu'): void
-}>()
+  (e: "restart"): void;
+  (e: "returnToMenu"): void;
+}>();
 
-const restart = () => emits('restart')
-const returnToMenu = () => emits('returnToMenu')
+const restart = () => emits("restart");
+const returnToMenu = () => emits("returnToMenu");
 </script>
 
 <style scoped lang="scss">
@@ -87,7 +87,7 @@ const returnToMenu = () => emits('returnToMenu')
       border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
       transition: all 0.2s ease-in-out;
-      font-family: 'Quicksand', sans-serif;
+      font-family: "Quicksand", sans-serif;
       font-weight: 700;
 
       @media screen and (max-width: 600px) {
