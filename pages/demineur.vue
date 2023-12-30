@@ -300,13 +300,16 @@ onBeforeRouteLeave((): void => {
   height: 100%;
 
   .menu-page {
+    align-self: flex-start;
     width: 500px;
     height: 650px;
+    margin-top: 5rem;
     background-color: rgb(var(--v-theme-mineSweeperMainSurface));
     box-shadow: -10px -10px rgba(var(--v-theme-mineSweeperMainShadow), 0.3);
     color: rgb(var(--v-theme-onSurface));
 
     @media screen and (max-width: 600px) {
+      align-self: center;
       box-shadow: none;
       width: 100%;
       height: 100%;
@@ -362,8 +365,8 @@ onBeforeRouteLeave((): void => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 1100px;
-    height: calc(100% - 100px);
+    width: calc(100% - 2rem);
+    height: calc(100% - 1rem);
     padding: 1rem;
     background-color: rgb(var(--v-theme-mineSweeperMainSurface));
     box-shadow: -10px -10px rgba(var(--v-theme-mineSweeperMainShadow), 0.3);

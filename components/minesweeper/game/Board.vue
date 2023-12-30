@@ -299,7 +299,7 @@ const leftClick = (rowIndex: number, colIndex: number): void => {
   overflow: auto;
   width: 100%;
   height: 100%;
-  margin: 1rem auto;
+  margin-top: 1rem;
 
   #game {
     position: absolute;

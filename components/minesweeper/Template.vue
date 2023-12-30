@@ -15,7 +15,7 @@ const scale = ref<number>(1)
 const resizeTimeout = ref<NodeJS.Timeout | null>(null)
 
 const handleResize = () => {
-  const targetHeight = 924
+  const targetHeight = height.value - 124
   const targetWidth = 1200
 
   if (width.value < 600) {
@@ -56,7 +56,7 @@ watch(
   top: 10px;
   transform: translateX(-50%);
   width: 1200px;
-  height: 800px;
+  height: calc(100vh - 124px);
   background-color: rgb(var(--v-theme-background));
 
   @media screen and (max-width: 600px) {
