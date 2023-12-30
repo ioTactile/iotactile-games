@@ -32,7 +32,7 @@ const mineSweeperScoreboard = (): ReturnType<typeof collection> => {
   const db = useFirestore();
   const mineSweeperScoreboard = collection(
     db,
-    "mineSweeperScoreboard"
+    "mineSweeperScoreboard",
   ).withConverter(mineSweeperScoreboardConverter);
   return mineSweeperScoreboard;
 };
@@ -46,7 +46,7 @@ const getUserData = async (userId: string): Promise<DocumentData | null> => {
 };
 
 const getInitialValues = async (
-  userId: string
+  userId: string,
 ): Promise<LocalMineSweeperScoreboardType> => {
   const userData = await getUserData(userId);
 
@@ -74,13 +74,13 @@ const getInitialValues = async (
 const updateCustomScoreboard = (
   scoreboard: LocalMineSweeperScoreboardType,
   time: number,
-  customVictoryIndex: number
+  customVictoryIndex: number,
 ) => {
-  const customVictory = scoreboard.custom[customVictoryIndex];
+  const customVictory = scoreboard["custom"][customVictoryIndex];
   const bestTime =
     customVictory.bestTime > time ? time : customVictory.bestTime;
 
-  scoreboard.custom[customVictoryIndex] = {
+  scoreboard["custom"][customVictoryIndex] = {
     ...customVictory,
     victories: customVictory.victories + 1,
     bestTime,
@@ -91,7 +91,7 @@ const updateCustomScoreboard = (
 const updateNonCustomScoreboard = (
   scoreboard: LocalMineSweeperScoreboardType,
   time: number,
-  difficulty: OmittedDifficulty
+  difficulty: OmittedDifficulty,
 ) => {
   const bestTime =
     scoreboard[difficulty].bestTime > time
@@ -111,7 +111,7 @@ export const saveScoreboard = async (
   difficulty: Difficulty,
   numRows: number,
   numCols: number,
-  numMines: number
+  numMines: number,
 ): Promise<void> => {
   const scoreboard = await getInitialValues(userId);
 
@@ -120,13 +120,13 @@ export const saveScoreboard = async (
       (customVictory: OmittedCustomVictory) =>
         customVictory.rows === numRows &&
         customVictory.cols === numCols &&
-        customVictory.mines === numMines
+        customVictory.mines === numMines,
     );
 
     if (customVictoryIndex !== -1) {
       updateCustomScoreboard(scoreboard, time, customVictoryIndex);
     } else {
-      scoreboard.custom.push({
+      scoreboard["custom"].push({
         rows: numRows,
         cols: numCols,
         mines: numMines,
