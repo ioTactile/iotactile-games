@@ -119,6 +119,7 @@ import {
   sendPasswordResetEmail,
   AuthErrorCodes,
   getIdTokenResult,
+  type ParsedToken,
 } from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
@@ -132,6 +133,7 @@ import { userConverter } from "~/stores";
 const { notifier } = useNotifier();
 const db = useFirestore();
 const auth = useFirebaseAuth();
+const user = useCurrentUser();
 
 // Props
 
@@ -148,6 +150,7 @@ const emits = defineEmits<{ (e: "update:modelValue", value: boolean): void }>();
 const email = ref("");
 const username = ref("");
 const password = ref("");
+const userClaims = ref<null | ParsedToken>(null);
 const date = ref(new Date(Date.now()));
 const createAccount = ref(false);
 const forgotPassword = ref(false);
@@ -157,6 +160,13 @@ const tab = ref(null);
 
 const userStore = useUserStore();
 const { currentUser, adminClaims } = storeToRefs(userStore);
+
+onBeforeMount(async () => {
+  if (user.value) {
+    const { claims } = await getIdTokenResult(user.value, true);
+    userClaims.value = claims;
+  }
+});
 
 // Methods
 
@@ -171,7 +181,7 @@ const login = async () => {
       createUserWithEmailAndPassword(auth, email.value, password.value).then(
         (credentials) => {
           const userRef = doc(db, "users", credentials.user.uid).withConverter(
-            userConverter,
+            userConverter
           );
           setDoc(
             userRef,
@@ -182,9 +192,9 @@ const login = async () => {
               creationDate: Timestamp.fromDate(date.value),
               updateDate: Timestamp.now(),
             },
-            { merge: true },
+            { merge: true }
           );
-        },
+        }
       );
       notifier({ content: "Inscription réussie", color: "success" });
     } else if (forgotPassword.value) {
@@ -198,7 +208,7 @@ const login = async () => {
       const userCredentials = await signInWithEmailAndPassword(
         auth,
         email.value,
-        password.value,
+        password.value
       );
 
       currentUser.value = userCredentials.user;

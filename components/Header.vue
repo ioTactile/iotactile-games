@@ -94,6 +94,7 @@ const user = useCurrentUser();
 // Refs
 
 const login = ref(false);
+
 const userStore = useUserStore();
 const { adminClaims } = storeToRefs(userStore);
 
