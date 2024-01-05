@@ -51,7 +51,7 @@
         </template>
         <UserDetails
           :theme="theme.current.value"
-          :admin-user="adminClaims"
+          :admin-claims="adminClaims"
           @toggle-theme="toggleTheme"
         />
       </v-menu>

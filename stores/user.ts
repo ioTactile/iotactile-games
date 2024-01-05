@@ -5,7 +5,7 @@ export const useUserStore = defineStore(
   "user",
   () => {
     const currentUser = ref<User | null>(null);
-    const adminClaims = ref<boolean | unknown>();
+    const adminClaims = ref<boolean>(false);
 
     return {
       currentUser,
@@ -14,5 +14,5 @@ export const useUserStore = defineStore(
   },
   {
     persist: true,
-  },
+  }
 );

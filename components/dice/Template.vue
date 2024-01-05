@@ -12,7 +12,6 @@ import { useDisplay } from "vuetify";
 const { width, height } = useDisplay();
 
 const scale = ref<number>(1);
-const resizeTimeout = ref<NodeJS.Timeout | null>(null);
 
 const handleResize = () => {
   const targetHeight = 924;
@@ -24,22 +23,18 @@ const handleResize = () => {
 
   scale.value = Math.min(
     height.value / targetHeight,
-    width.value / targetWidth,
+    width.value / targetWidth
   );
 };
 
 watch(
   [width, height],
   () => {
-    if (resizeTimeout.value) {
-      clearTimeout(resizeTimeout.value);
-    }
-    resizeTimeout.value = setTimeout(() => {
+    if (width.value <= 1200 || height.value <= 924) {
       handleResize();
-      resizeTimeout.value = null;
-    }, 300);
+    }
   },
-  { immediate: true },
+  { immediate: true }
 );
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <v-app class="app-wrapper">
+  <v-app>
     <Header />
     <v-main>
       <slot />
@@ -14,9 +14,3 @@
 <script setup lang="ts">
 import { VApp, VMain } from "vuetify/components";
 </script>
-
-<style scoped lang="scss">
-.app-wrapper {
-  overflow-x: hidden;
-}
-</style>

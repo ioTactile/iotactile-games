@@ -119,7 +119,6 @@ import {
   sendPasswordResetEmail,
   AuthErrorCodes,
   getIdTokenResult,
-  type ParsedToken,
 } from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
@@ -150,7 +149,6 @@ const emits = defineEmits<{ (e: "update:modelValue", value: boolean): void }>();
 const email = ref("");
 const username = ref("");
 const password = ref("");
-const userClaims = ref<null | ParsedToken>(null);
 const date = ref(new Date(Date.now()));
 const createAccount = ref(false);
 const forgotPassword = ref(false);
@@ -163,8 +161,13 @@ const { currentUser, adminClaims } = storeToRefs(userStore);
 
 onBeforeMount(async () => {
   if (user.value) {
+    currentUser.value = user.value;
     const { claims } = await getIdTokenResult(user.value, true);
-    userClaims.value = claims;
+    if (claims.admin) {
+      adminClaims.value = true;
+    } else {
+      adminClaims.value = false;
+    }
   }
 });
 
@@ -213,7 +216,11 @@ const login = async () => {
 
       currentUser.value = userCredentials.user;
       const { claims } = await getIdTokenResult(currentUser.value, true);
-      adminClaims.value = claims.admin ?? false;
+      if (claims.admin) {
+        adminClaims.value = true;
+      } else {
+        adminClaims.value = false;
+      }
     }
     emits("update:modelValue", false);
   } catch (error: unknown) {

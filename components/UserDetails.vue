@@ -45,11 +45,11 @@
     <v-divider class="my-2" />
     <section class="pa-2">
       <v-btn
-        v-if="adminUser"
+        v-if="adminClaims"
         color="surfaceButton"
         block
-        to="/admin"
         class="mb-2 text-onSurfaceButton"
+        @click="goToAdmin"
       >
         Espace d'administration
       </v-btn>
@@ -132,10 +132,13 @@ import { userConverter } from "~/stores";
 
 defineProps<{
   theme: { dark: boolean };
-  adminUser: boolean | unknown;
+  adminClaims: boolean;
 }>();
 
-const emits = defineEmits<{ (e: "toggleTheme"): void }>();
+const emits = defineEmits<{
+  (e: "toggleTheme"): void;
+  (e: "goToAdmin"): void;
+}>();
 
 // Vuefire
 
@@ -197,6 +200,10 @@ const changeUsername = async () => {
 };
 
 // Methods
+
+const goToAdmin = async () => {
+  await navigateTo("/admin");
+};
 
 const deleteProfile = async () => {
   if (!user.value) {
