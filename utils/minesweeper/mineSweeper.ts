@@ -113,7 +113,7 @@ export class MineSweeper implements IMineSweeper {
     this.gameStatus = "waiting";
     this.isFirstClick = true;
     this.board = Array.from({ length: this.numRows }, () =>
-      Array.from({ length: this.numCols }, () => new Cell()),
+      Array.from({ length: this.numCols }, () => new Cell())
     );
 
     this.generateBoard(this.numMines);
@@ -127,7 +127,7 @@ export class MineSweeper implements IMineSweeper {
   public handleCellAction(
     row: number,
     col: number,
-    action: "click" | "flag",
+    action: "click" | "flag"
   ): void {
     if (this.gameStatus === "lost" || this.gameStatus === "won") {
       return;
@@ -175,10 +175,11 @@ export class MineSweeper implements IMineSweeper {
     cell: Cell,
     row: number,
     col: number,
-    isFirstClick?: boolean,
+    isFirstClick?: boolean
   ): void {
     if (cell.getIsMine() && isFirstClick) {
       cell.setIsFlagged(true);
+      this.numFlags++;
       return;
     }
     if (!cell.getIsMine() && isFirstClick) {
@@ -220,7 +221,7 @@ export class MineSweeper implements IMineSweeper {
   private forEachAdjacentCell(
     row: number,
     col: number,
-    callback: (cell: Cell, row: number, col: number) => void,
+    callback: (cell: Cell, row: number, col: number) => void
   ): void {
     for (let i = row - 1; i <= row + 1; i++) {
       for (let j = col - 1; j <= col + 1; j++) {
