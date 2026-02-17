@@ -1,6 +1,4 @@
 import {
-  collection,
-  deleteDoc,
   doc,
   setDoc,
   getDoc,
@@ -11,16 +9,7 @@ import {
   deleteField,
   Timestamp,
 } from "firebase/firestore";
-import {
-  diceSessionConverter,
-  diceSessionPlayerTurnConverter,
-  diceSessionRemainingTurnsConverter,
-  diceSessionDicesConverter,
-  diceSessionPlayerTriesConverter,
-  diceSessionScoresConverter,
-  diceScoreboardConverter,
-  diceSessionChatConverter,
-} from "~/stores/";
+import { createDiceRepositories } from "~/utils/repositories/firebase/diceRepository";
 import type { LocalDiceSessionType } from "~/stores";
 
 export interface IDiceSession {
@@ -37,40 +26,15 @@ export class DiceSession implements IDiceSession {
   private user = useCurrentUser();
   private notifier = useNotifier();
 
-  private sessionsRef = collection(this.db, "diceSessions").withConverter(
-    diceSessionConverter,
-  );
-
-  private playerTurnRef = collection(
-    this.db,
-    "diceSessionPlayerTurn",
-  ).withConverter(diceSessionPlayerTurnConverter);
-
-  private remainingTurnsRef = collection(
-    this.db,
-    "diceSessionRemainingTurns",
-  ).withConverter(diceSessionRemainingTurnsConverter);
-
-  private dicesRef = collection(this.db, "diceSessionDices").withConverter(
-    diceSessionDicesConverter,
-  );
-
-  private playerTriesRef = collection(
-    this.db,
-    "diceSessionPlayerTries",
-  ).withConverter(diceSessionPlayerTriesConverter);
-
-  private scoresRef = collection(this.db, "diceSessionScores").withConverter(
-    diceSessionScoresConverter,
-  );
-
-  private scoreboardRef = collection(this.db, "diceScoreboard").withConverter(
-    diceScoreboardConverter,
-  );
-
-  private chatRef = collection(this.db, "diceSessionChat").withConverter(
-    diceSessionChatConverter,
-  );
+  private repositories = createDiceRepositories(this.db);
+  private sessionsRef = this.repositories.refs.sessionsRef;
+  private playerTurnRef = this.repositories.refs.playerTurnRef;
+  private remainingTurnsRef = this.repositories.refs.remainingTurnsRef;
+  private dicesRef = this.repositories.refs.dicesRef;
+  private playerTriesRef = this.repositories.refs.playerTriesRef;
+  private scoresRef = this.repositories.refs.scoresRef;
+  private scoreboardRef = this.repositories.refs.scoreboardRef;
+  private chatRef = this.repositories.refs.chatRef;
 
   private async getUsername() {
     const userRef = doc(this.db, "users", this.user.value!.uid);
@@ -82,24 +46,15 @@ export class DiceSession implements IDiceSession {
   }
 
   private async checkScoreboard() {
-    const scoreboardQuery = query(
-      this.scoreboardRef,
-      where("userId", "==", this.user.value!.uid),
+    const scoreboard = await this.repositories.getUserScoreboard(
+      this.user.value!.uid,
     );
-    const scoreboardSnapshot = await getDocs(scoreboardQuery);
-    const scoreboard = scoreboardSnapshot.docs.map((doc) => doc.data());
     if (scoreboard.length === 0) {
       const username = await this.getUsername();
-      await setDoc(doc(this.scoreboardRef, this.user.value!.uid), {
-        userId: this.user.value!.uid,
+      await this.repositories.ensureUserScoreboard(
+        this.user.value!.uid,
         username,
-        games: 0,
-        maxScore: 0,
-        averageScore: 0,
-        totalScore: 0,
-        victories: 0,
-        dice: 0,
-      });
+      );
     }
   }
 
@@ -264,14 +219,6 @@ export class DiceSession implements IDiceSession {
 
     const sessionId = session.id;
 
-    const sessionRef = doc(this.sessionsRef, sessionId);
-    const playerTurnDoc = doc(this.playerTurnRef, sessionId);
-    const scoresDocRef = doc(this.scoresRef, sessionId);
-    const remainingTurnsDoc = doc(this.remainingTurnsRef, sessionId);
-    const dicesDoc = doc(this.dicesRef, sessionId);
-    const playerTriesDoc = doc(this.playerTriesRef, sessionId);
-    const chatDoc = doc(this.chatRef, sessionId);
-
     if (!session) {
       return;
     }
@@ -283,15 +230,7 @@ export class DiceSession implements IDiceSession {
     }
 
     if (session.players.length === 1) {
-      await deleteDoc(sessionRef);
-      await deleteDoc(playerTurnDoc);
-      await deleteDoc(scoresDocRef);
-      await deleteDoc(remainingTurnsDoc);
-      await deleteDoc(dicesDoc);
-      await deleteDoc(playerTriesDoc);
-      if (chatDoc) {
-        await deleteDoc(chatDoc);
-      }
+      await this.repositories.deleteEntireSession(sessionId);
     }
   }
 

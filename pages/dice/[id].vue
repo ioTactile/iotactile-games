@@ -93,26 +93,11 @@
 </template>
 
 <script setup lang="ts">
-import { collection, doc, updateDoc } from "firebase/firestore";
 import { storeToRefs } from "pinia";
 import { useDiceSoundsStore } from "~/stores/diceSounds";
-import {
-  diceSessionConverter,
-  diceSessionPlayerTurnConverter,
-  diceSessionScoresConverter,
-  diceSessionDicesConverter,
-  diceSessionRemainingTurnsConverter,
-  diceSessionChatConverter,
-} from "~/stores";
-import type { LocalDiceSessionScoresType } from "~/stores";
 import { SoundService } from "~/utils/music/soundService";
 import type { ISoundService } from "~/utils/music/soundService";
-import { sleep } from "~/utils";
-
-interface PlayerData {
-  playerSheet: LocalDiceSessionScoresType["playerOne"];
-  playerLocation: string;
-}
+import { useDiceGame } from "~/composables/useDiceGame";
 
 const route = useRoute();
 const sessionId = route.params.id as string;
@@ -147,57 +132,24 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const db = useFirestore();
-const user = useCurrentUser();
-
-const sessionRef = doc(db, "diceSessions", sessionId).withConverter(
-  diceSessionConverter,
-);
-const playerTurnRef = doc(db, "diceSessionPlayerTurn", sessionId).withConverter(
-  diceSessionPlayerTurnConverter,
-);
-const scoresRef = doc(db, "diceSessionScores", sessionId).withConverter(
-  diceSessionScoresConverter,
-);
-const dicesRef = doc(db, "diceSessionDices", sessionId).withConverter(
-  diceSessionDicesConverter,
-);
-const remainingTurnsRef = doc(
-  db,
-  "diceSessionRemainingTurns",
-  sessionId,
-).withConverter(diceSessionRemainingTurnsConverter);
-const playerTriesRef = doc(
-  db,
-  "diceSessionPlayerTries",
-  sessionId,
-).withConverter(diceSessionPlayerTriesConverter);
-const chatRef = doc(db, "diceSessionChat", sessionId).withConverter(
-  diceSessionChatConverter,
-);
-
-const session = useDocument(doc(collection(db, "diceSessions"), sessionRef.id));
-const playerTurn = useDocument(
-  doc(collection(db, "diceSessionPlayerTurn"), playerTurnRef.id),
-);
-const scores = useDocument(
-  doc(collection(db, "diceSessionScores"), scoresRef.id),
-);
-const dices = useDocument(doc(collection(db, "diceSessionDices"), dicesRef.id));
-const remainingTurns = useDocument(
-  doc(collection(db, "diceSessionRemainingTurns"), remainingTurnsRef.id),
-);
-const playerTries = useDocument(
-  doc(collection(db, "diceSessionPlayerTries"), playerTriesRef.id),
-);
-const chat = useDocument(doc(collection(db, "diceSessionChat"), chatRef.id));
-
-const isScoreboardActive = ref<boolean>(false);
-const isVolumesModalActive = ref<boolean>(false);
-const isChatModalActive = ref<boolean>(false);
-const isFirstVolumesModalOpen = ref<boolean>(true);
-const isEndgameModalActive = ref<boolean>(false);
-const isRulesModalActive = ref<boolean>(false);
+const {
+  session,
+  playerTurn,
+  scores,
+  dices,
+  remainingTurns,
+  playerTries,
+  chat,
+  isScoreboardActive,
+  isVolumesModalActive,
+  isChatModalActive,
+  isFirstVolumesModalOpen,
+  isEndgameModalActive,
+  isRulesModalActive,
+  isPlayerTurn,
+  playerData,
+  scoreboard,
+} = useDiceGame(sessionId);
 
 const diceSoundsStore = useDiceSoundsStore();
 const { isSoundEffectsActive, isNotificationsActive } =
@@ -231,89 +183,6 @@ onBeforeRouteLeave(() => {
   soundService.value.stopAllSounds();
   soundService.value.unloadAllSounds();
 });
-
-const isPlayerTurn = computed(() => {
-  if (playerTurn.value?.playerId === user.value?.uid) {
-    return true;
-  } else {
-    return false;
-  }
-});
-
-const playerData = computed((): PlayerData => {
-  let playerSheet;
-  let playerLocation = "";
-
-  if (scores.value) {
-    if (scores.value.playerOne.id === user.value?.uid) {
-      playerSheet = scores.value.playerOne;
-      playerLocation = "playerOne";
-    } else if (scores.value.playerTwo?.id === user.value?.uid) {
-      playerSheet = scores.value.playerTwo;
-      playerLocation = "playerTwo";
-    } else if (scores.value.playerThree?.id === user.value?.uid) {
-      playerSheet = scores.value.playerThree;
-      playerLocation = "playerThree";
-    } else if (scores.value.playerFour?.id === user.value?.uid) {
-      playerSheet = scores.value.playerFour;
-      playerLocation = "playerFour";
-    }
-  }
-
-  return {
-    playerSheet,
-    playerLocation,
-  };
-});
-
-const scoreboard = computed(() => {
-  const scoreboard = scores.value;
-  const newScoreboard: LocalDiceSessionScoresType["playerOne"][] = [];
-  if (scoreboard!.playerOne) newScoreboard.push(scoreboard!.playerOne);
-  if (scoreboard?.playerTwo) newScoreboard.push(scoreboard!.playerTwo);
-  if (scoreboard?.playerThree) newScoreboard.push(scoreboard!.playerThree);
-  if (scoreboard?.playerFour) newScoreboard.push(scoreboard!.playerFour);
-  return newScoreboard;
-});
-
-watch(
-  () => playerTurn.value?.playerId,
-  async (playerId) => {
-    if (!session.value?.isFinished) {
-      if (playerId === user.value?.uid) {
-        await sleep(2000);
-        isScoreboardActive.value = false;
-      } else {
-        isScoreboardActive.value = true;
-      }
-    }
-  },
-  { immediate: true },
-);
-
-watch(
-  () => session.value?.isFinished,
-  (isFinished) => {
-    if (isFinished) {
-      isEndgameModalActive.value = true;
-    }
-  },
-  { immediate: true },
-);
-
-watch(
-  () => remainingTurns.value?.remainingTurns,
-  async (newValue, oldValue) => {
-    if (oldValue !== undefined && newValue !== undefined && newValue === 0) {
-      if (oldValue !== newValue) {
-        await updateDoc(sessionRef, {
-          isFinished: true,
-        });
-      }
-    }
-  },
-  { immediate: true },
-);
 </script>
 
 <style scoped lang="scss">

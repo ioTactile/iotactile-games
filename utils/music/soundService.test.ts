@@ -1,5 +1,37 @@
-import { describe, beforeEach, test, expect, afterEach } from "vitest";
+import { describe, beforeEach, test, expect, afterEach, vi } from "vitest";
 import { SoundService } from "./soundService";
+
+vi.mock("howler", () => {
+  class HowlMock {
+    private _muted = false;
+    private _playing = false;
+
+    play() {
+      this._playing = true;
+    }
+
+    stop() {
+      this._playing = false;
+    }
+
+    unload() {
+      this._playing = false;
+    }
+
+    mute(value?: boolean) {
+      if (typeof value === "boolean") {
+        this._muted = value;
+      }
+      return this._muted;
+    }
+
+    playing() {
+      return this._playing;
+    }
+  }
+
+  return { Howl: HowlMock };
+});
 
 describe("SoundService", () => {
   let soundService: SoundService;

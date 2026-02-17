@@ -10,5 +10,5 @@ export const arrayFromLength = (length: number): string[] =>
 export const getRandomBoolean = (chance: number = 0.5): boolean =>
   chance > Math.random();
 
-export const takeRandomIndexFromArray = (array: any[]): number =>
+export const takeRandomIndexFromArray = <T>(array: T[]): number =>
   Math.floor(Math.random() * array.length);

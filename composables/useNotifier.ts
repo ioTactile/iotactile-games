@@ -2,7 +2,7 @@ type NotifierParams = {
   show: boolean;
   content?: string;
   color?: string;
-  error?: any;
+  error?: unknown;
 };
 
 const notification = reactive<NotifierParams>({
@@ -15,8 +15,17 @@ export const useNotifier = () => {
     color,
     error,
   }: Omit<NotifierParams, "show">) => {
-    notification.color = color || (error ? "error" : "info");
-    notification.content = content || error || "Une erreur est survenue";
+    const hasError = Boolean(error);
+    notification.color = color || (hasError ? "error" : "info");
+
+    let resolvedContent = content;
+    if (!resolvedContent && typeof error === "string") {
+      resolvedContent = error;
+    } else if (!resolvedContent && error instanceof Error) {
+      resolvedContent = error.message;
+    }
+
+    notification.content = resolvedContent || "Une erreur est survenue";
     notification.show = true;
 
     if (error) {

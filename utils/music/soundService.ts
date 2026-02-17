@@ -63,8 +63,9 @@ export class SoundService
   }
 
   public unloadAllSounds(): void {
-    Object.values(this.audioObject).forEach((audio) => {
+    Object.entries(this.audioObject).forEach(([key, audio]) => {
       audio.unload();
+      delete this.audioObject[key];
     });
   }
 

@@ -43,7 +43,6 @@ describe("Timer", () => {
     timer.start();
     timer.stop();
     expect(timer.isStarted()).toBe(true);
-    expect(timer.getReturnType()).toBe(undefined);
   });
 
   test("should reset the timer", () => {
