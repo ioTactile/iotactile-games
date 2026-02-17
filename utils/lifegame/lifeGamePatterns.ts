@@ -41,3 +41,23 @@ export const pentomino: number[][] = [
   [1, 1],
   [1, 2],
 ];
+
+export const diehard: number[][] = [
+  [0, 6],
+  [1, 0],
+  [1, 1],
+  [2, 1],
+  [2, 5],
+  [2, 6],
+  [2, 7],
+];
+
+export const acorn: number[][] = [
+  [0, 1],
+  [1, 3],
+  [2, 0],
+  [2, 1],
+  [2, 4],
+  [2, 5],
+  [2, 6],
+];

@@ -135,6 +135,14 @@ const patternsArray = [
     schema: patterns.pentomino,
     name: "Pentomino",
   },
+  {
+    schema: patterns.diehard,
+    name: "Diehard (long)",
+  },
+  {
+    schema: patterns.acorn,
+    name: "Acorn (très long)",
+  },
 ];
 
 watch(
