@@ -184,7 +184,7 @@ const login = async () => {
       createUserWithEmailAndPassword(auth, email.value, password.value).then(
         (credentials) => {
           const userRef = doc(db, "users", credentials.user.uid).withConverter(
-            userConverter
+            userConverter,
           );
           setDoc(
             userRef,
@@ -195,9 +195,9 @@ const login = async () => {
               creationDate: Timestamp.fromDate(date.value),
               updateDate: Timestamp.now(),
             },
-            { merge: true }
+            { merge: true },
           );
-        }
+        },
       );
       notifier({ content: "Inscription réussie", color: "success" });
     } else if (forgotPassword.value) {
@@ -211,7 +211,7 @@ const login = async () => {
       const userCredentials = await signInWithEmailAndPassword(
         auth,
         email.value,
-        password.value
+        password.value,
       );
 
       currentUser.value = userCredentials.user;

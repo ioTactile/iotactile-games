@@ -28,7 +28,7 @@ const handleResize = () => {
 
   scale.value = Math.min(
     height.value / targetHeight,
-    width.value / targetWidth
+    width.value / targetWidth,
   );
 };
 
@@ -39,7 +39,7 @@ watch(
       handleResize();
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 

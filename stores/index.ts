@@ -28,9 +28,7 @@ type NestedTypeMapper<T, I, O> = T extends I
   ? O
   : {
       [Property in keyof T]: T[Property] extends
-        | Date
-        | FirestoreTimestamp
-        | Timestamp
+        Date | FirestoreTimestamp | Timestamp
         ? T[Property] extends I
           ? O
           : T[Property]

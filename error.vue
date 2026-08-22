@@ -34,7 +34,6 @@ const props = defineProps<{
 
 const btnOutlined = ref(true);
 
-// eslint-disable-next-line no-console
 console.error(props);
 
 useHead({

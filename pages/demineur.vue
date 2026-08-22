@@ -217,8 +217,8 @@ const gameStatusToString = computed((): string =>
   mineSweeper.value.getGameStatusString(),
 );
 
-const gameStatus = computed(
-  (): GameStatus => mineSweeper.value.getGameStatus(),
+const gameStatus = computed((): GameStatus =>
+  mineSweeper.value.getGameStatus(),
 );
 
 const getArrowBackColor = computed((): string => {

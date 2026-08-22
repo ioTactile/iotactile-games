@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   modules: [
+    "@nuxt/eslint",
     "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
     "nuxt-vuefire",
