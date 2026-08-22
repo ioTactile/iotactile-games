@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import type { LocalDiceSessionScoresType } from "~/stores";
-import type { CardUser } from "~/functions/src/types";
+import type { CardUser } from "~/types/models";
 
 const props = defineProps<{
   sessionId: string;

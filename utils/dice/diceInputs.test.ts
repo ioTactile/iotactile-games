@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import type { Dice } from "../../functions/src/types";
+import type { Dice } from "../../types/models";
 import * as diceInputs from "./diceInputs";
 
 const createDice = (faces: number[]): Dice[] => {

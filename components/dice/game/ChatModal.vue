@@ -40,7 +40,7 @@
 import { doc, arrayUnion, setDoc } from "firebase/firestore";
 import { diceSessionChatConverter } from "~/stores";
 import type { LocalDiceSessionChatType } from "~/stores";
-import type { CardUser } from "~/functions/src/types";
+import type { CardUser } from "~/types/models";
 
 const props = defineProps<{
   sessionId: string;

@@ -6,7 +6,7 @@ import {
   type DocumentData,
 } from "firebase/firestore";
 import type { Difficulty } from "./types";
-import type { CustomVictory } from "~/functions/src/types";
+import type { CustomVictory } from "~/types/models";
 import type { LocalMineSweeperScoreboardType } from "~/stores";
 
 type OmittedCustomVictory = Omit<

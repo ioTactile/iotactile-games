@@ -127,7 +127,7 @@ import {
   mdiDice6,
 } from "@mdi/js";
 import type { LocalDiceSessionScoresType } from "~/stores";
-import type { Dice } from "~/functions/src/types";
+import type { Dice } from "~/types/models";
 import { sum } from "~/utils";
 import {
   oneInput,

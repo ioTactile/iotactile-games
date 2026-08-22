@@ -1,4 +1,4 @@
-import type { Dice } from "~/functions/src/types";
+import type { Dice } from "~/types/models";
 
 type PlayerSheetRow = {
   value: string;

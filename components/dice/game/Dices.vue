@@ -63,7 +63,7 @@ import {
   diceSessionDicesConverter,
   diceSessionPlayerTriesConverter,
 } from "~/stores";
-import type { Dice } from "~/functions/src/types";
+import type { Dice } from "~/types/models";
 import type { ISoundService } from "~/utils/music/soundService";
 import { random } from "~/utils";
 

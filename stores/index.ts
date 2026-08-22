@@ -3,7 +3,7 @@ import {
   Timestamp as FirestoreTimestamp,
 } from "@firebase/firestore";
 import type { FirestoreDataConverter } from "@firebase/firestore";
-import { Timestamp } from "~/functions/src/types";
+import type { Timestamp } from "@firebase/firestore";
 import type {
   User,
   DiceSession,
@@ -22,7 +22,7 @@ import type {
   LinguaVaultSessionWords,
   MineSweeperScoreboard,
   TakuzuScoreboard,
-} from "~/functions/src/types";
+} from "~/types/models";
 
 type NestedTypeMapper<T, I, O> = T extends I
   ? O

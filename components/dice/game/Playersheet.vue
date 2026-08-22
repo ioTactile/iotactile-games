@@ -111,7 +111,7 @@ import {
   diceSessionPlayerTriesConverter,
 } from "~/stores";
 import type { LocalDiceSessionScoresType } from "~/stores";
-import type { Dice, CardUser } from "~/functions/src/types";
+import type { Dice, CardUser } from "~/types/models";
 import {
   oneInput,
   twoInput,
