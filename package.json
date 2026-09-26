@@ -13,7 +13,8 @@
     "lint:js": "eslint .",
     "lint:prettier": "prettier --check .",
     "lint": "npm run lint:js && npm run lint:prettier",
-    "lintfix": "prettier --write --list-different . && npm run lint:js -- --fix"
+    "lintfix": "prettier --write --list-different . && npm run lint:js -- --fix",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@mdi/js": "^7.4.47",
@@ -24,6 +25,8 @@
     "@vueuse/nuxt": "^15.0.0",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
     "prettier": "^3.9.9",
     "sass": "^1.105.0",
     "typescript": "^5.9.3",
@@ -41,5 +44,14 @@
     "pinia-plugin-persistedstate": "^4.7.1",
     "vuefire": "^3.2.3",
     "vuetify": "^4.2.2"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,vue}": [
+      "eslint --fix --no-warn-ignored",
+      "prettier --write"
+    ],
+    "*.{json,md,scss,css,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }
