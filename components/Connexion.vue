@@ -121,11 +121,11 @@ import {
   getIdTokenResult,
 } from "firebase/auth";
 import { FirebaseError } from "@firebase/util";
-import { Timestamp, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { useFirestore, useFirebaseAuth } from "vuefire";
 import { storeToRefs } from "pinia";
 import { useUserStore } from "~/stores/user";
-import { userConverter } from "~/stores";
+import { userConverter } from "~/infrastructure/firestore/converters";
 
 // Composable & Vuefire
 
@@ -192,8 +192,8 @@ const login = async () => {
               id: credentials.user.uid,
               email: email.value,
               username: username.value,
-              creationDate: Timestamp.fromDate(date.value),
-              updateDate: Timestamp.now(),
+              creationDate: date.value,
+              updateDate: new Date(),
             },
             { merge: true },
           );

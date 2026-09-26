@@ -3,7 +3,6 @@ import {
   Timestamp as FirestoreTimestamp,
 } from "@firebase/firestore";
 import type { FirestoreDataConverter } from "@firebase/firestore";
-import type { Timestamp } from "@firebase/firestore";
 import type {
   User,
   DiceSession,
@@ -27,16 +26,16 @@ import type {
 type NestedTypeMapper<T, I, O> = T extends I
   ? O
   : {
-      [Property in keyof T]: T[Property] extends
-        Date | FirestoreTimestamp | Timestamp
+      [Property in keyof T]: T[Property] extends Date | FirestoreTimestamp
         ? T[Property] extends I
           ? O
           : T[Property]
         : NestedTypeMapper<T[Property], I, O>;
     };
 
-type DatabaseUserType = NestedTypeMapper<User, Timestamp, FirestoreTimestamp>;
-export type LocalUserType = NestedTypeMapper<User, Timestamp, Date>;
+type DatabaseUserType = NestedTypeMapper<User, Date, FirestoreTimestamp>;
+/** Domain user (Date fields). Alias kept for existing imports. */
+export type LocalUserType = User;
 export const userConverter: FirestoreDataConverter<LocalUserType> = {
   toFirestore: (item) => item,
   fromFirestore: (
@@ -57,14 +56,10 @@ export const userConverter: FirestoreDataConverter<LocalUserType> = {
 
 type DatabaseDiceSessionType = NestedTypeMapper<
   DiceSession,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalDiceSessionType = NestedTypeMapper<
-  DiceSession,
-  Timestamp,
-  Date
->;
+export type LocalDiceSessionType = DiceSession;
 export const diceSessionConverter: FirestoreDataConverter<LocalDiceSessionType> =
   {
     toFirestore: (item) => item,
@@ -83,14 +78,10 @@ export const diceSessionConverter: FirestoreDataConverter<LocalDiceSessionType> 
 
 type DatabaseDiceScoreboardType = NestedTypeMapper<
   DiceScoreboard,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalDiceScoreboardType = NestedTypeMapper<
-  DiceScoreboard,
-  Timestamp,
-  Date
->;
+export type LocalDiceScoreboardType = DiceScoreboard;
 export const diceScoreboardConverter: FirestoreDataConverter<LocalDiceScoreboardType> =
   {
     toFirestore: (item) => item,
@@ -108,14 +99,10 @@ export const diceScoreboardConverter: FirestoreDataConverter<LocalDiceScoreboard
 
 type DatabaseDiceSessionPlayerTurnType = NestedTypeMapper<
   DiceSessionPlayerTurn,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalDiceSessionPlayerTurnType = NestedTypeMapper<
-  DiceSessionPlayerTurn,
-  Timestamp,
-  Date
->;
+export type LocalDiceSessionPlayerTurnType = DiceSessionPlayerTurn;
 export const diceSessionPlayerTurnConverter: FirestoreDataConverter<LocalDiceSessionPlayerTurnType> =
   {
     toFirestore: (item) => item,
@@ -133,14 +120,10 @@ export const diceSessionPlayerTurnConverter: FirestoreDataConverter<LocalDiceSes
 
 type DatabaseDiceSessionRemainingTurnsType = NestedTypeMapper<
   DiceSessionRemainingTurns,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalDiceSessionRemainingTurnsType = NestedTypeMapper<
-  DiceSessionRemainingTurns,
-  Timestamp,
-  Date
->;
+export type LocalDiceSessionRemainingTurnsType = DiceSessionRemainingTurns;
 export const diceSessionRemainingTurnsConverter: FirestoreDataConverter<LocalDiceSessionRemainingTurnsType> =
   {
     toFirestore: (item) => item,
@@ -158,14 +141,10 @@ export const diceSessionRemainingTurnsConverter: FirestoreDataConverter<LocalDic
 
 type DatabaseDiceSessionDicesType = NestedTypeMapper<
   DiceSessionDices,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalDiceSessionDicesType = NestedTypeMapper<
-  DiceSessionDices,
-  Timestamp,
-  Date
->;
+export type LocalDiceSessionDicesType = DiceSessionDices;
 export const diceSessionDicesConverter: FirestoreDataConverter<LocalDiceSessionDicesType> =
   {
     toFirestore: (item) => item,
@@ -183,14 +162,10 @@ export const diceSessionDicesConverter: FirestoreDataConverter<LocalDiceSessionD
 
 type DatabaseDiceSessionPlayerTriesType = NestedTypeMapper<
   DiceSessionPlayerTries,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalDiceSessionPlayerTriesType = NestedTypeMapper<
-  DiceSessionPlayerTries,
-  Timestamp,
-  Date
->;
+export type LocalDiceSessionPlayerTriesType = DiceSessionPlayerTries;
 export const diceSessionPlayerTriesConverter: FirestoreDataConverter<LocalDiceSessionPlayerTriesType> =
   {
     toFirestore: (item) => item,
@@ -208,14 +183,10 @@ export const diceSessionPlayerTriesConverter: FirestoreDataConverter<LocalDiceSe
 
 type DatabaseDiceSessionChatType = NestedTypeMapper<
   DiceSessionChat,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalDiceSessionChatType = NestedTypeMapper<
-  DiceSessionChat,
-  Timestamp,
-  Date
->;
+export type LocalDiceSessionChatType = DiceSessionChat;
 export const diceSessionChatConverter: FirestoreDataConverter<LocalDiceSessionChatType> =
   {
     toFirestore: (item) => item,
@@ -233,14 +204,10 @@ export const diceSessionChatConverter: FirestoreDataConverter<LocalDiceSessionCh
 
 type DatabaseDiceSessionScoresType = NestedTypeMapper<
   DiceSessionScores,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalDiceSessionScoresType = NestedTypeMapper<
-  DiceSessionScores,
-  Timestamp,
-  Date
->;
+export type LocalDiceSessionScoresType = DiceSessionScores;
 export const diceSessionScoresConverter: FirestoreDataConverter<LocalDiceSessionScoresType> =
   {
     toFirestore: (item) => item,
@@ -263,14 +230,10 @@ export const diceSessionScoresConverter: FirestoreDataConverter<LocalDiceSession
 
 type DatabaseLinguaVaultWordsType = NestedTypeMapper<
   LinguaVaultWords,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalLinguaVaultWordsType = NestedTypeMapper<
-  LinguaVaultWords,
-  Timestamp,
-  Date
->;
+export type LocalLinguaVaultWordsType = LinguaVaultWords;
 export const linguaVaultWordsConverter: FirestoreDataConverter<LocalLinguaVaultWordsType> =
   {
     toFirestore: (item) => item,
@@ -288,14 +251,10 @@ export const linguaVaultWordsConverter: FirestoreDataConverter<LocalLinguaVaultW
 
 type DatabaseLinguaVaultSessionType = NestedTypeMapper<
   LinguaVaultSession,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalLinguaVaultSessionType = NestedTypeMapper<
-  LinguaVaultSession,
-  Timestamp,
-  Date
->;
+export type LocalLinguaVaultSessionType = LinguaVaultSession;
 export const linguaVaultSessionConverter: FirestoreDataConverter<LocalLinguaVaultSessionType> =
   {
     toFirestore: (item) => item,
@@ -314,14 +273,10 @@ export const linguaVaultSessionConverter: FirestoreDataConverter<LocalLinguaVaul
 
 type DatabaseLinguaVaultScoreboardType = NestedTypeMapper<
   LinguaVaultScoreboard,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalLinguaVaultScoreboardType = NestedTypeMapper<
-  LinguaVaultScoreboard,
-  Timestamp,
-  Date
->;
+export type LocalLinguaVaultScoreboardType = LinguaVaultScoreboard;
 export const linguaVaultScoreboardConverter: FirestoreDataConverter<LocalLinguaVaultScoreboardType> =
   {
     toFirestore: (item) => item,
@@ -339,14 +294,11 @@ export const linguaVaultScoreboardConverter: FirestoreDataConverter<LocalLinguaV
 
 type DatabaseLinguaVaultSessionRemainingTurnsType = NestedTypeMapper<
   LinguaVaultSessionRemainingTurns,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalLinguaVaultSessionRemainingTurnsType = NestedTypeMapper<
-  LinguaVaultSessionRemainingTurns,
-  Timestamp,
-  Date
->;
+export type LocalLinguaVaultSessionRemainingTurnsType =
+  LinguaVaultSessionRemainingTurns;
 export const linguaVaultSessionRemainingTurnsConverter: FirestoreDataConverter<LocalLinguaVaultSessionRemainingTurnsType> =
   {
     toFirestore: (item) => item,
@@ -364,14 +316,11 @@ export const linguaVaultSessionRemainingTurnsConverter: FirestoreDataConverter<L
 
 type DatabaseLinguaVaultSessionPlayerTurnType = NestedTypeMapper<
   LinguaVaultSessionPlayerTurn,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalLinguaVaultSessionPlayerTurnType = NestedTypeMapper<
-  LinguaVaultSessionPlayerTurn,
-  Timestamp,
-  Date
->;
+export type LocalLinguaVaultSessionPlayerTurnType =
+  LinguaVaultSessionPlayerTurn;
 export const linguaVaultSessionPlayerTurnConverter: FirestoreDataConverter<LocalLinguaVaultSessionPlayerTurnType> =
   {
     toFirestore: (item) => item,
@@ -389,14 +338,10 @@ export const linguaVaultSessionPlayerTurnConverter: FirestoreDataConverter<Local
 
 type DatabaseLinguaVaultSessionWordsType = NestedTypeMapper<
   LinguaVaultSessionWords,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalLinguaVaultSessionWordsType = NestedTypeMapper<
-  LinguaVaultSessionWords,
-  Timestamp,
-  Date
->;
+export type LocalLinguaVaultSessionWordsType = LinguaVaultSessionWords;
 export const linguaVaultSessionWordsConverter: FirestoreDataConverter<LocalLinguaVaultSessionWordsType> =
   {
     toFirestore: (item) => item,
@@ -416,14 +361,10 @@ export const linguaVaultSessionWordsConverter: FirestoreDataConverter<LocalLingu
 
 type DatabaseMineSweeperSessionScoresType = NestedTypeMapper<
   MineSweeperScoreboard,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalMineSweeperScoreboardType = NestedTypeMapper<
-  MineSweeperScoreboard,
-  Timestamp,
-  Date
->;
+export type LocalMineSweeperScoreboardType = MineSweeperScoreboard;
 export const mineSweeperScoreboardConverter: FirestoreDataConverter<LocalMineSweeperScoreboardType> =
   {
     toFirestore: (item) => item,
@@ -459,14 +400,10 @@ export const mineSweeperScoreboardConverter: FirestoreDataConverter<LocalMineSwe
 
 type DatabaseTakuzuSessionScoresType = NestedTypeMapper<
   TakuzuScoreboard,
-  Timestamp,
+  Date,
   FirestoreTimestamp
 >;
-export type LocalTakuzuScoreboardType = NestedTypeMapper<
-  TakuzuScoreboard,
-  Timestamp,
-  Date
->;
+export type LocalTakuzuScoreboardType = TakuzuScoreboard;
 export const takuzuScoreboardConverter: FirestoreDataConverter<LocalTakuzuScoreboardType> =
   {
     toFirestore: (item) => item,

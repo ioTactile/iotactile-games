@@ -42,7 +42,7 @@ import { useDisplay } from "vuetify";
 import { Takuzu, type ITakuzu } from "~/utils/takuzu/takuzu.js";
 import { CellValues } from "~/utils/takuzu/constants";
 
-import { saveScoreboard } from "~/utils/takuzu/database";
+import { saveScoreboard } from "~/infrastructure/firestore/takuzuScoreboardRepository";
 import { sleep } from "~/utils";
 import type {
   GameOptions,

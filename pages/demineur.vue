@@ -115,7 +115,7 @@ import type {
 } from "~/utils/minesweeper/types";
 import type { Cell } from "~/utils/minesweeper/cell";
 import type { Timer } from "~/utils/minesweeper/Timer";
-import { saveScoreboard } from "~/utils/minesweeper/database";
+import { saveScoreboard } from "~/infrastructure/firestore/mineSweeperScoreboardRepository";
 
 useSeoMeta({
   title: "Démineur - ioTactile Games",

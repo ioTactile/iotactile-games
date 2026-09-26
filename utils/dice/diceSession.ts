@@ -9,7 +9,6 @@ import {
   query,
   where,
   deleteField,
-  Timestamp,
   type Firestore,
 } from "firebase/firestore";
 import {
@@ -152,7 +151,7 @@ export class DiceSession implements IDiceSession {
       isFull: false,
       isStarted: false,
       isFinished: false,
-      creationDate: Timestamp.fromDate(new Date(Date.now())),
+      creationDate: new Date(),
     });
 
     await setDoc(doc(this.playerTurnRef, sessionId), {
@@ -178,7 +177,7 @@ export class DiceSession implements IDiceSession {
     await setDoc(doc(this.scoresRef, sessionId), {
       id: sessionId,
       playerOne: createEmptyPlayerScores(userId),
-      creationDate: Timestamp.fromDate(new Date(Date.now())),
+      creationDate: new Date(),
     });
 
     await this.checkScoreboard(userId);

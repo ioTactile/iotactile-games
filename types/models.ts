@@ -1,7 +1,3 @@
-import type { Timestamp } from "@firebase/firestore";
-
-export type { Timestamp };
-
 export type CardUser = {
   id: string;
   username: string;
@@ -18,8 +14,8 @@ export type User = {
   email: string;
   username: string;
   role?: { admin: true };
-  creationDate: Timestamp;
-  updateDate: Timestamp;
+  creationDate: Date;
+  updateDate: Date;
 };
 
 export type DiceSession = {
@@ -29,7 +25,7 @@ export type DiceSession = {
   isFull: boolean;
   isStarted: boolean;
   isFinished: boolean;
-  creationDate: Timestamp;
+  creationDate: Date;
 };
 
 export type DiceSessionPlayerTurn = {
@@ -72,81 +68,32 @@ export type DiceScoreboard = {
   dice: number;
 };
 
+export type DicePlayerSheet = {
+  id: string;
+  one: number | null;
+  two: number | null;
+  three: number | null;
+  four: number | null;
+  five: number | null;
+  six: number | null;
+  bonus: number;
+  threeOfAKind: number | null;
+  fourOfAKind: number | null;
+  fullHouse: number | null;
+  smallStraight: number | null;
+  largeStraight: number | null;
+  chance: number | null;
+  dice: number | null;
+  total: number;
+};
+
 export type DiceSessionScores = {
   id: string;
-  playerOne: {
-    id: string;
-    one: number | null;
-    two: number | null;
-    three: number | null;
-    four: number | null;
-    five: number | null;
-    six: number | null;
-    bonus: number;
-    threeOfAKind: number | null;
-    fourOfAKind: number | null;
-    fullHouse: number | null;
-    smallStraight: number | null;
-    largeStraight: number | null;
-    chance: number | null;
-    dice: number | null;
-    total: number;
-  };
-  playerTwo?: {
-    id: string;
-    one: number | null;
-    two: number | null;
-    three: number | null;
-    four: number | null;
-    five: number | null;
-    six: number | null;
-    bonus: number;
-    threeOfAKind: number | null;
-    fourOfAKind: number | null;
-    fullHouse: number | null;
-    smallStraight: number | null;
-    largeStraight: number | null;
-    chance: number | null;
-    dice: number | null;
-    total: number;
-  };
-  playerThree?: {
-    id: string;
-    one: number | null;
-    two: number | null;
-    three: number | null;
-    four: number | null;
-    five: number | null;
-    six: number | null;
-    bonus: number;
-    threeOfAKind: number | null;
-    fourOfAKind: number | null;
-    fullHouse: number | null;
-    smallStraight: number | null;
-    largeStraight: number | null;
-    chance: number | null;
-    dice: number | null;
-    total: number;
-  };
-  playerFour?: {
-    id: string;
-    one: number | null;
-    two: number | null;
-    three: number | null;
-    four: number | null;
-    five: number | null;
-    six: number | null;
-    bonus: number;
-    threeOfAKind: number | null;
-    fourOfAKind: number | null;
-    fullHouse: number | null;
-    smallStraight: number | null;
-    largeStraight: number | null;
-    chance: number | null;
-    dice: number | null;
-    total: number;
-  };
-  creationDate?: Timestamp;
+  playerOne: DicePlayerSheet;
+  playerTwo?: DicePlayerSheet;
+  playerThree?: DicePlayerSheet;
+  playerFour?: DicePlayerSheet;
+  creationDate?: Date;
 };
 
 export type Word = {
@@ -173,7 +120,7 @@ export type LinguaVaultSession = {
   isRoundFinished: boolean;
   isPlayerOneContinue: boolean | null;
   isPlayerTwoContinue: boolean | null;
-  creationDate: Timestamp;
+  creationDate: Date;
 };
 
 export type LinguaVaultSessionWords = {
@@ -213,13 +160,13 @@ export type CustomVictory = {
   mines: number;
   victories: number;
   bestTime: number;
-  victoryDate: Timestamp;
+  victoryDate: Date;
 };
 
 export type MineSweeperVictory = {
   victories: number;
   bestTime: number;
-  victoryDate: Timestamp;
+  victoryDate: Date;
 };
 
 export type MineSweeperScoreboard = {
@@ -234,7 +181,7 @@ export type MineSweeperScoreboard = {
 export type TakuzuVictory = {
   victories: number;
   bestTime: number;
-  victoryDate: Timestamp;
+  victoryDate: Date;
 };
 
 export type TakuzuScoreboard = {

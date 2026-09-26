@@ -1,14 +1,8 @@
 import type { BoardSize, Difficulty } from "./types";
-import type { LocalTakuzuScoreboardType } from "~/infrastructure/firestore/converters";
-
-export type TakuzuVictory = {
-  victories: number;
-  bestTime: number;
-  victoryDate: Date;
-};
+import type { TakuzuScoreboard, TakuzuVictory } from "~/types/models";
 
 export type TakuzuSizeKey = Exclude<
-  keyof LocalTakuzuScoreboardType,
+  keyof TakuzuScoreboard,
   "userId" | "username"
 >;
 
@@ -28,7 +22,7 @@ const emptySizeBoard = () => ({
 export const createEmptyTakuzuScoreboard = (
   userId: string,
   username: string,
-): LocalTakuzuScoreboardType => ({
+): TakuzuScoreboard => ({
   userId,
   username,
   sixBySix: emptySizeBoard(),
@@ -53,12 +47,12 @@ export const translateBoardSize = (boardSize: BoardSize): TakuzuSizeKey => {
 };
 
 export const applyTakuzuVictory = (
-  scoreboard: LocalTakuzuScoreboardType,
+  scoreboard: TakuzuScoreboard,
   boardSize: BoardSize,
   difficulty: Difficulty,
   time: number,
   now: Date = new Date(),
-): LocalTakuzuScoreboardType => {
+): TakuzuScoreboard => {
   const sizeKey = translateBoardSize(boardSize);
   const sizeBoard = {
     ...(scoreboard[sizeKey] as Record<Difficulty, TakuzuVictory>),

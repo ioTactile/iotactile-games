@@ -1,16 +1,22 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
+    "module": "node16",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
     "outDir": "lib",
+    "rootDir": "..",
     "sourceMap": true,
     "strict": true,
     "target": "es2021",
-    "module": "es2020",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "esModuleInterop": true
   },
   "compileOnSave": true,
-  "include": ["src"]
+  "include": [
+    "src/**/*.ts",
+    "../shared/dice/endSessionScoreboard.ts",
+    "../types/models.ts"
+  ]
 }

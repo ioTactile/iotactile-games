@@ -1,14 +1,11 @@
 import type { Difficulty } from "./types";
-import type { CustomVictory } from "~/types/models";
-import type { LocalMineSweeperScoreboardType } from "~/infrastructure/firestore/converters";
+import type {
+  CustomVictory,
+  MineSweeperScoreboard,
+  MineSweeperVictory,
+} from "~/types/models";
 
 type OmittedDifficulty = Exclude<Difficulty, "custom">;
-
-export type MineSweeperVictory = {
-  victories: number;
-  bestTime: number;
-  victoryDate: Date;
-};
 
 export const createDefaultMineSweeperVictory = (): MineSweeperVictory => ({
   victories: 0,
@@ -19,7 +16,7 @@ export const createDefaultMineSweeperVictory = (): MineSweeperVictory => ({
 export const createEmptyMineSweeperScoreboard = (
   userId: string,
   username: string,
-): LocalMineSweeperScoreboardType => ({
+): MineSweeperScoreboard => ({
   userId,
   username,
   beginner: createDefaultMineSweeperVictory(),
@@ -29,13 +26,13 @@ export const createEmptyMineSweeperScoreboard = (
 });
 
 export const applyCustomVictory = (
-  scoreboard: LocalMineSweeperScoreboardType,
+  scoreboard: MineSweeperScoreboard,
   time: number,
   numRows: number,
   numCols: number,
   numMines: number,
   now: Date = new Date(),
-): LocalMineSweeperScoreboardType => {
+): MineSweeperScoreboard => {
   const custom = [...scoreboard.custom];
   const customVictoryIndex = custom.findIndex(
     (customVictory: Pick<CustomVictory, "rows" | "cols" | "mines">) =>
@@ -70,11 +67,11 @@ export const applyCustomVictory = (
 };
 
 export const applyDifficultyVictory = (
-  scoreboard: LocalMineSweeperScoreboardType,
+  scoreboard: MineSweeperScoreboard,
   time: number,
   difficulty: OmittedDifficulty,
   now: Date = new Date(),
-): LocalMineSweeperScoreboardType => {
+): MineSweeperScoreboard => {
   const current = scoreboard[difficulty];
   const bestTime = current.bestTime > time ? time : current.bestTime || time;
 
@@ -89,14 +86,14 @@ export const applyDifficultyVictory = (
 };
 
 export const applyMineSweeperVictory = (
-  scoreboard: LocalMineSweeperScoreboardType,
+  scoreboard: MineSweeperScoreboard,
   time: number,
   difficulty: Difficulty,
   numRows: number,
   numCols: number,
   numMines: number,
   now: Date = new Date(),
-): LocalMineSweeperScoreboardType => {
+): MineSweeperScoreboard => {
   if (difficulty === "custom") {
     return applyCustomVictory(
       scoreboard,
