@@ -16,11 +16,7 @@
         >
           <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
           <g id="SVGRepo_iconCarrier">
             <g>
@@ -35,11 +31,7 @@
       <div />
     </section>
     <section class="content">
-      <div
-        v-for="(player, i) in orderedPlayers"
-        :key="i"
-        class="player-wrapper"
-      >
+      <div v-for="(player, i) in orderedPlayers" :key="i" class="player-wrapper">
         <h4>{{ player.username }}</h4>
         <h4>{{ player.total }}</h4>
       </div>
@@ -51,23 +43,23 @@
 </template>
 
 <script setup lang="ts">
-import type { LocalDiceSessionScoresType } from "~/stores";
-import type { CardUser } from "~/types/models";
+import type { LocalDiceSessionScoresType } from '~/stores';
+import type { CardUser } from '~/types/models';
 
 const props = defineProps<{
   sessionId: string;
   players: CardUser[];
-  scoreboard: LocalDiceSessionScoresType["playerOne"][];
+  scoreboard: LocalDiceSessionScoresType['playerOne'][];
 }>();
 
-const emit = defineEmits<{ (e: "openEndgame", value: boolean): void }>();
+const emit = defineEmits<{ (e: 'openEndgame', value: boolean): void }>();
 
 const closeEndgame = () => {
-  emit("openEndgame", false);
+  emit('openEndgame', false);
 };
 
 const goToMenu = () => {
-  navigateTo("/dice");
+  navigateTo('/dice');
 };
 
 const orderedPlayers = computed(() => {

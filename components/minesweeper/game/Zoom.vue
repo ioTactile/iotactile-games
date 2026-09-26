@@ -1,17 +1,8 @@
 <template>
   <div class="zoom-container">
-    <Tooltip
-      content="Zoom"
-      position="top left"
-      :slot-height="35"
-      :slot-width="35"
-    >
+    <Tooltip content="Zoom" position="top left" :slot-height="35" :slot-width="35">
       <template #activator="{ onMouseover, onMouseleave }">
-        <button
-          @mouseover="onMouseover"
-          @mouseleave="onMouseleave"
-          @click="toggleMenu"
-        >
+        <button @mouseover="onMouseover" @mouseleave="onMouseleave" @click="toggleMenu">
           <v-icon :icon="mdiLoupe" :size="getIconSize" />
         </button>
       </template>
@@ -30,11 +21,11 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from "vuetify";
-import { onClickOutside } from "@vueuse/core";
-import { VIcon } from "vuetify/components";
-import { mdiLoupe } from "@mdi/js";
-import { useMineSweeperZoomLevelStore } from "~/stores/mineSweeperZoomLevel";
+import { useDisplay } from 'vuetify';
+import { onClickOutside } from '@vueuse/core';
+import { VIcon } from 'vuetify/components';
+import { mdiLoupe } from '@mdi/js';
+import { useMineSweeperZoomLevelStore } from '~/stores/mineSweeperZoomLevel';
 
 const { width } = useDisplay();
 
@@ -53,8 +44,8 @@ const getIconSize = computed(() => {
 });
 
 const zoomLevels: number[] = [
-  10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46,
-  48, 50, 52, 54, 56, 58, 60,
+  10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56,
+  58, 60,
 ];
 
 const setZoom = (level: number): void => {
@@ -68,7 +59,7 @@ const toggleMenu = (): void => {
 
 const currentZoomStyle = (level: number) => {
   return {
-    "current-zoom": zoomLevel.value === level,
+    'current-zoom': zoomLevel.value === level,
   };
 };
 </script>

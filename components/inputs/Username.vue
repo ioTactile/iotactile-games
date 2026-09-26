@@ -14,8 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import { VTextField } from "vuetify/components";
-import { mdiAccount } from "@mdi/js";
+import { VTextField } from 'vuetify/components';
+import { mdiAccount } from '@mdi/js';
 
 const MIN_LENGTH = 3;
 
@@ -24,23 +24,23 @@ withDefaults(
     modelValue?: string;
     name?: string;
     icon?: boolean;
-    variant?: "filled" | "outlined" | "plain" | "underlined" | "solo";
+    variant?: 'filled' | 'outlined' | 'plain' | 'underlined' | 'solo';
     rounded?: string;
-    density?: "default" | "comfortable" | "compact";
+    density?: 'default' | 'comfortable' | 'compact';
   }>(),
   {
     modelValue: undefined,
-    name: "username",
+    name: 'username',
     variant: undefined,
     rounded: undefined,
     density: undefined,
   },
 );
 
-defineEmits<{ (e: "update:model-value", value: string): void }>();
+defineEmits<{ (e: 'update:model-value', value: string): void }>();
 
 const rules = [
   (v?: string) => !!v || "Nom d'utilisateur requis",
-  (v?: string) => (v && v.length >= MIN_LENGTH) || "3 caractères minimum",
+  (v?: string) => (v && v.length >= MIN_LENGTH) || '3 caractères minimum',
 ];
 </script>

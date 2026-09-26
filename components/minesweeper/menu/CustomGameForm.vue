@@ -2,43 +2,25 @@
   <form @submit.prevent="startCustomGame">
     <div class="form-group">
       <label for="custom_width"> Largeur </label>
-      <input
-        id="custom_width"
-        v-model="numRows"
-        type="number"
-        min="1"
-        max="100"
-      />
+      <input id="custom_width" v-model="numRows" type="number" min="1" max="100" />
     </div>
     <div class="form-group">
       <label for="custom_height"> Hauteur </label>
-      <input
-        id="custom_height"
-        v-model="numCols"
-        type="number"
-        min="1"
-        max="100"
-      />
+      <input id="custom_height" v-model="numCols" type="number" min="1" max="100" />
     </div>
     <div class="form-group">
       <label for="custom_mines"> Mines </label>
-      <input
-        id="custom_mines"
-        v-model="numMines"
-        type="number"
-        min="1"
-        max="10000"
-      />
+      <input id="custom_mines" v-model="numMines" type="number" min="1" max="10000" />
     </div>
     <button type="submit" class="button-mineSweeper">VALIDER</button>
   </form>
 </template>
 
 <script setup lang="ts">
-import type { GameOptions } from "~/utils/minesweeper/types";
+import type { GameOptions } from '~/utils/minesweeper/types';
 
 const emit = defineEmits<{
-  (e: "startCustomGame", args: GameOptions): void;
+  (e: 'startCustomGame', args: GameOptions): void;
 }>();
 
 const numRows = ref<number>(30);
@@ -46,11 +28,11 @@ const numCols = ref<number>(30);
 const numMines = ref<number>(150);
 
 const startCustomGame = (): void => {
-  emit("startCustomGame", {
+  emit('startCustomGame', {
     numRows: numRows.value,
     numCols: numCols.value,
     numMines: numMines.value,
-    difficulty: "custom",
+    difficulty: 'custom',
   });
 };
 </script>
@@ -70,7 +52,7 @@ form {
     label {
       font-size: 1.75rem;
       font-weight: 700;
-      font-family: "Orbitron", sans-serif;
+      font-family: 'Orbitron', sans-serif;
       text-transform: uppercase;
     }
 
@@ -86,7 +68,7 @@ form {
       color: white;
       font-size: 1.5rem;
       box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-      font-family: "Orbitron", sans-serif;
+      font-family: 'Orbitron', sans-serif;
       margin: 1rem 0;
     }
 
@@ -94,13 +76,7 @@ form {
       outline: none;
     }
 
-    // input::-webkit-outer-spin-button,
-    // input::-webkit-inner-spin-button {
-    //   -webkit-appearance: none;
-    //   margin: 0;
-    // }
-
-    input[type="number"] {
+    input[type='number'] {
       appearance: textfield;
       -webkit-appearance: textfield;
       -moz-appearance: textfield;

@@ -13,35 +13,35 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: "action", value: string): void;
+  (e: 'action', value: string): void;
 }>();
 
 const diceSession = useDiceSession();
 
 const menuItems = [
   {
-    title: "Partie rapide",
-    action: "quickGame",
+    title: 'Partie rapide',
+    action: 'quickGame',
   },
   {
-    title: "Nouvelle partie",
-    action: "newGame",
+    title: 'Nouvelle partie',
+    action: 'newGame',
   },
   {
-    title: "Voir les parties",
-    action: "viewGames",
+    title: 'Voir les parties',
+    action: 'viewGames',
   },
 ];
 
 const handleAction = async (action: string) => {
-  if (action === "quickGame") {
+  if (action === 'quickGame') {
     const result = await diceSession.quickJoin();
     if (result === false) {
       return;
     }
-    emit("action", "quickGame");
+    emit('action', 'quickGame');
   } else {
-    emit("action", action);
+    emit('action', action);
   }
 };
 </script>

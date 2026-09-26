@@ -12,7 +12,7 @@
             {{ getInput(row.value) }}
           </button>
           <button v-else class="button-input mr-4">
-            {{ row.input === null ? "-" : row.input }}
+            {{ row.input === null ? '-' : row.input }}
           </button>
         </div>
         <div class="left-row-bottom-wrapper">
@@ -44,11 +44,7 @@
         >
           <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
           <g id="SVGRepo_iconCarrier">
             <g>
@@ -75,7 +71,7 @@
             {{ getInput(row.value) }}
           </button>
           <button v-else class="button-input mr-4">
-            {{ row.input === null ? "-" : row.input }}
+            {{ row.input === null ? '-' : row.input }}
           </button>
         </div>
         <div class="right-row-bottom-wrapper">
@@ -93,25 +89,18 @@
 </template>
 
 <script setup lang="ts">
-import { updateDoc, doc } from "firebase/firestore";
-import { VIcon, VImg } from "vuetify/components";
-import {
-  mdiDice1,
-  mdiDice2,
-  mdiDice3,
-  mdiDice4,
-  mdiDice5,
-  mdiDice6,
-} from "@mdi/js";
+import { updateDoc, doc } from 'firebase/firestore';
+import { VIcon, VImg } from 'vuetify/components';
+import { mdiDice1, mdiDice2, mdiDice3, mdiDice4, mdiDice5, mdiDice6 } from '@mdi/js';
 import {
   diceSessionScoresConverter,
   diceSessionRemainingTurnsConverter,
   diceSessionPlayerTurnConverter,
   diceSessionDicesConverter,
   diceSessionPlayerTriesConverter,
-} from "~/stores";
-import type { LocalDiceSessionScoresType } from "~/stores";
-import type { Dice, CardUser } from "~/types/models";
+} from '~/stores';
+import type { LocalDiceSessionScoresType } from '~/stores';
+import type { Dice, CardUser } from '~/types/models';
 import {
   oneInput,
   twoInput,
@@ -128,7 +117,7 @@ import {
   chanceInput,
   getUpperSectionTotal,
   getLowerSectionTotal,
-} from "~/utils/dice/diceInputs";
+} from '~/utils/dice/diceInputs';
 
 type InputMappings = {
   one: number;
@@ -154,17 +143,13 @@ type PlayerSheetRow = {
   input: number | null;
 };
 
-// Vuefire
-
 const db = useFirestore();
-
-// Props & Emits
 
 const props = defineProps<{
   sessionId: string;
   dices: Dice[];
   playerData: {
-    playerSheet: LocalDiceSessionScoresType["playerOne"];
+    playerSheet: LocalDiceSessionScoresType['playerOne'];
     playerLocation: string;
   };
   isPlayerTurn: boolean;
@@ -174,39 +159,37 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "update:isScoreboardActive", value: boolean): void;
+  (e: 'update:isScoreboardActive', value: boolean): void;
 }>();
-
-// Refs
 
 const upperPlayerSheet = ref<PlayerSheetRow[]>([
   {
-    value: "one",
+    value: 'one',
     icon: mdiDice1,
     input: props.playerData.playerSheet.one,
   },
   {
-    value: "two",
+    value: 'two',
     icon: mdiDice2,
     input: props.playerData.playerSheet.two,
   },
   {
-    value: "three",
+    value: 'three',
     icon: mdiDice3,
     input: props.playerData.playerSheet.three,
   },
   {
-    value: "four",
+    value: 'four',
     icon: mdiDice4,
     input: props.playerData.playerSheet.four,
   },
   {
-    value: "five",
+    value: 'five',
     icon: mdiDice5,
     input: props.playerData.playerSheet.five,
   },
   {
-    value: "six",
+    value: 'six',
     icon: mdiDice6,
     input: props.playerData.playerSheet.six,
   },
@@ -214,89 +197,69 @@ const upperPlayerSheet = ref<PlayerSheetRow[]>([
 
 const lowerPlayerSheet = ref<PlayerSheetRow[]>([
   {
-    value: "threeOfAKind",
-    src: "/dice/inputs/three-of-a-kind.png",
+    value: 'threeOfAKind',
+    src: '/dice/inputs/three-of-a-kind.png',
     input: props.playerData.playerSheet.threeOfAKind,
   },
   {
-    value: "fourOfAKind",
-    src: "/dice/inputs/four-of-a-kind.png",
+    value: 'fourOfAKind',
+    src: '/dice/inputs/four-of-a-kind.png',
     input: props.playerData.playerSheet.fourOfAKind,
   },
   {
-    value: "fullHouse",
-    src: "/dice/inputs/full-house.png",
+    value: 'fullHouse',
+    src: '/dice/inputs/full-house.png',
     input: props.playerData.playerSheet.fullHouse,
   },
   {
-    value: "smallStraight",
-    src: "/dice/inputs/small-straight.png",
+    value: 'smallStraight',
+    src: '/dice/inputs/small-straight.png',
     input: props.playerData.playerSheet.smallStraight,
   },
   {
-    value: "largeStraight",
-    src: "/dice/inputs/large-straight.png",
+    value: 'largeStraight',
+    src: '/dice/inputs/large-straight.png',
     input: props.playerData.playerSheet.largeStraight,
   },
   {
-    value: "dice",
-    src: "/dice/inputs/dice.png",
+    value: 'dice',
+    src: '/dice/inputs/dice.png',
     input: props.playerData.playerSheet.dice,
   },
   {
-    value: "chance",
-    src: "/dice/inputs/chance.png",
+    value: 'chance',
+    src: '/dice/inputs/chance.png',
     input: props.playerData.playerSheet.chance,
   },
 ]);
 
-// Firebase refs
-
-const scoresRef = doc(db, "diceSessionScores", props.sessionId).withConverter(
+const scoresRef = doc(db, 'diceSessionScores', props.sessionId).withConverter(
   diceSessionScoresConverter,
 );
-const remainingTurnsRef = doc(
-  db,
-  "diceSessionRemainingTurns",
-  props.sessionId,
-).withConverter(diceSessionRemainingTurnsConverter);
-const playerTurnRef = doc(
-  db,
-  "diceSessionPlayerTurn",
-  props.sessionId,
-).withConverter(diceSessionPlayerTurnConverter);
-const dicesRef = doc(db, "diceSessionDices", props.sessionId).withConverter(
+const remainingTurnsRef = doc(db, 'diceSessionRemainingTurns', props.sessionId).withConverter(
+  diceSessionRemainingTurnsConverter,
+);
+const playerTurnRef = doc(db, 'diceSessionPlayerTurn', props.sessionId).withConverter(
+  diceSessionPlayerTurnConverter,
+);
+const dicesRef = doc(db, 'diceSessionDices', props.sessionId).withConverter(
   diceSessionDicesConverter,
 );
-const playerTriesRef = doc(
-  db,
-  "diceSessionPlayerTries",
-  props.sessionId,
-).withConverter(diceSessionPlayerTriesConverter);
-
-// Computed
-
-const upperPlayerSheetTotal = computed(() =>
-  getUpperSectionTotal(upperPlayerSheet.value),
+const playerTriesRef = doc(db, 'diceSessionPlayerTries', props.sessionId).withConverter(
+  diceSessionPlayerTriesConverter,
 );
 
-const lowerPlayerSheetTotal = computed(() =>
-  getLowerSectionTotal(lowerPlayerSheet.value),
-);
+const upperPlayerSheetTotal = computed(() => getUpperSectionTotal(upperPlayerSheet.value));
+
+const lowerPlayerSheetTotal = computed(() => getLowerSectionTotal(lowerPlayerSheet.value));
 
 const upperPlayerSheetBonus = computed(() => {
   return upperPlayerSheetTotal.value >= 63 ? 35 : 0;
 });
 
 const playerSheetTotal = computed(() => {
-  return (
-    upperPlayerSheetTotal.value +
-    lowerPlayerSheetTotal.value +
-    upperPlayerSheetBonus.value
-  );
+  return upperPlayerSheetTotal.value + lowerPlayerSheetTotal.value + upperPlayerSheetBonus.value;
 });
-
-// Mappings
 
 const inputMappings = computed<InputMappings>(() => {
   const dices = props.dices;
@@ -318,10 +281,8 @@ const inputMappings = computed<InputMappings>(() => {
   };
 });
 
-// Methods
-
 const openScoreboard = () => {
-  emit("update:isScoreboardActive", true);
+  emit('update:isScoreboardActive', true);
 };
 
 const switchPlayerTurn = async () => {
@@ -496,7 +457,7 @@ const saveInput = async (value: string) => {
     width: 50px;
     height: 50px;
     cursor: default;
-    font-family: "Indie Flower", cursive;
+    font-family: 'Indie Flower', cursive;
   }
 }
 </style>

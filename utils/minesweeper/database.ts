@@ -3,4 +3,4 @@ export {
   saveScoreboard,
   createMineSweeperScoreboardRepository,
   FirestoreMineSweeperScoreboardRepository,
-} from "~/infrastructure/firestore/mineSweeperScoreboardRepository";
+} from '~/infrastructure/firestore/mineSweeperScoreboardRepository';

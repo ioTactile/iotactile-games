@@ -21,9 +21,9 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon, VSlider } from "vuetify/components";
-import { mdiVolumeHigh, mdiVolumeOff } from "@mdi/js";
-import type { IPlaylistService } from "~/utils/music/playlistService";
+import { VIcon, VSlider } from 'vuetify/components';
+import { mdiVolumeHigh, mdiVolumeOff } from '@mdi/js';
+import type { IPlaylistService } from '~/utils/music/playlistService';
 
 const props = defineProps<{
   isMusicMuted: boolean;

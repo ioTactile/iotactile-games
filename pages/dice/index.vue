@@ -19,11 +19,7 @@
           >
             <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-            <g
-              id="SVGRepo_tracerCarrier"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
             <g id="SVGRepo_iconCarrier">
               <g>
@@ -52,33 +48,33 @@
 
 <script setup lang="ts">
 useSeoMeta({
-  title: "Dice - ioTactile Games",
-  ogTitle: "Dice - ioTactile Games",
-  twitterTitle: "Dice - ioTactile Games",
-  description: "Menu du jeu Dice",
-  ogDescription: "Menu du jeu Dice",
-  twitterDescription: "Menu du jeu Dice",
-  ogImage: "/dice/dice.png",
-  twitterImage: "/dice/dice.png",
-  twitterCard: "summary_large_image",
-  ogUrl: "https://iotactile.games/dice",
+  title: 'Dice - ioTactile Games',
+  ogTitle: 'Dice - ioTactile Games',
+  twitterTitle: 'Dice - ioTactile Games',
+  description: 'Menu du jeu Dice',
+  ogDescription: 'Menu du jeu Dice',
+  twitterDescription: 'Menu du jeu Dice',
+  ogImage: '/dice/dice.png',
+  twitterImage: '/dice/dice.png',
+  twitterCard: 'summary_large_image',
+  ogUrl: 'https://iotactile.games/dice',
 });
 
 useHead({
   htmlAttrs: {
-    lang: "fr",
+    lang: 'fr',
   },
   link: [
     {
-      rel: "icon",
-      type: "image/png",
-      href: "/favicon.png",
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.png',
     },
   ],
 });
 
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ['auth'],
 });
 
 const menuPage = ref<number>(0);
@@ -119,7 +115,7 @@ const returnToPreviousPage = (actualPage: number) => {
   color: white;
 
   .game-title {
-    font-family: "Indie Flower", cursive;
+    font-family: 'Indie Flower', cursive;
     font-size: 4rem;
     font-weight: 700;
     letter-spacing: 0.3rem;

@@ -13,9 +13,7 @@
     </section>
     <section class="content">
       <div v-for="(message, i) in chatMessages" :key="i">
-        <span :class="getPlayerClass(message.index)">
-          {{ message.username }} :
-        </span>
+        <span :class="getPlayerClass(message.index)"> {{ message.username }} : </span>
         <p>{{ message.content }}</p>
       </div>
     </section>
@@ -37,32 +35,30 @@
 </template>
 
 <script setup lang="ts">
-import { doc, arrayUnion, setDoc } from "firebase/firestore";
-import { diceSessionChatConverter } from "~/stores";
-import type { LocalDiceSessionChatType } from "~/stores";
-import type { CardUser } from "~/types/models";
+import { doc, arrayUnion, setDoc } from 'firebase/firestore';
+import { diceSessionChatConverter } from '~/stores';
+import type { LocalDiceSessionChatType } from '~/stores';
+import type { CardUser } from '~/types/models';
 
 const props = defineProps<{
   sessionId: string;
-  chatMessages: LocalDiceSessionChatType["messages"] | undefined;
+  chatMessages: LocalDiceSessionChatType['messages'] | undefined;
   players: CardUser[];
 }>();
 
 const emit = defineEmits<{
-  (e: "openChat", value: boolean): void;
+  (e: 'openChat', value: boolean): void;
 }>();
 
 const user = useCurrentUser();
 const db = useFirestore();
 
-const chatRef = doc(db, "diceSessionChat", props.sessionId).withConverter(
-  diceSessionChatConverter,
-);
+const chatRef = doc(db, 'diceSessionChat', props.sessionId).withConverter(diceSessionChatConverter);
 
-const text = ref<string>("");
+const text = ref<string>('');
 
 const closeChat = () => {
-  emit("openChat", false);
+  emit('openChat', false);
 };
 
 const sendMessage = async () => {
@@ -76,9 +72,7 @@ const sendMessage = async () => {
   try {
     const uid = user.value.uid;
 
-    const currentUser = props.players.find(
-      (player: CardUser) => player.id === uid,
-    );
+    const currentUser = props.players.find((player: CardUser) => player.id === uid);
 
     if (!currentUser) {
       return;
@@ -86,8 +80,7 @@ const sendMessage = async () => {
 
     const { username } = currentUser;
 
-    const index =
-      props.players.findIndex((player: CardUser) => player.id === uid) + 1;
+    const index = props.players.findIndex((player: CardUser) => player.id === uid) + 1;
 
     await setDoc(
       chatRef,
@@ -102,20 +95,20 @@ const sendMessage = async () => {
       { merge: true },
     );
   } finally {
-    text.value = "";
+    text.value = '';
   }
 };
 
 const getPlayerClass = (index: number) => {
   switch (index) {
     case 1:
-      return "text-pink";
+      return 'text-pink';
     case 2:
-      return "text-indigo";
+      return 'text-indigo';
     case 3:
-      return "text-yellow";
+      return 'text-yellow';
     case 4:
-      return "text-brown";
+      return 'text-brown';
   }
 };
 </script>

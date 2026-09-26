@@ -18,18 +18,15 @@
     <div class="content__main">
       <span class="content__main-title">Règle 1</span>
       <p class="content__main-description">
-        Il doit y avoir autant de boules blanches que de boules noires sur
-        chaque ligne et chaque colonne.
+        Il doit y avoir autant de boules blanches que de boules noires sur chaque ligne et chaque
+        colonne.
       </p>
       <span class="content__main-title">Règle 2</span>
       <p class="content__main-description">
-        Il ne doit pas y avoir plus de deux boules de la même couleur côte à
-        côte.
+        Il ne doit pas y avoir plus de deux boules de la même couleur côte à côte.
       </p>
       <span class="content__main-title">Règle 3</span>
-      <p class="content__main-description">
-        Chaque ligne et chaque colonne doit être unique.
-      </p>
+      <p class="content__main-description">Chaque ligne et chaque colonne doit être unique.</p>
     </div>
     <div class="content__footer">
       <button class="button-close" @click="closeRules">COMPRIS !</button>
@@ -38,10 +35,10 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits<{ (e: "openRules", value: boolean): void }>();
+const emit = defineEmits<{ (e: 'openRules', value: boolean): void }>();
 
 const closeRules = () => {
-  emit("openRules", false);
+  emit('openRules', false);
 };
 </script>
 

@@ -1,4 +1,4 @@
-import { useUserStore } from "~/stores/user";
+import { useUserStore } from '~/stores/user';
 
 export default defineNuxtRouteMiddleware(async (to, _) => {
   const { notifier } = useNotifier();
@@ -6,16 +6,16 @@ export default defineNuxtRouteMiddleware(async (to, _) => {
 
   if (!currentUser) {
     notifier({
-      content: "Tu dois être connecté pour accéder aux jeux multijoueurs.",
-      color: "error",
+      content: 'Tu dois être connecté pour accéder aux jeux multijoueurs.',
+      color: 'error',
     });
-    return await navigateTo("/");
+    return await navigateTo('/');
   }
 
   if (
     adminClaims === false &&
-    (to.fullPath === "/admin" || to.fullPath === "/admin/utilisateurs")
+    (to.fullPath === '/admin' || to.fullPath === '/admin/utilisateurs')
   ) {
-    return await navigateTo("/");
+    return await navigateTo('/');
   }
 });

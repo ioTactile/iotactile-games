@@ -1,5 +1,5 @@
-import { Howl } from "howler";
-import type { IAudioClip } from "./audioPort";
+import { Howl } from 'howler';
+import type { IAudioClip } from './audioPort';
 
 /** Adapter: Howler implementation of IAudioClip. */
 export class HowlerAudioClip implements IAudioClip {
@@ -30,7 +30,7 @@ export class HowlerAudioClip implements IAudioClip {
   }
 
   seek(position?: number): number {
-    if (typeof position === "number") {
+    if (typeof position === 'number') {
       this.howl.seek(position);
       return position;
     }
@@ -53,11 +53,11 @@ export class HowlerAudioClip implements IAudioClip {
     this.howl.volume(value);
   }
 
-  once(event: "end", callback: () => void): void {
+  once(event: 'end', callback: () => void): void {
     this.howl.once(event, callback);
   }
 
-  off(event: "end"): void {
+  off(event: 'end'): void {
     this.howl.off(event);
   }
 }

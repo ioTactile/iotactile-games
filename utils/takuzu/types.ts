@@ -1,12 +1,12 @@
-import { CellValues } from "./constants";
+import { CellValues } from './constants';
 
-export type GameStatus = "waiting" | "inProgress" | "won" | "lost";
+export type GameStatus = 'waiting' | 'inProgress' | 'won' | 'lost';
 
 export type BoardSize = 6 | 8 | 10 | 12;
 
-export type Difficulty = "easy" | "medium" | "hard" | "expert";
+export type Difficulty = 'easy' | 'medium' | 'hard' | 'expert';
 
-export type TakuzuCheckErrorType = "duplicate" | "balance" | "triple";
+export type TakuzuCheckErrorType = 'duplicate' | 'balance' | 'triple';
 
 export type GameOptions = {
   boardSize: BoardSize;

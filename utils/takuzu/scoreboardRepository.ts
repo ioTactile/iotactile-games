@@ -1,6 +1,6 @@
-import type { TakuzuScoreboard } from "~/types/models";
-import type { BoardSize, Difficulty } from "./types";
-import { applyTakuzuVictory, createEmptyTakuzuScoreboard } from "./scoreboard";
+import type { TakuzuScoreboard } from '~/types/models';
+import type { BoardSize, Difficulty } from './types';
+import { applyTakuzuVictory, createEmptyTakuzuScoreboard } from './scoreboard';
 
 /** Port: persistence for takuzu scoreboards. */
 export interface TakuzuScoreboardRepository {

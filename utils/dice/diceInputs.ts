@@ -1,4 +1,4 @@
-import type { Dice } from "~/types/models";
+import type { Dice } from '~/types/models';
 
 type PlayerSheetRow = {
   value: string;
@@ -74,9 +74,7 @@ export const threeOfAKindInput = (dices: Dice[]) => {
     }
   }
 
-  const hasThreeOfAKind = Object.values(faceCounts).some(
-    (count: number) => count >= 3,
-  );
+  const hasThreeOfAKind = Object.values(faceCounts).some((count: number) => count >= 3);
 
   if (hasThreeOfAKind) {
     return dices.reduce((acc: number, dice: Dice) => acc + dice.face, 0);
@@ -100,9 +98,7 @@ export const fourOfAKindInput = (dices: Dice[]) => {
     }
   }
 
-  const hasFourOfAKind = Object.values(faceCounts).some(
-    (count: number) => count >= 4,
-  );
+  const hasFourOfAKind = Object.values(faceCounts).some((count: number) => count >= 4);
 
   if (hasFourOfAKind) {
     return dices.reduce((acc: number, dice: Dice) => acc + dice.face, 0);

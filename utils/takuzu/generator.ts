@@ -1,15 +1,13 @@
-import { CellValues } from "./constants";
+import { CellValues } from './constants';
 import {
   arrayFromLength,
   countSubstrInStr,
   takeRandomIndexFromArray,
   getRandomNumber,
-} from "./utils";
-import type { TakuzuBoard, BoardSize } from "./types";
+} from './utils';
+import type { TakuzuBoard, BoardSize } from './types';
 
-export const splitBoardIntoCells = (
-  board: TakuzuBoard[number],
-): TakuzuBoard => {
+export const splitBoardIntoCells = (board: TakuzuBoard[number]): TakuzuBoard => {
   const splittedBoard: TakuzuBoard = [];
 
   for (let i = 0; i < board.length; i++) {
@@ -96,7 +94,7 @@ export const generateRows = (boardSize: BoardSize): TakuzuBoard[number] => {
 };
 
 export const defineNextRow = (cols: string[]): string => {
-  let nextRow = "";
+  let nextRow = '';
 
   for (let i = 0; i < cols.length; i++) {
     if (cols[i].slice(-2) === CellValues.ZERO.repeat(2)) {
@@ -115,15 +113,12 @@ export const defineNextRow = (cols: string[]): string => {
   return nextRow;
 };
 
-export const filteringRows = (
-  rows: TakuzuBoard[number],
-  pattern: string,
-): TakuzuBoard[number] => {
+export const filteringRows = (rows: TakuzuBoard[number], pattern: string): TakuzuBoard[number] => {
   const filteredRows = rows.filter((row) => {
     let isNextRow = true;
     for (let i = 0; i < rows.length; i++) {
       if (pattern[i] === CellValues.EMPTY) continue;
-      if (row.split("")[i] !== pattern[i]) {
+      if (row.split('')[i] !== pattern[i]) {
         isNextRow = false;
         break;
       }
@@ -135,10 +130,7 @@ export const filteringRows = (
   return filteredRows;
 };
 
-export const prepareBoard = (
-  board: TakuzuBoard,
-  fillFactor: number,
-): TakuzuBoard => {
+export const prepareBoard = (board: TakuzuBoard, fillFactor: number): TakuzuBoard => {
   const preparedBoard = [...board];
   const boardSize = board.length;
   const totalItemsInBoard = boardSize ** 2;

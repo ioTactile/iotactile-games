@@ -1,6 +1,6 @@
-import { describe, test, expect } from "vitest";
-import type { Dice } from "../../types/models";
-import * as diceInputs from "./diceInputs";
+import { describe, test, expect } from 'vitest';
+import type { Dice } from '../../types/models';
+import * as diceInputs from './diceInputs';
 
 const createDice = (faces: number[]): Dice[] => {
   return faces.map((face, index) => ({
@@ -10,8 +10,8 @@ const createDice = (faces: number[]): Dice[] => {
   }));
 };
 
-describe("oneInput", () => {
-  test("oneInput", () => {
+describe('oneInput', () => {
+  test('oneInput', () => {
     const dices = createDice([1, 2, 3, 4, 5]);
     expect(diceInputs.oneInput(dices)).toBe(1);
 
@@ -22,7 +22,7 @@ describe("oneInput", () => {
     expect(diceInputs.oneInput(dices3)).toBe(0);
   });
 
-  test("twoInput", () => {
+  test('twoInput', () => {
     const dices = createDice([1, 2, 3, 4, 5]);
     expect(diceInputs.twoInput(dices)).toBe(2);
 
@@ -33,7 +33,7 @@ describe("oneInput", () => {
     expect(diceInputs.twoInput(dices3)).toBe(0);
   });
 
-  test("threeInput", () => {
+  test('threeInput', () => {
     const dices = createDice([1, 2, 3, 4, 5]);
     expect(diceInputs.threeInput(dices)).toBe(3);
 
@@ -44,7 +44,7 @@ describe("oneInput", () => {
     expect(diceInputs.threeInput(dices3)).toBe(0);
   });
 
-  test("fourInput", () => {
+  test('fourInput', () => {
     const dices = createDice([1, 2, 3, 4, 5]);
     expect(diceInputs.fourInput(dices)).toBe(4);
 
@@ -55,7 +55,7 @@ describe("oneInput", () => {
     expect(diceInputs.fourInput(dices3)).toBe(0);
   });
 
-  test("fiveInput", () => {
+  test('fiveInput', () => {
     const dices = createDice([1, 2, 3, 4, 5]);
     expect(diceInputs.fiveInput(dices)).toBe(5);
 
@@ -66,7 +66,7 @@ describe("oneInput", () => {
     expect(diceInputs.fiveInput(dices3)).toBe(0);
   });
 
-  test("sixInput", () => {
+  test('sixInput', () => {
     const dices = createDice([1, 2, 3, 4, 5]);
     expect(diceInputs.sixInput(dices)).toBe(0);
 
@@ -77,7 +77,7 @@ describe("oneInput", () => {
     expect(diceInputs.sixInput(dices3)).toBe(30);
   });
 
-  test("threeOfAKindInput", () => {
+  test('threeOfAKindInput', () => {
     const dices = createDice([1, 1, 3, 4, 5]);
     expect(diceInputs.threeOfAKindInput(dices)).toBe(0);
 
@@ -88,7 +88,7 @@ describe("oneInput", () => {
     expect(diceInputs.threeOfAKindInput(dices3)).toBe(15);
   });
 
-  test("fourOfAKindInput", () => {
+  test('fourOfAKindInput', () => {
     const dices = createDice([1, 1, 1, 4, 5]);
     expect(diceInputs.fourOfAKindInput(dices)).toBe(0);
 
@@ -99,7 +99,7 @@ describe("oneInput", () => {
     expect(diceInputs.fourOfAKindInput(dices3)).toBe(30);
   });
 
-  test("fullHouseInput", () => {
+  test('fullHouseInput', () => {
     const dices = createDice([1, 1, 1, 4, 5]);
     expect(diceInputs.fullHouseInput(dices)).toBe(0);
 
@@ -110,7 +110,7 @@ describe("oneInput", () => {
     expect(diceInputs.fullHouseInput(dices3)).toBe(0);
   });
 
-  test("smallStraightInput", () => {
+  test('smallStraightInput', () => {
     const dices = createDice([1, 2, 3, 4, 5]);
     expect(diceInputs.smallStraightInput(dices)).toBe(30);
 
@@ -121,7 +121,7 @@ describe("oneInput", () => {
     expect(diceInputs.smallStraightInput(dices3)).toBe(0);
   });
 
-  test("largeStraightInput", () => {
+  test('largeStraightInput', () => {
     const dices = createDice([1, 2, 3, 4, 5]);
     expect(diceInputs.largeStraightInput(dices)).toBe(40);
 
@@ -132,7 +132,7 @@ describe("oneInput", () => {
     expect(diceInputs.largeStraightInput(dices3)).toBe(0);
   });
 
-  test("diceInput", () => {
+  test('diceInput', () => {
     const dices = createDice([1, 2, 3, 4, 5]);
     expect(diceInputs.diceInput(dices)).toBe(0);
 
@@ -143,7 +143,7 @@ describe("oneInput", () => {
     expect(diceInputs.diceInput(dices3)).toBe(50);
   });
 
-  test("chanceInput", () => {
+  test('chanceInput', () => {
     const dices = createDice([1, 2, 3, 4, 5]);
     expect(diceInputs.chanceInput(dices)).toBe(15);
 
@@ -155,29 +155,29 @@ describe("oneInput", () => {
   });
 });
 
-describe("section totals", () => {
-  test("getUpperSectionTotal sums the first six rows", () => {
+describe('section totals', () => {
+  test('getUpperSectionTotal sums the first six rows', () => {
     const sheet = [
-      { value: "1", input: 3 },
-      { value: "2", input: 6 },
-      { value: "3", input: null },
-      { value: "4", input: 4 },
-      { value: "5", input: 0 },
-      { value: "6", input: 12 },
-      { value: "bonus", input: 35 },
+      { value: '1', input: 3 },
+      { value: '2', input: 6 },
+      { value: '3', input: null },
+      { value: '4', input: 4 },
+      { value: '5', input: 0 },
+      { value: '6', input: 12 },
+      { value: 'bonus', input: 35 },
     ];
     expect(diceInputs.getUpperSectionTotal(sheet)).toBe(25);
   });
 
-  test("getLowerSectionTotal sums the provided lower sheet rows", () => {
+  test('getLowerSectionTotal sums the provided lower sheet rows', () => {
     const lowerSheet = [
-      { value: "3oak", input: 18 },
-      { value: "4oak", input: null },
-      { value: "full", input: 25 },
-      { value: "small", input: 30 },
-      { value: "large", input: 0 },
-      { value: "chance", input: 20 },
-      { value: "dice", input: 50 },
+      { value: '3oak', input: 18 },
+      { value: '4oak', input: null },
+      { value: 'full', input: 25 },
+      { value: 'small', input: 30 },
+      { value: 'large', input: 0 },
+      { value: 'chance', input: 20 },
+      { value: 'dice', input: 50 },
     ];
     expect(diceInputs.getLowerSectionTotal(lowerSheet)).toBe(143);
   });

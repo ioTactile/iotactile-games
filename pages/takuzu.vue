@@ -43,11 +43,7 @@
             @on-click="returnToPreviousPage(menuPage)"
           >
             <template #activator="{ onMouseover, onMouseleave, onClick }">
-              <button
-                @click="onClick"
-                @mouseover="onMouseover"
-                @mouseleave="onMouseleave"
-              >
+              <button @click="onClick" @mouseover="onMouseover" @mouseleave="onMouseleave">
                 <img src="/takuzu/ui/arrow-left.svg" alt="Retour" />
               </button>
             </template>
@@ -63,37 +59,37 @@
 </template>
 
 <script setup lang="ts">
-import type { GameOptions } from "~/utils/takuzu/types";
+import type { GameOptions } from '~/utils/takuzu/types';
 
 useSeoMeta({
-  title: "Takuzu - ioTactile Games",
-  ogTitle: "Takuzu - ioTactile Games",
-  twitterTitle: "Takuzu - ioTactile Games",
-  description: "Page du jeu Takuzu",
-  ogDescription: "Page du jeu Takuzu",
-  twitterDescription: "Page du jeu Takuzu",
-  ogImage: "/takuzu/takuzu.png",
-  twitterImage: "/takuzu/takuzu.png",
-  twitterCard: "summary_large_image",
-  ogUrl: "https://iotactile.games/takuzu",
+  title: 'Takuzu - ioTactile Games',
+  ogTitle: 'Takuzu - ioTactile Games',
+  twitterTitle: 'Takuzu - ioTactile Games',
+  description: 'Page du jeu Takuzu',
+  ogDescription: 'Page du jeu Takuzu',
+  twitterDescription: 'Page du jeu Takuzu',
+  ogImage: '/takuzu/takuzu.png',
+  twitterImage: '/takuzu/takuzu.png',
+  twitterCard: 'summary_large_image',
+  ogUrl: 'https://iotactile.games/takuzu',
 });
 
 useHead({
   htmlAttrs: {
-    lang: "fr",
+    lang: 'fr',
   },
   link: [
     {
-      rel: "icon",
-      type: "image/png",
-      href: "/favicon.png",
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.png',
     },
   ],
 });
 
 if (process.client) {
-  window.addEventListener("keyup", (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
+  window.addEventListener('keyup', (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
       returnToPreviousPage(menuPage.value);
     }
   });
@@ -225,7 +221,7 @@ const startGame = (options: GameOptions): void => {
   }
 
   .title {
-    font-family: "QuickSand", sans-serif;
+    font-family: 'QuickSand', sans-serif;
     font-size: 3rem;
     font-weight: 700;
     text-transform: uppercase;

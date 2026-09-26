@@ -13,11 +13,11 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: "action", value: string): void;
+  (e: 'action', value: string): void;
 }>();
 
 const diceSession = useDiceSession();
-const sessionName = ref<string>("");
+const sessionName = ref<string>('');
 
 const createSession = () => {
   if (!sessionName.value) {
@@ -27,8 +27,8 @@ const createSession = () => {
   try {
     diceSession.create(sessionName.value);
   } finally {
-    sessionName.value = "";
-    emit("action", "viewGames");
+    sessionName.value = '';
+    emit('action', 'viewGames');
   }
 };
 </script>

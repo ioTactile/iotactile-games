@@ -1,11 +1,7 @@
-import type { Difficulty } from "./types";
-import type {
-  CustomVictory,
-  MineSweeperScoreboard,
-  MineSweeperVictory,
-} from "~/types/models";
+import type { Difficulty } from './types';
+import type { CustomVictory, MineSweeperScoreboard, MineSweeperVictory } from '~/types/models';
 
-type OmittedDifficulty = Exclude<Difficulty, "custom">;
+type OmittedDifficulty = Exclude<Difficulty, 'custom'>;
 
 export const createDefaultMineSweeperVictory = (): MineSweeperVictory => ({
   victories: 0,
@@ -35,7 +31,7 @@ export const applyCustomVictory = (
 ): MineSweeperScoreboard => {
   const custom = [...scoreboard.custom];
   const customVictoryIndex = custom.findIndex(
-    (customVictory: Pick<CustomVictory, "rows" | "cols" | "mines">) =>
+    (customVictory: Pick<CustomVictory, 'rows' | 'cols' | 'mines'>) =>
       customVictory.rows === numRows &&
       customVictory.cols === numCols &&
       customVictory.mines === numMines,
@@ -43,8 +39,7 @@ export const applyCustomVictory = (
 
   if (customVictoryIndex !== -1) {
     const customVictory = custom[customVictoryIndex];
-    const bestTime =
-      customVictory.bestTime > time ? time : customVictory.bestTime;
+    const bestTime = customVictory.bestTime > time ? time : customVictory.bestTime;
 
     custom[customVictoryIndex] = {
       ...customVictory,
@@ -94,15 +89,8 @@ export const applyMineSweeperVictory = (
   numMines: number,
   now: Date = new Date(),
 ): MineSweeperScoreboard => {
-  if (difficulty === "custom") {
-    return applyCustomVictory(
-      scoreboard,
-      time,
-      numRows,
-      numCols,
-      numMines,
-      now,
-    );
+  if (difficulty === 'custom') {
+    return applyCustomVictory(scoreboard, time, numRows, numCols, numMines, now);
   }
 
   return applyDifficultyVictory(scoreboard, time, difficulty, now);

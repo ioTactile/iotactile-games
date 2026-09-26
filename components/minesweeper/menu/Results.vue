@@ -1,19 +1,12 @@
 <template>
   <div v-if="playerResults" class="results-container">
     <div v-for="(difficulty, i) in difficulties" :key="i" class="content">
-      <button
-        class="button-difficulty"
-        @click="getDifficultyResults(difficulty)"
-      >
+      <button class="button-difficulty" @click="getDifficultyResults(difficulty)">
         <h2>{{ getDifficultyName(difficulty) }}</h2>
         <v-icon :icon="mdiChevronDown" color="onSurface" />
       </button>
       <template v-if="isDifficulty(difficulty)">
-        <template
-          v-if="
-            playerResults[difficulty as DifficultyWithoutCustom].victories > 0
-          "
-        >
+        <template v-if="playerResults[difficulty as DifficultyWithoutCustom].victories > 0">
           <div class="content__header">
             <div>Victoires</div>
             <div>Temps</div>
@@ -21,32 +14,20 @@
           </div>
           <div class="content__main">
             <div>
-              {{
-                playerResults[difficulty as DifficultyWithoutCustom].victories
-              }}
+              {{ playerResults[difficulty as DifficultyWithoutCustom].victories }}
             </div>
             <div>
               {{
-                timerFormatter(
-                  playerResults[difficulty as DifficultyWithoutCustom].bestTime,
-                  true,
-                )
+                timerFormatter(playerResults[difficulty as DifficultyWithoutCustom].bestTime, true)
               }}
             </div>
             <div>
-              {{
-                dateFormatter(
-                  playerResults[difficulty as DifficultyWithoutCustom]
-                    .victoryDate,
-                )
-              }}
+              {{ dateFormatter(playerResults[difficulty as DifficultyWithoutCustom].victoryDate) }}
             </div>
           </div>
         </template>
         <template v-else>
-          <div class="no-best-time">
-            Aucune partie n'a été gagnée dans cette difficulté
-          </div>
+          <div class="no-best-time">Aucune partie n'a été gagnée dans cette difficulté</div>
         </template>
       </template>
     </div>
@@ -54,27 +35,25 @@
 </template>
 
 <script async setup lang="ts">
-import { doc, getDoc } from "firebase/firestore";
-import { VIcon } from "vuetify/components";
-import { mdiChevronDown } from "@mdi/js";
-import { timerFormatter, dateFormatter } from "~/utils";
-import { mineSweeperScoreboardConverter } from "~/stores";
-import type { Difficulty } from "~/utils/minesweeper/types";
+import { doc, getDoc } from 'firebase/firestore';
+import { VIcon } from 'vuetify/components';
+import { mdiChevronDown } from '@mdi/js';
+import { timerFormatter, dateFormatter } from '~/utils';
+import { mineSweeperScoreboardConverter } from '~/stores';
+import type { Difficulty } from '~/utils/minesweeper/types';
 
-type DifficultyWithoutCustom = Exclude<Difficulty, "custom">;
+type DifficultyWithoutCustom = Exclude<Difficulty, 'custom'>;
 
 const db = useFirestore();
 const user = useCurrentUser();
 
-const playerScoreboardRef = doc(
-  db,
-  "mineSweeperScoreboard",
-  user.value!.uid,
-).withConverter(mineSweeperScoreboardConverter);
+const playerScoreboardRef = doc(db, 'mineSweeperScoreboard', user.value!.uid).withConverter(
+  mineSweeperScoreboardConverter,
+);
 const playerScoreboardDoc = await getDoc(playerScoreboardRef);
 const playerResults = playerScoreboardDoc.data();
 
-const difficulties: Difficulty[] = ["beginner", "intermediate", "expert"];
+const difficulties: Difficulty[] = ['beginner', 'intermediate', 'expert'];
 
 const difficultyState = ref<{ [key in Difficulty]: boolean }>({
   beginner: true,
@@ -93,14 +72,14 @@ const isDifficulty = (difficulty: Difficulty): boolean => {
 
 const getDifficultyName = (difficulty: string): string => {
   switch (difficulty) {
-    case "beginner":
-      return "Débutant";
-    case "intermediate":
-      return "Intermédiaire";
-    case "expert":
-      return "Expert";
+    case 'beginner':
+      return 'Débutant';
+    case 'intermediate':
+      return 'Intermédiaire';
+    case 'expert':
+      return 'Expert';
     default:
-      return "";
+      return '';
   }
 };
 </script>

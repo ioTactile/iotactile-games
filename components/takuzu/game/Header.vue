@@ -12,11 +12,7 @@
       >
         <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-        <g
-          id="SVGRepo_tracerCarrier"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
         <g id="SVGRepo_iconCarrier">
           <g>
@@ -47,16 +43,16 @@
 </template>
 
 <script setup lang="ts">
-import { timerFormatter } from "~/utils";
+import { timerFormatter } from '~/utils';
 
 defineProps<{
   elapsedTime: number;
 }>();
 
-const emit = defineEmits<{ (e: "openRulesModal", value: boolean): void }>();
+const emit = defineEmits<{ (e: 'openRulesModal', value: boolean): void }>();
 
 const openRulesModal = () => {
-  emit("openRulesModal", true);
+  emit('openRulesModal', true);
 };
 </script>
 

@@ -1,8 +1,8 @@
-import { describe, test, expect } from "vitest";
-import { LifeGame } from "./lifeGame";
+import { describe, test, expect } from 'vitest';
+import { LifeGame } from './lifeGame';
 
-describe("LifeGame", () => {
-  test("initializes an empty board", () => {
+describe('LifeGame', () => {
+  test('initializes an empty board', () => {
     const game = new LifeGame(3, 3);
     expect(game.getNumRows()).toBe(3);
     expect(game.getNumCols()).toBe(3);
@@ -14,7 +14,7 @@ describe("LifeGame", () => {
     ).toBe(true);
   });
 
-  test("toggleCell flips a cell", () => {
+  test('toggleCell flips a cell', () => {
     const game = new LifeGame(2, 2);
     game.toggleCell(0, 1);
     expect(game.getBoard()[0][1]).toBe(true);
@@ -22,7 +22,7 @@ describe("LifeGame", () => {
     expect(game.getBoard()[0][1]).toBe(false);
   });
 
-  test("blinker oscillator evolves correctly", () => {
+  test('blinker oscillator evolves correctly', () => {
     const game = new LifeGame(5, 5);
     game.toggleCell(2, 1);
     game.toggleCell(2, 2);
@@ -41,7 +41,7 @@ describe("LifeGame", () => {
     expect(game.getBoard()[2][3]).toBe(true);
   });
 
-  test("clearBoard resets all cells", () => {
+  test('clearBoard resets all cells', () => {
     const game = new LifeGame(2, 2);
     game.toggleCell(0, 0);
     game.clearBoard();
@@ -53,7 +53,7 @@ describe("LifeGame", () => {
     ).toBe(true);
   });
 
-  test("loadPattern centers coordinates on the board", () => {
+  test('loadPattern centers coordinates on the board', () => {
     const game = new LifeGame(5, 5);
     game.loadPattern([
       [0, 0],

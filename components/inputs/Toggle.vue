@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: "toggle:isActive", value: boolean): void;
+  (e: 'toggle:isActive', value: boolean): void;
 }>();
 
 const props = defineProps<{
@@ -20,7 +20,7 @@ const localIsActive = ref(props.isActive);
 
 const clickToggle = () => {
   localIsActive.value = !localIsActive.value;
-  emit("toggle:isActive", localIsActive.value);
+  emit('toggle:isActive', localIsActive.value);
 };
 </script>
 
@@ -71,13 +71,13 @@ const clickToggle = () => {
 }
 
 .knobs:before {
-  content: "OUI";
+  content: 'OUI';
   top: 18px;
   left: 4px;
 }
 
 .knobs:after {
-  content: "NON";
+  content: 'NON';
   top: 18px;
   right: 12px;
 }

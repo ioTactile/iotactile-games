@@ -1,5 +1,5 @@
-import { DiceSession } from "~/utils/dice/diceSession";
-import type { IDiceSession } from "~/utils/dice/diceSession";
+import { DiceSession } from '~/utils/dice/diceSession';
+import type { IDiceSession } from '~/utils/dice/diceSession';
 
 export const useDiceSession = (): IDiceSession => {
   const db = useFirestore();

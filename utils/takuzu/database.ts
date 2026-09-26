@@ -3,4 +3,4 @@ export {
   saveScoreboard,
   createTakuzuScoreboardRepository,
   FirestoreTakuzuScoreboardRepository,
-} from "~/infrastructure/firestore/takuzuScoreboardRepository";
+} from '~/infrastructure/firestore/takuzuScoreboardRepository';

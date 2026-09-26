@@ -14,11 +14,7 @@
               @on-click="returnToPreviousPage(menuPage)"
             >
               <template #activator="{ onMouseover, onMouseleave, onClick }">
-                <button
-                  @click="onClick"
-                  @mouseover="onMouseover"
-                  @mouseleave="onMouseleave"
-                >
+                <button @click="onClick" @mouseover="onMouseover" @mouseleave="onMouseleave">
                   <img :src="getArrowBackColor" alt="Retour" />
                 </button>
               </template>
@@ -48,10 +44,7 @@
               @action="handleActions"
             />
             <minesweeper-menu-results v-if="menuPage === 3" />
-            <minesweeper-menu-rules
-              v-if="menuPage === 4"
-              @action="handleActions"
-            />
+            <minesweeper-menu-rules v-if="menuPage === 4" @action="handleActions" />
           </div>
         </div>
       </template>
@@ -67,11 +60,7 @@
               @on-click="returnToPreviousPage(menuPage)"
             >
               <template #activator="{ onMouseover, onMouseleave, onClick }">
-                <button
-                  @click="onClick"
-                  @mouseover="onMouseover"
-                  @mouseleave="onMouseleave"
-                >
+                <button @click="onClick" @mouseover="onMouseover" @mouseleave="onMouseleave">
                   <img :src="getArrowBackColor" alt="Retour" />
                 </button>
               </template>
@@ -103,49 +92,42 @@
 </template>
 
 <script setup lang="ts">
-import { useTheme, useDisplay } from "vuetify";
-import {
-  MineSweeper,
-  type IMineSweeper,
-} from "~/utils/minesweeper/mineSweeper";
-import type {
-  GameOptions,
-  Difficulty,
-  GameStatus,
-} from "~/utils/minesweeper/types";
-import type { Cell } from "~/utils/minesweeper/cell";
-import type { Timer } from "~/utils/minesweeper/Timer";
-import { saveScoreboard } from "~/infrastructure/firestore/mineSweeperScoreboardRepository";
+import { useTheme, useDisplay } from 'vuetify';
+import { MineSweeper, type IMineSweeper } from '~/utils/minesweeper/mineSweeper';
+import type { GameOptions, Difficulty, GameStatus } from '~/utils/minesweeper/types';
+import type { Cell } from '~/utils/minesweeper/cell';
+import type { Timer } from '~/utils/minesweeper/Timer';
+import { saveScoreboard } from '~/infrastructure/firestore/mineSweeperScoreboardRepository';
 
 useSeoMeta({
-  title: "Démineur - ioTactile Games",
-  ogTitle: "Démineur - ioTactile Games",
-  twitterTitle: "Démineur - ioTactile Games",
-  description: "Page du jeu Démineur",
-  ogDescription: "Page du jeu Démineur",
-  twitterDescription: "Page du jeu Démineur",
-  ogImage: "/minesweeper/minesweeper.png",
-  twitterImage: "/minesweeper/minesweeper.png",
-  twitterCard: "summary_large_image",
-  ogUrl: "https://iotactile.games/minesweeper",
+  title: 'Démineur - ioTactile Games',
+  ogTitle: 'Démineur - ioTactile Games',
+  twitterTitle: 'Démineur - ioTactile Games',
+  description: 'Page du jeu Démineur',
+  ogDescription: 'Page du jeu Démineur',
+  twitterDescription: 'Page du jeu Démineur',
+  ogImage: '/minesweeper/minesweeper.png',
+  twitterImage: '/minesweeper/minesweeper.png',
+  twitterCard: 'summary_large_image',
+  ogUrl: 'https://iotactile.games/minesweeper',
 });
 
 useHead({
   htmlAttrs: {
-    lang: "fr",
+    lang: 'fr',
   },
   link: [
     {
-      rel: "icon",
-      type: "image/png",
-      href: "favicon.png",
+      rel: 'icon',
+      type: 'image/png',
+      href: 'favicon.png',
     },
   ],
 });
 
 if (process.client) {
-  window.addEventListener("keyup", (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
+  window.addEventListener('keyup', (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
       returnToPreviousPage(menuPage.value);
     }
   });
@@ -172,10 +154,10 @@ const mineSweeper = ref<IMineSweeper>(new MineSweeper());
 const numRows = ref<number>(9);
 const numCols = ref<number>(9);
 const numMines = ref<number>(10);
-const difficulty = ref<Difficulty>("beginner");
+const difficulty = ref<Difficulty>('beginner');
 const menuPage = ref<number>(0);
 const isCustom = ref<boolean>(false);
-const selectedAction = ref<string>("mine");
+const selectedAction = ref<string>('mine');
 
 const toggleIsCustom = (value?: boolean): void => {
   isCustom.value = value ?? !isCustom.value;
@@ -213,18 +195,14 @@ const gameBoard = computed((): Cell[][] => {
 
 const timer = computed((): Timer => mineSweeper.value.getTimer());
 
-const gameStatusToString = computed((): string =>
-  mineSweeper.value.getGameStatusString(),
-);
+const gameStatusToString = computed((): string => mineSweeper.value.getGameStatusString());
 
-const gameStatus = computed((): GameStatus =>
-  mineSweeper.value.getGameStatus(),
-);
+const gameStatus = computed((): GameStatus => mineSweeper.value.getGameStatus());
 
 const getArrowBackColor = computed((): string => {
   return current.value.dark
-    ? "/minesweeper/ui/left-arrow-grey.svg"
-    : "/minesweeper/ui/left-arrow.svg";
+    ? '/minesweeper/ui/left-arrow-grey.svg'
+    : '/minesweeper/ui/left-arrow.svg';
 });
 
 const startGame = (options: GameOptions): void => {
@@ -248,16 +226,13 @@ const restartGame = (): void => {
   });
 };
 
-const handleRightClick = (data: {
-  rowIndex: number;
-  colIndex: number;
-}): void => {
+const handleRightClick = (data: { rowIndex: number; colIndex: number }): void => {
   const { rowIndex, colIndex } = data;
 
   if (width.value > 600) {
-    mineSweeper.value.handleCellAction(rowIndex, colIndex, "flag");
+    mineSweeper.value.handleCellAction(rowIndex, colIndex, 'flag');
   } else {
-    mineSweeper.value.handleCellAction(colIndex, rowIndex, "flag");
+    mineSweeper.value.handleCellAction(colIndex, rowIndex, 'flag');
   }
 };
 
@@ -269,15 +244,15 @@ const handleLeftClick = async (data: {
   const { rowIndex, colIndex } = data;
 
   if (width.value > 600) {
-    mineSweeper.value.handleCellAction(rowIndex, colIndex, "click");
-  } else if (width.value <= 600 && selectedAction.value === "flag") {
-    mineSweeper.value.handleCellAction(colIndex, rowIndex, "flag");
-  } else if (width.value <= 600 && selectedAction.value === "mine") {
-    mineSweeper.value.handleCellAction(colIndex, rowIndex, "click");
+    mineSweeper.value.handleCellAction(rowIndex, colIndex, 'click');
+  } else if (width.value <= 600 && selectedAction.value === 'flag') {
+    mineSweeper.value.handleCellAction(colIndex, rowIndex, 'flag');
+  } else if (width.value <= 600 && selectedAction.value === 'mine') {
+    mineSweeper.value.handleCellAction(colIndex, rowIndex, 'click');
   }
 
   data.callback(mineSweeper.value.getGameStatus());
-  if (mineSweeper.value.getGameStatus() === "won") {
+  if (mineSweeper.value.getGameStatus() === 'won') {
     if (!user.value) return;
 
     await saveScoreboard(
@@ -428,7 +403,7 @@ onBeforeRouteLeave((): void => {
   }
 
   .title {
-    font-family: "Orbitron", sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: 3rem;
     font-weight: 700;
     text-transform: uppercase;

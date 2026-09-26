@@ -1,26 +1,24 @@
-import { collection, getDoc, setDoc, doc } from "firebase/firestore";
-import type { Firestore } from "firebase/firestore";
-import type { TakuzuScoreboard } from "~/types/models";
-import { takuzuScoreboardConverter } from "~/infrastructure/firestore/converters";
-import type { TakuzuScoreboardRepository } from "~/utils/takuzu/scoreboardRepository";
-import { recordTakuzuVictory } from "~/utils/takuzu/scoreboardRepository";
-import type { BoardSize, Difficulty } from "~/utils/takuzu/types";
+import { collection, getDoc, setDoc, doc } from 'firebase/firestore';
+import type { Firestore } from 'firebase/firestore';
+import type { TakuzuScoreboard } from '~/types/models';
+import { takuzuScoreboardConverter } from '~/infrastructure/firestore/converters';
+import type { TakuzuScoreboardRepository } from '~/utils/takuzu/scoreboardRepository';
+import { recordTakuzuVictory } from '~/utils/takuzu/scoreboardRepository';
+import type { BoardSize, Difficulty } from '~/utils/takuzu/types';
 
 /** Adapter: Firestore implementation of TakuzuScoreboardRepository. */
 export class FirestoreTakuzuScoreboardRepository implements TakuzuScoreboardRepository {
   constructor(private readonly db: Firestore) {}
 
   private collection() {
-    return collection(this.db, "takuzuScoreboard").withConverter(
-      takuzuScoreboardConverter,
-    );
+    return collection(this.db, 'takuzuScoreboard').withConverter(takuzuScoreboardConverter);
   }
 
   async getUsername(userId: string): Promise<string> {
-    const userDoc = await getDoc(doc(this.db, "users", userId));
+    const userDoc = await getDoc(doc(this.db, 'users', userId));
     return userDoc.exists()
-      ? ((userDoc.data()?.username as string | undefined) ?? "Anonyme")
-      : "Anonyme";
+      ? ((userDoc.data()?.username as string | undefined) ?? 'Anonyme')
+      : 'Anonyme';
   }
 
   async findByUserId(userId: string): Promise<TakuzuScoreboard | null> {
@@ -35,9 +33,8 @@ export class FirestoreTakuzuScoreboardRepository implements TakuzuScoreboardRepo
   }
 }
 
-export const createTakuzuScoreboardRepository =
-  (): TakuzuScoreboardRepository =>
-    new FirestoreTakuzuScoreboardRepository(useFirestore());
+export const createTakuzuScoreboardRepository = (): TakuzuScoreboardRepository =>
+  new FirestoreTakuzuScoreboardRepository(useFirestore());
 
 export const saveScoreboard = async (
   userId: string,

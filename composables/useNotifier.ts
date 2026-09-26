@@ -10,13 +10,9 @@ const notification = reactive<NotifierParams>({
 });
 
 export const useNotifier = () => {
-  const notifier = ({
-    content,
-    color,
-    error,
-  }: Omit<NotifierParams, "show">) => {
-    notification.color = color || (error ? "error" : "info");
-    notification.content = content || error || "Une erreur est survenue";
+  const notifier = ({ content, color, error }: Omit<NotifierParams, 'show'>) => {
+    notification.color = color || (error ? 'error' : 'info');
+    notification.content = content || error || 'Une erreur est survenue';
     notification.show = true;
 
     if (error) {

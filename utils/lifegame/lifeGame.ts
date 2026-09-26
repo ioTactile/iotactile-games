@@ -6,9 +6,7 @@ export class LifeGame {
   constructor(numRows: number, numCols: number) {
     this.numRows = numRows;
     this.numCols = numCols;
-    this.board = new Array(numRows)
-      .fill(null)
-      .map(() => new Array(numCols).fill(false));
+    this.board = new Array(numRows).fill(null).map(() => new Array(numCols).fill(false));
   }
 
   public getNumRows(): number {
@@ -51,9 +49,7 @@ export class LifeGame {
   }
 
   public clearBoard(): void {
-    this.board = new Array(this.numRows)
-      .fill(null)
-      .map(() => new Array(this.numCols).fill(false));
+    this.board = new Array(this.numRows).fill(null).map(() => new Array(this.numCols).fill(false));
   }
 
   public loadPattern(pattern: number[][]): void {
@@ -67,14 +63,8 @@ export class LifeGame {
   }
 
   private centerPattern(pattern: number[][]): number[][] {
-    const patternHeight = pattern.reduce(
-      (maxRow, [row]) => Math.max(maxRow, row),
-      0,
-    );
-    const patternWidth = pattern.reduce(
-      (maxCol, [, col]) => Math.max(maxCol, col),
-      0,
-    );
+    const patternHeight = pattern.reduce((maxRow, [row]) => Math.max(maxRow, row), 0);
+    const patternWidth = pattern.reduce((maxCol, [, col]) => Math.max(maxCol, col), 0);
 
     const offsetX = Math.floor((this.numCols - patternWidth) / 2);
     const offsetY = Math.floor((this.numRows - patternHeight) / 2);
@@ -89,12 +79,7 @@ export class LifeGame {
         if (i === 0 && j === 0) continue;
         const newRow = row + i;
         const newCol = col + j;
-        if (
-          newRow >= 0 &&
-          newRow < this.numRows &&
-          newCol >= 0 &&
-          newCol < this.numCols
-        ) {
+        if (newRow >= 0 && newRow < this.numRows && newCol >= 0 && newCol < this.numCols) {
           if (this.board[newRow][newCol]) {
             count++;
           }

@@ -1,9 +1,6 @@
-import type { MineSweeperScoreboard } from "~/types/models";
-import type { Difficulty } from "./types";
-import {
-  applyMineSweeperVictory,
-  createEmptyMineSweeperScoreboard,
-} from "./scoreboard";
+import type { MineSweeperScoreboard } from '~/types/models';
+import type { Difficulty } from './types';
+import { applyMineSweeperVictory, createEmptyMineSweeperScoreboard } from './scoreboard';
 
 /** Port: persistence for minesweeper scoreboards. */
 export interface MineSweeperScoreboardRepository {
@@ -25,13 +22,6 @@ export const recordMineSweeperVictory = async (
   const existing = await repository.findByUserId(userId);
   const username = existing?.username ?? (await repository.getUsername(userId));
   const base = existing ?? createEmptyMineSweeperScoreboard(userId, username);
-  const updated = applyMineSweeperVictory(
-    base,
-    time,
-    difficulty,
-    numRows,
-    numCols,
-    numMines,
-  );
+  const updated = applyMineSweeperVictory(base, time, difficulty, numRows, numCols, numMines);
   await repository.save(updated);
 };

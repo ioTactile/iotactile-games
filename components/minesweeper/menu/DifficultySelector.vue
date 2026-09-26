@@ -8,18 +8,16 @@
     >
       {{ difficulty.name }}
     </button>
-    <button class="button-mineSweeper" @click="toggleCustomGame">
-      Personnalisé
-    </button>
+    <button class="button-mineSweeper" @click="toggleCustomGame">Personnalisé</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { GameOptions, Difficulty } from "~/utils/minesweeper/types";
+import type { GameOptions, Difficulty } from '~/utils/minesweeper/types';
 
 const emit = defineEmits<{
-  (e: "toggleCustomGame"): void;
-  (e: "startGame", args: GameOptions): void;
+  (e: 'toggleCustomGame'): void;
+  (e: 'startGame', args: GameOptions): void;
 }>();
 
 const difficulties: {
@@ -30,36 +28,34 @@ const difficulties: {
   difficulty: Difficulty;
 }[] = [
   {
-    name: "Débutant",
+    name: 'Débutant',
     numRows: 9,
     numCols: 9,
     numMines: 10,
-    difficulty: "beginner",
+    difficulty: 'beginner',
   },
   {
-    name: "Intermédiaire",
+    name: 'Intermédiaire',
     numRows: 16,
     numCols: 16,
     numMines: 40,
-    difficulty: "intermediate",
+    difficulty: 'intermediate',
   },
   {
-    name: "Expert",
+    name: 'Expert',
     numRows: 30,
     numCols: 16,
     numMines: 99,
-    difficulty: "expert",
+    difficulty: 'expert',
   },
 ];
 
-const toggleCustomGame = (): void => emit("toggleCustomGame");
+const toggleCustomGame = (): void => emit('toggleCustomGame');
 
 const startGame = (value: string): void => {
   const { numRows, numCols, numMines, difficulty } =
-    difficulties[
-      difficulties.findIndex((difficulty) => difficulty.difficulty === value)
-    ];
-  emit("startGame", {
+    difficulties[difficulties.findIndex((difficulty) => difficulty.difficulty === value)];
+  emit('startGame', {
     numRows,
     numCols,
     numMines,

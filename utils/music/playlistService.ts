@@ -1,6 +1,6 @@
-import { AbstractAudioService } from "./audioService";
-import type { IAudioClip } from "./audioPort";
-import { asianLofi, christmasLofi, autumnLofi } from "~/utils";
+import { AbstractAudioService } from './audioService';
+import type { IAudioClip } from './audioPort';
+import { asianLofi, christmasLofi, autumnLofi } from '~/utils';
 
 export interface IPlaylistService {
   loadPlaylist(type: string): void;
@@ -22,15 +22,12 @@ export interface IPlaylistService {
   isPlaylistPlaying(): boolean;
 }
 
-export class PlaylistService
-  extends AbstractAudioService
-  implements IPlaylistService
-{
+export class PlaylistService extends AbstractAudioService implements IPlaylistService {
   protected audioObject: Record<string, IAudioClip> = {};
-  private currentTrack: string = "";
+  private currentTrack: string = '';
   private currentTrackSeek: number = 0;
   private playlist: string[] = [];
-  private playlistType: string = "";
+  private playlistType: string = '';
   private playlistVolume: number = 0;
   private interval: ReturnType<typeof setInterval> | undefined = undefined;
   private currentTime: number = 0;
@@ -85,11 +82,8 @@ export class PlaylistService
 
   public pausePlaylist(): void {
     if (this.isTrackPlaying(this.currentTrack)) {
-      this.currentTrackSeek = this.seekAudio(
-        this.currentTrack,
-        this.audioObject,
-      );
-      this.audioObject[this.currentTrack].off("end");
+      this.currentTrackSeek = this.seekAudio(this.currentTrack, this.audioObject);
+      this.audioObject[this.currentTrack].off('end');
       this.pauseAudio(this.currentTrack, this.audioObject);
       this.stopInterval();
     }
@@ -97,8 +91,7 @@ export class PlaylistService
 
   public skipTrack(direction: string): void {
     this.stopTrack();
-    this.currentTrack =
-      direction === "next" ? this.getNextTrack() : this.getPreviousTrack();
+    this.currentTrack = direction === 'next' ? this.getNextTrack() : this.getPreviousTrack();
     this.playPlaylist();
   }
 
@@ -109,9 +102,7 @@ export class PlaylistService
   }
 
   public getPlaylistVolumeFromLocalStorage(): number {
-    return (
-      Number(localStorage.getItem("playlistVolume")) || this.playlistVolume
-    );
+    return Number(localStorage.getItem('playlistVolume')) || this.playlistVolume;
   }
 
   public clearPlaylist(): void {
@@ -120,15 +111,11 @@ export class PlaylistService
   }
 
   public isPlaylistLoaded(): boolean {
-    return this.playlist.every((playlistTrack) =>
-      this.isTrackLoaded(playlistTrack),
-    );
+    return this.playlist.every((playlistTrack) => this.isTrackLoaded(playlistTrack));
   }
 
   public isPlaylistPlaying(): boolean {
-    return this.playlist.some((playlistTrack) =>
-      this.isTrackPlaying(playlistTrack),
-    );
+    return this.playlist.some((playlistTrack) => this.isTrackPlaying(playlistTrack));
   }
 
   private adjustVolumeForAllTracks(): void {
@@ -225,16 +212,16 @@ export class PlaylistService
       this.playAudio(track, this.audioObject);
     }
 
-    this.audioObject[track].once("end", playCallback);
+    this.audioObject[track].once('end', playCallback);
   }
 
   private handlePlaylistType(type: string): string[] {
     switch (type) {
-      case "asian-lofi":
+      case 'asian-lofi':
         return asianLofi;
-      case "christmas-lofi":
+      case 'christmas-lofi':
         return christmasLofi;
-      case "autumn-lofi":
+      case 'autumn-lofi':
         return autumnLofi;
       default:
         return [];
@@ -243,12 +230,12 @@ export class PlaylistService
 
   private handleCustomTrackName(type: string, track: string): string {
     switch (type) {
-      case "asian-lofi":
-        return track.replace("Asian", "⛩️ Asian");
-      case "christmas-lofi":
-        return track.replace("Christmas", "❄️ Christmas");
-      case "autumn-lofi":
-        return track.replace("Autumn", "🍂 Autumn");
+      case 'asian-lofi':
+        return track.replace('Asian', '⛩️ Asian');
+      case 'christmas-lofi':
+        return track.replace('Christmas', '❄️ Christmas');
+      case 'autumn-lofi':
+        return track.replace('Autumn', '🍂 Autumn');
       default:
         return track;
     }
@@ -256,7 +243,7 @@ export class PlaylistService
 
   private stopTrack(): void {
     if (this.isTrackPlaying(this.currentTrack)) {
-      this.audioObject[this.currentTrack].off("end");
+      this.audioObject[this.currentTrack].off('end');
       this.stopAudio(this.currentTrack, this.audioObject);
       this.clearTrack();
     }
@@ -280,6 +267,6 @@ export class PlaylistService
   }
 
   private setPlaylistVolumeInLocalStorage(volume: number): void {
-    localStorage.setItem("playlistVolume", String(volume));
+    localStorage.setItem('playlistVolume', String(volume));
   }
 }

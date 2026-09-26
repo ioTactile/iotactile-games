@@ -20,8 +20,7 @@
         v-model="passwordConfirm"
         :append-inner-icon="show2 ? mdiEye : mdiEyeOff"
         :rules="[
-          (v: any) =>
-            v === password || 'Les mots de passe doivent être similaire',
+          (v: any) => v === password || 'Les mots de passe doivent être similaire',
           ...rules,
         ]"
         :type="show2 ? 'text' : 'password'"
@@ -37,34 +36,34 @@
 </template>
 
 <script setup lang="ts">
-import { VRow, VCol, VTextField } from "vuetify/components";
-import { mdiEye, mdiEyeOff } from "@mdi/js";
+import { VRow, VCol, VTextField } from 'vuetify/components';
+import { mdiEye, mdiEyeOff } from '@mdi/js';
 
 const MIN_LENGTH = 6;
 
 defineProps<{
   modelValue?: string;
-  variant?: "filled" | "outlined" | "plain" | "underlined" | "solo";
+  variant?: 'filled' | 'outlined' | 'plain' | 'underlined' | 'solo';
   notInLine?: boolean;
   inputClass?: string;
 }>();
 const emits = defineEmits<{
-  (e: "update:model-value", value?: string): void;
+  (e: 'update:model-value', value?: string): void;
 }>();
 
-const password = ref("");
-const passwordConfirm = ref("");
+const password = ref('');
+const passwordConfirm = ref('');
 const show = ref(false);
 const show2 = ref(false);
 
 const rules = [
-  (v?: string) => !!v || "Mot de passe requis",
-  (v: string) => (v && v.length >= MIN_LENGTH) || "6 caractères minimum",
+  (v?: string) => !!v || 'Mot de passe requis',
+  (v: string) => (v && v.length >= MIN_LENGTH) || '6 caractères minimum',
 ];
 
 watch(passwordConfirm, (val) => {
   if (password.value === val) {
-    emits("update:model-value", val);
+    emits('update:model-value', val);
   }
 });
 </script>

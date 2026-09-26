@@ -1,12 +1,10 @@
-import type { DicePlayerSheet, DiceScoreboard } from "../../types/models";
+import type { DicePlayerSheet, DiceScoreboard } from '../../types/models';
 
-export type SessionPlayerScore = Pick<DicePlayerSheet, "id" | "total" | "dice">;
+export type SessionPlayerScore = Pick<DicePlayerSheet, 'id' | 'total' | 'dice'>;
 
 export type SessionEndPlayerInput = SessionPlayerScore | null | undefined;
 
-export const resolveSessionWinner = (
-  players: SessionEndPlayerInput[],
-): string | undefined => {
+export const resolveSessionWinner = (players: SessionEndPlayerInput[]): string | undefined => {
   let winner: string | undefined;
   let bestTotal: number | undefined;
 
@@ -45,9 +43,7 @@ export const applyDiceSessionResult = (
   const total = player.total ?? 0;
   const isDicePlayer = player.dice === 50;
   const averageScore =
-    scoreboard.games === 0
-      ? total
-      : (scoreboard.totalScore + total) / (scoreboard.games + 1);
+    scoreboard.games === 0 ? total : (scoreboard.totalScore + total) / (scoreboard.games + 1);
 
   return {
     userId: player.id,
@@ -56,8 +52,7 @@ export const applyDiceSessionResult = (
     maxScore: Math.max(scoreboard.maxScore, total),
     averageScore,
     totalScore: scoreboard.totalScore + total,
-    victories:
-      winnerId === player.id ? scoreboard.victories + 1 : scoreboard.victories,
+    victories: winnerId === player.id ? scoreboard.victories + 1 : scoreboard.victories,
     dice: isDicePlayer ? scoreboard.dice + 1 : scoreboard.dice,
   };
 };

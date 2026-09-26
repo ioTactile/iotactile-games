@@ -1,22 +1,22 @@
-import { describe, beforeEach, test, expect } from "vitest";
-import { MineSweeper, type GameOptions } from "./mineSweeper";
-import { Cell } from "./cell";
-import { Timer } from "./Timer";
+import { describe, beforeEach, test, expect } from 'vitest';
+import { MineSweeper, type GameOptions } from './mineSweeper';
+import { Cell } from './cell';
+import { Timer } from './Timer';
 
-describe("MineSweeper", () => {
+describe('MineSweeper', () => {
   let mineSweeper: MineSweeper;
   const options: GameOptions = {
     numRows: 5,
     numCols: 5,
     numMines: 3,
-    difficulty: "beginner",
+    difficulty: 'beginner',
   };
 
   beforeEach(() => {
     mineSweeper = new MineSweeper();
   });
 
-  test("should initialize with default values", () => {
+  test('should initialize with default values', () => {
     expect(mineSweeper.getBoard()).toEqual([]);
     expect(mineSweeper.getNumRows()).toBe(0);
     expect(mineSweeper.getNumCols()).toBe(0);
@@ -24,43 +24,43 @@ describe("MineSweeper", () => {
     expect(mineSweeper.getNumFlags()).toBe(0);
     expect(mineSweeper.getNumRevealed()).toBe(0);
     expect(mineSweeper.getTimer()).toBeInstanceOf(Timer);
-    expect(mineSweeper.getGameStatus()).toBe("waiting");
-    expect(mineSweeper.getDifficulty()).toBe("beginner");
+    expect(mineSweeper.getGameStatus()).toBe('waiting');
+    expect(mineSweeper.getDifficulty()).toBe('beginner');
   });
 
-  test("should setup the game", () => {
+  test('should setup the game', () => {
     mineSweeper.setup(options);
     expect(mineSweeper.getNumRows()).toBe(5);
     expect(mineSweeper.getNumCols()).toBe(5);
     expect(mineSweeper.getNumMines()).toBe(3);
-    expect(mineSweeper.getDifficulty()).toBe("beginner");
+    expect(mineSweeper.getDifficulty()).toBe('beginner');
     expect(mineSweeper.getBoard().length).toBe(5);
     expect(mineSweeper.getBoard()[0].length).toBe(5);
     expect(mineSweeper.getBoard()[0][0]).toBeInstanceOf(Cell);
   });
 
-  test("should restart the game", () => {
+  test('should restart the game', () => {
     mineSweeper.restart(options);
     expect(mineSweeper.getNumRows()).toBe(5);
     expect(mineSweeper.getNumCols()).toBe(5);
     expect(mineSweeper.getNumMines()).toBe(3);
-    expect(mineSweeper.getDifficulty()).toBe("beginner");
+    expect(mineSweeper.getDifficulty()).toBe('beginner');
     expect(mineSweeper.getBoard().length).toBe(5);
     expect(mineSweeper.getBoard()[0].length).toBe(5);
     expect(mineSweeper.getBoard()[0][0]).toBeInstanceOf(Cell);
   });
 
-  test("should handle cell action (click)", () => {
+  test('should handle cell action (click)', () => {
     mineSweeper.setup(options);
-    mineSweeper.handleCellAction(0, 0, "click");
+    mineSweeper.handleCellAction(0, 0, 'click');
     expect(mineSweeper.getBoard()[0][0].getIsRevealed()).toBe(true);
     expect(mineSweeper.getNumRevealed()).greaterThan(0);
-    expect(mineSweeper.getGameStatus()).not.toBe("waiting");
+    expect(mineSweeper.getGameStatus()).not.toBe('waiting');
   });
 
-  test("should handle cell action (flag)", () => {
+  test('should handle cell action (flag)', () => {
     mineSweeper.setup(options);
-    mineSweeper.handleCellAction(0, 0, "flag");
+    mineSweeper.handleCellAction(0, 0, 'flag');
     expect(mineSweeper.getBoard()[0][0].getIsFlagged()).toBe(true);
     expect(mineSweeper.getNumFlags()).toBe(1);
   });

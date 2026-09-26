@@ -14,11 +14,7 @@
         >
           <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
           <g id="SVGRepo_iconCarrier">
             <g>
@@ -41,20 +37,13 @@
           <div class="text">TOTAL</div>
         </div>
         <div class="scoreboard-values-wrapper">
-          <div
-            v-for="(player, k) in scoreboard"
-            :key="k"
-            class="scoreboard-values-upper"
-          >
+          <div v-for="(player, k) in scoreboard" :key="k" class="scoreboard-values-upper">
             <div v-for="(value, l) in upperPlayerSheet(k)" :key="l">
-              <button
-                v-if="getPlayerTurn(player!.id) && value === null"
-                class="button-dynamic"
-              >
+              <button v-if="getPlayerTurn(player!.id) && value === null" class="button-dynamic">
                 {{ getInput(l) }}
               </button>
               <button v-else>
-                {{ value === null ? "-" : value }}
+                {{ value === null ? '-' : value }}
               </button>
             </div>
             <div>
@@ -74,20 +63,13 @@
           <div class="text">TOTAL</div>
         </div>
         <div class="scoreboard-values-wrapper">
-          <div
-            v-for="(player, k) in scoreboard"
-            :key="k"
-            class="scoreboard-values-lower"
-          >
+          <div v-for="(player, k) in scoreboard" :key="k" class="scoreboard-values-lower">
             <div v-for="(value, m) in lowerPlayerSheet(k)" :key="m">
-              <button
-                v-if="getPlayerTurn(player!.id) && value === null"
-                class="button-dynamic"
-              >
+              <button v-if="getPlayerTurn(player!.id) && value === null" class="button-dynamic">
                 {{ getInput(m) }}
               </button>
               <button v-else>
-                {{ value === null ? "-" : value }}
+                {{ value === null ? '-' : value }}
               </button>
             </div>
             <div>
@@ -101,11 +83,7 @@
           <div class="text">TOTAL</div>
         </div>
         <div class="scoreboard-values-wrapper">
-          <div
-            v-for="(_, k) in scoreboard"
-            :key="k"
-            class="scoreboard-values-lower"
-          >
+          <div v-for="(_, k) in scoreboard" :key="k" class="scoreboard-values-lower">
             <div>
               {{ playerSheetTotal(k) }}
             </div>
@@ -117,18 +95,11 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon, VImg } from "vuetify/components";
-import {
-  mdiDice1,
-  mdiDice2,
-  mdiDice3,
-  mdiDice4,
-  mdiDice5,
-  mdiDice6,
-} from "@mdi/js";
-import type { LocalDiceSessionScoresType } from "~/stores";
-import type { Dice } from "~/types/models";
-import { sum } from "~/utils";
+import { VIcon, VImg } from 'vuetify/components';
+import { mdiDice1, mdiDice2, mdiDice3, mdiDice4, mdiDice5, mdiDice6 } from '@mdi/js';
+import type { LocalDiceSessionScoresType } from '~/stores';
+import type { Dice } from '~/types/models';
+import { sum } from '~/utils';
 import {
   oneInput,
   twoInput,
@@ -143,7 +114,7 @@ import {
   largeStraightInput,
   diceInput,
   chanceInput,
-} from "~/utils/dice/diceInputs";
+} from '~/utils/dice/diceInputs';
 
 type InputMappings = {
   one: number;
@@ -163,13 +134,13 @@ type InputMappings = {
 };
 
 const props = defineProps<{
-  scoreboard: LocalDiceSessionScoresType["playerOne"][];
+  scoreboard: LocalDiceSessionScoresType['playerOne'][];
   dices: Dice[];
   playerTurn: string;
 }>();
 
 const emit = defineEmits<{
-  (e: "update:isScoreboardActive", value: boolean): void;
+  (e: 'update:isScoreboardActive', value: boolean): void;
 }>();
 
 const scoreboardHeaderIcons: Record<number, string> = {
@@ -182,17 +153,17 @@ const scoreboardHeaderIcons: Record<number, string> = {
 };
 
 const scoreboardHeaderImages: Record<number, string> = {
-  1: "/dice/inputs/three-of-a-kind.png",
-  2: "/dice/inputs/four-of-a-kind.png",
-  3: "/dice/inputs/full-house.png",
-  4: "/dice/inputs/small-straight.png",
-  5: "/dice/inputs/large-straight.png",
-  6: "/dice/inputs/dice.png",
-  7: "/dice/inputs/chance.png",
+  1: '/dice/inputs/three-of-a-kind.png',
+  2: '/dice/inputs/four-of-a-kind.png',
+  3: '/dice/inputs/full-house.png',
+  4: '/dice/inputs/small-straight.png',
+  5: '/dice/inputs/large-straight.png',
+  6: '/dice/inputs/dice.png',
+  7: '/dice/inputs/chance.png',
 };
 
 const OpenPlayerSheet = () => {
-  emit("update:isScoreboardActive", false);
+  emit('update:isScoreboardActive', false);
 };
 
 const upperPlayerSheet = (key: number): Record<string, number> | {} => {
@@ -253,8 +224,6 @@ const playerSheetTotal = (key: number): number => {
   const lowerTotal = lowerPlayerSheetTotal(key);
   return upperTotal + lowerTotal;
 };
-
-// Mappings
 
 const inputMappings = computed<InputMappings>(() => {
   const dices = props.dices;

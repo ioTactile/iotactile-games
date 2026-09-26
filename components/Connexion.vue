@@ -16,18 +16,10 @@
         />
       </v-card-title>
       <v-tabs v-model="tab" grow>
-        <v-tab
-          value="one"
-          class="text-capitalize"
-          @click="createAccount = false"
-        >
+        <v-tab value="one" class="text-capitalize" @click="createAccount = false">
           Connexion
         </v-tab>
-        <v-tab
-          value="two"
-          class="text-capitalize"
-          @click="createAccount = true"
-        >
+        <v-tab value="two" class="text-capitalize" @click="createAccount = true">
           Inscription
         </v-tab>
       </v-tabs>
@@ -36,13 +28,7 @@
           <v-window v-model="tab">
             <v-window-item value="one">
               <template v-if="!createAccount">
-                <InputsEmail
-                  v-model="email"
-                  variant="outlined"
-                  icon
-                  class="my-2"
-                  name="email"
-                />
+                <InputsEmail v-model="email" variant="outlined" icon class="my-2" name="email" />
                 <InputsPassword
                   v-if="!forgotPassword"
                   v-model="password"
@@ -52,7 +38,7 @@
               </template>
               <div class="d-flex justify-center mb-10">
                 <v-btn variant="text" @click="forgotPassword = !forgotPassword">
-                  {{ forgotPassword ? "Retour" : "Mot de passe oublié" }}
+                  {{ forgotPassword ? 'Retour' : 'Mot de passe oublié' }}
                 </v-btn>
               </div>
             </v-window-item>
@@ -89,8 +75,8 @@
               createAccount
                 ? "M'inscire"
                 : forgotPassword
-                  ? "Réinitialiser mon mot de passe"
-                  : "Connexion"
+                  ? 'Réinitialiser mon mot de passe'
+                  : 'Connexion'
             }}
           </v-btn>
         </v-form>
@@ -111,48 +97,40 @@ import {
   VWindowItem,
   VTabs,
   VTab,
-} from "vuetify/components";
-import { mdiClose } from "@mdi/js";
+} from 'vuetify/components';
+import { mdiClose } from '@mdi/js';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   AuthErrorCodes,
   getIdTokenResult,
-} from "firebase/auth";
-import { FirebaseError } from "@firebase/util";
-import { doc, setDoc } from "firebase/firestore";
-import { useFirestore, useFirebaseAuth } from "vuefire";
-import { storeToRefs } from "pinia";
-import { useUserStore } from "~/stores/user";
-import { userConverter } from "~/infrastructure/firestore/converters";
-
-// Composable & Vuefire
+} from 'firebase/auth';
+import { FirebaseError } from '@firebase/util';
+import { doc, setDoc } from 'firebase/firestore';
+import { useFirestore, useFirebaseAuth } from 'vuefire';
+import { storeToRefs } from 'pinia';
+import { useUserStore } from '~/stores/user';
+import { userConverter } from '~/infrastructure/firestore/converters';
 
 const { notifier } = useNotifier();
 const db = useFirestore();
 const auth = useFirebaseAuth();
 const user = useCurrentUser();
 
-// Props
-
 defineProps<{
   modelValue: boolean;
 }>();
 
-// Emits
+const emits = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
 
-const emits = defineEmits<{ (e: "update:modelValue", value: boolean): void }>();
-
-// Refs
-
-const email = ref("");
-const username = ref("");
-const password = ref("");
+const email = ref('');
+const username = ref('');
+const password = ref('');
 const date = ref(new Date(Date.now()));
 const createAccount = ref(false);
 const forgotPassword = ref(false);
-const loading = ref<"email" | null>(null);
+const loading = ref<'email' | null>(null);
 const form = ref<VForm>();
 const tab = ref(null);
 
@@ -171,48 +149,38 @@ onBeforeMount(async () => {
   }
 });
 
-// Methods
-
 const login = async () => {
   if (!auth || !(await form.value?.validate())?.valid) {
     return;
   }
-  loading.value = "email";
+  loading.value = 'email';
 
   try {
     if (createAccount.value) {
-      createUserWithEmailAndPassword(auth, email.value, password.value).then(
-        (credentials) => {
-          const userRef = doc(db, "users", credentials.user.uid).withConverter(
-            userConverter,
-          );
-          setDoc(
-            userRef,
-            {
-              id: credentials.user.uid,
-              email: email.value,
-              username: username.value,
-              creationDate: date.value,
-              updateDate: new Date(),
-            },
-            { merge: true },
-          );
-        },
-      );
-      notifier({ content: "Inscription réussie", color: "success" });
+      createUserWithEmailAndPassword(auth, email.value, password.value).then((credentials) => {
+        const userRef = doc(db, 'users', credentials.user.uid).withConverter(userConverter);
+        setDoc(
+          userRef,
+          {
+            id: credentials.user.uid,
+            email: email.value,
+            username: username.value,
+            creationDate: date.value,
+            updateDate: new Date(),
+          },
+          { merge: true },
+        );
+      });
+      notifier({ content: 'Inscription réussie', color: 'success' });
     } else if (forgotPassword.value) {
       await sendPasswordResetEmail(auth, email.value);
       notifier({
-        content: "Un email de réinitialisation a été envoyé",
-        color: "success",
+        content: 'Un email de réinitialisation a été envoyé',
+        color: 'success',
       });
       forgotPassword.value = false;
     } else {
-      const userCredentials = await signInWithEmailAndPassword(
-        auth,
-        email.value,
-        password.value,
-      );
+      const userCredentials = await signInWithEmailAndPassword(auth, email.value, password.value);
 
       currentUser.value = userCredentials.user;
       const { claims } = await getIdTokenResult(currentUser.value, true);
@@ -222,7 +190,7 @@ const login = async () => {
         adminClaims.value = false;
       }
     }
-    emits("update:modelValue", false);
+    emits('update:modelValue', false);
   } catch (error: unknown) {
     if (!(error instanceof FirebaseError)) {
       throw error;
@@ -230,19 +198,19 @@ const login = async () => {
     let errMessage;
     switch (error.code) {
       case AuthErrorCodes.EMAIL_EXISTS:
-        errMessage = "Adresse mail déjà utilisée";
+        errMessage = 'Adresse mail déjà utilisée';
         break;
       case AuthErrorCodes.USER_DELETED:
-        errMessage = "Utilisateur supprimé";
+        errMessage = 'Utilisateur supprimé';
         break;
       case AuthErrorCodes.INVALID_PASSWORD:
-        errMessage = "Mot de passe incorrect";
+        errMessage = 'Mot de passe incorrect';
         break;
       default:
-        errMessage = "Une erreur est survenue";
+        errMessage = 'Une erreur est survenue';
         break;
     }
-    notifier({ content: errMessage, color: "error", error });
+    notifier({ content: errMessage, color: 'error', error });
   } finally {
     loading.value = null;
   }

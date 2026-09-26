@@ -1,5 +1,5 @@
-import { AbstractAudioService } from "./audioService";
-import type { IAudioClip } from "./audioPort";
+import { AbstractAudioService } from './audioService';
+import type { IAudioClip } from './audioPort';
 
 export interface ISoundService {
   loadSound(sound: string, src: string, volume: number): void;
@@ -14,10 +14,7 @@ export interface ISoundService {
   isSoundPlaying(sound: string): boolean;
 }
 
-export class SoundService
-  extends AbstractAudioService
-  implements ISoundService
-{
+export class SoundService extends AbstractAudioService implements ISoundService {
   protected audioObject: Record<string, IAudioClip> = {};
 
   public loadSound(sound: string, src: string, volume: number): void {

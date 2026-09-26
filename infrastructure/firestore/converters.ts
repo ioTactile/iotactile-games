@@ -1,8 +1,5 @@
-import {
-  QueryDocumentSnapshot,
-  Timestamp as FirestoreTimestamp,
-} from "@firebase/firestore";
-import type { FirestoreDataConverter } from "@firebase/firestore";
+import { QueryDocumentSnapshot, Timestamp as FirestoreTimestamp } from '@firebase/firestore';
+import type { FirestoreDataConverter } from '@firebase/firestore';
 import type {
   User,
   DiceSession,
@@ -21,7 +18,7 @@ import type {
   LinguaVaultSessionWords,
   MineSweeperScoreboard,
   TakuzuScoreboard,
-} from "~/types/models";
+} from '~/types/models';
 
 type NestedTypeMapper<T, I, O> = T extends I
   ? O
@@ -38,10 +35,7 @@ type DatabaseUserType = NestedTypeMapper<User, Date, FirestoreTimestamp>;
 export type LocalUserType = User;
 export const userConverter: FirestoreDataConverter<LocalUserType> = {
   toFirestore: (item) => item,
-  fromFirestore: (
-    snapshot: QueryDocumentSnapshot<DatabaseUserType>,
-    options,
-  ) => {
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseUserType>, options) => {
     const data = snapshot.data(options);
     return {
       ...data,
@@ -52,50 +46,32 @@ export const userConverter: FirestoreDataConverter<LocalUserType> = {
   },
 };
 
-// Dice
-
-type DatabaseDiceSessionType = NestedTypeMapper<
-  DiceSession,
-  Date,
-  FirestoreTimestamp
->;
+type DatabaseDiceSessionType = NestedTypeMapper<DiceSession, Date, FirestoreTimestamp>;
 export type LocalDiceSessionType = DiceSession;
-export const diceSessionConverter: FirestoreDataConverter<LocalDiceSessionType> =
-  {
-    toFirestore: (item) => item,
-    fromFirestore: (
-      snapshot: QueryDocumentSnapshot<DatabaseDiceSessionType>,
-      options,
-    ) => {
-      const data = snapshot.data(options);
-      return {
-        ...data,
-        id: snapshot.id,
-        creationDate: data.creationDate.toDate(),
-      };
-    },
-  };
+export const diceSessionConverter: FirestoreDataConverter<LocalDiceSessionType> = {
+  toFirestore: (item) => item,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseDiceSessionType>, options) => {
+    const data = snapshot.data(options);
+    return {
+      ...data,
+      id: snapshot.id,
+      creationDate: data.creationDate.toDate(),
+    };
+  },
+};
 
-type DatabaseDiceScoreboardType = NestedTypeMapper<
-  DiceScoreboard,
-  Date,
-  FirestoreTimestamp
->;
+type DatabaseDiceScoreboardType = NestedTypeMapper<DiceScoreboard, Date, FirestoreTimestamp>;
 export type LocalDiceScoreboardType = DiceScoreboard;
-export const diceScoreboardConverter: FirestoreDataConverter<LocalDiceScoreboardType> =
-  {
-    toFirestore: (item) => item,
-    fromFirestore: (
-      snapshot: QueryDocumentSnapshot<DatabaseDiceScoreboardType>,
-      options,
-    ) => {
-      const data = snapshot.data(options);
-      return {
-        ...data,
-        userId: snapshot.id,
-      };
-    },
-  };
+export const diceScoreboardConverter: FirestoreDataConverter<LocalDiceScoreboardType> = {
+  toFirestore: (item) => item,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseDiceScoreboardType>, options) => {
+    const data = snapshot.data(options);
+    return {
+      ...data,
+      userId: snapshot.id,
+    };
+  },
+};
 
 type DatabaseDiceSessionPlayerTurnType = NestedTypeMapper<
   DiceSessionPlayerTurn,
@@ -139,26 +115,18 @@ export const diceSessionRemainingTurnsConverter: FirestoreDataConverter<LocalDic
     },
   };
 
-type DatabaseDiceSessionDicesType = NestedTypeMapper<
-  DiceSessionDices,
-  Date,
-  FirestoreTimestamp
->;
+type DatabaseDiceSessionDicesType = NestedTypeMapper<DiceSessionDices, Date, FirestoreTimestamp>;
 export type LocalDiceSessionDicesType = DiceSessionDices;
-export const diceSessionDicesConverter: FirestoreDataConverter<LocalDiceSessionDicesType> =
-  {
-    toFirestore: (item) => item,
-    fromFirestore: (
-      snapshot: QueryDocumentSnapshot<DatabaseDiceSessionDicesType>,
-      options,
-    ) => {
-      const data = snapshot.data(options);
-      return {
-        ...data,
-        id: snapshot.id,
-      };
-    },
-  };
+export const diceSessionDicesConverter: FirestoreDataConverter<LocalDiceSessionDicesType> = {
+  toFirestore: (item) => item,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseDiceSessionDicesType>, options) => {
+    const data = snapshot.data(options);
+    return {
+      ...data,
+      id: snapshot.id,
+    };
+  },
+};
 
 type DatabaseDiceSessionPlayerTriesType = NestedTypeMapper<
   DiceSessionPlayerTries,
@@ -181,73 +149,45 @@ export const diceSessionPlayerTriesConverter: FirestoreDataConverter<LocalDiceSe
     },
   };
 
-type DatabaseDiceSessionChatType = NestedTypeMapper<
-  DiceSessionChat,
-  Date,
-  FirestoreTimestamp
->;
+type DatabaseDiceSessionChatType = NestedTypeMapper<DiceSessionChat, Date, FirestoreTimestamp>;
 export type LocalDiceSessionChatType = DiceSessionChat;
-export const diceSessionChatConverter: FirestoreDataConverter<LocalDiceSessionChatType> =
-  {
-    toFirestore: (item) => item,
-    fromFirestore: (
-      snapshot: QueryDocumentSnapshot<DatabaseDiceSessionChatType>,
-      options,
-    ) => {
-      const data = snapshot.data(options);
-      return {
-        ...data,
-        id: snapshot.id,
-      };
-    },
-  };
+export const diceSessionChatConverter: FirestoreDataConverter<LocalDiceSessionChatType> = {
+  toFirestore: (item) => item,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseDiceSessionChatType>, options) => {
+    const data = snapshot.data(options);
+    return {
+      ...data,
+      id: snapshot.id,
+    };
+  },
+};
 
-type DatabaseDiceSessionScoresType = NestedTypeMapper<
-  DiceSessionScores,
-  Date,
-  FirestoreTimestamp
->;
+type DatabaseDiceSessionScoresType = NestedTypeMapper<DiceSessionScores, Date, FirestoreTimestamp>;
 export type LocalDiceSessionScoresType = DiceSessionScores;
-export const diceSessionScoresConverter: FirestoreDataConverter<LocalDiceSessionScoresType> =
-  {
-    toFirestore: (item) => item,
-    fromFirestore: (
-      snapshot: QueryDocumentSnapshot<DatabaseDiceSessionScoresType>,
-      options,
-    ) => {
-      const data = snapshot.data(options);
-      return {
-        ...data,
-        id: snapshot.id,
-        creationDate: data.creationDate
-          ? data.creationDate.toDate()
-          : undefined,
-      };
-    },
-  };
+export const diceSessionScoresConverter: FirestoreDataConverter<LocalDiceSessionScoresType> = {
+  toFirestore: (item) => item,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseDiceSessionScoresType>, options) => {
+    const data = snapshot.data(options);
+    return {
+      ...data,
+      id: snapshot.id,
+      creationDate: data.creationDate ? data.creationDate.toDate() : undefined,
+    };
+  },
+};
 
-// Lingua Vault
-
-type DatabaseLinguaVaultWordsType = NestedTypeMapper<
-  LinguaVaultWords,
-  Date,
-  FirestoreTimestamp
->;
+type DatabaseLinguaVaultWordsType = NestedTypeMapper<LinguaVaultWords, Date, FirestoreTimestamp>;
 export type LocalLinguaVaultWordsType = LinguaVaultWords;
-export const linguaVaultWordsConverter: FirestoreDataConverter<LocalLinguaVaultWordsType> =
-  {
-    toFirestore: (item) => item,
-    fromFirestore: (
-      snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultWordsType>,
-      options,
-    ) => {
-      const data = snapshot.data(options);
-      return {
-        ...data,
-        id: snapshot.id,
-      };
-    },
-  };
+export const linguaVaultWordsConverter: FirestoreDataConverter<LocalLinguaVaultWordsType> = {
+  toFirestore: (item) => item,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultWordsType>, options) => {
+    const data = snapshot.data(options);
+    return {
+      ...data,
+      id: snapshot.id,
+    };
+  },
+};
 
 type DatabaseLinguaVaultSessionType = NestedTypeMapper<
   LinguaVaultSession,
@@ -255,21 +195,17 @@ type DatabaseLinguaVaultSessionType = NestedTypeMapper<
   FirestoreTimestamp
 >;
 export type LocalLinguaVaultSessionType = LinguaVaultSession;
-export const linguaVaultSessionConverter: FirestoreDataConverter<LocalLinguaVaultSessionType> =
-  {
-    toFirestore: (item) => item,
-    fromFirestore: (
-      snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultSessionType>,
-      options,
-    ) => {
-      const data = snapshot.data(options);
-      return {
-        ...data,
-        id: snapshot.id,
-        creationDate: data.creationDate.toDate(),
-      };
-    },
-  };
+export const linguaVaultSessionConverter: FirestoreDataConverter<LocalLinguaVaultSessionType> = {
+  toFirestore: (item) => item,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseLinguaVaultSessionType>, options) => {
+    const data = snapshot.data(options);
+    return {
+      ...data,
+      id: snapshot.id,
+      creationDate: data.creationDate.toDate(),
+    };
+  },
+};
 
 type DatabaseLinguaVaultScoreboardType = NestedTypeMapper<
   LinguaVaultScoreboard,
@@ -297,8 +233,7 @@ type DatabaseLinguaVaultSessionRemainingTurnsType = NestedTypeMapper<
   Date,
   FirestoreTimestamp
 >;
-export type LocalLinguaVaultSessionRemainingTurnsType =
-  LinguaVaultSessionRemainingTurns;
+export type LocalLinguaVaultSessionRemainingTurnsType = LinguaVaultSessionRemainingTurns;
 export const linguaVaultSessionRemainingTurnsConverter: FirestoreDataConverter<LocalLinguaVaultSessionRemainingTurnsType> =
   {
     toFirestore: (item) => item,
@@ -319,8 +254,7 @@ type DatabaseLinguaVaultSessionPlayerTurnType = NestedTypeMapper<
   Date,
   FirestoreTimestamp
 >;
-export type LocalLinguaVaultSessionPlayerTurnType =
-  LinguaVaultSessionPlayerTurn;
+export type LocalLinguaVaultSessionPlayerTurnType = LinguaVaultSessionPlayerTurn;
 export const linguaVaultSessionPlayerTurnConverter: FirestoreDataConverter<LocalLinguaVaultSessionPlayerTurnType> =
   {
     toFirestore: (item) => item,
@@ -356,8 +290,6 @@ export const linguaVaultSessionWordsConverter: FirestoreDataConverter<LocalLingu
       };
     },
   };
-
-// Mine Sweeper
 
 type DatabaseMineSweeperSessionScoresType = NestedTypeMapper<
   MineSweeperScoreboard,
@@ -396,98 +328,88 @@ export const mineSweeperScoreboardConverter: FirestoreDataConverter<LocalMineSwe
     },
   };
 
-// Takuzu
-
-type DatabaseTakuzuSessionScoresType = NestedTypeMapper<
-  TakuzuScoreboard,
-  Date,
-  FirestoreTimestamp
->;
+type DatabaseTakuzuSessionScoresType = NestedTypeMapper<TakuzuScoreboard, Date, FirestoreTimestamp>;
 export type LocalTakuzuScoreboardType = TakuzuScoreboard;
-export const takuzuScoreboardConverter: FirestoreDataConverter<LocalTakuzuScoreboardType> =
-  {
-    toFirestore: (item) => item,
-    fromFirestore: (
-      snapshot: QueryDocumentSnapshot<DatabaseTakuzuSessionScoresType>,
-      options,
-    ) => {
-      const data = snapshot.data(options);
+export const takuzuScoreboardConverter: FirestoreDataConverter<LocalTakuzuScoreboardType> = {
+  toFirestore: (item) => item,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseTakuzuSessionScoresType>, options) => {
+    const data = snapshot.data(options);
 
-      return {
-        ...data,
-        userId: snapshot.id,
-        sixBySix: {
-          easy: {
-            ...data.sixBySix.easy,
-            victoryDate: data.sixBySix.easy.victoryDate.toDate(),
-          },
-          medium: {
-            ...data.sixBySix.medium,
-            victoryDate: data.sixBySix.medium.victoryDate.toDate(),
-          },
-          hard: {
-            ...data.sixBySix.hard,
-            victoryDate: data.sixBySix.hard.victoryDate.toDate(),
-          },
-          expert: {
-            ...data.sixBySix.expert,
-            victoryDate: data.sixBySix.expert.victoryDate.toDate(),
-          },
+    return {
+      ...data,
+      userId: snapshot.id,
+      sixBySix: {
+        easy: {
+          ...data.sixBySix.easy,
+          victoryDate: data.sixBySix.easy.victoryDate.toDate(),
         },
-        eightByEight: {
-          easy: {
-            ...data.eightByEight.easy,
-            victoryDate: data.eightByEight.easy.victoryDate.toDate(),
-          },
-          medium: {
-            ...data.eightByEight.medium,
-            victoryDate: data.eightByEight.medium.victoryDate.toDate(),
-          },
-          hard: {
-            ...data.eightByEight.hard,
-            victoryDate: data.eightByEight.hard.victoryDate.toDate(),
-          },
-          expert: {
-            ...data.eightByEight.expert,
-            victoryDate: data.eightByEight.expert.victoryDate.toDate(),
-          },
+        medium: {
+          ...data.sixBySix.medium,
+          victoryDate: data.sixBySix.medium.victoryDate.toDate(),
         },
-        tenByTen: {
-          easy: {
-            ...data.tenByTen.easy,
-            victoryDate: data.tenByTen.easy.victoryDate.toDate(),
-          },
-          medium: {
-            ...data.tenByTen.medium,
-            victoryDate: data.tenByTen.medium.victoryDate.toDate(),
-          },
-          hard: {
-            ...data.tenByTen.hard,
-            victoryDate: data.tenByTen.hard.victoryDate.toDate(),
-          },
-          expert: {
-            ...data.tenByTen.expert,
-            victoryDate: data.tenByTen.expert.victoryDate.toDate(),
-          },
+        hard: {
+          ...data.sixBySix.hard,
+          victoryDate: data.sixBySix.hard.victoryDate.toDate(),
         },
-        twelveByTwelve: {
-          easy: {
-            ...data.twelveByTwelve.easy,
-            victoryDate: data.twelveByTwelve.easy.victoryDate.toDate(),
-          },
-          medium: {
-            ...data.twelveByTwelve.medium,
-            victoryDate: data.twelveByTwelve.medium.victoryDate.toDate(),
-          },
-          hard: {
-            ...data.twelveByTwelve.hard,
-            victoryDate: data.twelveByTwelve.hard.victoryDate.toDate(),
-          },
-          expert: {
-            ...data.twelveByTwelve.expert,
-            victoryDate: data.twelveByTwelve.expert.victoryDate.toDate(),
-          },
+        expert: {
+          ...data.sixBySix.expert,
+          victoryDate: data.sixBySix.expert.victoryDate.toDate(),
         },
-      };
-    },
-  };
+      },
+      eightByEight: {
+        easy: {
+          ...data.eightByEight.easy,
+          victoryDate: data.eightByEight.easy.victoryDate.toDate(),
+        },
+        medium: {
+          ...data.eightByEight.medium,
+          victoryDate: data.eightByEight.medium.victoryDate.toDate(),
+        },
+        hard: {
+          ...data.eightByEight.hard,
+          victoryDate: data.eightByEight.hard.victoryDate.toDate(),
+        },
+        expert: {
+          ...data.eightByEight.expert,
+          victoryDate: data.eightByEight.expert.victoryDate.toDate(),
+        },
+      },
+      tenByTen: {
+        easy: {
+          ...data.tenByTen.easy,
+          victoryDate: data.tenByTen.easy.victoryDate.toDate(),
+        },
+        medium: {
+          ...data.tenByTen.medium,
+          victoryDate: data.tenByTen.medium.victoryDate.toDate(),
+        },
+        hard: {
+          ...data.tenByTen.hard,
+          victoryDate: data.tenByTen.hard.victoryDate.toDate(),
+        },
+        expert: {
+          ...data.tenByTen.expert,
+          victoryDate: data.tenByTen.expert.victoryDate.toDate(),
+        },
+      },
+      twelveByTwelve: {
+        easy: {
+          ...data.twelveByTwelve.easy,
+          victoryDate: data.twelveByTwelve.easy.victoryDate.toDate(),
+        },
+        medium: {
+          ...data.twelveByTwelve.medium,
+          victoryDate: data.twelveByTwelve.medium.victoryDate.toDate(),
+        },
+        hard: {
+          ...data.twelveByTwelve.hard,
+          victoryDate: data.twelveByTwelve.hard.victoryDate.toDate(),
+        },
+        expert: {
+          ...data.twelveByTwelve.expert,
+          victoryDate: data.twelveByTwelve.expert.victoryDate.toDate(),
+        },
+      },
+    };
+  },
+};

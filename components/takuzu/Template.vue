@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from "vuetify";
+import { useDisplay } from 'vuetify';
 
 const { width, height } = useDisplay();
 
@@ -28,10 +28,7 @@ const handleResize = () => {
     height.value = targetHeight;
   }
 
-  scale.value = Math.min(
-    height.value / targetHeight,
-    width.value / targetWidth,
-  );
+  scale.value = Math.min(height.value / targetHeight, width.value / targetWidth);
 };
 
 watch(
@@ -67,7 +64,7 @@ watch(
   z-index: -1;
   inset: 0;
   background-size: cover;
-  background-image: url("https://cdn.codenames.game/v20210210/img/bg-raster.svg");
+  background-image: url('https://cdn.codenames.game/v20210210/img/bg-raster.svg');
   mix-blend-mode: overlay;
 }
 

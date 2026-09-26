@@ -23,9 +23,9 @@
 </template>
 
 <script async setup lang="ts">
-import { doc, getDoc } from "firebase/firestore";
-import { timerFormatter } from "~/utils";
-import { takuzuScoreboardConverter } from "~/stores";
+import { doc, getDoc } from 'firebase/firestore';
+import { timerFormatter } from '~/utils';
+import { takuzuScoreboardConverter } from '~/stores';
 
 type TakuzuVictory = {
   victories: number;
@@ -43,11 +43,9 @@ interface SizeBoard {
 const db = useFirestore();
 const user = useCurrentUser();
 
-const playerScoreboardRef = doc(
-  db,
-  "takuzuScoreboard",
-  user.value!.uid,
-).withConverter(takuzuScoreboardConverter);
+const playerScoreboardRef = doc(db, 'takuzuScoreboard', user.value!.uid).withConverter(
+  takuzuScoreboardConverter,
+);
 
 onMounted(async () => {
   const playerScoreboardDoc = await getDoc(playerScoreboardRef);
@@ -65,20 +63,20 @@ onMounted(async () => {
 const results = ref<SizeBoard[]>([]);
 
 const sizeFormatter = (value: number) => {
-  const sizes = ["6 x 6", "8 x 8", "10 x 10", "12 x 12"];
+  const sizes = ['6 x 6', '8 x 8', '10 x 10', '12 x 12'];
   return sizes[value];
 };
 
 const difficultyBackgroundColorStyle = (value: string) => {
-  const colors = ["#4CAF50", "#3F51B5", "#FF9800", "#F44336"];
+  const colors = ['#4CAF50', '#3F51B5', '#FF9800', '#F44336'];
   switch (value) {
-    case "easy":
+    case 'easy':
       return `background-color: ${colors[0]}`;
-    case "medium":
+    case 'medium':
       return `background-color: ${colors[1]}`;
-    case "hard":
+    case 'hard':
       return `background-color: ${colors[2]}`;
-    case "expert":
+    case 'expert':
       return `background-color: ${colors[3]}`;
   }
 };

@@ -1,6 +1,6 @@
-import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { getFirestore, Timestamp } from "firebase-admin/firestore";
-import { getAuth } from "firebase-admin/auth";
+import { onCall, HttpsError } from 'firebase-functions/v2/https';
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
 
 interface Parameters {
   id: string;
@@ -8,25 +8,22 @@ interface Parameters {
 }
 
 export const addAdmin = onCall(
-  { region: "europe-west3", enforceAppCheck: true },
+  { region: 'europe-west3', enforceAppCheck: true },
   async (request) => {
     if (request.app == undefined) {
       throw new HttpsError(
-        "failed-precondition",
-        "The function must be called from an App Check verified app.",
+        'failed-precondition',
+        'The function must be called from an App Check verified app.',
       );
     }
     if (!request.auth) {
-      throw new HttpsError(
-        "unauthenticated",
-        "Une authentification est nécessaire",
-      );
+      throw new HttpsError('unauthenticated', 'Une authentification est nécessaire');
     }
 
     const data = request.data as Parameters;
 
     if (!data.role) {
-      throw new HttpsError("invalid-argument", "Paramètres incorrect");
+      throw new HttpsError('invalid-argument', 'Paramètres incorrect');
     }
 
     const auth = getAuth();
@@ -39,6 +36,6 @@ export const addAdmin = onCall(
       updateDate: Timestamp.now(),
     };
 
-    await firestore.collection("users").doc(data.id).update(updateUserData);
+    await firestore.collection('users').doc(data.id).update(updateUserData);
   },
 );

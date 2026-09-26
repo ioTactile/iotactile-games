@@ -9,9 +9,7 @@
       <div>{{ playerResults.games }}</div>
       <div>{{ playerResults.victories }}</div>
       <div>
-        {{
-          numberFormatter(playerResults.victories / playerResults.games, true)
-        }}
+        {{ numberFormatter(playerResults.victories / playerResults.games, true) }}
       </div>
     </div>
     <div class="header d-flex justify-space-between">
@@ -28,17 +26,15 @@
 </template>
 
 <script async setup lang="ts">
-import { doc, getDoc } from "firebase/firestore";
-import { numberFormatter } from "~/utils";
+import { doc, getDoc } from 'firebase/firestore';
+import { numberFormatter } from '~/utils';
 
 const db = useFirestore();
 const user = useCurrentUser();
 
-const playerScoreboardRef = doc(
-  db,
-  "diceScoreboard",
-  user.value!.uid,
-).withConverter(diceScoreboardConverter);
+const playerScoreboardRef = doc(db, 'diceScoreboard', user.value!.uid).withConverter(
+  diceScoreboardConverter,
+);
 const playerScoreboardDoc = await getDoc(playerScoreboardRef);
 const playerResults = playerScoreboardDoc.data();
 </script>

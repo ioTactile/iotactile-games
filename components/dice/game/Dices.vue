@@ -19,22 +19,12 @@
     <button
       class="button-roll-cup"
       :class="{
-        highlight:
-          isPlayerTurn &&
-          playerTries > 0 &&
-          sessionIsStarted &&
-          !sessionIsFinished,
+        highlight: isPlayerTurn && playerTries > 0 && sessionIsStarted && !sessionIsFinished,
       }"
       :disabled="isRolling"
       @click="rollCup"
     >
-      <v-img
-        class="cup"
-        src="/dice/ui/cup-no-bg.png"
-        alt="Gobelet"
-        height="56"
-        width="46"
-      />
+      <v-img class="cup" src="/dice/ui/cup-no-bg.png" alt="Gobelet" height="56" width="46" />
       <v-img
         class="dice-three"
         src="/dice/colors/dice-white-three.png"
@@ -57,15 +47,12 @@
 </template>
 
 <script setup lang="ts">
-import { VImg } from "vuetify/components";
-import { doc, updateDoc } from "firebase/firestore";
-import {
-  diceSessionDicesConverter,
-  diceSessionPlayerTriesConverter,
-} from "~/stores";
-import type { Dice } from "~/types/models";
-import type { ISoundService } from "~/utils/music/soundService";
-import { random } from "~/utils";
+import { VImg } from 'vuetify/components';
+import { doc, updateDoc } from 'firebase/firestore';
+import { diceSessionDicesConverter, diceSessionPlayerTriesConverter } from '~/stores';
+import type { Dice } from '~/types/models';
+import type { ISoundService } from '~/utils/music/soundService';
+import { random } from '~/utils';
 
 type diceFaces = {
   [key: number]: { light: string };
@@ -83,14 +70,12 @@ const props = defineProps<{
 
 const db = useFirestore();
 
-const dicesRef = doc(db, "diceSessionDices", props.sessionId).withConverter(
+const dicesRef = doc(db, 'diceSessionDices', props.sessionId).withConverter(
   diceSessionDicesConverter,
 );
-const playerTriesRef = doc(
-  db,
-  "diceSessionPlayerTries",
-  props.sessionId,
-).withConverter(diceSessionPlayerTriesConverter);
+const playerTriesRef = doc(db, 'diceSessionPlayerTries', props.sessionId).withConverter(
+  diceSessionPlayerTriesConverter,
+);
 
 const isRolling = ref<boolean>(false);
 
@@ -104,12 +89,12 @@ const dicesOnHand = computed(() => {
 
 const getDiceFace = (dice: number) => {
   const diceFaces: diceFaces = {
-    1: { light: "/dice/colors/dice-white-one.png" },
-    2: { light: "/dice/colors/dice-white-two.png" },
-    3: { light: "/dice/colors/dice-white-three.png" },
-    4: { light: "/dice/colors/dice-white-four.png" },
-    5: { light: "/dice/colors/dice-white-five.png" },
-    6: { light: "/dice/colors/dice-white-six.png" },
+    1: { light: '/dice/colors/dice-white-one.png' },
+    2: { light: '/dice/colors/dice-white-two.png' },
+    3: { light: '/dice/colors/dice-white-three.png' },
+    4: { light: '/dice/colors/dice-white-four.png' },
+    5: { light: '/dice/colors/dice-white-five.png' },
+    6: { light: '/dice/colors/dice-white-six.png' },
   };
 
   return diceFaces[dice].light;
@@ -156,9 +141,7 @@ const rollCup = async () => {
     isRolling.value = true;
 
     let rollDices = props.dices;
-    const diceOnBoard = rollDices
-      ? rollDices.filter((dice: Dice) => dice.isOnBoard)
-      : [];
+    const diceOnBoard = rollDices ? rollDices.filter((dice: Dice) => dice.isOnBoard) : [];
 
     await updateDoc(playerTriesRef, { tries: props.playerTries - 1 });
 
@@ -191,8 +174,6 @@ const rollCup = async () => {
   }
 };
 
-// Watchers
-
 watch(
   () => props.dices,
   (newValue, oldValue) => {
@@ -202,8 +183,8 @@ watch(
         const oldDices = oldValue.filter((dice: Dice) => dice.isOnBoard);
 
         if (newDices.length > oldDices.length) {
-          if (!props.soundService.isSoundMuted("dice")) {
-            props.soundService.playSound("dice");
+          if (!props.soundService.isSoundMuted('dice')) {
+            props.soundService.playSound('dice');
           }
         }
       }

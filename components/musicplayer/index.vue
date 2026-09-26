@@ -18,11 +18,7 @@
         :slot-height="30"
       >
         <template #activator="{ onMouseover, onMouseleave }">
-          <button
-            @click="toggleShowPlaylists"
-            @mouseover="onMouseover"
-            @mouseleave="onMouseleave"
-          >
+          <button @click="toggleShowPlaylists" @mouseover="onMouseover" @mouseleave="onMouseleave">
             <v-icon :icon="mdiFormatListCheckbox" size="25" color="onSurface" />
           </button>
         </template>
@@ -53,11 +49,7 @@
           :slot-height="30"
         >
           <template #activator="{ onMouseover, onMouseleave }">
-            <button
-              @click="handlePlayPause"
-              @mouseover="onMouseover"
-              @mouseleave="onMouseleave"
-            >
+            <button @click="handlePlayPause" @mouseover="onMouseover" @mouseleave="onMouseleave">
               <v-icon :icon="togglePlayPauseIcon" size="25" color="onSurface" />
             </button>
           </template>
@@ -97,31 +89,25 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon } from "vuetify/components";
-import {
-  mdiFormatListCheckbox,
-  mdiSkipPrevious,
-  mdiPause,
-  mdiPlay,
-  mdiSkipNext,
-} from "@mdi/js";
-import { timerFormatterLessThanTenMinutes, playlists } from "~/utils";
-import { PlaylistService } from "~/utils/music/playlistService";
-import type { IPlaylistService } from "~/utils/music/playlistService";
+import { VIcon } from 'vuetify/components';
+import { mdiFormatListCheckbox, mdiSkipPrevious, mdiPause, mdiPlay, mdiSkipNext } from '@mdi/js';
+import { timerFormatterLessThanTenMinutes, playlists } from '~/utils';
+import { PlaylistService } from '~/utils/music/playlistService';
+import type { IPlaylistService } from '~/utils/music/playlistService';
 
 if (process.client) {
-  window.addEventListener("keyup", (e: KeyboardEvent) => {
+  window.addEventListener('keyup', (e: KeyboardEvent) => {
     switch (e.key) {
-      case "m":
+      case 'm':
         handlePlayPause();
         break;
-      case "p":
-        handleSkipTrack("previous");
+      case 'p':
+        handleSkipTrack('previous');
         break;
-      case "n":
-        handleSkipTrack("next");
+      case 'n':
+        handleSkipTrack('next');
         break;
-      case "Tab":
+      case 'Tab':
         toggleShowPlaylists();
         break;
       default:
@@ -135,10 +121,10 @@ const isShowPlaylists = ref<boolean>(false);
 const isMusicActive = ref<boolean>(false);
 const isMusicMuted = ref<boolean>(false);
 const isMusicPaused = ref<boolean>(true);
-const trackDuration = ref<string>("0:00");
+const trackDuration = ref<string>('0:00');
 
 onMounted(() => {
-  playlist.value.loadPlaylist("christmas-lofi");
+  playlist.value.loadPlaylist('christmas-lofi');
 });
 
 watch(
@@ -150,7 +136,7 @@ watch(
           Math.round(playlist.value.getTrackDuration()),
         );
       } else {
-        trackDuration.value = "0:00";
+        trackDuration.value = '0:00';
       }
     }
   },
@@ -158,16 +144,8 @@ watch(
 );
 
 const currentTime = computed((): string => {
-  return timerFormatterLessThanTenMinutes(
-    Math.round(playlist.value.getCurrentTime()),
-  );
+  return timerFormatterLessThanTenMinutes(Math.round(playlist.value.getCurrentTime()));
 });
-
-// const trackDuration = computed((): string => {
-//   return timerFormatterLessThanTenMinutes(
-//     Math.round(playlist.value.getTrackDuration())
-//   )
-// })
 
 const getCurrentTrack = computed((): string => {
   return playlist.value.getCustomTrackName();
@@ -178,9 +156,7 @@ const togglePlayPauseIcon = computed((): string => {
 });
 
 const handleVolumeIconTooltips = computed((): string => {
-  return !isMusicMuted.value
-    ? "Désactiver la musique (m)"
-    : "Activer la musique (m)";
+  return !isMusicMuted.value ? 'Désactiver la musique (m)' : 'Activer la musique (m)';
 });
 
 const handlePlayPause = (): void => {
@@ -204,11 +180,11 @@ const handleSkipTrack = (direction: string): void => {
     activateMusic();
   }
 
-  if (direction === "previous") {
-    playlist.value.skipTrack("previous");
+  if (direction === 'previous') {
+    playlist.value.skipTrack('previous');
     isMusicPaused.value = false;
   } else {
-    playlist.value.skipTrack("next");
+    playlist.value.skipTrack('next');
     isMusicPaused.value = false;
   }
 };

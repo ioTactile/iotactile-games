@@ -10,7 +10,7 @@ import {
   where,
   deleteField,
   type Firestore,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
@@ -20,8 +20,8 @@ import {
   diceSessionScoresConverter,
   diceScoreboardConverter,
   diceSessionChatConverter,
-} from "~/infrastructure/firestore/converters";
-import type { LocalDiceSessionType } from "~/infrastructure/firestore/converters";
+} from '~/infrastructure/firestore/converters';
+import type { LocalDiceSessionType } from '~/infrastructure/firestore/converters';
 import {
   canDeleteSession,
   canJoinSession,
@@ -34,12 +34,9 @@ import {
   playerSlotForUser,
   withPlayerJoined,
   withPlayerLeft,
-} from "./sessionRules";
+} from './sessionRules';
 
-export type DiceSessionNotifier = (payload: {
-  content?: string;
-  color?: string;
-}) => void;
+export type DiceSessionNotifier = (payload: { content?: string; color?: string }) => void;
 
 export type DiceSessionDeps = {
   db: Firestore;
@@ -76,37 +73,30 @@ export class DiceSession implements IDiceSession {
     this.getUserId = deps.getUserId;
     this.notify = deps.notify;
 
-    this.sessionsRef = collection(this.db, "diceSessions").withConverter(
-      diceSessionConverter,
+    this.sessionsRef = collection(this.db, 'diceSessions').withConverter(diceSessionConverter);
+    this.playerTurnRef = collection(this.db, 'diceSessionPlayerTurn').withConverter(
+      diceSessionPlayerTurnConverter,
     );
-    this.playerTurnRef = collection(
-      this.db,
-      "diceSessionPlayerTurn",
-    ).withConverter(diceSessionPlayerTurnConverter);
-    this.remainingTurnsRef = collection(
-      this.db,
-      "diceSessionRemainingTurns",
-    ).withConverter(diceSessionRemainingTurnsConverter);
-    this.dicesRef = collection(this.db, "diceSessionDices").withConverter(
+    this.remainingTurnsRef = collection(this.db, 'diceSessionRemainingTurns').withConverter(
+      diceSessionRemainingTurnsConverter,
+    );
+    this.dicesRef = collection(this.db, 'diceSessionDices').withConverter(
       diceSessionDicesConverter,
     );
-    this.playerTriesRef = collection(
-      this.db,
-      "diceSessionPlayerTries",
-    ).withConverter(diceSessionPlayerTriesConverter);
-    this.scoresRef = collection(this.db, "diceSessionScores").withConverter(
+    this.playerTriesRef = collection(this.db, 'diceSessionPlayerTries').withConverter(
+      diceSessionPlayerTriesConverter,
+    );
+    this.scoresRef = collection(this.db, 'diceSessionScores').withConverter(
       diceSessionScoresConverter,
     );
-    this.scoreboardRef = collection(this.db, "diceScoreboard").withConverter(
+    this.scoreboardRef = collection(this.db, 'diceScoreboard').withConverter(
       diceScoreboardConverter,
     );
-    this.chatRef = collection(this.db, "diceSessionChat").withConverter(
-      diceSessionChatConverter,
-    );
+    this.chatRef = collection(this.db, 'diceSessionChat').withConverter(diceSessionChatConverter);
   }
 
   private async getUsername(userId: string) {
-    const userRef = doc(this.db, "users", userId);
+    const userRef = doc(this.db, 'users', userId);
     const userDoc = await getDoc(userRef);
     if (!userDoc.exists()) {
       return;
@@ -115,10 +105,7 @@ export class DiceSession implements IDiceSession {
   }
 
   private async checkScoreboard(userId: string) {
-    const scoreboardQuery = query(
-      this.scoreboardRef,
-      where("userId", "==", userId),
-    );
+    const scoreboardQuery = query(this.scoreboardRef, where('userId', '==', userId));
     const scoreboardSnapshot = await getDocs(scoreboardQuery);
     const scoreboard = scoreboardSnapshot.docs.map((entry) => entry.data());
     if (scoreboard.length === 0) {
@@ -290,16 +277,16 @@ export class DiceSession implements IDiceSession {
 
     const sessionsQuery = query(
       this.sessionsRef,
-      where("isFull", "==", false),
-      where("isStarted", "==", false),
+      where('isFull', '==', false),
+      where('isStarted', '==', false),
     );
     const sessionsSnapshot = await getDocs(sessionsQuery);
     const sessions = sessionsSnapshot.docs.map((entry) => entry.data());
 
     if (sessions.length === 0) {
       this.notify({
-        content: "Aucune session disponible",
-        color: "primary",
+        content: 'Aucune session disponible',
+        color: 'primary',
       });
       return false;
     }

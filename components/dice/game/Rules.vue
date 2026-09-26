@@ -11,11 +11,7 @@
     >
       <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-      <g
-        id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
+      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
       <g id="SVGRepo_iconCarrier">
         <g id="Layer_2" data-name="Layer 2">
@@ -38,11 +34,11 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: "openRules", value: boolean): void;
+  (e: 'openRules', value: boolean): void;
 }>();
 
 const openRules = () => {
-  emit("openRules", true);
+  emit('openRules', true);
 };
 </script>
 

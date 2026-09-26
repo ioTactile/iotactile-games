@@ -1,26 +1,26 @@
-import { collection, getDoc, setDoc, doc } from "firebase/firestore";
-import type { Firestore } from "firebase/firestore";
-import type { MineSweeperScoreboard } from "~/types/models";
-import { mineSweeperScoreboardConverter } from "~/infrastructure/firestore/converters";
-import type { MineSweeperScoreboardRepository } from "~/utils/minesweeper/scoreboardRepository";
-import { recordMineSweeperVictory } from "~/utils/minesweeper/scoreboardRepository";
-import type { Difficulty } from "~/utils/minesweeper/types";
+import { collection, getDoc, setDoc, doc } from 'firebase/firestore';
+import type { Firestore } from 'firebase/firestore';
+import type { MineSweeperScoreboard } from '~/types/models';
+import { mineSweeperScoreboardConverter } from '~/infrastructure/firestore/converters';
+import type { MineSweeperScoreboardRepository } from '~/utils/minesweeper/scoreboardRepository';
+import { recordMineSweeperVictory } from '~/utils/minesweeper/scoreboardRepository';
+import type { Difficulty } from '~/utils/minesweeper/types';
 
 /** Adapter: Firestore implementation of MineSweeperScoreboardRepository. */
 export class FirestoreMineSweeperScoreboardRepository implements MineSweeperScoreboardRepository {
   constructor(private readonly db: Firestore) {}
 
   private collection() {
-    return collection(this.db, "mineSweeperScoreboard").withConverter(
+    return collection(this.db, 'mineSweeperScoreboard').withConverter(
       mineSweeperScoreboardConverter,
     );
   }
 
   async getUsername(userId: string): Promise<string> {
-    const userDoc = await getDoc(doc(this.db, "users", userId));
+    const userDoc = await getDoc(doc(this.db, 'users', userId));
     return userDoc.exists()
-      ? ((userDoc.data()?.username as string | undefined) ?? "Anonyme")
-      : "Anonyme";
+      ? ((userDoc.data()?.username as string | undefined) ?? 'Anonyme')
+      : 'Anonyme';
   }
 
   async findByUserId(userId: string): Promise<MineSweeperScoreboard | null> {
@@ -35,9 +35,8 @@ export class FirestoreMineSweeperScoreboardRepository implements MineSweeperScor
   }
 }
 
-export const createMineSweeperScoreboardRepository =
-  (): MineSweeperScoreboardRepository =>
-    new FirestoreMineSweeperScoreboardRepository(useFirestore());
+export const createMineSweeperScoreboardRepository = (): MineSweeperScoreboardRepository =>
+  new FirestoreMineSweeperScoreboardRepository(useFirestore());
 
 export const saveScoreboard = async (
   userId: string,

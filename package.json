@@ -2,7 +2,7 @@
   "name": "iotactile-games",
   "version": "1.0.0",
   "author": "Jordan Biesmans (jbs.io@protonmail.com)",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",

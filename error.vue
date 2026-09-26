@@ -3,9 +3,7 @@
     <v-main>
       <v-container>
         <div class="text-center text-Onsurface">
-          <h1 v-if="props.error.statusCode === 404">
-            Erreur {{ props.error.statusCode }}
-          </h1>
+          <h1 v-if="props.error.statusCode === 404">Erreur {{ props.error.statusCode }}</h1>
           <h2>Une erreur est survenue lors du chargement de la page</h2>
           <v-btn
             color="primary"
@@ -23,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { VApp, VMain, VContainer, VBtn } from "vuetify/components";
+import { VApp, VMain, VContainer, VBtn } from 'vuetify/components';
 
 const props = defineProps<{
   error: {
@@ -37,9 +35,6 @@ const btnOutlined = ref(true);
 console.error(props);
 
 useHead({
-  title:
-    props.error.statusCode === 404
-      ? "Page introuvable"
-      : "Une erreur est survenue",
+  title: props.error.statusCode === 404 ? 'Page introuvable' : 'Une erreur est survenue',
 });
 </script>

@@ -1,10 +1,7 @@
-import type { BoardSize, Difficulty } from "./types";
-import type { TakuzuScoreboard, TakuzuVictory } from "~/types/models";
+import type { BoardSize, Difficulty } from './types';
+import type { TakuzuScoreboard, TakuzuVictory } from '~/types/models';
 
-export type TakuzuSizeKey = Exclude<
-  keyof TakuzuScoreboard,
-  "userId" | "username"
->;
+export type TakuzuSizeKey = Exclude<keyof TakuzuScoreboard, 'userId' | 'username'>;
 
 export const createDefaultTakuzuVictory = (): TakuzuVictory => ({
   victories: 0,
@@ -34,15 +31,15 @@ export const createEmptyTakuzuScoreboard = (
 export const translateBoardSize = (boardSize: BoardSize): TakuzuSizeKey => {
   switch (boardSize) {
     case 6:
-      return "sixBySix";
+      return 'sixBySix';
     case 8:
-      return "eightByEight";
+      return 'eightByEight';
     case 10:
-      return "tenByTen";
+      return 'tenByTen';
     case 12:
-      return "twelveByTwelve";
+      return 'twelveByTwelve';
     default:
-      return "sixBySix";
+      return 'sixBySix';
   }
 };
 

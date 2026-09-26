@@ -1,5 +1,5 @@
-import { generateBoard, prepareBoard } from "./generator";
-import { checkBoard } from "./checker";
+import { generateBoard, prepareBoard } from './generator';
+import { checkBoard } from './checker';
 import type {
   TakuzuBoard,
   TakuzuCheckResult,
@@ -7,9 +7,9 @@ import type {
   GameStatus,
   BoardSize,
   Difficulty,
-} from "./types";
-import { OUT_OF_RANGE, CellValues } from "./constants";
-import { Timer } from "./timer";
+} from './types';
+import { OUT_OF_RANGE, CellValues } from './constants';
+import { Timer } from './timer';
 
 export interface ITakuzu {
   getBoard(): TakuzuBoard;
@@ -48,9 +48,9 @@ export class Takuzu implements ITakuzu {
     this.startedTask = [];
     this.boardHistory = [];
     this.boardSize = 6;
-    this.difficulty = "easy";
+    this.difficulty = 'easy';
     this.timer = new Timer();
-    this.GameStatus = "waiting";
+    this.GameStatus = 'waiting';
   }
 
   public getBoard(): TakuzuBoard {
@@ -109,13 +109,13 @@ export class Takuzu implements ITakuzu {
 
   private getFillFactor(difficulty: Difficulty): number {
     switch (difficulty) {
-      case "easy":
+      case 'easy':
         return 0.5;
-      case "medium":
+      case 'medium':
         return 0.45;
-      case "hard":
+      case 'hard':
         return 0.4;
-      case "expert":
+      case 'expert':
         return 0.35;
       default:
         return 0.5;
@@ -139,8 +139,8 @@ export class Takuzu implements ITakuzu {
   }
 
   public change(row: number, col: number, value: TCellValues): void {
-    if (row >= this.boardSize || row < 0) throw new Error(OUT_OF_RANGE("row"));
-    if (col >= this.boardSize || col < 0) throw new Error(OUT_OF_RANGE("col"));
+    if (row >= this.boardSize || row < 0) throw new Error(OUT_OF_RANGE('row'));
+    if (col >= this.boardSize || col < 0) throw new Error(OUT_OF_RANGE('col'));
 
     this.task = this.task.map((row) => [...row]);
     this.task[row][col] = value;
@@ -165,25 +165,23 @@ export class Takuzu implements ITakuzu {
   }
 
   public startGame(): void {
-    if (this.GameStatus === "waiting") {
-      this.GameStatus = "inProgress";
+    if (this.GameStatus === 'waiting') {
+      this.GameStatus = 'inProgress';
       this.timer.start();
     }
   }
 
   public handleWin(): void {
-    this.GameStatus = "won";
+    this.GameStatus = 'won';
     this.timer.stop();
   }
 
   public isFull(): boolean {
-    return this.task.every((row) =>
-      row.every((value) => value !== CellValues.EMPTY),
-    );
+    return this.task.every((row) => row.every((value) => value !== CellValues.EMPTY));
   }
 
   private resetOptions(): void {
-    this.GameStatus = "waiting";
+    this.GameStatus = 'waiting';
     this.timer.reset();
     this.boardHistory = [];
   }

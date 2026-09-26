@@ -1,9 +1,6 @@
 <template>
   <div ref="gameContainer" class="game-container">
-    <takuzu-game-rules-modal
-      v-if="isRulesModalActive"
-      @open-rules="closeRulesModal"
-    />
+    <takuzu-game-rules-modal v-if="isRulesModalActive" @open-rules="closeRulesModal" />
     <takuzu-game-victory-modal
       v-if="isFinished"
       :elapsed-time="elapsedTime"
@@ -11,10 +8,7 @@
       @return-to-menu="returnToMenu"
     />
     <div class="content">
-      <takuzu-game-header
-        :elapsed-time="elapsedTime"
-        @open-rules-modal="openRulesModal"
-      />
+      <takuzu-game-header :elapsed-time="elapsedTime" @open-rules-modal="openRulesModal" />
       <takuzu-game-main
         :timer="timer"
         :task-board="taskBoard"
@@ -38,19 +32,14 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from "vuetify";
-import { Takuzu, type ITakuzu } from "~/utils/takuzu/takuzu.js";
-import { CellValues } from "~/utils/takuzu/constants";
+import { useDisplay } from 'vuetify';
+import { Takuzu, type ITakuzu } from '~/utils/takuzu/takuzu.js';
+import { CellValues } from '~/utils/takuzu/constants';
 
-import { saveScoreboard } from "~/infrastructure/firestore/takuzuScoreboardRepository";
-import { sleep } from "~/utils";
-import type {
-  GameOptions,
-  TakuzuBoard,
-  GameStatus,
-  BoardSize,
-} from "~/utils/takuzu/types";
-import type { Timer } from "~/utils/takuzu/timer";
+import { saveScoreboard } from '~/infrastructure/firestore/takuzuScoreboardRepository';
+import { sleep } from '~/utils';
+import type { GameOptions, TakuzuBoard, GameStatus, BoardSize } from '~/utils/takuzu/types';
+import type { Timer } from '~/utils/takuzu/timer';
 
 type Options = {
   rowIndex: number;
@@ -62,7 +51,7 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  (e: "action", value: string): void;
+  (e: 'action', value: string): void;
 }>();
 
 const { width } = useDisplay();
@@ -83,23 +72,21 @@ onUnmounted(() => {
 
 const takuzu = ref<ITakuzu>(new Takuzu());
 const gameContainer = ref<HTMLElement | undefined>(undefined);
-const errorMessage = ref<string>("");
+const errorMessage = ref<string>('');
 const disabledCells = ref<boolean[][]>([]);
 const isRulesModalActive = ref<boolean>(false);
 const isRotating = ref<boolean>(false);
 const scale = ref<number>(1);
 const backgroundColor = reactive<{ width: string; height: string }>({
-  width: "320px",
-  height: "320px",
+  width: '320px',
+  height: '320px',
 });
 
 const taskBoard = computed((): TakuzuBoard => takuzu.value.getTask());
 
 const timer = computed((): Timer => takuzu.value.getTimer());
 
-const elapsedTime = computed((): number =>
-  takuzu.value.getTimer().getElapsedTime(),
-);
+const elapsedTime = computed((): number => takuzu.value.getTimer().getElapsedTime());
 
 const gameStatus = computed((): GameStatus => takuzu.value.getGameStatus());
 
@@ -108,7 +95,7 @@ const boardSize = computed((): number => {
 });
 
 const isFinished = computed((): boolean => {
-  return takuzu.value.getGameStatus() === "won";
+  return takuzu.value.getGameStatus() === 'won';
 });
 
 const isPaused = computed((): boolean => {
@@ -122,7 +109,7 @@ const start = (options: GameOptions): void => {
 };
 
 const restart = (): void => {
-  errorMessage.value = "";
+  errorMessage.value = '';
   disabledCells.value = [];
 
   takuzu.value.restart();
@@ -130,36 +117,36 @@ const restart = (): void => {
 };
 
 const reset = async (): Promise<void> => {
-  if (gameStatus.value !== "inProgress") return;
+  if (gameStatus.value !== 'inProgress') return;
   isRotating.value = true;
   await sleep(1000);
   isRotating.value = false;
-  errorMessage.value = "";
+  errorMessage.value = '';
   takuzu.value.reset();
 };
 
 const togglePause = (): void => {
-  if (gameStatus.value !== "inProgress") return;
+  if (gameStatus.value !== 'inProgress') return;
   timer.value.togglePause();
 };
 
 const undo = (): void => {
-  if (gameStatus.value !== "inProgress") return;
+  if (gameStatus.value !== 'inProgress') return;
   takuzu.value.undo();
 };
 
 const returnToMenu = (): void => {
-  emits("action", "play");
+  emits('action', 'play');
 };
 
 const openRulesModal = (): void => {
   isRulesModalActive.value = true;
-  if (gameStatus.value === "inProgress") takuzu.value.getTimer().togglePause();
+  if (gameStatus.value === 'inProgress') takuzu.value.getTimer().togglePause();
 };
 
 const closeRulesModal = (): void => {
   isRulesModalActive.value = false;
-  if (gameStatus.value === "inProgress") takuzu.value.getTimer().togglePause();
+  if (gameStatus.value === 'inProgress') takuzu.value.getTimer().togglePause();
 };
 
 const toggleCell = async (options: Options): Promise<void> => {
@@ -167,11 +154,11 @@ const toggleCell = async (options: Options): Promise<void> => {
 
   if (isFinished.value || disabledCells.value[rowIndex][colIndex]) return;
 
-  if (takuzu.value.getGameStatus() === "waiting") {
+  if (takuzu.value.getGameStatus() === 'waiting') {
     takuzu.value.startGame();
   }
 
-  errorMessage.value = "";
+  errorMessage.value = '';
 
   const oldValue = takuzu.value.getCell(rowIndex, colIndex);
   const newValue =
@@ -191,18 +178,13 @@ const toggleCell = async (options: Options): Promise<void> => {
     return;
   }
 
-  errorMessage.value = "";
+  errorMessage.value = '';
   takuzu.value.handleWin();
 
   if (!user.value || !elapsedTime.value || !props.options) return;
   const { boardSize, difficulty } = props.options;
 
-  await saveScoreboard(
-    user.value.uid,
-    elapsedTime.value,
-    boardSize,
-    difficulty,
-  );
+  await saveScoreboard(user.value.uid, elapsedTime.value, boardSize, difficulty);
 };
 
 const disabledStartedCells = (): boolean[][] => {
@@ -241,8 +223,7 @@ const setBoardContainerSize = (boardWidth: number): void => {
   const adjustedBoardWidth =
     width.value < 600
       ? Math.min(targetWidth, boardWidth)
-      : gameContainer.value &&
-          gameContainer.value.clientHeight - 200 < boardWidth
+      : gameContainer.value && gameContainer.value.clientHeight - 200 < boardWidth
         ? gameContainer.value.clientHeight - 200
         : boardWidth;
 

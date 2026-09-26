@@ -1,9 +1,5 @@
 <template>
-  <dice-template
-    v-if="
-      session && playerTurn && scores && dices && remainingTurns && playerTries
-    "
-  >
+  <dice-template v-if="session && playerTurn && scores && dices && remainingTurns && playerTries">
     <div class="pa-8">
       <div class="left-background" />
       <dice-game-first-volumes-modal
@@ -31,10 +27,7 @@
         :scoreboard="scoreboard"
         @open-endgame="isEndgameModalActive = $event"
       />
-      <dice-game-rules-modal
-        v-if="isRulesModalActive"
-        @open-rules="isRulesModalActive = $event"
-      />
+      <dice-game-rules-modal v-if="isRulesModalActive" @open-rules="isRulesModalActive = $event" />
       <dice-game-rules @open-rules="isRulesModalActive = $event" />
       <div class="d-flex justify-space-between mb-4">
         <dice-game-players :players="session.players" />
@@ -93,9 +86,9 @@
 </template>
 
 <script setup lang="ts">
-import { collection, doc, updateDoc } from "firebase/firestore";
-import { storeToRefs } from "pinia";
-import { useDiceSoundsStore } from "~/stores/diceSounds";
+import { collection, doc, updateDoc } from 'firebase/firestore';
+import { storeToRefs } from 'pinia';
+import { useDiceSoundsStore } from '~/stores/diceSounds';
 import {
   diceSessionConverter,
   diceSessionPlayerTurnConverter,
@@ -103,14 +96,14 @@ import {
   diceSessionDicesConverter,
   diceSessionRemainingTurnsConverter,
   diceSessionChatConverter,
-} from "~/stores";
-import type { LocalDiceSessionScoresType } from "~/stores";
-import { SoundService } from "~/utils/music/soundService";
-import type { ISoundService } from "~/utils/music/soundService";
-import { sleep } from "~/utils";
+} from '~/stores';
+import type { LocalDiceSessionScoresType } from '~/stores';
+import { SoundService } from '~/utils/music/soundService';
+import type { ISoundService } from '~/utils/music/soundService';
+import { sleep } from '~/utils';
 
 interface PlayerData {
-  playerSheet: LocalDiceSessionScoresType["playerOne"];
+  playerSheet: LocalDiceSessionScoresType['playerOne'];
   playerLocation: string;
 }
 
@@ -118,79 +111,61 @@ const route = useRoute();
 const sessionId = route.params.id as string;
 
 useSeoMeta({
-  title: "Session Dice - ioTactile Games",
-  ogTitle: "Session Dice - ioTactile Games",
-  twitterTitle: "Session Dice - ioTactile Games",
-  description: "Session de jeu Dice",
-  ogDescription: "Session de jeu Dice",
-  twitterDescription: "Session de jeu Dice",
-  ogImage: "/dice/dice.png",
-  twitterImage: "/dice/dice.png",
-  twitterCard: "summary_large_image",
+  title: 'Session Dice - ioTactile Games',
+  ogTitle: 'Session Dice - ioTactile Games',
+  twitterTitle: 'Session Dice - ioTactile Games',
+  description: 'Session de jeu Dice',
+  ogDescription: 'Session de jeu Dice',
+  twitterDescription: 'Session de jeu Dice',
+  ogImage: '/dice/dice.png',
+  twitterImage: '/dice/dice.png',
+  twitterCard: 'summary_large_image',
   ogUrl: `https://iotactile.games/dice/${sessionId}`,
 });
 
 useHead({
   htmlAttrs: {
-    lang: "fr",
+    lang: 'fr',
   },
   link: [
     {
-      rel: "icon",
-      type: "image/png",
-      href: "/favicon.png",
+      rel: 'icon',
+      type: 'image/png',
+      href: '/favicon.png',
     },
   ],
 });
 
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ['auth'],
 });
 
 const db = useFirestore();
 const user = useCurrentUser();
 
-const sessionRef = doc(db, "diceSessions", sessionId).withConverter(
-  diceSessionConverter,
-);
-const playerTurnRef = doc(db, "diceSessionPlayerTurn", sessionId).withConverter(
+const sessionRef = doc(db, 'diceSessions', sessionId).withConverter(diceSessionConverter);
+const playerTurnRef = doc(db, 'diceSessionPlayerTurn', sessionId).withConverter(
   diceSessionPlayerTurnConverter,
 );
-const scoresRef = doc(db, "diceSessionScores", sessionId).withConverter(
-  diceSessionScoresConverter,
+const scoresRef = doc(db, 'diceSessionScores', sessionId).withConverter(diceSessionScoresConverter);
+const dicesRef = doc(db, 'diceSessionDices', sessionId).withConverter(diceSessionDicesConverter);
+const remainingTurnsRef = doc(db, 'diceSessionRemainingTurns', sessionId).withConverter(
+  diceSessionRemainingTurnsConverter,
 );
-const dicesRef = doc(db, "diceSessionDices", sessionId).withConverter(
-  diceSessionDicesConverter,
+const playerTriesRef = doc(db, 'diceSessionPlayerTries', sessionId).withConverter(
+  diceSessionPlayerTriesConverter,
 );
-const remainingTurnsRef = doc(
-  db,
-  "diceSessionRemainingTurns",
-  sessionId,
-).withConverter(diceSessionRemainingTurnsConverter);
-const playerTriesRef = doc(
-  db,
-  "diceSessionPlayerTries",
-  sessionId,
-).withConverter(diceSessionPlayerTriesConverter);
-const chatRef = doc(db, "diceSessionChat", sessionId).withConverter(
-  diceSessionChatConverter,
-);
+const chatRef = doc(db, 'diceSessionChat', sessionId).withConverter(diceSessionChatConverter);
 
-const session = useDocument(doc(collection(db, "diceSessions"), sessionRef.id));
-const playerTurn = useDocument(
-  doc(collection(db, "diceSessionPlayerTurn"), playerTurnRef.id),
-);
-const scores = useDocument(
-  doc(collection(db, "diceSessionScores"), scoresRef.id),
-);
-const dices = useDocument(doc(collection(db, "diceSessionDices"), dicesRef.id));
+const session = useDocument(doc(collection(db, 'diceSessions'), sessionRef.id));
+const playerTurn = useDocument(doc(collection(db, 'diceSessionPlayerTurn'), playerTurnRef.id));
+const scores = useDocument(doc(collection(db, 'diceSessionScores'), scoresRef.id));
+const dices = useDocument(doc(collection(db, 'diceSessionDices'), dicesRef.id));
 const remainingTurns = useDocument(
-  doc(collection(db, "diceSessionRemainingTurns"), remainingTurnsRef.id),
+  doc(collection(db, 'diceSessionRemainingTurns'), remainingTurnsRef.id),
 );
-const playerTries = useDocument(
-  doc(collection(db, "diceSessionPlayerTries"), playerTriesRef.id),
-);
-const chat = useDocument(doc(collection(db, "diceSessionChat"), chatRef.id));
+const playerTries = useDocument(doc(collection(db, 'diceSessionPlayerTries'), playerTriesRef.id));
+const chat = useDocument(doc(collection(db, 'diceSessionChat'), chatRef.id));
 
 const isScoreboardActive = ref<boolean>(false);
 const isVolumesModalActive = ref<boolean>(false);
@@ -200,8 +175,7 @@ const isEndgameModalActive = ref<boolean>(false);
 const isRulesModalActive = ref<boolean>(false);
 
 const diceSoundsStore = useDiceSoundsStore();
-const { isSoundEffectsActive, isNotificationsActive } =
-  storeToRefs(diceSoundsStore);
+const { isSoundEffectsActive, isNotificationsActive } = storeToRefs(diceSoundsStore);
 
 const soundService = ref<ISoundService>(new SoundService());
 
@@ -218,13 +192,9 @@ const desactivateSound = () => {
 };
 
 const loadSounds = (volume: number) => {
-  soundService.value.loadSound("dice", "/dice/sounds/dice.mp3", volume);
-  soundService.value.loadSound("message", "/dice/sounds/message.mp3", volume);
-  soundService.value.loadSound(
-    "shakeRoll",
-    "/dice/sounds/shake-and-roll.mp3",
-    volume,
-  );
+  soundService.value.loadSound('dice', '/dice/sounds/dice.mp3', volume);
+  soundService.value.loadSound('message', '/dice/sounds/message.mp3', volume);
+  soundService.value.loadSound('shakeRoll', '/dice/sounds/shake-and-roll.mp3', volume);
 };
 
 onBeforeRouteLeave(() => {
@@ -242,21 +212,21 @@ const isPlayerTurn = computed(() => {
 
 const playerData = computed((): PlayerData => {
   let playerSheet;
-  let playerLocation = "";
+  let playerLocation = '';
 
   if (scores.value) {
     if (scores.value.playerOne.id === user.value?.uid) {
       playerSheet = scores.value.playerOne;
-      playerLocation = "playerOne";
+      playerLocation = 'playerOne';
     } else if (scores.value.playerTwo?.id === user.value?.uid) {
       playerSheet = scores.value.playerTwo;
-      playerLocation = "playerTwo";
+      playerLocation = 'playerTwo';
     } else if (scores.value.playerThree?.id === user.value?.uid) {
       playerSheet = scores.value.playerThree;
-      playerLocation = "playerThree";
+      playerLocation = 'playerThree';
     } else if (scores.value.playerFour?.id === user.value?.uid) {
       playerSheet = scores.value.playerFour;
-      playerLocation = "playerFour";
+      playerLocation = 'playerFour';
     }
   }
 
@@ -268,7 +238,7 @@ const playerData = computed((): PlayerData => {
 
 const scoreboard = computed(() => {
   const scoreboard = scores.value;
-  const newScoreboard: LocalDiceSessionScoresType["playerOne"][] = [];
+  const newScoreboard: LocalDiceSessionScoresType['playerOne'][] = [];
   if (scoreboard!.playerOne) newScoreboard.push(scoreboard!.playerOne);
   if (scoreboard?.playerTwo) newScoreboard.push(scoreboard!.playerTwo);
   if (scoreboard?.playerThree) newScoreboard.push(scoreboard!.playerThree);

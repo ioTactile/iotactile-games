@@ -1,9 +1,9 @@
-import { defineStore } from "pinia";
-import { PlaylistService } from "~/utils/music/playlistService";
-import type { IPlaylistService } from "~/utils/music/playlistService";
+import { defineStore } from 'pinia';
+import { PlaylistService } from '~/utils/music/playlistService';
+import type { IPlaylistService } from '~/utils/music/playlistService';
 
 export const usePlaylistStore = defineStore(
-  "playlist",
+  'playlist',
   () => {
     const playlist = ref<IPlaylistService>(new PlaylistService());
     const isMusicActive = ref<boolean>(false);
@@ -19,7 +19,7 @@ export const usePlaylistStore = defineStore(
   },
   {
     persist: {
-      pick: ["isMusicActive", "isMusicMuted", "isMusicPaused"],
+      pick: ['isMusicActive', 'isMusicMuted', 'isMusicPaused'],
     },
   },
 );

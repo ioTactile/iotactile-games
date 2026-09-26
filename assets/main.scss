@@ -1,7 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Quicksand&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Orbitron&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
 
 @layer vuetify-core.reset {
   * {
@@ -20,7 +20,7 @@
 }
 
 .v-application {
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: rgb(var(--v-theme-background));
   max-width: 1200px;
   margin: 0 auto;
@@ -47,7 +47,7 @@
   color: rgb(var(--v-theme-onSurfaceButton));
   font-size: 2rem;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-  font-family: "Orbitron", sans-serif;
+  font-family: 'Orbitron', sans-serif;
 
   @media screen and (max-width: 600px) {
     min-width: 180px;
@@ -65,7 +65,7 @@
   font-size: 2rem;
   border-radius: 20px;
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-  font-family: "JetBrains Mono", monospace;
+  font-family: 'JetBrains Mono', monospace;
 
   @media screen and (max-width: 600px) {
     min-width: 180px;

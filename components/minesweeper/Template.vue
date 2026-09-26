@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from "vuetify";
+import { useDisplay } from 'vuetify';
 
 const { width, height } = useDisplay();
 
@@ -26,10 +26,7 @@ const handleResize = () => {
     height.value = targetHeight;
   }
 
-  scale.value = Math.min(
-    height.value / targetHeight,
-    width.value / targetWidth,
-  );
+  scale.value = Math.min(height.value / targetHeight, width.value / targetWidth);
 };
 
 watch(

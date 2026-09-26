@@ -10,6 +10,6 @@ export interface IAudioClip {
   playing(): boolean;
   unload(): void;
   volume(value: number): void;
-  once(event: "end", callback: () => void): void;
-  off(event: "end"): void;
+  once(event: 'end', callback: () => void): void;
+  off(event: 'end'): void;
 }

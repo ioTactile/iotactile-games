@@ -1,22 +1,18 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node16",
-    "module": "node16",
+    "strict": true,
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "outDir": "lib",
     "rootDir": "..",
-    "sourceMap": true,
-    "strict": true,
-    "target": "es2021",
-    "skipLibCheck": true,
-    "esModuleInterop": true
+    "sourceMap": true
   },
   "compileOnSave": true,
-  "include": [
-    "src/**/*.ts",
-    "../shared/dice/endSessionScoreboard.ts",
-    "../types/models.ts"
-  ]
+  "include": ["src/**/*.ts", "../shared/dice/endSessionScoreboard.ts", "../types/models.ts"]
 }

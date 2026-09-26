@@ -24,11 +24,7 @@
           <div class="header">Temps</div>
         </div>
         <div class="players-content-wrapper">
-          <div
-            v-for="(player, k) in selectResults"
-            :key="k"
-            class="players-content__main"
-          >
+          <div v-for="(player, k) in selectResults" :key="k" class="players-content__main">
             <div class="content">{{ k + 1 }}</div>
             <div class="content">{{ usernames[k] }}</div>
             <div class="content">
@@ -42,17 +38,15 @@
       </div>
     </template>
     <template v-if="isNotResults === true">
-      <span class="no-best-time">
-        Aucune partie n'a été gagnée dans cette difficulté
-      </span>
+      <span class="no-best-time"> Aucune partie n'a été gagnée dans cette difficulté </span>
     </template>
   </div>
 </template>
 
 <script async setup lang="ts">
-import { collection, getDocs } from "firebase/firestore";
-import { takuzuScoreboardConverter } from "~/stores";
-import { timerFormatter } from "~/utils";
+import { collection, getDocs } from 'firebase/firestore';
+import { takuzuScoreboardConverter } from '~/stores';
+import { timerFormatter } from '~/utils';
 
 type TakuzuVictory = {
   victories: number;
@@ -60,7 +54,7 @@ type TakuzuVictory = {
   victoryDate: Date;
 };
 
-type Difficulty = "easy" | "medium" | "hard" | "expert";
+type Difficulty = 'easy' | 'medium' | 'hard' | 'expert';
 
 interface SizeBoard {
   easy: TakuzuVictory;
@@ -76,16 +70,14 @@ interface PlayerScoreboard {
 
 const db = useFirestore();
 
-const playerScoreboardRef = collection(db, "takuzuScoreboard").withConverter(
+const playerScoreboardRef = collection(db, 'takuzuScoreboard').withConverter(
   takuzuScoreboardConverter,
 );
 
 onMounted(async () => {
   const playerScoreboardDoc = await getDocs(playerScoreboardRef);
 
-  const playersScoreboardData = playerScoreboardDoc.docs.map((doc) =>
-    doc.data(),
-  );
+  const playersScoreboardData = playerScoreboardDoc.docs.map((doc) => doc.data());
   if (!playersScoreboardData) return;
 
   playersScoreboard.value = playersScoreboardData.map((playerScoreboard) => ({
@@ -175,23 +167,23 @@ const getUsernames = (size: number, difficulty: Difficulty): string[] => {
 };
 
 const sizeFormatter = (value: number): string => {
-  const sizes = ["6 x 6", "8 x 8", "10 x 10", "12 x 12"];
+  const sizes = ['6 x 6', '8 x 8', '10 x 10', '12 x 12'];
   return sizes[value];
 };
 
 const difficultyBackgroundColorStyle = (value: string): string => {
-  const colors = ["#4CAF50", "#3F51B5", "#FF9800", "#F44336"];
+  const colors = ['#4CAF50', '#3F51B5', '#FF9800', '#F44336'];
   switch (value) {
-    case "easy":
+    case 'easy':
       return `background-color: ${colors[0]}`;
-    case "medium":
+    case 'medium':
       return `background-color: ${colors[1]}`;
-    case "hard":
+    case 'hard':
       return `background-color: ${colors[2]}`;
-    case "expert":
+    case 'expert':
       return `background-color: ${colors[3]}`;
     default:
-      return "";
+      return '';
   }
 };
 
@@ -312,7 +304,7 @@ const backToRanking = (): void => {
         color: #ffffff;
         border: 1px solid rgb(var(--v-theme-takuzuMainSuface));
         box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
-        font-family: "Quicksand", sans-serif;
+        font-family: 'Quicksand', sans-serif;
         transition: all 0.2s ease-in-out;
       }
     }

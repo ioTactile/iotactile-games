@@ -6,48 +6,23 @@
         <div class="content-left">
           <div>
             <label for="rows"> Colonnes </label>
-            <input
-              id="rows"
-              v-model="numRows"
-              :disabled="isRunning"
-              type="number"
-            />
+            <input id="rows" v-model="numRows" :disabled="isRunning" type="number" />
           </div>
           <div>
             <label for="cols"> Lignes </label>
-            <input
-              id="cols"
-              v-model="numCols"
-              :disabled="isRunning"
-              type="number"
-            />
+            <input id="cols" v-model="numCols" :disabled="isRunning" type="number" />
           </div>
           <div>
             <label for="speed"> Vitesse (ms) </label>
-            <input
-              id="speed"
-              v-model="speed"
-              :disabled="isRunning"
-              type="number"
-            />
+            <input id="speed" v-model="speed" :disabled="isRunning" type="number" />
           </div>
-          <button class="validate" :disabled="isRunning" @click="getBoard">
-            Valider
-          </button>
+          <button class="validate" :disabled="isRunning" @click="getBoard">Valider</button>
         </div>
         <div class="content-right">
           <div>
-            <select
-              v-model="selectedPattern"
-              :disabled="isRunning || !lifeGame"
-              name="patterns"
-            >
+            <select v-model="selectedPattern" :disabled="isRunning || !lifeGame" name="patterns">
               <option :value="null">Selectionne un paterne</option>
-              <option
-                v-for="(patern, i) in patternsArray"
-                :key="i"
-                :value="patern.schema"
-              >
+              <option v-for="(patern, i) in patternsArray" :key="i" :value="patern.schema">
                 {{ patern.name }}
               </option>
             </select>
@@ -57,18 +32,14 @@
               :disabled="!lifeGame"
               @click="startStop"
             >
-              {{ isRunning ? "Arrêter" : "Démarrer" }}
+              {{ isRunning ? 'Arrêter' : 'Démarrer' }}
             </button>
           </div>
           <div>
             <div class="d-flex align-center">
               <span class="mr-3"> Enregistrer </span>
               <label class="switch">
-                <input
-                  v-model="isRecording"
-                  :disabled="isRunning || !lifeGame"
-                  type="checkbox"
-                />
+                <input v-model="isRecording" :disabled="isRunning || !lifeGame" type="checkbox" />
                 <span />
               </label>
             </div>
@@ -103,8 +74,8 @@
 </template>
 
 <script setup lang="ts">
-import { LifeGame } from "~/utils/lifegame/lifeGame";
-import * as patterns from "~/utils/lifegame/lifeGamePatterns";
+import { LifeGame } from '~/utils/lifegame/lifeGame';
+import * as patterns from '~/utils/lifegame/lifeGamePatterns';
 
 const numRows = ref<number>(100);
 const numCols = ref<number>(80);
@@ -121,19 +92,19 @@ const recordedChunks = ref<Blob[]>([]);
 const patternsArray = [
   {
     schema: patterns.glider,
-    name: "Glider",
+    name: 'Glider',
   },
   {
     schema: patterns.bar,
-    name: "La ruche",
+    name: 'La ruche',
   },
   {
     schema: patterns.pentaDecathlon,
-    name: "Pentadecathlon",
+    name: 'Pentadecathlon',
   },
   {
     schema: patterns.pentomino,
-    name: "Pentomino",
+    name: 'Pentomino',
   },
 ];
 
@@ -173,10 +144,10 @@ const startStop = () => {
     if (isRecording.value && mediaRecorder.value) {
       mediaRecorder.value.stop();
       const blob = new Blob(recordedChunks.value, {
-        type: "video/webm",
+        type: 'video/webm',
       });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
       a.download = `life_game_${Date.now()}.webm`;
       a.click();
@@ -185,10 +156,10 @@ const startStop = () => {
   } else {
     if (isRecording.value) {
       const stream = (
-        document.querySelector(".grid") as HTMLDivElement
+        document.querySelector('.grid') as HTMLDivElement
       ).captureStream() as MediaStream;
       mediaRecorder.value = new MediaRecorder(stream, {
-        mimeType: "video/webm",
+        mimeType: 'video/webm',
       });
       mediaRecorder.value.ondataavailable = (e) => {
         if (e.data.size > 0) {
@@ -200,7 +171,6 @@ const startStop = () => {
 
     intervalId.value = setInterval(() => {
       lifeGame.value?.update();
-      //   removeBorderConnectedGroups()
       removeActiveCells();
       lifeGame.value?.getBoard().forEach((row, rowIndex) => {
         row.forEach((cell, colIndex) => {
@@ -234,18 +204,9 @@ const addCell = (rowIndex: number, colIndex: number) => {
     `.grid > div:nth-child(${rowIndex + 1}) > div:nth-child(${colIndex + 1})`,
   );
   if (cell) {
-    cell.classList.add("alive");
+    cell.classList.add('alive');
   }
 };
-
-// const removeCell = (rowIndex: number, colIndex: number) => {
-//   const cell = document.querySelector(
-//     `.grid > div:nth-child(${rowIndex + 1}) > div:nth-child(${colIndex + 1})`
-//   )
-//   if (cell) {
-//     cell.classList.remove('alive')
-//   }
-// }
 
 const toggleCell = (rowIndex: number, colIndex: number) => {
   if (!lifeGame.value) {
@@ -257,81 +218,16 @@ const toggleCell = (rowIndex: number, colIndex: number) => {
     `.grid > div:nth-child(${rowIndex + 1}) > div:nth-child(${colIndex + 1})`,
   );
   if (cell) {
-    cell.classList.toggle("alive");
+    cell.classList.toggle('alive');
   }
 };
 
 const removeActiveCells = () => {
-  const activeCells = document.querySelectorAll(".alive");
+  const activeCells = document.querySelectorAll('.alive');
   activeCells.forEach((cell) => {
-    cell.classList.remove("alive");
+    cell.classList.remove('alive');
   });
 };
-
-// const removeBorderConnectedGroups = () => {
-//   if (!lifeGame.value) {
-//     return
-//   }
-
-//   const visited: Set<string> = new Set()
-//   const numRows = lifeGame.value.getNumRows()
-//   const numCols = lifeGame.value.getNumCols()
-//   const board = lifeGame.value.getBoard()
-
-//   const isAtBorder = (row: number, col: number) =>
-//     row === 0 || row === numRows - 1 || col === 0 || col === numCols - 1
-
-//   const markConnectedToBorder = (row: number, col: number) => {
-//     if (
-//       row < 0 ||
-//       row >= numRows ||
-//       col < 0 ||
-//       col >= numCols ||
-//       visited.has(`${row}-${col}`) ||
-//       !board[row][col]
-//     ) {
-//       return
-//     }
-
-//     visited.add(`${row}-${col}`)
-
-//     markConnectedToBorder(row - 1, col)
-//     markConnectedToBorder(row + 1, col)
-//     markConnectedToBorder(row, col - 1)
-//     markConnectedToBorder(row, col + 1)
-//   }
-
-//   for (let col = 0; col < numCols; col++) {
-//     if (board[0][col]) {
-//       markConnectedToBorder(0, col)
-//     }
-//     if (board[numRows - 1][col]) {
-//       markConnectedToBorder(numRows - 1, col)
-//     }
-//   }
-
-//   for (let row = 0; row < numRows; row++) {
-//     if (board[row][0]) {
-//       markConnectedToBorder(row, 0)
-//     }
-//     if (board[row][numCols - 1]) {
-//       markConnectedToBorder(row, numCols - 1)
-//     }
-//   }
-
-//   lifeGame.value.getBoard().forEach((row, rowIndex) => {
-//     row.forEach((cell, colIndex) => {
-//       if (
-//         cell &&
-//         visited.has(`${rowIndex}-${colIndex}`) &&
-//         isAtBorder(rowIndex, colIndex)
-//       ) {
-//         lifeGame.value?.toggleCell(rowIndex, colIndex)
-//         removeCell(rowIndex, colIndex)
-//       }
-//     })
-//   })
-// }
 </script>
 
 <style scoped lang="scss">
@@ -511,7 +407,7 @@ input {
   }
 
   input + span:before {
-    content: "";
+    content: '';
     display: inline-block;
     position: absolute;
     top: 50%;

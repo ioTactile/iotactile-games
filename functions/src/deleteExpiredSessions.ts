@@ -1,12 +1,12 @@
-import { onSchedule } from "firebase-functions/v2/scheduler";
-import { WriteResult, getFirestore } from "firebase-admin/firestore";
-import { Timestamp } from "./types.js";
+import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { WriteResult, getFirestore } from 'firebase-admin/firestore';
+import { Timestamp } from './types.js';
 
 export const deleteExpiredSessions = onSchedule(
   {
-    schedule: "0 0 * * *",
-    timeZone: "Europe/Paris",
-    region: "europe-west3",
+    schedule: '0 0 * * *',
+    timeZone: 'Europe/Paris',
+    region: 'europe-west3',
   },
   async () => {
     const firestore = getFirestore();
@@ -15,8 +15,8 @@ export const deleteExpiredSessions = onSchedule(
     const expirationDate = new Date(now.toMillis() - twentyFourHours);
 
     const diceSessionsQuery = firestore
-      .collection("diceSessions")
-      .where("creationDate", "<=", expirationDate);
+      .collection('diceSessions')
+      .where('creationDate', '<=', expirationDate);
     const diceSessionsSnapshot = await diceSessionsQuery.get();
 
     const deletePromises: Promise<WriteResult>[] = [];
@@ -24,21 +24,16 @@ export const deleteExpiredSessions = onSchedule(
     diceSessionsSnapshot.forEach((doc) => {
       const sessionId = doc.id;
       const deletePromisesPerSession = [
-        firestore.collection("diceSessions").doc(sessionId).delete(),
-        firestore.collection("diceSessionPlayerTurn").doc(sessionId).delete(),
-        firestore
-          .collection("diceSessionRemainingTurns")
-          .doc(sessionId)
-          .delete(),
-        firestore.collection("diceSessionPlayerTries").doc(sessionId).delete(),
-        firestore.collection("diceSessionDices").doc(sessionId).delete(),
-        firestore.collection("diceSessionChat").doc(sessionId).delete(),
+        firestore.collection('diceSessions').doc(sessionId).delete(),
+        firestore.collection('diceSessionPlayerTurn').doc(sessionId).delete(),
+        firestore.collection('diceSessionRemainingTurns').doc(sessionId).delete(),
+        firestore.collection('diceSessionPlayerTries').doc(sessionId).delete(),
+        firestore.collection('diceSessionDices').doc(sessionId).delete(),
+        firestore.collection('diceSessionChat').doc(sessionId).delete(),
       ];
       deletePromises.push(...deletePromisesPerSession);
       if (!doc.data().isFinished) {
-        deletePromises.push(
-          firestore.collection("diceSessionScores").doc(sessionId).delete(),
-        );
+        deletePromises.push(firestore.collection('diceSessionScores').doc(sessionId).delete());
       }
     });
 

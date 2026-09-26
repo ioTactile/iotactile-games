@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import { VTextField } from "vuetify/components";
-import { mdiEmail } from "@mdi/js";
+import { VTextField } from 'vuetify/components';
+import { mdiEmail } from '@mdi/js';
 
 withDefaults(
   defineProps<{
@@ -22,20 +22,20 @@ withDefaults(
     label?: string;
     name?: string;
     icon?: boolean;
-    variant?: "filled" | "outlined" | "plain" | "underlined" | "solo";
+    variant?: 'filled' | 'outlined' | 'plain' | 'underlined' | 'solo';
   }>(),
   {
     modelValue: undefined,
-    label: "Email",
-    name: "email",
+    label: 'Email',
+    name: 'email',
     variant: undefined,
   },
 );
 
-defineEmits<{ (e: "update:model-value", value: string): void }>();
+defineEmits<{ (e: 'update:model-value', value: string): void }>();
 
 const rules = [
-  (v?: string) => !!v || "Adresse e-mail requise",
+  (v?: string) => !!v || 'Adresse e-mail requise',
   (v?: string) =>
     (v &&
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/.test(

@@ -26,19 +26,10 @@
     </section>
     <v-divider class="my-2" />
     <section class="pa-2">
-      <v-btn
-        color="primary"
-        class="text-onPrimary"
-        block
-        @click="emits('toggleTheme')"
-      >
+      <v-btn color="primary" class="text-onPrimary" block @click="emits('toggleTheme')">
         <v-icon :icon="mdiThemeLightDark" />
         <span class="pl-2">
-          {{
-            theme.dark === true
-              ? "Passer en mode clair"
-              : "Passer en mode sombre"
-          }}
+          {{ theme.dark === true ? 'Passer en mode clair' : 'Passer en mode sombre' }}
         </span>
       </v-btn>
     </section>
@@ -92,21 +83,10 @@
           Es tu sûr de vouloir supprimer ton compte ?
         </v-card-title>
         <div class="d-flex justify-center">
-          <v-btn
-            color="error"
-            variant="text"
-            :loading="loading"
-            @click="deleteProfile"
-          >
+          <v-btn color="error" variant="text" :loading="loading" @click="deleteProfile">
             Oui
           </v-btn>
-          <v-btn
-            variant="text"
-            :loading="loading"
-            @click="openDeleteUser = false"
-          >
-            Non
-          </v-btn>
+          <v-btn variant="text" :loading="loading" @click="openDeleteUser = false"> Non </v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -114,21 +94,11 @@
 </template>
 
 <script setup lang="ts">
-import {
-  VForm,
-  VCard,
-  VCardTitle,
-  VBtn,
-  VDivider,
-  VIcon,
-  VDialog,
-} from "vuetify/components";
-import { doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
-import { deleteUser, signOut } from "@firebase/auth";
-import { mdiDotsHorizontal, mdiThemeLightDark } from "@mdi/js";
-import { userConverter } from "~/stores";
-
-// Props
+import { VForm, VCard, VCardTitle, VBtn, VDivider, VIcon, VDialog } from 'vuetify/components';
+import { doc, updateDoc, getDoc, deleteDoc } from 'firebase/firestore';
+import { deleteUser, signOut } from '@firebase/auth';
+import { mdiDotsHorizontal, mdiThemeLightDark } from '@mdi/js';
+import { userConverter } from '~/stores';
 
 defineProps<{
   theme: { dark: boolean };
@@ -136,33 +106,27 @@ defineProps<{
 }>();
 
 const emits = defineEmits<{
-  (e: "toggleTheme"): void;
-  (e: "goToAdmin"): void;
+  (e: 'toggleTheme'): void;
+  (e: 'goToAdmin'): void;
 }>();
-
-// Vuefire
 
 const { notifier } = useNotifier();
 const auth = useFirebaseAuth();
 const user = useCurrentUser();
 const db = useFirestore();
 
-// Refs
-
 const form = ref<VForm>();
 const loading = ref<boolean>(false);
 const openDeleteUser = ref<boolean>(false);
 const isDeleting = ref<boolean>(false);
-const username = ref<string>("");
-
-// onMounted
+const username = ref<string>('');
 
 onMounted(async () => {
   if (!user.value) {
     return;
   }
 
-  const userRef = doc(db, "users", user.value.uid).withConverter(userConverter);
+  const userRef = doc(db, 'users', user.value.uid).withConverter(userConverter);
   const userDoc = await getDoc(userRef);
   const userFetched = userDoc.data();
 
@@ -180,18 +144,17 @@ const changeUsername = async () => {
     loading.value = true;
     if (user.value) {
       const userId = user.value.uid;
-      const userRef = doc(db, "users", userId).withConverter(userConverter);
+      const userRef = doc(db, 'users', userId).withConverter(userConverter);
       await updateDoc(userRef, { username: username.value });
       notifier({
-        content: "Ton pseudo a bien été mis à jour",
-        color: "main",
+        content: 'Ton pseudo a bien été mis à jour',
+        color: 'main',
       });
     }
   } catch (error) {
     notifier({
-      content:
-        "Une erreur est survenue lors de la mise à jour de tes informations",
-      color: "error",
+      content: 'Une erreur est survenue lors de la mise à jour de tes informations',
+      color: 'error',
       error,
     });
   } finally {
@@ -199,10 +162,8 @@ const changeUsername = async () => {
   }
 };
 
-// Methods
-
 const goToAdmin = async () => {
-  await navigateTo("/admin");
+  await navigateTo('/admin');
 };
 
 const deleteProfile = async () => {
@@ -212,13 +173,13 @@ const deleteProfile = async () => {
   try {
     loading.value = true;
 
-    const userRef = doc(db, "users", user.value.uid);
+    const userRef = doc(db, 'users', user.value.uid);
     await deleteDoc(userRef);
     await deleteUser(user.value);
   } catch (error) {
     notifier({
-      content: "Une erreur est survenue lors de la suppression de ton compte",
-      color: "error",
+      content: 'Une erreur est survenue lors de la suppression de ton compte',
+      color: 'error',
       error,
     });
   } finally {
@@ -236,11 +197,11 @@ const logout = async () => {
     loading.value = true;
 
     await signOut(auth);
-    await navigateTo("/");
+    await navigateTo('/');
   } catch (error) {
     notifier({
-      content: "Une erreur est survenue lors de la déconnexion",
-      color: "error",
+      content: 'Une erreur est survenue lors de la déconnexion',
+      color: 'error',
       error,
     });
   } finally {

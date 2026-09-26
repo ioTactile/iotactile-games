@@ -5,15 +5,11 @@
       <div>Joueurs</div>
       <div />
     </div>
-    <div
-      v-for="(session, i) in sessions"
-      :key="i"
-      class="content d-flex justify-space-between"
-    >
+    <div v-for="(session, i) in sessions" :key="i" class="content d-flex justify-space-between">
       <div>{{ session.name }}</div>
       <div class="players-wrapper">
         <div class="players-name">
-          {{ session.players.map((player) => player.username).join(", ") }}
+          {{ session.players.map((player) => player.username).join(', ') }}
         </div>
         <v-icon
           v-for="(player, j) in 4"
@@ -34,34 +30,26 @@
 </template>
 
 <script setup lang="ts">
-import { VIcon } from "vuetify/components";
-import { collection, where, query, orderBy } from "firebase/firestore";
-import { mdiAccount } from "@mdi/js";
-import { diceSessionConverter } from "~/infrastructure/firestore/converters";
-import type { LocalDiceSessionType } from "~/infrastructure/firestore/converters";
-import { isHost } from "~/utils/dice/sessionRules";
+import { VIcon } from 'vuetify/components';
+import { collection, where, query, orderBy } from 'firebase/firestore';
+import { mdiAccount } from '@mdi/js';
+import { diceSessionConverter } from '~/infrastructure/firestore/converters';
+import type { LocalDiceSessionType } from '~/infrastructure/firestore/converters';
+import { isHost } from '~/utils/dice/sessionRules';
 
 const db = useFirestore();
 const user = useCurrentUser();
 const diceSession = useDiceSession();
 
-const sessionsRef = collection(db, "diceSessions").withConverter(
-  diceSessionConverter,
-);
+const sessionsRef = collection(db, 'diceSessions').withConverter(diceSessionConverter);
 const sessions = useCollection(
-  query(
-    sessionsRef,
-    where("isFinished", "==", false),
-    orderBy("creationDate", "desc"),
-  ),
+  query(sessionsRef, where('isFinished', '==', false), orderBy('creationDate', 'desc')),
 );
 
 const handleButtonClick = (session: LocalDiceSessionType) => {
   const userId = user.value?.uid;
   const host = userId ? isHost(session, userId) : false;
-  const isPlayerInSession = session.players.some(
-    (player) => player.id === userId,
-  );
+  const isPlayerInSession = session.players.some((player) => player.id === userId);
 
   if (!session.isStarted) {
     if (host && session.players.length === 1) {
@@ -82,25 +70,23 @@ const handleButtonClick = (session: LocalDiceSessionType) => {
 const getButtonLabel = (session: LocalDiceSessionType) => {
   const userId = user.value?.uid;
   const host = userId ? isHost(session, userId) : false;
-  const isPlayerInSession = session.players.some(
-    (player) => player.id === userId,
-  );
+  const isPlayerInSession = session.players.some((player) => player.id === userId);
 
   if (!session.isStarted) {
     if (host && session.players.length === 1) {
-      return "Supprimer";
+      return 'Supprimer';
     }
     if (host) {
-      return "Commencer";
+      return 'Commencer';
     }
     if (isPlayerInSession) {
-      return "Quitter";
+      return 'Quitter';
     }
-    return "Rejoindre";
+    return 'Rejoindre';
   } else if (session.isStarted && isPlayerInSession) {
-    return "Rejoindre!";
+    return 'Rejoindre!';
   } else {
-    return "Regarder!";
+    return 'Regarder!';
   }
 };
 </script>

@@ -1,20 +1,16 @@
-import { onDocumentUpdated } from "firebase-functions/v2/firestore";
-import { getFirestore } from "firebase-admin/firestore";
-import {
-  diceScoreboardConverter,
-  diceSessionScoresConverter,
-  userConverter,
-} from "./types.js";
+import { onDocumentUpdated } from 'firebase-functions/v2/firestore';
+import { getFirestore } from 'firebase-admin/firestore';
+import { diceScoreboardConverter, diceSessionScoresConverter, userConverter } from './types.js';
 import {
   applyDiceSessionResult,
   collectSessionPlayers,
   resolveSessionWinner,
-} from "../../shared/dice/endSessionScoreboard.js";
+} from '../../shared/dice/endSessionScoreboard.js';
 
 export const onDiceSessionEnd = onDocumentUpdated(
   {
-    document: "diceSessions/{sessionId}",
-    region: "europe-west3",
+    document: 'diceSessions/{sessionId}',
+    region: 'europe-west3',
   },
   async (event) => {
     if (!event.data?.after.exists) {
@@ -31,13 +27,13 @@ export const onDiceSessionEnd = onDocumentUpdated(
     const sessionId = event.params.sessionId;
 
     const playersScoresRef = firestore
-      .collection("diceSessionScores")
+      .collection('diceSessionScores')
       .withConverter(diceSessionScoresConverter)
       .doc(sessionId);
     const diceScoreboardRef = firestore
-      .collection("diceScoreboard")
+      .collection('diceScoreboard')
       .withConverter(diceScoreboardConverter);
-    const usersRef = firestore.collection("users").withConverter(userConverter);
+    const usersRef = firestore.collection('users').withConverter(userConverter);
 
     const playersScoresDoc = await playersScoresRef.get();
     const playersScores = playersScoresDoc.data();

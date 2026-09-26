@@ -6,11 +6,7 @@
       <div>Victoire</div>
     </div>
     <div class="content-wrapper">
-      <div
-        v-for="(player, i) in scoreboard"
-        :key="i"
-        class="content d-flex justify-space-between"
-      >
+      <div v-for="(player, i) in scoreboard" :key="i" class="content d-flex justify-space-between">
         <div>{{ i + 1 }}</div>
         <div>{{ player.username }}</div>
         <div>{{ player.victories }}</div>
@@ -20,15 +16,13 @@
 </template>
 
 <script async setup lang="ts">
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import { diceScoreboardConverter } from "~/stores";
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { diceScoreboardConverter } from '~/stores';
 
 const db = useFirestore();
 
-const scoreboardRef = collection(db, "diceScoreboard").withConverter(
-  diceScoreboardConverter,
-);
-const scoreboardQuery = query(scoreboardRef, orderBy("victories", "desc"));
+const scoreboardRef = collection(db, 'diceScoreboard').withConverter(diceScoreboardConverter);
+const scoreboardQuery = query(scoreboardRef, orderBy('victories', 'desc'));
 const scoreboardDocs = await getDocs(scoreboardQuery);
 const scoreboard = scoreboardDocs.docs.map((doc) => doc.data());
 </script>

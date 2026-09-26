@@ -9,11 +9,7 @@
     >
       <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-      <g
-        id="SVGRepo_tracerCarrier"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
+      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
       <g id="SVGRepo_iconCarrier">
         <path
@@ -30,11 +26,11 @@
 
 <script setup lang="ts">
 const emit = defineEmits<{
-  (e: "openVolumes", value: boolean): void;
+  (e: 'openVolumes', value: boolean): void;
 }>();
 
 const openVolumes = () => {
-  emit("openVolumes", true);
+  emit('openVolumes', true);
 };
 </script>
 

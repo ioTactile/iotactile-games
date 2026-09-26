@@ -1,10 +1,9 @@
-import type { IAudioClip } from "./audioPort";
-import { HowlerAudioClip } from "./howlerAudioClip";
+import type { IAudioClip } from './audioPort';
+import { HowlerAudioClip } from './howlerAudioClip';
 
 export type AudioClipFactory = (src: string, volume: number) => IAudioClip;
 
-const defaultAudioClipFactory: AudioClipFactory = (src, volume) =>
-  new HowlerAudioClip(src, volume);
+const defaultAudioClipFactory: AudioClipFactory = (src, volume) => new HowlerAudioClip(src, volume);
 
 export abstract class AbstractAudioService {
   protected abstract audioObject: Record<string, IAudioClip>;
@@ -23,20 +22,14 @@ export abstract class AbstractAudioService {
     audioObject[audio] = this.createClip(src, volume);
   }
 
-  protected unloadAudio(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): void {
+  protected unloadAudio(audio: string, audioObject: Record<string, IAudioClip>): void {
     if (audioObject[audio]) {
       audioObject[audio].unload();
       delete audioObject[audio];
     }
   }
 
-  protected playAudio(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): void {
+  protected playAudio(audio: string, audioObject: Record<string, IAudioClip>): void {
     if (audioObject[audio]) {
       audioObject[audio].play();
     }
@@ -53,66 +46,45 @@ export abstract class AbstractAudioService {
     }
   }
 
-  protected stopAudio(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): void {
+  protected stopAudio(audio: string, audioObject: Record<string, IAudioClip>): void {
     if (audioObject[audio]) {
       audioObject[audio].stop();
     }
   }
 
-  protected seekAudio(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): number {
+  protected seekAudio(audio: string, audioObject: Record<string, IAudioClip>): number {
     if (audioObject[audio]) {
       return audioObject[audio].seek();
     }
     return 0;
   }
 
-  protected durationAudio(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): number {
+  protected durationAudio(audio: string, audioObject: Record<string, IAudioClip>): number {
     if (audioObject[audio]) {
       return audioObject[audio].duration();
     }
     return 0;
   }
 
-  protected pauseAudio(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): void {
+  protected pauseAudio(audio: string, audioObject: Record<string, IAudioClip>): void {
     if (audioObject[audio]) {
       audioObject[audio].pause();
     }
   }
 
-  protected muteAudio(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): void {
+  protected muteAudio(audio: string, audioObject: Record<string, IAudioClip>): void {
     if (audioObject[audio]) {
       audioObject[audio].mute(true);
     }
   }
 
-  protected unmuteAudio(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): void {
+  protected unmuteAudio(audio: string, audioObject: Record<string, IAudioClip>): void {
     if (audioObject[audio]) {
       audioObject[audio].mute(false);
     }
   }
 
-  protected isAudioMuted(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): boolean {
+  protected isAudioMuted(audio: string, audioObject: Record<string, IAudioClip>): boolean {
     return !!audioObject[audio]?.muted();
   }
 
@@ -128,17 +100,11 @@ export abstract class AbstractAudioService {
     });
   }
 
-  protected isAudioLoaded(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): boolean {
+  protected isAudioLoaded(audio: string, audioObject: Record<string, IAudioClip>): boolean {
     return !!audioObject[audio];
   }
 
-  protected isAudioPlaying(
-    audio: string,
-    audioObject: Record<string, IAudioClip>,
-  ): boolean {
+  protected isAudioPlaying(audio: string, audioObject: Record<string, IAudioClip>): boolean {
     return !!audioObject[audio]?.playing();
   }
 }

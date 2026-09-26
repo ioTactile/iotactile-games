@@ -14,11 +14,7 @@
         >
           <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
           <g id="SVGRepo_iconCarrier">
             <path
@@ -38,11 +34,7 @@
         >
           <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
           <g id="SVGRepo_iconCarrier">
             <path
@@ -63,11 +55,7 @@
         >
           <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
           <g id="SVGRepo_iconCarrier">
             <path
@@ -89,11 +77,7 @@
         >
           <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
 
           <g id="SVGRepo_iconCarrier">
             <path
@@ -115,21 +99,21 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "undo"): void;
-  (e: "reset"): void;
-  (e: "togglePause"): void;
+  (e: 'undo'): void;
+  (e: 'reset'): void;
+  (e: 'togglePause'): void;
 }>();
 
 const undo = () => {
-  emit("undo");
+  emit('undo');
 };
 
 const reset = () => {
-  emit("reset");
+  emit('reset');
 };
 
 const togglePause = () => {
-  emit("togglePause");
+  emit('togglePause');
 };
 </script>
 

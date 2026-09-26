@@ -1,14 +1,14 @@
-import { test, expect, describe } from "vitest";
+import { test, expect, describe } from 'vitest';
 import {
   countSubstrInStr,
   getRandomNumber,
   arrayFromLength,
   getRandomBoolean,
   takeRandomIndexFromArray,
-} from "./utils";
+} from './utils';
 
-describe("getRandomNumber", () => {
-  test("should return a number within the specified range", () => {
+describe('getRandomNumber', () => {
+  test('should return a number within the specified range', () => {
     const min = 0;
     const max = 10;
     const randomNumber = getRandomNumber(max, min);
@@ -17,7 +17,7 @@ describe("getRandomNumber", () => {
     expect(randomNumber).toBeLessThanOrEqual(max);
   });
 
-  test("should return a number within the default range if only max is provided", () => {
+  test('should return a number within the default range if only max is provided', () => {
     const max = 10;
     const randomNumber = getRandomNumber(max);
     expect(randomNumber).toBeDefined();
@@ -26,16 +26,16 @@ describe("getRandomNumber", () => {
   });
 });
 
-describe("countSubstrInStr", () => {
-  test("should return the number of times a substring appears in a string", () => {
-    const str = "hello world";
-    const substr = "l";
+describe('countSubstrInStr', () => {
+  test('should return the number of times a substring appears in a string', () => {
+    const str = 'hello world';
+    const substr = 'l';
     expect(countSubstrInStr(str, substr)).toBe(3);
   });
 });
 
-describe("arrayFromLength", () => {
-  test("should return an array of the specified length", () => {
+describe('arrayFromLength', () => {
+  test('should return an array of the specified length', () => {
     const length = 10;
     const array = arrayFromLength(length);
     expect(array).toBeDefined();
@@ -43,8 +43,8 @@ describe("arrayFromLength", () => {
   });
 });
 
-describe("getRandomBoolean", () => {
-  test("should return true or false based on the specified chance", () => {
+describe('getRandomBoolean', () => {
+  test('should return true or false based on the specified chance', () => {
     const chance = 0.5;
     const boolean = getRandomBoolean(chance);
     expect(boolean).toBeDefined();
@@ -52,8 +52,8 @@ describe("getRandomBoolean", () => {
   });
 });
 
-describe("takeRandomIndexFromArray", () => {
-  test("should return a random index from the array", () => {
+describe('takeRandomIndexFromArray', () => {
+  test('should return a random index from the array', () => {
     const array = [1, 2, 3, 4, 5];
     const randomIndex = takeRandomIndexFromArray(array);
     expect(array[randomIndex]).toBeDefined();
