@@ -37,11 +37,13 @@
 import { VIcon } from "vuetify/components";
 import { collection, where, query, orderBy } from "firebase/firestore";
 import { mdiAccount } from "@mdi/js";
-import { diceSessionConverter } from "~/stores";
-import { DiceSession } from "~/utils/dice/diceSession";
+import { diceSessionConverter } from "~/infrastructure/firestore/converters";
+import type { LocalDiceSessionType } from "~/infrastructure/firestore/converters";
+import { isHost } from "~/utils/dice/sessionRules";
 
 const db = useFirestore();
 const user = useCurrentUser();
+const diceSession = useDiceSession();
 
 const sessionsRef = collection(db, "diceSessions").withConverter(
   diceSessionConverter,
@@ -55,13 +57,13 @@ const sessions = useCollection(
 );
 
 const handleButtonClick = (session: LocalDiceSessionType) => {
-  const host = session.players[0].id === user.value?.uid;
+  const userId = user.value?.uid;
+  const host = userId ? isHost(session, userId) : false;
   const isPlayerInSession = session.players.some(
-    (player) => player.id === user.value?.uid,
+    (player) => player.id === userId,
   );
 
   if (!session.isStarted) {
-    const diceSession = new DiceSession();
     if (host && session.players.length === 1) {
       return diceSession.delete(session);
     }
@@ -78,9 +80,10 @@ const handleButtonClick = (session: LocalDiceSessionType) => {
 };
 
 const getButtonLabel = (session: LocalDiceSessionType) => {
-  const host = session.players[0].id === user.value?.uid;
+  const userId = user.value?.uid;
+  const host = userId ? isHost(session, userId) : false;
   const isPlayerInSession = session.players.some(
-    (player) => player.id === user.value?.uid,
+    (player) => player.id === userId,
   );
 
   if (!session.isStarted) {

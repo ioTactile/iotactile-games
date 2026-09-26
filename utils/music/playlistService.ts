@@ -1,5 +1,5 @@
-import { Howl } from "howler";
 import { AbstractAudioService } from "./audioService";
+import type { IAudioClip } from "./audioPort";
 import { asianLofi, christmasLofi, autumnLofi } from "~/utils";
 
 export interface IPlaylistService {
@@ -26,7 +26,7 @@ export class PlaylistService
   extends AbstractAudioService
   implements IPlaylistService
 {
-  protected audioObject: Record<string, Howl> = {};
+  protected audioObject: Record<string, IAudioClip> = {};
   private currentTrack: string = "";
   private currentTrackSeek: number = 0;
   private playlist: string[] = [];

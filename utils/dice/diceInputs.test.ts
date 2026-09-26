@@ -154,3 +154,31 @@ describe("oneInput", () => {
     expect(diceInputs.chanceInput(dices3)).toBe(19);
   });
 });
+
+describe("section totals", () => {
+  test("getUpperSectionTotal sums the first six rows", () => {
+    const sheet = [
+      { value: "1", input: 3 },
+      { value: "2", input: 6 },
+      { value: "3", input: null },
+      { value: "4", input: 4 },
+      { value: "5", input: 0 },
+      { value: "6", input: 12 },
+      { value: "bonus", input: 35 },
+    ];
+    expect(diceInputs.getUpperSectionTotal(sheet)).toBe(25);
+  });
+
+  test("getLowerSectionTotal sums the provided lower sheet rows", () => {
+    const lowerSheet = [
+      { value: "3oak", input: 18 },
+      { value: "4oak", input: null },
+      { value: "full", input: 25 },
+      { value: "small", input: 30 },
+      { value: "large", input: 0 },
+      { value: "chance", input: 20 },
+      { value: "dice", input: 50 },
+    ];
+    expect(diceInputs.getLowerSectionTotal(lowerSheet)).toBe(143);
+  });
+});

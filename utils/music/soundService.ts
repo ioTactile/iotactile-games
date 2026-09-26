@@ -1,5 +1,5 @@
-import { Howl } from "howler";
 import { AbstractAudioService } from "./audioService";
+import type { IAudioClip } from "./audioPort";
 
 export interface ISoundService {
   loadSound(sound: string, src: string, volume: number): void;
@@ -18,61 +18,46 @@ export class SoundService
   extends AbstractAudioService
   implements ISoundService
 {
-  protected audioObject: Record<string, Howl> = {};
+  protected audioObject: Record<string, IAudioClip> = {};
 
   public loadSound(sound: string, src: string, volume: number): void {
-    this.audioObject[sound] = new Howl({
-      src: [src],
-      volume,
-    });
+    this.loadAudio(sound, src, volume, this.audioObject);
   }
 
   public unloadSound(sound: string): void {
-    if (this.audioObject[sound]) {
-      this.audioObject[sound].unload();
-      delete this.audioObject[sound];
-    }
+    this.unloadAudio(sound, this.audioObject);
   }
 
   public playSound(sound: string): void {
-    if (this.audioObject[sound]) {
-      this.audioObject[sound].play();
-    }
+    this.playAudio(sound, this.audioObject);
   }
 
   public muteSound(sound: string): void {
-    if (this.audioObject[sound]) {
-      this.audioObject[sound].mute(true);
-    }
+    this.muteAudio(sound, this.audioObject);
   }
 
   public unmuteSound(sound: string): void {
-    if (this.audioObject[sound]) {
-      this.audioObject[sound].mute(false);
-    }
+    this.unmuteAudio(sound, this.audioObject);
   }
 
   public isSoundMuted(sound: string): boolean {
-    return !!this.audioObject[sound]?.mute();
+    return this.isAudioMuted(sound, this.audioObject);
   }
 
   public stopAllSounds(): void {
-    Object.values(this.audioObject).forEach((audio) => {
-      audio.stop();
-    });
+    this.stopAllAudio(this.audioObject);
   }
 
   public unloadAllSounds(): void {
-    Object.values(this.audioObject).forEach((audio) => {
-      audio.unload();
-    });
+    this.unloadAllAudio(this.audioObject);
+    this.audioObject = {};
   }
 
   public isSoundLoaded(sound: string): boolean {
-    return !!this.audioObject[sound];
+    return this.isAudioLoaded(sound, this.audioObject);
   }
 
   public isSoundPlaying(sound: string): boolean {
-    return !!this.audioObject[sound]?.playing();
+    return this.isAudioPlaying(sound, this.audioObject);
   }
 }

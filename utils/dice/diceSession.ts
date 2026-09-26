@@ -10,6 +10,7 @@ import {
   where,
   deleteField,
   Timestamp,
+  type Firestore,
 } from "firebase/firestore";
 import {
   diceSessionConverter,
@@ -20,78 +21,111 @@ import {
   diceSessionScoresConverter,
   diceScoreboardConverter,
   diceSessionChatConverter,
-} from "~/stores/";
-import type { LocalDiceSessionType } from "~/stores";
+} from "~/infrastructure/firestore/converters";
+import type { LocalDiceSessionType } from "~/infrastructure/firestore/converters";
+import {
+  canDeleteSession,
+  canJoinSession,
+  canLeaveSession,
+  canStartSession,
+  createEmptyPlayerScores,
+  nextRemainingTurnsOnJoin,
+  nextRemainingTurnsOnLeave,
+  playerSlotForJoin,
+  playerSlotForUser,
+  withPlayerJoined,
+  withPlayerLeft,
+} from "./sessionRules";
+
+export type DiceSessionNotifier = (payload: {
+  content?: string;
+  color?: string;
+}) => void;
+
+export type DiceSessionDeps = {
+  db: Firestore;
+  getUserId: () => string | undefined;
+  notify: DiceSessionNotifier;
+};
 
 export interface IDiceSession {
-  create(name: string): void;
-  start(session: LocalDiceSessionType): void;
-  leave(session: LocalDiceSessionType): void;
-  delete(session: LocalDiceSessionType): void;
-  join(session: LocalDiceSessionType): void;
-  quickJoin(): void;
+  create(name: string): Promise<void>;
+  start(session: LocalDiceSessionType): Promise<void>;
+  leave(session: LocalDiceSessionType): Promise<void>;
+  delete(session: LocalDiceSessionType): Promise<void>;
+  join(session: LocalDiceSessionType): Promise<void>;
+  quickJoin(): Promise<boolean>;
 }
 
+/** Firestore adapter for dice multiplayer sessions (infra). Domain rules live in sessionRules. */
 export class DiceSession implements IDiceSession {
-  private db = useFirestore();
-  private user = useCurrentUser();
-  private notifier = useNotifier();
+  private readonly db: Firestore;
+  private readonly getUserId: () => string | undefined;
+  private readonly notify: DiceSessionNotifier;
 
-  private sessionsRef = collection(this.db, "diceSessions").withConverter(
-    diceSessionConverter,
-  );
+  private sessionsRef;
+  private playerTurnRef;
+  private remainingTurnsRef;
+  private dicesRef;
+  private playerTriesRef;
+  private scoresRef;
+  private scoreboardRef;
+  private chatRef;
 
-  private playerTurnRef = collection(
-    this.db,
-    "diceSessionPlayerTurn",
-  ).withConverter(diceSessionPlayerTurnConverter);
+  constructor(deps: DiceSessionDeps) {
+    this.db = deps.db;
+    this.getUserId = deps.getUserId;
+    this.notify = deps.notify;
 
-  private remainingTurnsRef = collection(
-    this.db,
-    "diceSessionRemainingTurns",
-  ).withConverter(diceSessionRemainingTurnsConverter);
+    this.sessionsRef = collection(this.db, "diceSessions").withConverter(
+      diceSessionConverter,
+    );
+    this.playerTurnRef = collection(
+      this.db,
+      "diceSessionPlayerTurn",
+    ).withConverter(diceSessionPlayerTurnConverter);
+    this.remainingTurnsRef = collection(
+      this.db,
+      "diceSessionRemainingTurns",
+    ).withConverter(diceSessionRemainingTurnsConverter);
+    this.dicesRef = collection(this.db, "diceSessionDices").withConverter(
+      diceSessionDicesConverter,
+    );
+    this.playerTriesRef = collection(
+      this.db,
+      "diceSessionPlayerTries",
+    ).withConverter(diceSessionPlayerTriesConverter);
+    this.scoresRef = collection(this.db, "diceSessionScores").withConverter(
+      diceSessionScoresConverter,
+    );
+    this.scoreboardRef = collection(this.db, "diceScoreboard").withConverter(
+      diceScoreboardConverter,
+    );
+    this.chatRef = collection(this.db, "diceSessionChat").withConverter(
+      diceSessionChatConverter,
+    );
+  }
 
-  private dicesRef = collection(this.db, "diceSessionDices").withConverter(
-    diceSessionDicesConverter,
-  );
-
-  private playerTriesRef = collection(
-    this.db,
-    "diceSessionPlayerTries",
-  ).withConverter(diceSessionPlayerTriesConverter);
-
-  private scoresRef = collection(this.db, "diceSessionScores").withConverter(
-    diceSessionScoresConverter,
-  );
-
-  private scoreboardRef = collection(this.db, "diceScoreboard").withConverter(
-    diceScoreboardConverter,
-  );
-
-  private chatRef = collection(this.db, "diceSessionChat").withConverter(
-    diceSessionChatConverter,
-  );
-
-  private async getUsername() {
-    const userRef = doc(this.db, "users", this.user.value!.uid);
+  private async getUsername(userId: string) {
+    const userRef = doc(this.db, "users", userId);
     const userDoc = await getDoc(userRef);
     if (!userDoc.exists()) {
       return;
     }
-    return userDoc.data()?.username;
+    return userDoc.data()?.username as string | undefined;
   }
 
-  private async checkScoreboard() {
+  private async checkScoreboard(userId: string) {
     const scoreboardQuery = query(
       this.scoreboardRef,
-      where("userId", "==", this.user.value!.uid),
+      where("userId", "==", userId),
     );
     const scoreboardSnapshot = await getDocs(scoreboardQuery);
-    const scoreboard = scoreboardSnapshot.docs.map((doc) => doc.data());
+    const scoreboard = scoreboardSnapshot.docs.map((entry) => entry.data());
     if (scoreboard.length === 0) {
-      const username = await this.getUsername();
-      await setDoc(doc(this.scoreboardRef, this.user.value!.uid), {
-        userId: this.user.value!.uid,
+      const username = await this.getUsername(userId);
+      await setDoc(doc(this.scoreboardRef, userId), {
+        userId,
         username,
         games: 0,
         maxScore: 0,
@@ -103,46 +137,18 @@ export class DiceSession implements IDiceSession {
     }
   }
 
-  private initScores() {
-    const scores = {
-      id: this.user.value!.uid,
-      one: null,
-      two: null,
-      three: null,
-      four: null,
-      five: null,
-      six: null,
-      bonus: 0,
-      threeOfAKind: null,
-      fourOfAKind: null,
-      fullHouse: null,
-      smallStraight: null,
-      largeStraight: null,
-      chance: null,
-      dice: null,
-      total: 0,
-    };
-    return scores;
-  }
-
   public async create(name: string) {
-    if (!this.user.value) return;
+    const userId = this.getUserId();
+    if (!userId) return;
 
     const sessionId = doc(this.sessionsRef).id;
-
     const sessionRef = doc(this.sessionsRef, sessionId);
-
-    const username = await this.getUsername();
+    const username = await this.getUsername(userId);
 
     await setDoc(sessionRef, {
       id: sessionId,
       name,
-      players: [
-        {
-          id: this.user.value.uid,
-          username,
-        },
-      ],
+      players: [{ id: userId, username }],
       isFull: false,
       isStarted: false,
       isFinished: false,
@@ -151,7 +157,7 @@ export class DiceSession implements IDiceSession {
 
     await setDoc(doc(this.playerTurnRef, sessionId), {
       id: sessionId,
-      playerId: this.user.value.uid,
+      playerId: userId,
     });
 
     await setDoc(doc(this.remainingTurnsRef, sessionId), {
@@ -171,72 +177,43 @@ export class DiceSession implements IDiceSession {
 
     await setDoc(doc(this.scoresRef, sessionId), {
       id: sessionId,
-      playerOne: this.initScores(),
+      playerOne: createEmptyPlayerScores(userId),
       creationDate: Timestamp.fromDate(new Date(Date.now())),
     });
 
-    this.checkScoreboard();
+    await this.checkScoreboard(userId);
   }
 
   public async start(session: LocalDiceSessionType) {
-    if (!this.user.value) {
+    const userId = this.getUserId();
+    if (!userId || !canStartSession(session)) {
       return;
     }
 
-    if (session.players.length < 2) {
-      return;
-    }
-
-    const sessionId = session.id;
-
-    const sessionRef = doc(this.sessionsRef, sessionId);
-
-    await updateDoc(sessionRef, { isStarted: true });
+    await updateDoc(doc(this.sessionsRef, session.id), { isStarted: true });
   }
 
   public async leave(session: LocalDiceSessionType) {
-    if (!this.user.value) {
+    const userId = this.getUserId();
+    if (!userId || !canLeaveSession(session, userId)) {
       return;
     }
 
     const sessionId = session.id;
-
     const sessionRef = doc(this.sessionsRef, sessionId);
     const scoresDocRef = doc(this.scoresRef, sessionId);
     const remainingTurnsDoc = doc(this.remainingTurnsRef, sessionId);
     const scoresDoc = await getDoc(scoresDocRef);
     const scores = scoresDoc.data();
 
-    if (!session) {
-      return;
-    }
-
-    if (!session.players.find((player) => player.id === this.user.value?.uid)) {
-      return;
-    }
-
-    if (session.isStarted) {
-      return;
-    }
-
-    if (scores?.playerTwo?.id === this.user.value.uid) {
+    const slot = scores ? playerSlotForUser(scores, userId) : null;
+    if (slot) {
       await updateDoc(scoresDocRef, {
-        playerTwo: deleteField(),
-      });
-    } else if (scores?.playerThree?.id === this.user.value.uid) {
-      await updateDoc(scoresDocRef, {
-        playerThree: deleteField(),
-      });
-    } else if (scores?.playerFour?.id === this.user.value.uid) {
-      await updateDoc(scoresDocRef, {
-        playerFour: deleteField(),
+        [slot]: deleteField(),
       });
     }
 
-    session.players = session.players.filter(
-      (player) => player.id !== this.user.value?.uid,
-    );
-
+    const updatedSession = withPlayerLeft(session, userId);
     const joinRemainingTurnsDoc = await getDoc(remainingTurnsDoc);
 
     if (!joinRemainingTurnsDoc.exists()) {
@@ -247,85 +224,38 @@ export class DiceSession implements IDiceSession {
 
     await updateDoc(remainingTurnsDoc, {
       id: sessionId,
-      remainingTurns: joinRemainingTurns - 13,
+      remainingTurns: nextRemainingTurnsOnLeave(joinRemainingTurns),
     });
 
-    if (session.players.length < 4) {
-      session.isFull = false;
-    }
-
-    await updateDoc(sessionRef, session);
+    await updateDoc(sessionRef, updatedSession);
   }
 
   public async delete(session: LocalDiceSessionType) {
-    if (!this.user.value) {
+    const userId = this.getUserId();
+    if (!userId || !canDeleteSession(session, userId)) {
       return;
     }
 
     const sessionId = session.id;
-
-    const sessionRef = doc(this.sessionsRef, sessionId);
-    const playerTurnDoc = doc(this.playerTurnRef, sessionId);
-    const scoresDocRef = doc(this.scoresRef, sessionId);
-    const remainingTurnsDoc = doc(this.remainingTurnsRef, sessionId);
-    const dicesDoc = doc(this.dicesRef, sessionId);
-    const playerTriesDoc = doc(this.playerTriesRef, sessionId);
-    const chatDoc = doc(this.chatRef, sessionId);
-
-    if (!session) {
-      return;
-    }
-    if (!session.players.find((player) => player.id === this.user.value?.uid)) {
-      return;
-    }
-    if (session.isStarted) {
-      return;
-    }
-
-    if (session.players.length === 1) {
-      await deleteDoc(sessionRef);
-      await deleteDoc(playerTurnDoc);
-      await deleteDoc(scoresDocRef);
-      await deleteDoc(remainingTurnsDoc);
-      await deleteDoc(dicesDoc);
-      await deleteDoc(playerTriesDoc);
-      if (chatDoc) {
-        await deleteDoc(chatDoc);
-      }
-    }
+    await deleteDoc(doc(this.sessionsRef, sessionId));
+    await deleteDoc(doc(this.playerTurnRef, sessionId));
+    await deleteDoc(doc(this.scoresRef, sessionId));
+    await deleteDoc(doc(this.remainingTurnsRef, sessionId));
+    await deleteDoc(doc(this.dicesRef, sessionId));
+    await deleteDoc(doc(this.playerTriesRef, sessionId));
+    await deleteDoc(doc(this.chatRef, sessionId));
   }
 
   public async join(session: LocalDiceSessionType) {
-    if (!this.user.value) {
+    const userId = this.getUserId();
+    if (!userId || !canJoinSession(session, userId)) {
       return;
     }
 
     const sessionId = session.id;
     const sessionRef = doc(this.sessionsRef, sessionId);
-
-    const username = await this.getUsername();
-
-    if (!session) {
-      return;
-    }
-    if (session.isStarted) {
-      return;
-    }
-    if (session.players.length >= 4) {
-      return;
-    }
-    if (session.players.find((player) => player.id === this.user.value?.uid)) {
-      return;
-    }
-
-    session.players.push({
-      id: this.user.value.uid,
-      username,
-    });
-
-    if (session.players.length >= 4) {
-      session.isFull = true;
-    }
+    const username = await this.getUsername(userId);
+    const updatedSession = withPlayerJoined(session, { id: userId, username });
 
     const joinRemainingTurnsRef = doc(this.remainingTurnsRef, sessionId);
     const joinRemainingTurnsDoc = await getDoc(joinRemainingTurnsRef);
@@ -338,27 +268,25 @@ export class DiceSession implements IDiceSession {
 
     await updateDoc(doc(this.remainingTurnsRef, sessionId), {
       id: sessionId,
-      remainingTurns: joinRemainingTurns + 13,
+      remainingTurns: nextRemainingTurnsOnJoin(joinRemainingTurns),
     });
 
-    await updateDoc(sessionRef, session);
+    await updateDoc(sessionRef, updatedSession);
 
-    const scoresDoc = doc(this.scoresRef, sessionId);
-
-    if (session.players.length === 2) {
-      await updateDoc(scoresDoc, { playerTwo: this.initScores() });
-    } else if (session.players.length === 3) {
-      await updateDoc(scoresDoc, { playerThree: this.initScores() });
-    } else if (session.players.length === 4) {
-      await updateDoc(scoresDoc, { playerFour: this.initScores() });
+    const slot = playerSlotForJoin(updatedSession.players.length);
+    if (slot) {
+      await updateDoc(doc(this.scoresRef, sessionId), {
+        [slot]: createEmptyPlayerScores(userId),
+      });
     }
 
-    this.checkScoreboard();
+    await this.checkScoreboard(userId);
   }
 
   public async quickJoin() {
-    if (!this.user.value) {
-      return;
+    const userId = this.getUserId();
+    if (!userId) {
+      return false;
     }
 
     const sessionsQuery = query(
@@ -367,10 +295,10 @@ export class DiceSession implements IDiceSession {
       where("isStarted", "==", false),
     );
     const sessionsSnapshot = await getDocs(sessionsQuery);
-    const sessions = sessionsSnapshot.docs.map((doc) => doc.data());
+    const sessions = sessionsSnapshot.docs.map((entry) => entry.data());
 
     if (sessions.length === 0) {
-      this.notifier.notifier({
+      this.notify({
         content: "Aucune session disponible",
         color: "primary",
       });
@@ -378,50 +306,11 @@ export class DiceSession implements IDiceSession {
     }
 
     const session = sessions[Math.floor(Math.random() * sessions.length)];
-    const sessionId = session.id;
-    const sessionRef = doc(this.sessionsRef, sessionId);
-
-    if (session.players.find((player) => player.id === this.user.value?.uid)) {
+    if (!canJoinSession(session, userId)) {
       return false;
     }
 
-    const username = await this.getUsername();
-
-    session.players.push({
-      id: this.user.value.uid,
-      username,
-    });
-
-    if (session.players.length >= 4) {
-      session.isFull = true;
-    }
-
-    const joinRemainingTurnsRef = doc(this.remainingTurnsRef, sessionId);
-
-    const joinRemainingTurnsDoc = await getDoc(joinRemainingTurnsRef);
-
-    if (!joinRemainingTurnsDoc.exists()) {
-      return false;
-    }
-    const joinRemainingTurns = joinRemainingTurnsDoc.data().remainingTurns;
-
-    await updateDoc(doc(this.remainingTurnsRef, sessionId), {
-      id: sessionId,
-      remainingTurns: joinRemainingTurns + 13,
-    });
-
-    await updateDoc(sessionRef, session);
-
-    const scoresDoc = doc(this.scoresRef, sessionId);
-
-    if (session.players.length === 2) {
-      await updateDoc(scoresDoc, { playerTwo: this.initScores() });
-    } else if (session.players.length === 3) {
-      await updateDoc(scoresDoc, { playerThree: this.initScores() });
-    } else if (session.players.length === 4) {
-      await updateDoc(scoresDoc, { playerFour: this.initScores() });
-    }
-
-    this.checkScoreboard();
+    await this.join(session);
+    return true;
   }
 }

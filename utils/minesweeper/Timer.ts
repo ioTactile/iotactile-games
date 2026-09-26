@@ -54,6 +54,7 @@ export class Timer {
   public stop(): void {
     if (this.returnType) {
       clearInterval(this.returnType);
+      this.returnType = undefined;
     }
   }
 

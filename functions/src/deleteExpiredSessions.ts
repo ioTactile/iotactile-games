@@ -1,12 +1,14 @@
-import * as functions from "firebase-functions/v1";
+import { onSchedule } from "firebase-functions/v2/scheduler";
 import { WriteResult, getFirestore } from "firebase-admin/firestore";
 import { Timestamp } from "./types.js";
 
-export const deleteExpiredSessions = functions
-  .region("europe-west3")
-  .pubsub.schedule("0 0 * * *")
-  .timeZone("Europe/Paris")
-  .onRun(async () => {
+export const deleteExpiredSessions = onSchedule(
+  {
+    schedule: "0 0 * * *",
+    timeZone: "Europe/Paris",
+    region: "europe-west3",
+  },
+  async () => {
     const firestore = getFirestore();
     const now = Timestamp.now();
     const twentyFourHours = 24 * 60 * 60 * 1000;
@@ -41,6 +43,5 @@ export const deleteExpiredSessions = functions
     });
 
     await Promise.allSettled(deletePromises);
-
-    return;
-  });
+  },
+);

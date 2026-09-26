@@ -1,5 +1,36 @@
 import { describe, beforeEach, test, expect, afterEach } from "vitest";
 import { SoundService } from "./soundService";
+import type { IAudioClip } from "./audioPort";
+
+const createFakeClip = (): IAudioClip => {
+  let playing = false;
+  let muted = false;
+
+  return {
+    play: () => {
+      playing = true;
+    },
+    stop: () => {
+      playing = false;
+    },
+    pause: () => {
+      playing = false;
+    },
+    mute: (value: boolean) => {
+      muted = value;
+    },
+    muted: () => muted,
+    seek: () => 0,
+    duration: () => 1,
+    playing: () => playing,
+    unload: () => {
+      playing = false;
+    },
+    volume: () => undefined,
+    once: () => undefined,
+    off: () => undefined,
+  };
+};
 
 describe("SoundService", () => {
   let soundService: SoundService;
@@ -15,7 +46,7 @@ describe("SoundService", () => {
   ];
 
   beforeEach(() => {
-    soundService = new SoundService();
+    soundService = new SoundService(() => createFakeClip());
   });
 
   afterEach(() => {

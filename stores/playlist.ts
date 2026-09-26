@@ -18,6 +18,8 @@ export const usePlaylistStore = defineStore(
     };
   },
   {
-    persist: true,
+    persist: {
+      pick: ["isMusicActive", "isMusicMuted", "isMusicPaused"],
+    },
   },
 );

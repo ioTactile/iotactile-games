@@ -55,24 +55,24 @@ describe("checkBoard", () => {
 
   test("should return error if a column has tripled numbers", () => {
     const board = [
-      ["1", "0", "1", "0"],
       ["0", "1", "0", "1"],
-      ["1", "1", "0", "0"],
+      ["0", "1", "1", "0"],
+      ["0", "0", "1", "1"],
       ["1", "0", "0", "1"],
     ];
     const result = checkBoard(board) as TakuzuCheckError;
     expect(result.error).toBe(true);
     expect(result.type).toBe("triple");
     expect(result.message).toBe(ERRORS.TRIPLE);
-    expect(result.position).toEqual(["col-2"]);
+    expect(result.position).toEqual(["col-0"]);
   });
 
   test("should return error if a row is not balanced", () => {
     const board = [
       ["1", "0", "1", "0"],
       ["0", "1", "0", "1"],
-      ["1", "0", "0", "0"],
-      ["1", "0", "1", "0"],
+      ["1", "1", "0", "1"],
+      ["0", "0", "1", "1"],
     ];
     const result = checkBoard(board) as TakuzuCheckError;
     expect(result.error).toBe(true);
@@ -86,13 +86,13 @@ describe("checkBoard", () => {
       ["1", "0", "1", "0"],
       ["0", "1", "0", "1"],
       ["1", "0", "0", "1"],
-      ["1", "0", "0", "0"],
+      ["1", "1", "0", "0"],
     ];
     const result = checkBoard(board) as TakuzuCheckError;
     expect(result.error).toBe(true);
     expect(result.type).toBe("balance");
     expect(result.message).toBe(ERRORS.BALANCE);
-    expect(result.position).toEqual(["col-2"]);
+    expect(result.position).toEqual(["col-0"]);
   });
 
   test("should return no error if the board is valid", () => {

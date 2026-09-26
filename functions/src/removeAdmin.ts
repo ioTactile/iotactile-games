@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions/v1";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 
@@ -6,27 +6,26 @@ interface Parameters {
   id: string;
 }
 
-export const removeAdmin = functions
-  .runWith({ enforceAppCheck: true })
-  .region("europe-west3")
-  .https.onCall(async (data: Parameters, context) => {
-    if (context.app == undefined) {
-      throw new functions.https.HttpsError(
+export const removeAdmin = onCall(
+  { region: "europe-west3", enforceAppCheck: true },
+  async (request) => {
+    if (request.app == undefined) {
+      throw new HttpsError(
         "failed-precondition",
         "The function must be called from an App Check verified app.",
       );
     }
-    if (!context.auth) {
-      throw new functions.https.HttpsError(
+    if (!request.auth) {
+      throw new HttpsError(
         "unauthenticated",
         "Une authentification est nécessaire",
       );
     }
+
+    const data = request.data as Parameters;
+
     if (!data.id) {
-      throw new functions.https.HttpsError(
-        "invalid-argument",
-        "Paramètres incorrect",
-      );
+      throw new HttpsError("invalid-argument", "Paramètres incorrect");
     }
 
     const auth = getAuth();
@@ -39,4 +38,5 @@ export const removeAdmin = functions
     await firestore.collection("users").doc(data.id).update({
       role: FieldValue.delete(),
     });
-  });
+  },
+);

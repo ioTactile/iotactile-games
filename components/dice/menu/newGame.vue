@@ -12,19 +12,17 @@
 </template>
 
 <script setup lang="ts">
-import { DiceSession } from "~/utils/dice/diceSession";
-
 const emit = defineEmits<{
   (e: "action", value: string): void;
 }>();
 
+const diceSession = useDiceSession();
 const sessionName = ref<string>("");
 
 const createSession = () => {
   if (!sessionName.value) {
     return;
   }
-  const diceSession = new DiceSession();
 
   try {
     diceSession.create(sessionName.value);

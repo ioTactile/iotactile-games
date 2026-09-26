@@ -12,11 +12,11 @@
 </template>
 
 <script setup lang="ts">
-import { DiceSession } from "~/utils/dice/diceSession";
-
 const emit = defineEmits<{
   (e: "action", value: string): void;
 }>();
+
+const diceSession = useDiceSession();
 
 const menuItems = [
   {
@@ -35,8 +35,6 @@ const menuItems = [
 
 const handleAction = async (action: string) => {
   if (action === "quickGame") {
-    const diceSession = new DiceSession();
-
     const result = await diceSession.quickJoin();
     if (result === false) {
       return;
