@@ -222,3 +222,12 @@ export type Game2048Scoreboard = {
   bestTile: number;
   lastPlayedAt: Date;
 };
+
+export type SnakeScoreboard = {
+  userId: string;
+  username: string;
+  gamesPlayed: number;
+  bestScore: number;
+  bestLength: number;
+  lastPlayedAt: Date;
+};

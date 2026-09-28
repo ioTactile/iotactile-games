@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" aria-label="Snake">
+  <rect width="640" height="480" fill="#0a0a0c"/>
+  <g opacity="0.25" stroke="#b8ff3c" stroke-width="1">
+    <path d="M40 40 H600 M40 80 H600 M40 120 H600 M40 160 H600 M40 200 H600 M40 240 H600 M40 280 H600 M40 320 H600 M40 360 H600 M40 400 H600"/>
+    <path d="M40 40 V440 M80 40 V440 M120 40 V440 M160 40 V440 M200 40 V440 M240 40 V440 M280 40 V440 M320 40 V440 M360 40 V440 M400 40 V440 M440 40 V440 M480 40 V440 M520 40 V440 M560 40 V440 M600 40 V440"/>
+  </g>
+  <rect x="160" y="200" width="28" height="28" fill="#b8ff3c"/>
+  <rect x="192" y="200" width="28" height="28" fill="#8bcc2a"/>
+  <rect x="224" y="200" width="28" height="28" fill="#6aa01f"/>
+  <rect x="256" y="200" width="28" height="28" fill="#6aa01f"/>
+  <rect x="288" y="200" width="28" height="28" fill="#6aa01f"/>
+  <rect x="320" y="200" width="28" height="28" fill="#6aa01f"/>
+  <rect x="352" y="200" width="28" height="28" fill="#6aa01f"/>
+  <rect x="352" y="232" width="28" height="28" fill="#6aa01f"/>
+  <rect x="352" y="264" width="28" height="28" fill="#6aa01f"/>
+  <circle cx="420" cy="278" r="12" fill="#ff4d6d"/>
+  <text x="320" y="120" text-anchor="middle" font-family="Rajdhani, sans-serif" font-size="64" font-weight="700" fill="#b8ff3c" letter-spacing="8">SNAKE</text>
+</svg>

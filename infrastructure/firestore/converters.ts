@@ -19,6 +19,7 @@ import type {
   MineSweeperScoreboard,
   TakuzuScoreboard,
   Game2048Scoreboard,
+  SnakeScoreboard,
 } from '~/types/models';
 
 type NestedTypeMapper<T, I, O> = T extends I
@@ -424,6 +425,20 @@ export type LocalGame2048ScoreboardType = Game2048Scoreboard;
 export const game2048ScoreboardConverter: FirestoreDataConverter<LocalGame2048ScoreboardType> = {
   toFirestore: (item) => item,
   fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseGame2048ScoreboardType>, options) => {
+    const data = snapshot.data(options);
+    return {
+      ...data,
+      userId: snapshot.id,
+      lastPlayedAt: data.lastPlayedAt.toDate(),
+    };
+  },
+};
+
+type DatabaseSnakeScoreboardType = NestedTypeMapper<SnakeScoreboard, Date, FirestoreTimestamp>;
+export type LocalSnakeScoreboardType = SnakeScoreboard;
+export const snakeScoreboardConverter: FirestoreDataConverter<LocalSnakeScoreboardType> = {
+  toFirestore: (item) => item,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseSnakeScoreboardType>, options) => {
     const data = snapshot.data(options);
     return {
       ...data,

@@ -41,6 +41,12 @@ const myCustomLightTheme: ThemeDefinition = {
     game2048MainSurface: '#e8f5f0', // mint wash
     game2048MainShadow: '#9bc4b5', // soft jade shadow
     game2048MainOnSurface: '#0d1117', // ink
+    snakeMainPrimary: '#b8ff3c', // volt lime
+    snakeMainSecondary: '#0a0a0c', // noir
+    snakeMainTertiary: '#ff4d6d', // coral food
+    snakeMainSurface: '#12141a', // dark panel
+    snakeMainShadow: '#050507', // deep shadow
+    snakeMainOnSurface: '#e8ffe0', // pale lime text
   },
 };
 const myCustomDarkTheme: ThemeDefinition = {
@@ -83,6 +89,12 @@ const myCustomDarkTheme: ThemeDefinition = {
     game2048MainSurface: '#1a2220', // dark jade surface
     game2048MainShadow: '#0a0e0c', // deep shadow
     game2048MainOnSurface: '#e8f5f0', // mint text
+    snakeMainPrimary: '#b8ff3c', // volt lime
+    snakeMainSecondary: '#0a0a0c', // noir
+    snakeMainTertiary: '#ff4d6d', // coral food
+    snakeMainSurface: '#12141a', // dark panel
+    snakeMainShadow: '#050507', // deep shadow
+    snakeMainOnSurface: '#e8ffe0', // pale lime text
   },
 };
 

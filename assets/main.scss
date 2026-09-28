@@ -3,6 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
 
 @layer vuetify-core.reset {
   * {
@@ -102,6 +103,42 @@
     max-width: 70vw;
     height: 48px;
     font-size: 1.5rem;
+  }
+}
+
+.button-snake {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  min-height: 64px;
+  padding: 0 1rem;
+  background-color: rgb(var(--v-theme-snakeMainSecondary));
+  color: rgb(var(--v-theme-snakeMainPrimary));
+  font-size: 1.75rem;
+  border-radius: 4px;
+  border: 2px solid rgb(var(--v-theme-snakeMainPrimary));
+  box-shadow: 0 0 12px rgba(184, 255, 60, 0.35);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(184, 255, 60, 0.12);
+    box-shadow: 0 0 20px rgba(184, 255, 60, 0.55);
+  }
+
+  @media screen and (max-width: 600px) {
+    min-width: 180px;
+    max-width: 70vw;
+    min-height: 48px;
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
   }
 }
 

@@ -1,0 +1,90 @@
+<template>
+  <div id="scaler" :style="{ transform: `scale(${scale})` }">
+    <div id="gamescene">
+      <div class="first-layer" />
+      <div class="second-layer" />
+      <slot />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useDisplay } from 'vuetify';
+
+const { width, height } = useDisplay();
+const scale = ref<number>(1);
+
+const handleResize = () => {
+  const targetHeight = 924;
+  const targetWidth = 1200;
+
+  if (width.value < 600) {
+    scale.value = 1;
+    return;
+  }
+
+  if (height.value > targetHeight) {
+    height.value = targetHeight;
+  }
+
+  scale.value = Math.min(height.value / targetHeight, width.value / targetWidth);
+};
+
+watch(
+  [width, height],
+  () => {
+    if (width.value <= 1200 || height.value <= 924) {
+      handleResize();
+    }
+  },
+  { immediate: true },
+);
+</script>
+
+<style scoped lang="scss">
+.first-layer {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: 8px;
+  background: radial-gradient(
+    circle at 70% 30%,
+    rgba(184, 255, 60, 0.18) 0%,
+    rgb(var(--v-theme-snakeMainSecondary)) 65%
+  );
+
+  @media screen and (max-width: 1120px) {
+    border-radius: 0;
+  }
+}
+
+.second-layer {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(184, 255, 60, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184, 255, 60, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+#scaler {
+  position: relative;
+}
+
+#gamescene {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+  width: 1200px;
+  height: 800px;
+  background-color: rgb(var(--v-theme-background));
+
+  @media screen and (max-width: 600px) {
+    position: inherit;
+    width: 100%;
+    height: calc(100vh - 66px);
+  }
+}
+</style>

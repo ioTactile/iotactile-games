@@ -26,9 +26,13 @@
       <NuxtLink to="/takuzu" class="text-decoration-none text-onBackground">
         <strong>Takuzu</strong>
       </NuxtLink>
-      et
+      ,
       <NuxtLink to="/2048" class="text-decoration-none text-onBackground">
         <strong>2048</strong>
+      </NuxtLink>
+      et
+      <NuxtLink to="/snake" class="text-decoration-none text-onBackground">
+        <strong>Snake</strong>
       </NuxtLink>
       .
       <br />
