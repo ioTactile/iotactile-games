@@ -1,65 +1,93 @@
 <template>
-  <div v-if="playerResults" class="results-container">
-    <div v-for="(difficulty, i) in difficulties" :key="i" class="content">
-      <button class="button-difficulty" @click="getDifficultyResults(difficulty)">
-        <h2>{{ getDifficultyName(difficulty) }}</h2>
-        <v-icon :icon="mdiChevronDown" color="onSurface" />
-      </button>
-      <template v-if="isDifficulty(difficulty)">
-        <template v-if="playerResults[difficulty as DifficultyWithoutCustom].victories > 0">
-          <div class="content__header">
-            <div>Victoires</div>
-            <div>Temps</div>
-            <div>Date</div>
-          </div>
-          <div class="content__main">
-            <div>
-              {{ playerResults[difficulty as DifficultyWithoutCustom].victories }}
+  <div class="results-container" :class="{ 'results-container--status': showStatus }">
+    <p v-if="!isAuthenticated" class="status-message">Connecte-toi pour voir tes résultats.</p>
+    <p v-else-if="isLoading" class="status-message">Chargement…</p>
+    <p v-else-if="loadError" class="status-message">{{ loadError }}</p>
+    <template v-else-if="playerResults">
+      <div v-for="(difficulty, i) in difficulties" :key="i" class="content">
+        <button class="button-difficulty" @click="getDifficultyResults(difficulty)">
+          <h2>{{ getDifficultyName(difficulty) }}</h2>
+          <v-icon :icon="mdiChevronDown" color="onSurface" />
+        </button>
+        <template v-if="isDifficulty(difficulty)">
+          <template v-if="playerResults[difficulty].victories > 0">
+            <div class="content__header">
+              <div>Victoires</div>
+              <div>Temps</div>
+              <div>Date</div>
             </div>
-            <div>
-              {{
-                timerFormatter(playerResults[difficulty as DifficultyWithoutCustom].bestTime, true)
-              }}
+            <div class="content__main">
+              <div>
+                {{ playerResults[difficulty].victories }}
+              </div>
+              <div>
+                {{ timerFormatter(playerResults[difficulty].bestTime, true) }}
+              </div>
+              <div>
+                {{ dateFormatter(playerResults[difficulty].victoryDate) }}
+              </div>
             </div>
-            <div>
-              {{ dateFormatter(playerResults[difficulty as DifficultyWithoutCustom].victoryDate) }}
-            </div>
-          </div>
+          </template>
+          <template v-else>
+            <div class="no-best-time">Aucune partie n'a été gagnée dans cette difficulté</div>
+          </template>
         </template>
-        <template v-else>
-          <div class="no-best-time">Aucune partie n'a été gagnée dans cette difficulté</div>
-        </template>
-      </template>
-    </div>
+      </div>
+    </template>
   </div>
 </template>
 
-<script async setup lang="ts">
-import { doc, getDoc } from 'firebase/firestore';
+<script setup lang="ts">
+import { getCurrentUser } from 'vuefire';
 import { VIcon } from 'vuetify/components';
 import { mdiChevronDown } from '@mdi/js';
 import { timerFormatter, dateFormatter } from '~/utils';
-import { mineSweeperScoreboardConverter } from '~/stores';
+import { loadPlayerScoreboard } from '~/infrastructure/firestore/mineSweeperScoreboardRepository';
+import { createEmptyMineSweeperScoreboard } from '~/utils/minesweeper/scoreboard';
+import type { MineSweeperScoreboard } from '~/types/models';
 import type { Difficulty } from '~/utils/minesweeper/types';
 
 type DifficultyWithoutCustom = Exclude<Difficulty, 'custom'>;
 
-const db = useFirestore();
-const user = useCurrentUser();
+const difficulties: DifficultyWithoutCustom[] = ['beginner', 'intermediate', 'expert'];
 
-const playerScoreboardRef = doc(db, 'mineSweeperScoreboard', user.value!.uid).withConverter(
-  mineSweeperScoreboardConverter,
+const playerResults = ref<MineSweeperScoreboard | null>(null);
+const isAuthenticated = ref(false);
+const isLoading = ref(true);
+const loadError = ref('');
+
+const showStatus = computed(
+  () => !isAuthenticated.value || isLoading.value || Boolean(loadError.value),
 );
-const playerScoreboardDoc = await getDoc(playerScoreboardRef);
-const playerResults = playerScoreboardDoc.data();
-
-const difficulties: Difficulty[] = ['beginner', 'intermediate', 'expert'];
 
 const difficultyState = ref<{ [key in Difficulty]: boolean }>({
   beginner: true,
   intermediate: true,
   expert: true,
   custom: true,
+});
+
+onMounted(async () => {
+  isLoading.value = true;
+  loadError.value = '';
+
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      isAuthenticated.value = false;
+      return;
+    }
+
+    isAuthenticated.value = true;
+    const scoreboard = await loadPlayerScoreboard(currentUser.uid);
+    playerResults.value =
+      scoreboard ??
+      createEmptyMineSweeperScoreboard(currentUser.uid, currentUser.displayName ?? 'Anonyme');
+  } catch {
+    loadError.value = 'Impossible de charger tes résultats.';
+  } finally {
+    isLoading.value = false;
+  }
 });
 
 const getDifficultyResults = (difficulty: Difficulty): void => {
@@ -91,6 +119,18 @@ const getDifficultyName = (difficulty: string): string => {
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
+
+  &--status {
+    justify-content: flex-start;
+    padding-top: 1.5rem;
+  }
+
+  .status-message {
+    text-align: center;
+    color: rgb(var(--v-theme-mineSweeperOnSurface));
+    margin: 0;
+    padding: 0 1rem;
+  }
 
   .content {
     display: flex;

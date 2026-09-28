@@ -1,14 +1,17 @@
-import { generateBoard, prepareBoard } from './generator';
+import { generatePuzzle } from './generator';
 import { checkBoard } from './checker';
 import type {
   TakuzuBoard,
   TakuzuCheckResult,
-  CellValues as TCellValues,
+  CellValue,
   GameStatus,
   BoardSize,
   Difficulty,
+  HintCell,
 } from './types';
 import { OUT_OF_RANGE, CellValues } from './constants';
+import { resolveHintCell } from './hint';
+import { cloneBoard } from './utils';
 import { Timer } from './timer';
 
 export interface ITakuzu {
@@ -23,13 +26,14 @@ export interface ITakuzu {
   start(boardSize: BoardSize, difficulty: Difficulty): void;
   restart(): void;
   reset(): void;
-  change(row: number, col: number, value: TCellValues): void;
+  change(row: number, col: number, value: CellValue): void;
   check(): TakuzuCheckResult;
   undo(): void;
-  getCell(row: number, col: number): TCellValues;
+  getCell(row: number, col: number): CellValue;
   startGame(): void;
   handleWin(): void;
   isFull(): boolean;
+  getHintCell(): HintCell | null;
 }
 
 export class Takuzu implements ITakuzu {
@@ -85,64 +89,34 @@ export class Takuzu implements ITakuzu {
     return this.GameStatus;
   }
 
-  private generate(boardSize: BoardSize): void {
-    let board: TakuzuBoard | null | undefined;
-    let checkResult: TakuzuCheckResult | undefined;
-
-    while (!board || (checkResult && checkResult.error)) {
-      board = generateBoard(boardSize);
-      if (board) checkResult = checkBoard(board);
-    }
-
-    this.board = board;
+  private generate(boardSize: BoardSize, difficulty: Difficulty): void {
+    const { solution, puzzle } = generatePuzzle(boardSize, difficulty);
+    this.board = solution;
     this.boardSize = boardSize;
-  }
-
-  private prepare(difficulty: Difficulty): void {
-    if (!this.board) this.generate(this.boardSize);
-
-    const fillFactor = this.getFillFactor(difficulty);
-    const task = prepareBoard(this.board, fillFactor);
-    this.task = task;
-    this.startedTask = task;
-  }
-
-  private getFillFactor(difficulty: Difficulty): number {
-    switch (difficulty) {
-      case 'easy':
-        return 0.5;
-      case 'medium':
-        return 0.45;
-      case 'hard':
-        return 0.4;
-      case 'expert':
-        return 0.35;
-      default:
-        return 0.5;
-    }
+    this.difficulty = difficulty;
+    this.task = puzzle;
+    this.startedTask = cloneBoard(puzzle);
   }
 
   public start(boardSize: BoardSize, difficulty: Difficulty): void {
-    this.generate(boardSize);
-    this.prepare(difficulty);
+    this.generate(boardSize, difficulty);
   }
 
   public restart(): void {
     this.resetOptions();
-    this.generate(this.boardSize);
-    this.prepare(this.difficulty);
+    this.generate(this.boardSize, this.difficulty);
   }
 
   public reset(): void {
     this.resetOptions();
-    this.task = this.startedTask;
+    this.task = cloneBoard(this.startedTask);
   }
 
-  public change(row: number, col: number, value: TCellValues): void {
+  public change(row: number, col: number, value: CellValue): void {
     if (row >= this.boardSize || row < 0) throw new Error(OUT_OF_RANGE('row'));
     if (col >= this.boardSize || col < 0) throw new Error(OUT_OF_RANGE('col'));
 
-    this.task = this.task.map((row) => [...row]);
+    this.task = cloneBoard(this.task);
     this.task[row][col] = value;
     this.boardHistory.push(this.task);
   }
@@ -156,11 +130,11 @@ export class Takuzu implements ITakuzu {
     if (this.boardHistory.length) {
       this.task = this.boardHistory[this.boardHistory.length - 1];
     } else {
-      this.task = this.startedTask;
+      this.task = cloneBoard(this.startedTask);
     }
   }
 
-  public getCell(row: number, col: number): TCellValues {
+  public getCell(row: number, col: number): CellValue {
     return this.task[row][col];
   }
 
@@ -178,6 +152,10 @@ export class Takuzu implements ITakuzu {
 
   public isFull(): boolean {
     return this.task.every((row) => row.every((value) => value !== CellValues.EMPTY));
+  }
+
+  public getHintCell(): HintCell | null {
+    return resolveHintCell(this.task, this.board, this.startedTask, this.difficulty);
   }
 
   private resetOptions(): void {

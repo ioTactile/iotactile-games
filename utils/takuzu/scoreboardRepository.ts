@@ -6,6 +6,7 @@ import { applyTakuzuVictory, createEmptyTakuzuScoreboard } from './scoreboard';
 export interface TakuzuScoreboardRepository {
   getUsername(userId: string): Promise<string>;
   findByUserId(userId: string): Promise<TakuzuScoreboard | null>;
+  findAll(): Promise<TakuzuScoreboard[]>;
   save(scoreboard: TakuzuScoreboard): Promise<void>;
 }
 

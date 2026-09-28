@@ -34,28 +34,19 @@ service cloud.firestore {
      allow read, write: if request.auth.uid != null;
     }
 
-    match /diceScoreboard {
-      allow read: if request.auth.uid != null;
+    match /diceScoreboard/{diceScoreboardId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && request.auth.uid == diceScoreboardId;
     }
 
-    match /diceScoreboard/{diceScoreboard} {
-     allow read, write: if request.auth.uid != null;
+    match /mineSweeperScoreboard/{mineSweeperScoreboardId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && request.auth.uid == mineSweeperScoreboardId;
     }
 
-    match /mineSweeperScoreboard {
-      allow read;
-    }
-
-    match /mineSweeperScoreboard/{mineSweeperScoreboard} {
-     allow read, write: if request.auth.uid != null;
-    }
-
-    match /takuzuScoreboard {
-      allow read;
-    }
-
-    match /takuzuScoreboard/{takuzuScoreboard} {
-     allow read, write: if request.auth.uid != null;
+    match /takuzuScoreboard/{takuzuScoreboardId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && request.auth.uid == takuzuScoreboardId;
     }
 
     match /users/{userId} {

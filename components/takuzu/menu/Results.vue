@@ -1,37 +1,38 @@
 <template>
-  <div class="results-container">
-    <div v-for="(size, i) in results" :key="i" class="content">
-      <div class="content__header">
-        <div>Grilles {{ sizeFormatter(i) }}</div>
-      </div>
-      <div class="content__main">
-        <button
-          v-for="(difficulty, j) in size"
-          :key="j"
-          class="button-difficulty"
-          :style="difficultyBackgroundColorStyle(j)"
-        >
-          {{ difficulty.victories }}
+  <div class="results-container" :class="{ 'results-container--status': showStatus }">
+    <p v-if="!isAuthenticated" class="status-message">Connecte-toi pour voir tes résultats.</p>
+    <p v-else-if="isLoading" class="status-message">Chargement…</p>
+    <p v-else-if="loadError" class="status-message">{{ loadError }}</p>
+    <template v-else>
+      <div v-for="(size, i) in results" :key="i" class="content">
+        <div class="content__header">
+          <div>Grilles {{ sizeFormatter(i) }}</div>
+        </div>
+        <div class="content__main">
+          <button
+            v-for="(difficulty, j) in size"
+            :key="j"
+            class="button-difficulty"
+            :style="difficultyBackgroundColorStyle(j)"
+          >
+            {{ difficulty.victories }}
 
-          <div v-if="difficulty.bestTime > 0" class="timer">
-            {{ timerFormatter(difficulty.bestTime, true) }}
-          </div>
-        </button>
+            <div v-if="difficulty.bestTime > 0" class="timer">
+              {{ timerFormatter(difficulty.bestTime, true) }}
+            </div>
+          </button>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 
-<script async setup lang="ts">
-import { doc, getDoc } from 'firebase/firestore';
+<script setup lang="ts">
+import { getCurrentUser } from 'vuefire';
 import { timerFormatter } from '~/utils';
-import { takuzuScoreboardConverter } from '~/stores';
-
-type TakuzuVictory = {
-  victories: number;
-  bestTime: number;
-  victoryDate: Date;
-};
+import { loadPlayerScoreboard } from '~/infrastructure/firestore/takuzuScoreboardRepository';
+import { createEmptyTakuzuScoreboard } from '~/utils/takuzu/scoreboard';
+import type { TakuzuVictory } from '~/types/models';
 
 interface SizeBoard {
   easy: TakuzuVictory;
@@ -40,27 +41,44 @@ interface SizeBoard {
   expert: TakuzuVictory;
 }
 
-const db = useFirestore();
-const user = useCurrentUser();
+const results = ref<SizeBoard[]>([]);
+const isAuthenticated = ref(false);
+const isLoading = ref(true);
+const loadError = ref('');
 
-const playerScoreboardRef = doc(db, 'takuzuScoreboard', user.value!.uid).withConverter(
-  takuzuScoreboardConverter,
+const showStatus = computed(
+  () => !isAuthenticated.value || isLoading.value || Boolean(loadError.value),
 );
 
 onMounted(async () => {
-  const playerScoreboardDoc = await getDoc(playerScoreboardRef);
-  const playerResults = playerScoreboardDoc.data();
-  if (!playerResults) return;
+  isLoading.value = true;
+  loadError.value = '';
 
-  results.value = [
-    playerResults.sixBySix,
-    playerResults.eightByEight,
-    playerResults.tenByTen,
-    playerResults.twelveByTwelve,
-  ];
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      isAuthenticated.value = false;
+      return;
+    }
+
+    isAuthenticated.value = true;
+    const playerResults = await loadPlayerScoreboard(currentUser.uid);
+    const scoreboard =
+      playerResults ??
+      createEmptyTakuzuScoreboard(currentUser.uid, currentUser.displayName ?? 'Anonyme');
+
+    results.value = [
+      scoreboard.sixBySix,
+      scoreboard.eightByEight,
+      scoreboard.tenByTen,
+      scoreboard.twelveByTwelve,
+    ];
+  } catch {
+    loadError.value = 'Impossible de charger tes résultats.';
+  } finally {
+    isLoading.value = false;
+  }
 });
-
-const results = ref<SizeBoard[]>([]);
 
 const sizeFormatter = (value: number) => {
   const sizes = ['6 x 6', '8 x 8', '10 x 10', '12 x 12'];
@@ -78,6 +96,8 @@ const difficultyBackgroundColorStyle = (value: string) => {
       return `background-color: ${colors[2]}`;
     case 'expert':
       return `background-color: ${colors[3]}`;
+    default:
+      return '';
   }
 };
 </script>
@@ -89,6 +109,18 @@ const difficultyBackgroundColorStyle = (value: string) => {
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
+
+  &--status {
+    justify-content: flex-start;
+    padding-top: 1.5rem;
+  }
+
+  .status-message {
+    text-align: center;
+    color: rgb(var(--v-theme-takuzuMainOnSurface));
+    margin: 0;
+    padding: 0 1rem;
+  }
 
   .content {
     display: flex;

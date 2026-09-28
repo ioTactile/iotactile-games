@@ -1,5 +1,6 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-09-26',
+  devServer: { host: '127.0.0.1', port: 3000 },
   modules: [
     '@nuxt/eslint',
     '@pinia/nuxt',

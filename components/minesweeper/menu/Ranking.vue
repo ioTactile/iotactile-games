@@ -1,13 +1,24 @@
 <template>
-  <div v-if="menuPage === 2" class="results-container">
-    <button
-      v-for="(item, i) in menuItems"
-      :key="i"
-      class="button-mineSweeper"
-      @click="getRanking(item.action, item.value)"
-    >
-      {{ item.title }}
-    </button>
+  <div
+    v-if="menuPage === 2"
+    class="results-container"
+    :class="{ 'results-container--status': showStatus }"
+  >
+    <p v-if="!isAuthenticated && !isLoading" class="status-message">
+      Connecte-toi pour voir le classement.
+    </p>
+    <p v-else-if="isLoading" class="status-message">Chargement…</p>
+    <p v-else-if="loadError" class="status-message">{{ loadError }}</p>
+    <template v-else>
+      <button
+        v-for="(item, i) in menuItems"
+        :key="i"
+        class="button-mineSweeper"
+        @click="getRanking(item.action, item.value)"
+      >
+        {{ item.title }}
+      </button>
+    </template>
   </div>
   <div v-else class="results-container-2">
     <div v-for="(difficulty, i) in ['beginner', 'intermediate', 'expert']" :key="i">
@@ -37,9 +48,10 @@
 </template>
 
 <script setup lang="ts">
-import { collection, getDocs } from 'firebase/firestore';
-import { mineSweeperScoreboardConverter, type LocalMineSweeperScoreboardType } from '~/stores';
+import { getCurrentUser } from 'vuefire';
+import { loadAllScoreboards } from '~/infrastructure/firestore/mineSweeperScoreboardRepository';
 import { timerFormatter } from '~/utils';
+import type { MineSweeperScoreboard } from '~/types/models';
 import type { Difficulty } from '~/utils/minesweeper/types';
 
 type DifficultyWithoutCustom = Exclude<Difficulty, 'custom'>;
@@ -51,12 +63,6 @@ defineProps<{
 const emit = defineEmits<{
   (e: 'action', value: string): void;
 }>();
-
-const db = useFirestore();
-
-const mineSweeperScoreboard = collection(db, 'mineSweeperScoreboard').withConverter(
-  mineSweeperScoreboardConverter,
-);
 
 const menuItems = [
   {
@@ -76,28 +82,55 @@ const menuItems = [
   },
 ];
 
-const ranking = ref<LocalMineSweeperScoreboardType[]>([]);
+const allScoreboards = ref<MineSweeperScoreboard[]>([]);
+const ranking = ref<MineSweeperScoreboard[]>([]);
+const isAuthenticated = ref(false);
+const isLoading = ref(true);
+const loadError = ref('');
 
-const getRanking = async (action: string, value: string) => {
-  emit('action', action);
-  if (ranking.value.length === 0) {
-    const rankingDocs = await getDocs(mineSweeperScoreboard);
-    ranking.value = rankingDocs.docs.map((doc) => doc.data());
+const showStatus = computed(
+  () => (!isAuthenticated.value && !isLoading.value) || isLoading.value || Boolean(loadError.value),
+);
+
+onMounted(async () => {
+  isLoading.value = true;
+  loadError.value = '';
+
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      isAuthenticated.value = false;
+      return;
+    }
+
+    isAuthenticated.value = true;
+    allScoreboards.value = await loadAllScoreboards();
+  } catch {
+    loadError.value = 'Impossible de charger le classement.';
+  } finally {
+    isLoading.value = false;
   }
-  if (value === 'custom') {
-    ranking.value = ranking.value.filter((item) => item.custom);
-    ranking.value.forEach((item) => {
-      item.custom.sort((a, b) => a.bestTime - b.bestTime);
-    });
-  } else if (value === 'beginner') {
-    ranking.value = ranking.value.filter((item) => item.beginner.victories > 0);
-    ranking.value.sort((a, b) => a.beginner.bestTime - b.beginner.bestTime);
+});
+
+const getRanking = (action: string, value: string) => {
+  emit('action', action);
+
+  const source = allScoreboards.value;
+
+  if (value === 'beginner') {
+    ranking.value = source
+      .filter((item) => item.beginner.victories > 0)
+      .sort((a, b) => a.beginner.bestTime - b.beginner.bestTime);
   } else if (value === 'intermediate') {
-    ranking.value = ranking.value.filter((item) => item.intermediate.victories > 0);
-    ranking.value.sort((a, b) => a.intermediate.bestTime - b.intermediate.bestTime);
+    ranking.value = source
+      .filter((item) => item.intermediate.victories > 0)
+      .sort((a, b) => a.intermediate.bestTime - b.intermediate.bestTime);
   } else if (value === 'expert') {
-    ranking.value = ranking.value.filter((item) => item.expert.victories > 0);
-    ranking.value.sort((a, b) => a.expert.bestTime - b.expert.bestTime);
+    ranking.value = source
+      .filter((item) => item.expert.victories > 0)
+      .sort((a, b) => a.expert.bestTime - b.expert.bestTime);
+  } else {
+    ranking.value = [];
   }
 };
 
@@ -105,7 +138,7 @@ const getRankingPage = (index: number): number => {
   return Number.parseFloat(`2.${index + 1}`);
 };
 
-const getFormattedTime = (player: LocalMineSweeperScoreboardType, difficulty: string) => {
+const getFormattedTime = (player: MineSweeperScoreboard, difficulty: string) => {
   const difficultyKey = difficulty as DifficultyWithoutCustom;
   const time = player[difficultyKey].bestTime;
 
@@ -113,9 +146,7 @@ const getFormattedTime = (player: LocalMineSweeperScoreboardType, difficulty: st
 };
 
 const isBestTime = (difficulty: string): boolean => {
-  return ranking.value.length > 0
-    ? ranking.value.some((item) => item[difficulty as DifficultyWithoutCustom].bestTime > 0)
-    : false;
+  return ranking.value.some((item) => item[difficulty as DifficultyWithoutCustom].bestTime > 0);
 };
 </script>
 
@@ -126,6 +157,18 @@ const isBestTime = (difficulty: string): boolean => {
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
+
+  &--status {
+    justify-content: flex-start;
+    padding-top: 1.5rem;
+  }
+
+  .status-message {
+    text-align: center;
+    color: rgb(var(--v-theme-mineSweeperOnSurface));
+    margin: 0;
+    padding: 0 1rem;
+  }
 }
 
 .results-container-2 {

@@ -15,6 +15,7 @@
             :class="[
               cellValue(row[colIndex]),
               startedCell(rowIndex, colIndex),
+              hintedCellClass(rowIndex, colIndex),
               timer.getIsPaused() ? 'cell--paused' : '',
             ]"
             :style="borderEmptyCellsStyle(row[colIndex])"
@@ -29,16 +30,14 @@
 <script setup lang="ts">
 import { CellValues } from '~/utils/takuzu/constants';
 import type { Timer } from '~/utils/takuzu/timer';
-import type { CellValues as TCellValues, BoardSize } from '~/utils/takuzu/types';
+import type { CellValue, HintCell, GameOptions } from '~/utils/takuzu/types';
 
 const props = defineProps<{
   timer: Timer;
-  taskBoard: TCellValues[][];
+  taskBoard: CellValue[][];
   disabledCells: boolean[][];
-  options: {
-    boardSize: BoardSize;
-    difficulty: string;
-  } | null;
+  hintedCellPos: HintCell | null;
+  options: GameOptions | null;
   scale: number;
   backgroundColor: {
     width: string;
@@ -62,7 +61,7 @@ const toggleCell = (rowIndex: number, colIndex: number): void => {
   emits('toggleCell', { rowIndex, colIndex });
 };
 
-const cellValue = (cell: TCellValues): string => {
+const cellValue = (cell: CellValue): string => {
   if (cell === CellValues.EMPTY) return 'cell--empty';
   if (cell === CellValues.ZERO) return 'cell--black';
   if (cell === CellValues.ONE) return 'cell--white';
@@ -74,7 +73,18 @@ const startedCell = (rowIndex: number, colIndex: number): string => {
   return '';
 };
 
-const borderEmptyCellsStyle = (cell: TCellValues): string => {
+const hintedCellClass = (rowIndex: number, colIndex: number): string => {
+  if (
+    props.hintedCellPos &&
+    props.hintedCellPos.row === rowIndex &&
+    props.hintedCellPos.col === colIndex
+  ) {
+    return 'cell--hinted';
+  }
+  return '';
+};
+
+const borderEmptyCellsStyle = (cell: CellValue): string => {
   return cell === CellValues.EMPTY ? `border: 1px solid ${getColor('border')}` : '';
 };
 
@@ -180,6 +190,27 @@ const getColor = (value: 'background' | 'border'): string => {
           100% {
             transform: none;
           }
+        }
+      }
+
+      .cell--hinted {
+        box-shadow:
+          0 0 0 3px #ffeb3b,
+          0 0 12px 2px rgba(255, 235, 59, 0.85);
+        animation: hint-pulse 1.2s ease-in-out infinite;
+      }
+
+      @keyframes hint-pulse {
+        0%,
+        100% {
+          box-shadow:
+            0 0 0 3px #ffeb3b,
+            0 0 10px 2px rgba(255, 235, 59, 0.7);
+        }
+        50% {
+          box-shadow:
+            0 0 0 4px #fff176,
+            0 0 16px 4px rgba(255, 235, 59, 1);
         }
       }
 

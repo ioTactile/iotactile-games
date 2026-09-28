@@ -1,4 +1,4 @@
-import { collection, getDoc, setDoc, doc } from 'firebase/firestore';
+import { collection, getDoc, getDocs, setDoc, doc } from 'firebase/firestore';
 import type { Firestore } from 'firebase/firestore';
 import type { TakuzuScoreboard } from '~/types/models';
 import { takuzuScoreboardConverter } from '~/infrastructure/firestore/converters';
@@ -26,6 +26,11 @@ export class FirestoreTakuzuScoreboardRepository implements TakuzuScoreboardRepo
     return scoreboardDoc.exists() ? scoreboardDoc.data() : null;
   }
 
+  async findAll(): Promise<TakuzuScoreboard[]> {
+    const snapshot = await getDocs(this.collection());
+    return snapshot.docs.map((scoreboardDoc) => scoreboardDoc.data());
+  }
+
   async save(scoreboard: TakuzuScoreboard): Promise<void> {
     await setDoc(doc(this.collection(), scoreboard.userId), scoreboard, {
       merge: true,
@@ -49,4 +54,12 @@ export const saveScoreboard = async (
     boardSize,
     difficulty,
   );
+};
+
+export const loadPlayerScoreboard = async (userId: string): Promise<TakuzuScoreboard | null> => {
+  return createTakuzuScoreboardRepository().findByUserId(userId);
+};
+
+export const loadAllScoreboards = async (): Promise<TakuzuScoreboard[]> => {
+  return createTakuzuScoreboardRepository().findAll();
 };

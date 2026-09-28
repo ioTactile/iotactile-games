@@ -76,4 +76,12 @@ export class Timer {
       this.isPaused = true;
     }
   }
+
+  public addPenalty(ms: number): void {
+    if (ms <= 0) return;
+    this.elapsedTime += ms;
+    if (this.startTime !== undefined && !this.isPaused) {
+      this.startTime -= ms;
+    }
+  }
 }

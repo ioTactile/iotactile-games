@@ -18,6 +18,7 @@ const createFakeRepo = (
     saved,
     getUsername: async () => 'Anon',
     findByUserId: async () => current,
+    findAll: async () => (current ? [current] : []),
     save: async (scoreboard) => {
       current = scoreboard;
       saved.push(scoreboard);

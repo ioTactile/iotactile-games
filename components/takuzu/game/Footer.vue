@@ -2,7 +2,7 @@
   <div class="content__footer">
     <span v-if="errorMessage" class="error-message">{{ errorMessage }}</span>
     <div class="actions">
-      <button class="button-action undo svg-container" @click="undo">
+      <button class="button-action undo svg-container" title="Annuler" @click="undo">
         <svg
           fill="#CFD8DC"
           width="20px"
@@ -23,7 +23,7 @@
           </g>
         </svg>
       </button>
-      <button class="button-action pause svg-container" @click="togglePause">
+      <button class="button-action pause svg-container" title="Pause" @click="togglePause">
         <svg
           v-if="isPaused"
           width="28px"
@@ -66,7 +66,25 @@
           </g>
         </svg>
       </button>
-      <button class="button-action svg-container" @click="reset">
+      <button
+        class="button-action hint svg-container"
+        title="Aide (+15 s)"
+        :disabled="!hintAvailable"
+        @click="hint"
+      >
+        <svg
+          fill="#CFD8DC"
+          width="18px"
+          height="18px"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"
+          />
+        </svg>
+      </button>
+      <button class="button-action svg-container" title="Réinitialiser" @click="reset">
         <svg
           width="20px"
           height="20px"
@@ -96,12 +114,14 @@ defineProps<{
   errorMessage: string;
   isPaused: boolean;
   isRotating: boolean;
+  hintAvailable: boolean;
 }>();
 
 const emit = defineEmits<{
   (e: 'undo'): void;
   (e: 'reset'): void;
   (e: 'togglePause'): void;
+  (e: 'hint'): void;
 }>();
 
 const undo = () => {
@@ -114,6 +134,10 @@ const reset = () => {
 
 const togglePause = () => {
   emit('togglePause');
+};
+
+const hint = () => {
+  emit('hint');
 };
 </script>
 
@@ -162,6 +186,12 @@ const togglePause = () => {
       border-radius: 50%;
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
       transition: all 0.2s ease-in-out;
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
     }
 
     .pause {

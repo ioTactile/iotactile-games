@@ -12,3 +12,5 @@ export const ERRORS = {
 } as const;
 
 export const OUT_OF_RANGE = (line: 'row' | 'col') => `Hors de porté: ${line} (index)`;
+
+export const HINT_PENALTY_MS = 15_000;

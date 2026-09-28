@@ -6,6 +6,7 @@ import { applyMineSweeperVictory, createEmptyMineSweeperScoreboard } from './sco
 export interface MineSweeperScoreboardRepository {
   getUsername(userId: string): Promise<string>;
   findByUserId(userId: string): Promise<MineSweeperScoreboard | null>;
+  findAll(): Promise<MineSweeperScoreboard[]>;
   save(scoreboard: MineSweeperScoreboard): Promise<void>;
 }
 

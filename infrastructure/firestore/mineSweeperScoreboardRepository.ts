@@ -1,4 +1,4 @@
-import { collection, getDoc, setDoc, doc } from 'firebase/firestore';
+import { collection, getDoc, getDocs, setDoc, doc } from 'firebase/firestore';
 import type { Firestore } from 'firebase/firestore';
 import type { MineSweeperScoreboard } from '~/types/models';
 import { mineSweeperScoreboardConverter } from '~/infrastructure/firestore/converters';
@@ -28,6 +28,11 @@ export class FirestoreMineSweeperScoreboardRepository implements MineSweeperScor
     return scoreboardDoc.exists() ? scoreboardDoc.data() : null;
   }
 
+  async findAll(): Promise<MineSweeperScoreboard[]> {
+    const snapshot = await getDocs(this.collection());
+    return snapshot.docs.map((scoreboardDoc) => scoreboardDoc.data());
+  }
+
   async save(scoreboard: MineSweeperScoreboard): Promise<void> {
     await setDoc(doc(this.collection(), scoreboard.userId), scoreboard, {
       merge: true,
@@ -55,4 +60,14 @@ export const saveScoreboard = async (
     numCols,
     numMines,
   );
+};
+
+export const loadPlayerScoreboard = async (
+  userId: string,
+): Promise<MineSweeperScoreboard | null> => {
+  return createMineSweeperScoreboardRepository().findByUserId(userId);
+};
+
+export const loadAllScoreboards = async (): Promise<MineSweeperScoreboard[]> => {
+  return createMineSweeperScoreboardRepository().findAll();
 };

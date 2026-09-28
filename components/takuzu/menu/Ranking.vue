@@ -1,60 +1,59 @@
 <template>
-  <div class="results-container">
-    <div v-for="(size, i) in scoreboard" :key="i" class="results-content">
-      <div class="results-content__header">
-        <div>Grilles {{ sizeFormatter(i) }}</div>
-      </div>
-      <div class="results-content__main">
-        <button
-          v-for="(_, j) in size"
-          :key="j"
-          class="button-difficulty"
-          :style="difficultyBackgroundColorStyle(j)"
-          @click="setSelectResults(i, j)"
-        >
-          {{ numPlayers(i, j) }}
-        </button>
-      </div>
-    </div>
-    <template v-if="selectResults.length > 0">
-      <div class="players-content">
-        <div class="players-content__header">
-          <div class="header">Classement</div>
-          <div class="header">Joueur</div>
-          <div class="header">Temps</div>
+  <div class="results-container" :class="{ 'results-container--status': showStatus }">
+    <p v-if="!isAuthenticated" class="status-message">Connecte-toi pour voir le classement.</p>
+    <p v-else-if="isLoading" class="status-message">Chargement…</p>
+    <p v-else-if="loadError" class="status-message">{{ loadError }}</p>
+    <template v-else>
+      <div v-for="(size, i) in scoreboard" :key="i" class="results-content">
+        <div class="results-content__header">
+          <div>Grilles {{ sizeFormatter(i) }}</div>
         </div>
-        <div class="players-content-wrapper">
-          <div v-for="(player, k) in selectResults" :key="k" class="players-content__main">
-            <div class="content">{{ k + 1 }}</div>
-            <div class="content">{{ usernames[k] }}</div>
-            <div class="content">
-              {{ timerFormatter(player.bestTime, true) }}
+        <div class="results-content__main">
+          <button
+            v-for="(_, j) in size"
+            :key="j"
+            class="button-difficulty"
+            :style="difficultyBackgroundColorStyle(j)"
+            @click="setSelectResults(i, j)"
+          >
+            {{ numPlayers(i, j) }}
+          </button>
+        </div>
+      </div>
+      <template v-if="selectResults.length > 0">
+        <div class="players-content">
+          <div class="players-content__header">
+            <div class="header">Classement</div>
+            <div class="header">Joueur</div>
+            <div class="header">Temps</div>
+          </div>
+          <div class="players-content-wrapper">
+            <div v-for="(player, k) in selectResults" :key="k" class="players-content__main">
+              <div class="content">{{ k + 1 }}</div>
+              <div class="content">{{ player.username }}</div>
+              <div class="content">
+                {{ timerFormatter(player.bestTime, true) }}
+              </div>
             </div>
           </div>
+          <div class="players-content__footer">
+            <button class="button-back" @click="backToRanking">Retour</button>
+          </div>
         </div>
-        <div class="players-content__footer">
-          <button class="button-back" @click="backToRanking">Retour</button>
-        </div>
-      </div>
-    </template>
-    <template v-if="isNotResults === true">
-      <span class="no-best-time"> Aucune partie n'a été gagnée dans cette difficulté </span>
+      </template>
+      <template v-if="isNotResults === true">
+        <span class="no-best-time"> Aucune partie n'a été gagnée dans cette difficulté </span>
+      </template>
     </template>
   </div>
 </template>
 
-<script async setup lang="ts">
-import { collection, getDocs } from 'firebase/firestore';
-import { takuzuScoreboardConverter } from '~/stores';
+<script setup lang="ts">
+import { getCurrentUser } from 'vuefire';
+import { loadAllScoreboards } from '~/infrastructure/firestore/takuzuScoreboardRepository';
 import { timerFormatter } from '~/utils';
-
-type TakuzuVictory = {
-  victories: number;
-  bestTime: number;
-  victoryDate: Date;
-};
-
-type Difficulty = 'easy' | 'medium' | 'hard' | 'expert';
+import type { TakuzuVictory } from '~/types/models';
+import type { Difficulty } from '~/utils/takuzu/types';
 
 interface SizeBoard {
   easy: TakuzuVictory;
@@ -68,102 +67,70 @@ interface PlayerScoreboard {
   scoreboard: SizeBoard[];
 }
 
-const db = useFirestore();
-
-const playerScoreboardRef = collection(db, 'takuzuScoreboard').withConverter(
-  takuzuScoreboardConverter,
-);
-
-onMounted(async () => {
-  const playerScoreboardDoc = await getDocs(playerScoreboardRef);
-
-  const playersScoreboardData = playerScoreboardDoc.docs.map((doc) => doc.data());
-  if (!playersScoreboardData) return;
-
-  playersScoreboard.value = playersScoreboardData.map((playerScoreboard) => ({
-    username: playerScoreboard.username,
-    scoreboard: [
-      playerScoreboard.sixBySix,
-      playerScoreboard.eightByEight,
-      playerScoreboard.tenByTen,
-      playerScoreboard.twelveByTwelve,
-    ],
-  }));
-});
+interface RankedPlayer {
+  username: string;
+  bestTime: number;
+}
 
 const playersScoreboard = ref<PlayerScoreboard[]>([]);
-const selectResults = ref<TakuzuVictory[]>([]);
-const usernames = ref<string[]>([]);
-const isNotResults = ref<boolean>(false);
+const selectResults = ref<RankedPlayer[]>([]);
+const isNotResults = ref(false);
+const isAuthenticated = ref(false);
+const isLoading = ref(true);
+const loadError = ref('');
+
+const showStatus = computed(
+  () => !isAuthenticated.value || isLoading.value || Boolean(loadError.value),
+);
 
 const scoreboard = [
-  {
-    easy: {},
-    medium: {},
-    hard: {},
-    expert: {},
-  },
-  {
-    easy: {},
-    medium: {},
-    hard: {},
-    expert: {},
-  },
-  {
-    easy: {},
-    medium: {},
-    hard: {},
-    expert: {},
-  },
-  {
-    easy: {},
-    medium: {},
-    hard: {},
-    expert: {},
-  },
+  { easy: {}, medium: {}, hard: {}, expert: {} },
+  { easy: {}, medium: {}, hard: {}, expert: {} },
+  { easy: {}, medium: {}, hard: {}, expert: {} },
+  { easy: {}, medium: {}, hard: {}, expert: {} },
 ];
 
-const setSelectResults = (size: number, difficulty: Difficulty): void => {
-  const players = playersScoreboard.value.map(
-    (sizeBoard) => sizeBoard.scoreboard[size][difficulty],
-  );
+onMounted(async () => {
+  isLoading.value = true;
+  loadError.value = '';
 
-  const filteredPlayers = players
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      isAuthenticated.value = false;
+      return;
+    }
+
+    isAuthenticated.value = true;
+    const scoreboards = await loadAllScoreboards();
+
+    playersScoreboard.value = scoreboards.map((playerScoreboard) => ({
+      username: playerScoreboard.username,
+      scoreboard: [
+        playerScoreboard.sixBySix,
+        playerScoreboard.eightByEight,
+        playerScoreboard.tenByTen,
+        playerScoreboard.twelveByTwelve,
+      ],
+    }));
+  } catch {
+    loadError.value = 'Impossible de charger le classement.';
+  } finally {
+    isLoading.value = false;
+  }
+});
+
+const setSelectResults = (size: number, difficulty: Difficulty): void => {
+  const ranked = playersScoreboard.value
+    .map((player) => ({
+      username: player.username,
+      bestTime: player.scoreboard[size][difficulty].bestTime,
+    }))
     .filter((player) => player.bestTime > 0)
     .sort((a, b) => a.bestTime - b.bestTime);
 
-  selectResults.value = filteredPlayers;
-
-  usernames.value = getUsernames(size, difficulty);
-
-  if (filteredPlayers.length > 0) {
-    isNotResults.value = false;
-  } else {
-    isNotResults.value = true;
-  }
-};
-
-const getUsernames = (size: number, difficulty: Difficulty): string[] => {
-  const usernames = playersScoreboard.value
-    .map((playerScoreboard) => playerScoreboard.username)
-    .sort((a, b) => {
-      const playerA = playersScoreboard.value.find(
-        (playerScoreboard) => playerScoreboard.username === a,
-      );
-      const playerB = playersScoreboard.value.find(
-        (playerScoreboard) => playerScoreboard.username === b,
-      );
-
-      const playerAScore = playerA!.scoreboard[size][difficulty];
-      const playerBScore = playerB!.scoreboard[size][difficulty];
-
-      if (playerAScore.bestTime === 0) return 1;
-      if (playerBScore.bestTime === 0) return -1;
-
-      return playerAScore.bestTime - playerBScore.bestTime;
-    });
-
-  return usernames;
+  selectResults.value = ranked;
+  isNotResults.value = ranked.length === 0;
 };
 
 const sizeFormatter = (value: number): string => {
@@ -188,18 +155,14 @@ const difficultyBackgroundColorStyle = (value: string): string => {
 };
 
 const numPlayers = (size: number, difficulty: Difficulty): number => {
-  const players = playersScoreboard.value.map(
-    (sizeBoard) => sizeBoard.scoreboard[size][difficulty],
-  );
-
-  const filteredPlayers = players.filter((player) => player.bestTime > 0);
-
-  return filteredPlayers.length;
+  return playersScoreboard.value.filter(
+    (player) => player.scoreboard[size][difficulty].bestTime > 0,
+  ).length;
 };
 
 const backToRanking = (): void => {
   selectResults.value = [];
-  usernames.value = [];
+  isNotResults.value = false;
 };
 </script>
 
@@ -211,6 +174,18 @@ const backToRanking = (): void => {
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
+
+  &--status {
+    justify-content: flex-start;
+    padding-top: 1.5rem;
+  }
+
+  .status-message {
+    text-align: center;
+    color: rgb(var(--v-theme-takuzuMainOnSurface));
+    margin: 0;
+    padding: 0 1rem;
+  }
 
   .results-content {
     display: flex;

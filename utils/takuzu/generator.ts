@@ -1,11 +1,24 @@
+import { checkBoard } from './checker';
 import { CellValues } from './constants';
 import {
-  arrayFromLength,
-  countSubstrInStr,
-  takeRandomIndexFromArray,
-  getRandomNumber,
-} from './utils';
-import type { TakuzuBoard, BoardSize } from './types';
+  DIFFICULTY_MAX_TIER,
+  DIFFICULTY_MIN_EMPTY_RATIO,
+  requiresHarderThanPrevious,
+} from './difficulty';
+import { isFullySolvedByHuman } from './humanSolver';
+import { arrayFromLength, cloneBoard, countSubstrInStr, getRandomNumber } from './utils';
+import type { TakuzuBoard, BoardSize, Difficulty } from './types';
+
+const MAX_CARVE_ATTEMPTS = 40;
+const MAX_BOARD_GENERATION_ATTEMPTS = 80;
+
+const generateValidBoard = (boardSize: BoardSize): TakuzuBoard | null => {
+  for (let attempt = 0; attempt < MAX_BOARD_GENERATION_ATTEMPTS; attempt++) {
+    const board = generateBoard(boardSize);
+    if (board && !checkBoard(board).error) return board;
+  }
+  return null;
+};
 
 export const splitBoardIntoCells = (board: TakuzuBoard[number]): TakuzuBoard => {
   const splittedBoard: TakuzuBoard = [];
@@ -130,23 +143,93 @@ export const filteringRows = (rows: TakuzuBoard[number], pattern: string): Takuz
   return filteredRows;
 };
 
-export const prepareBoard = (board: TakuzuBoard, fillFactor: number): TakuzuBoard => {
-  const preparedBoard = [...board];
-  const boardSize = board.length;
-  const totalItemsInBoard = boardSize ** 2;
-  const numberOfItemsToFill = Math.floor(totalItemsInBoard * fillFactor);
-  const numberOfEmptyItems = totalItemsInBoard - numberOfItemsToFill;
+export const countEmptyCells = (board: TakuzuBoard): number =>
+  board.reduce(
+    (total, row) =>
+      total + row.reduce((rowTotal, cell) => rowTotal + (cell === CellValues.EMPTY ? 1 : 0), 0),
+    0,
+  );
 
-  let currentNumberOfEmptyItems = 0;
-
-  while (numberOfEmptyItems !== currentNumberOfEmptyItems) {
-    const rowIndex = takeRandomIndexFromArray(preparedBoard);
-    const colIndex = takeRandomIndexFromArray(preparedBoard[rowIndex]);
-
-    if (preparedBoard[rowIndex][colIndex] === CellValues.EMPTY) continue;
-    preparedBoard[rowIndex][colIndex] = CellValues.EMPTY;
-    currentNumberOfEmptyItems++;
+const shufflePositions = (boardSize: number): Array<{ row: number; col: number }> => {
+  const positions: Array<{ row: number; col: number }> = [];
+  for (let row = 0; row < boardSize; row++) {
+    for (let col = 0; col < boardSize; col++) {
+      positions.push({ row, col });
+    }
   }
 
-  return preparedBoard;
+  for (let i = positions.length - 1; i > 0; i--) {
+    const j = getRandomNumber(i);
+    [positions[i], positions[j]] = [positions[j], positions[i]];
+  }
+
+  return positions;
+};
+
+/**
+ * Remove clues while keeping the puzzle solvable by the human solver
+ * at the given difficulty's strategy ceiling.
+ */
+export const carvePuzzle = (solution: TakuzuBoard, difficulty: Difficulty): TakuzuBoard => {
+  const puzzle = cloneBoard(solution);
+  const allowedTier = DIFFICULTY_MAX_TIER[difficulty];
+  const positions = shufflePositions(solution.length);
+
+  for (const { row, col } of positions) {
+    const previous = puzzle[row][col];
+    if (previous === CellValues.EMPTY) continue;
+
+    puzzle[row][col] = CellValues.EMPTY;
+
+    if (!isFullySolvedByHuman(puzzle, allowedTier)) {
+      puzzle[row][col] = previous;
+    }
+  }
+
+  return puzzle;
+};
+
+const meetsDifficultyFloor = (puzzle: TakuzuBoard, difficulty: Difficulty): boolean => {
+  const emptyRatio = countEmptyCells(puzzle) / (puzzle.length * puzzle.length);
+  if (emptyRatio < DIFFICULTY_MIN_EMPTY_RATIO[difficulty]) return false;
+
+  if (!requiresHarderThanPrevious(difficulty)) return true;
+
+  const weakerTier = DIFFICULTY_MAX_TIER[difficulty] - 1;
+  return !isFullySolvedByHuman(puzzle, weakerTier);
+};
+
+/**
+ * Generate a full valid board then carve clues for the target difficulty.
+ * Retries with a new solution when empty-ratio / difficulty floor is not met.
+ */
+export const generatePuzzle = (
+  boardSize: BoardSize,
+  difficulty: Difficulty,
+): { solution: TakuzuBoard; puzzle: TakuzuBoard } => {
+  let best: { solution: TakuzuBoard; puzzle: TakuzuBoard } | null = null;
+  let bestEmptyCount = -1;
+
+  for (let attempt = 0; attempt < MAX_CARVE_ATTEMPTS; attempt++) {
+    const solution = generateValidBoard(boardSize);
+    if (!solution) continue;
+
+    const puzzle = carvePuzzle(solution, difficulty);
+    const emptyCount = countEmptyCells(puzzle);
+
+    if (emptyCount > bestEmptyCount) {
+      best = { solution, puzzle };
+      bestEmptyCount = emptyCount;
+    }
+
+    if (meetsDifficultyFloor(puzzle, difficulty)) {
+      return { solution, puzzle };
+    }
+  }
+
+  if (!best) {
+    throw new Error(`Unable to generate a Takuzu puzzle for size ${boardSize}`);
+  }
+
+  return best;
 };

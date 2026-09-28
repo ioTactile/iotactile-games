@@ -24,6 +24,17 @@ export type TakuzuCheckResult =
       position: string[];
     };
 
-export type TakuzuBoard = (typeof CellValues)[keyof typeof CellValues][][];
+export type CellValue = (typeof CellValues)[keyof typeof CellValues];
 
-export type CellValues = (typeof CellValues)[keyof typeof CellValues];
+export type TakuzuBoard = CellValue[][];
+
+export type HintCell = {
+  row: number;
+  col: number;
+};
+
+export type HumanSolveResult = {
+  solved: boolean;
+  maxTierUsed: number;
+  board: TakuzuBoard;
+};

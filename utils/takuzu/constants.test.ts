@@ -1,5 +1,5 @@
 import { test, expect, describe } from 'vitest';
-import { CellValues, ERRORS, OUT_OF_RANGE } from './constants';
+import { CellValues, ERRORS, OUT_OF_RANGE, HINT_PENALTY_MS } from './constants';
 
 describe('constants', () => {
   test('should have the correct CellValues values', () => {
@@ -21,5 +21,9 @@ describe('constants', () => {
   test('should have the correct OUT_OF_RANGE value', () => {
     expect(OUT_OF_RANGE('row')).toBe('Hors de porté: row (index)');
     expect(OUT_OF_RANGE('col')).toBe('Hors de porté: col (index)');
+  });
+
+  test('HINT_PENALTY_MS is fifteen seconds', () => {
+    expect(HINT_PENALTY_MS).toBe(15_000);
   });
 });

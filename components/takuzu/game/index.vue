@@ -13,6 +13,7 @@
         :timer="timer"
         :task-board="taskBoard"
         :disabled-cells="disabledCells"
+        :hinted-cell-pos="hintedCell"
         :options="props.options"
         :game-container="gameContainer"
         :scale="scale"
@@ -23,9 +24,11 @@
         :error-message="errorMessage"
         :is-paused="isPaused"
         :is-rotating="isRotating"
+        :hint-available="hintAvailable"
         @undo="undo"
         @toggle-pause="togglePause"
         @reset="reset"
+        @hint="useHint"
       />
     </div>
   </div>
@@ -34,11 +37,17 @@
 <script setup lang="ts">
 import { useDisplay } from 'vuetify';
 import { Takuzu, type ITakuzu } from '~/utils/takuzu/takuzu.js';
-import { CellValues } from '~/utils/takuzu/constants';
+import { CellValues, HINT_PENALTY_MS } from '~/utils/takuzu/constants';
 
 import { saveScoreboard } from '~/infrastructure/firestore/takuzuScoreboardRepository';
 import { sleep } from '~/utils';
-import type { GameOptions, TakuzuBoard, GameStatus, BoardSize } from '~/utils/takuzu/types';
+import type {
+  GameOptions,
+  TakuzuBoard,
+  GameStatus,
+  BoardSize,
+  HintCell,
+} from '~/utils/takuzu/types';
 import type { Timer } from '~/utils/takuzu/timer';
 
 type Options = {
@@ -76,6 +85,8 @@ const errorMessage = ref<string>('');
 const disabledCells = ref<boolean[][]>([]);
 const isRulesModalActive = ref<boolean>(false);
 const isRotating = ref<boolean>(false);
+const hintedCell = ref<HintCell | null>(null);
+const timerTick = ref(0);
 const scale = ref<number>(1);
 const backgroundColor = reactive<{ width: string; height: string }>({
   width: '320px',
@@ -86,7 +97,10 @@ const taskBoard = computed((): TakuzuBoard => takuzu.value.getTask());
 
 const timer = computed((): Timer => takuzu.value.getTimer());
 
-const elapsedTime = computed((): number => takuzu.value.getTimer().getElapsedTime());
+const elapsedTime = computed((): number => {
+  void timerTick.value;
+  return takuzu.value.getTimer().getElapsedTime();
+});
 
 const gameStatus = computed((): GameStatus => takuzu.value.getGameStatus());
 
@@ -103,7 +117,13 @@ const isPaused = computed((): boolean => {
   return false;
 });
 
+const hintAvailable = computed((): boolean => {
+  if (isFinished.value || isPaused.value) return false;
+  return takuzu.value.getHintCell() !== null;
+});
+
 const start = (options: GameOptions): void => {
+  hintedCell.value = null;
   takuzu.value.start(options.boardSize, options.difficulty);
   disabledStartedCells();
 };
@@ -111,6 +131,7 @@ const start = (options: GameOptions): void => {
 const restart = (): void => {
   errorMessage.value = '';
   disabledCells.value = [];
+  hintedCell.value = null;
 
   takuzu.value.restart();
   disabledStartedCells();
@@ -122,6 +143,7 @@ const reset = async (): Promise<void> => {
   await sleep(1000);
   isRotating.value = false;
   errorMessage.value = '';
+  hintedCell.value = null;
   takuzu.value.reset();
 };
 
@@ -132,7 +154,23 @@ const togglePause = (): void => {
 
 const undo = (): void => {
   if (gameStatus.value !== 'inProgress') return;
+  hintedCell.value = null;
   takuzu.value.undo();
+};
+
+const useHint = (): void => {
+  if (isFinished.value || isPaused.value) return;
+
+  const cell = takuzu.value.getHintCell();
+  if (!cell) return;
+
+  if (takuzu.value.getGameStatus() === 'waiting') {
+    takuzu.value.startGame();
+  }
+
+  hintedCell.value = cell;
+  timer.value.addPenalty(HINT_PENALTY_MS);
+  timerTick.value += 1;
 };
 
 const returnToMenu = (): void => {
@@ -159,6 +197,7 @@ const toggleCell = async (options: Options): Promise<void> => {
   }
 
   errorMessage.value = '';
+  hintedCell.value = null;
 
   const oldValue = takuzu.value.getCell(rowIndex, colIndex);
   const newValue =

@@ -61,3 +61,17 @@ describe('takeRandomIndexFromArray', () => {
     expect(array[randomIndex]).toBeLessThanOrEqual(array.length);
   });
 });
+
+describe('cloneBoard', () => {
+  test('returns a deep copy of the board', async () => {
+    const { cloneBoard } = await import('./utils');
+    const board = [
+      ['0', '1'],
+      ['1', '0'],
+    ] as const;
+    const mutable = board.map((row) => [...row]);
+    const copy = cloneBoard(mutable as import('./types').TakuzuBoard);
+    copy[0][0] = '.';
+    expect(mutable[0][0]).toBe('0');
+  });
+});
