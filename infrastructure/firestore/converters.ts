@@ -18,6 +18,7 @@ import type {
   LinguaVaultSessionWords,
   MineSweeperScoreboard,
   TakuzuScoreboard,
+  Game2048Scoreboard,
 } from '~/types/models';
 
 type NestedTypeMapper<T, I, O> = T extends I
@@ -410,6 +411,24 @@ export const takuzuScoreboardConverter: FirestoreDataConverter<LocalTakuzuScoreb
           victoryDate: data.twelveByTwelve.expert.victoryDate.toDate(),
         },
       },
+    };
+  },
+};
+
+type DatabaseGame2048ScoreboardType = NestedTypeMapper<
+  Game2048Scoreboard,
+  Date,
+  FirestoreTimestamp
+>;
+export type LocalGame2048ScoreboardType = Game2048Scoreboard;
+export const game2048ScoreboardConverter: FirestoreDataConverter<LocalGame2048ScoreboardType> = {
+  toFirestore: (item) => item,
+  fromFirestore: (snapshot: QueryDocumentSnapshot<DatabaseGame2048ScoreboardType>, options) => {
+    const data = snapshot.data(options);
+    return {
+      ...data,
+      userId: snapshot.id,
+      lastPlayedAt: data.lastPlayedAt.toDate(),
     };
   },
 };

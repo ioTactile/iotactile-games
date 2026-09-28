@@ -212,3 +212,13 @@ export type TakuzuScoreboard = {
     expert: TakuzuVictory;
   };
 };
+
+export type Game2048Scoreboard = {
+  userId: string;
+  username: string;
+  gamesPlayed: number;
+  victories: number;
+  bestScore: number;
+  bestTile: number;
+  lastPlayedAt: Date;
+};

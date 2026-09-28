@@ -29,6 +29,15 @@
           font="'Quicksand', sans-serif"
         />
       </v-col>
+      <v-col cols="12" sm="6" md="4" class="pa-2 ma-0">
+        <GameFramework
+          img="/game2048/game2048.svg"
+          alt="2048"
+          title="2048"
+          link="/2048"
+          font="'Space Grotesk', sans-serif"
+        />
+      </v-col>
     </v-row>
   </div>
 </template>

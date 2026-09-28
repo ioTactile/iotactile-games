@@ -22,7 +22,15 @@
       <NuxtLink to="/demineur" class="text-decoration-none text-onBackground">
         <strong>Démineur</strong>
       </NuxtLink>
-      qui se joue en solo.
+      qui se joue en solo. Tu y trouveras aussi le
+      <NuxtLink to="/takuzu" class="text-decoration-none text-onBackground">
+        <strong>Takuzu</strong>
+      </NuxtLink>
+      et
+      <NuxtLink to="/2048" class="text-decoration-none text-onBackground">
+        <strong>2048</strong>
+      </NuxtLink>
+      .
       <br />
       <br />
       Ce site est en quelque sorte mon bac à sable, dans lequel je mets en pratique mes

@@ -35,6 +35,12 @@ const myCustomLightTheme: ThemeDefinition = {
     takuzuMainSurface: '#CFD8DC', // light grey
     takuzuMainShadow: '#B0BEC5', // grey
     takuzuMainOnSurface: '#161616', // dark grey
+    game2048MainPrimary: '#2dd4a8', // jade
+    game2048MainSecondary: '#0d1117', // ink
+    game2048MainTertiary: '#f0b429', // amber
+    game2048MainSurface: '#e8f5f0', // mint wash
+    game2048MainShadow: '#9bc4b5', // soft jade shadow
+    game2048MainOnSurface: '#0d1117', // ink
   },
 };
 const myCustomDarkTheme: ThemeDefinition = {
@@ -71,6 +77,12 @@ const myCustomDarkTheme: ThemeDefinition = {
     takuzuMainSurface: '#CFD8DC', // light grey
     takuzuMainShadow: '#B0BEC5', // grey
     takuzuMainOnSurface: '#161616', // dark grey
+    game2048MainPrimary: '#2dd4a8', // jade
+    game2048MainSecondary: '#0d1117', // ink
+    game2048MainTertiary: '#f0b429', // amber
+    game2048MainSurface: '#1a2220', // dark jade surface
+    game2048MainShadow: '#0a0e0c', // deep shadow
+    game2048MainOnSurface: '#e8f5f0', // mint text
   },
 };
 
